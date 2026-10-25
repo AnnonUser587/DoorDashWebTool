@@ -220,11 +220,179 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media (max-width:360px){.grid{gap:8px}.stat b{font-size:1.05rem}}
+
+/* ===== v3 additions ===== */
+.wrap{padding-bottom:calc(118px + env(safe-area-inset-bottom,0px))}
+/* bottom nav: Dex | Scan | Stats */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:linear-gradient(transparent,var(--bg) 35%)}
+.nav .row{max-width:528px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
+  background:#171a23f0;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid #2c3040;border-radius:28px;padding:6px}
+.ntab{border:0;background:none;border-radius:22px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.74rem;font-weight:700;color:var(--mut);cursor:pointer}
+.ntab svg{width:24px;height:24px}
+.ntab[aria-current="page"]{background:#262a36;color:var(--tx)}
+.nscan{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 22px;border-radius:22px;background:var(--tx);color:var(--bg);font:800 1rem var(--f-body);cursor:pointer;white-space:nowrap}
+.nscan svg{width:22px;height:22px}
+@media (max-width:350px){.nscan span{display:none}.nscan{padding:0 18px}}
+
+/* today strip */
+.today{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:12px;font-size:.88rem;color:var(--mut)}
+.today b{color:var(--tx)}
+.today .vdots{display:flex;gap:6px;flex:none}
+.vd{display:inline-flex;align-items:center;gap:4px;font:600 .78rem var(--f-mono);color:var(--tx)}
+.vd i{width:8px;height:8px;border-radius:99px;background:var(--c)}
+
+/* day groups */
+.day{margin-bottom:14px}
+.dayhead{width:100%;display:flex;align-items:center;gap:10px;background:none;border:0;padding:10px 2px;cursor:pointer;text-align:left;min-height:48px}
+.dayhead .dn{display:block;font:600 1.05rem/1.1 var(--f-display);color:var(--tx)}
+.dayhead .ds{display:block;font-size:.8rem;color:var(--mut);margin-top:2px}
+.dayhead .dw{flex:1;min-width:0}
+.dayhead .chev{width:22px;height:22px;color:var(--mut);transition:transform .2s}
+.dayhead[aria-expanded="false"] .chev{transform:rotate(-90deg)}
+.dayhead .dpay{font:600 1rem var(--f-display);font-variant-numeric:tabular-nums;color:var(--tx);text-align:right}
+.dayhead .dpay small{display:block;font:500 .66rem var(--f-mono);letter-spacing:.1em;color:var(--mut)}
+
+/* took-it toggle */
+.took{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.took .lab{grid-column:1/-1;font:500 .7rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mut);text-align:center}
+.tbtn{min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);font-weight:700;cursor:pointer}
+.tbtn[aria-pressed="true"].yes{background:color-mix(in srgb,var(--accept) 22%,var(--bg2));border-color:var(--accept);color:var(--accept)}
+.tbtn[aria-pressed="true"].no{background:#262a36;border-color:#4a5063}
+
+/* batch results */
+.bhead{display:grid;gap:8px;text-align:center}
+.bhead h2{font:700 1.3rem/1.2 var(--f-display);margin:0}
+.bhead p{margin:0;color:var(--mut);font-size:.9rem}
+.blist{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.bitem{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px;display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;min-width:0}
+.bitem .th{width:52px;height:52px;border-radius:10px;overflow:hidden;background:#1a1d27;border:1px solid var(--line)}
+.bitem .th img{width:100%;height:100%;object-fit:cover;display:block}
+.bitem .bm{min-width:0}
+.bitem .bn{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bitem .bs{display:block;font:500 .76rem/1.35 var(--f-mono);color:var(--mut)}
+.bitem .bs .sp{color:var(--tx)}
+.vpill{--v:var(--mut);font:800 .72rem/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:7px 10px;color:var(--v);background:color-mix(in srgb,var(--v) 16%,transparent);border:1px solid color-mix(in srgb,var(--v) 50%,transparent);white-space:nowrap}
+.vpill[data-v="accept"]{--v:var(--accept)}.vpill[data-v="consider"]{--v:var(--consider)}.vpill[data-v="decline"]{--v:var(--decline)}
+.bitem.busy{opacity:.7}.bitem.busy .vpill{animation:blink 1s ease-in-out infinite}
+@keyframes blink{50%{opacity:.4}}
+.bitem .bx{grid-column:1/-1}
+.bitem button.mini{min-height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-weight:700;padding:0 12px;cursor:pointer;font-size:.84rem}
+.bitem[data-open]{cursor:pointer}
+.bsum{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;font:500 .8rem var(--f-mono);color:var(--mut)}
+.bsum b{color:var(--tx)}
+
+/* stats page */
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:14px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.seg button{min-height:40px;border:0;border-radius:10px;background:none;font-weight:700;font-size:.86rem;color:var(--mut);cursor:pointer}
+.seg button[aria-pressed="true"]{background:#2b2f3c;color:var(--tx)}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.kpi{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0}
+.kpi b{display:block;font:600 1.5rem/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.kpi span{font:500 .62rem/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.kpi small{display:block;color:var(--mut);font-size:.76rem;margin-top:4px}
+.sbox{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:14px;display:grid;gap:12px;min-width:0}
+.sbox h3{font:600 1.02rem/1.2 var(--f-display);margin:0;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.sbox h3 small{font:500 .7rem var(--f-mono);color:var(--mut);letter-spacing:.06em}
+.readout{font:500 .8rem var(--f-mono);color:var(--mut);min-height:1.2em;font-variant-numeric:tabular-nums}
+.readout b{color:var(--tx);font-weight:600}
+.vbars{position:relative;display:flex;align-items:flex-end;gap:6px;height:150px;padding-top:6px}
+.vbars .goal{position:absolute;left:0;right:0;border-top:1.5px dashed #5d6375;pointer-events:none}
+.vbars .goal span{position:absolute;left:0;top:-16px;font:500 .62rem var(--f-mono);color:var(--mut);background:var(--panel);padding:0 4px}
+.vb{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;background:none;border:0;padding:0;cursor:pointer;position:relative}
+.vb i{display:block;width:min(100%,34px);border-radius:4px 4px 0 0;background:var(--t-rare);min-height:2px;opacity:.85}
+.vb.empty i{background:#262a36;opacity:1}
+.vb[aria-pressed="true"] i{opacity:1;box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px var(--t-rare)}
+.vb .lv{font:600 .62rem var(--f-mono);color:var(--tx);font-variant-numeric:tabular-nums}
+.vlabels{display:flex;gap:6px;border-top:1px solid var(--line);padding-top:6px}
+.vlabels span{flex:1;min-width:0;text-align:center;font:500 .64rem/1.3 var(--f-mono);color:var(--mut);white-space:nowrap;overflow:hidden}
+.vlabels span b{display:block;color:var(--dim);font-weight:500}
+.hbars{display:grid;gap:9px}
+.hb{display:grid;grid-template-columns:6.4em 1fr 4.2em;align-items:center;gap:10px;font-size:.84rem;min-width:0}
+.hb .hl{color:var(--silver);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb .hl small{display:block;font:500 .62rem var(--f-mono);color:var(--dim)}
+.hb .ht{height:10px;border-radius:99px;background:#232733;overflow:hidden}
+.hb .ht i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--c,var(--t-rare))}
+.hb b{text-align:right;font:600 .84rem var(--f-mono);font-variant-numeric:tabular-nums}
+.hb.best .hl{color:var(--tx);font-weight:700}
+.split{display:flex;gap:2px;height:16px;border-radius:6px;overflow:hidden}
+.split i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.84rem}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--silver)}
+.legend i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.legend b{color:var(--tx);font-variant-numeric:tabular-nums}
+.stores{display:grid;gap:0}
+.srow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.srow:first-child{border-top:0}
+.srow i{width:10px;height:10px;border-radius:99px;background:var(--c)}
+.srow .sn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.srow .sn small{display:block;font:500 .72rem var(--f-mono);color:var(--mut);font-weight:400}
+.srow b{font:600 .9rem var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.srow b small{display:block;font-size:.7rem;color:var(--mut);font-weight:500}
+.tblwrap{overflow-x:auto;margin:0 -2px}
+table.wk{width:100%;border-collapse:collapse;font-size:.8rem;font-variant-numeric:tabular-nums}
+table.wk th{font:500 .58rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mut);text-align:right;padding:6px 4px;white-space:nowrap}
+table.wk th:first-child,table.wk td:first-child{text-align:left}
+table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;white-space:nowrap}
+.sempty{text-align:center;color:var(--mut);padding:30px 12px;border:1px dashed var(--line);border-radius:16px}
+.data textarea{width:100%;min-height:110px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px;font:400 16px/1.3 var(--f-mono);color:var(--tx);resize:vertical}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn.sm{min-height:46px;font-size:.92rem}
+.danger{color:var(--decline)!important}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;align-items:center;gap:10px;background:var(--bg);padding-block:8px;margin-top:-8px}
+.topbar .tt{font:600 1.1rem var(--f-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fields input[type="datetime-local"]{font-size:16px;min-width:0;-webkit-appearance:none;appearance:none}
+.pagehead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding-block:6px 14px}
+.pagehead h1{font:700 1.6rem/1 var(--f-display);margin:0}
+.pagehead span{font-size:.82rem;color:var(--mut)}
+
+/* ===== pack opening ===== */
+.pack{--pk:var(--t-rare);position:relative;width:min(220px,58vw);aspect-ratio:5/7.4;margin:4px auto 0;border-radius:18px;overflow:hidden;cursor:default;
+  background:linear-gradient(155deg,#2a2160 0%,#1a1f3d 35%,#0f1424 60%,#3a2a12 100%);
+  box-shadow:0 0 0 1px #ffffff22,0 0 40px -8px #5f8dff88,0 24px 50px -20px #000}
+.pack::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,#ff4fa022 0,#ffd84f22 5%,#4fffc122 10%,#4fb5ff22 15%,#c44fff22 20%,#ff4fa022 25%);background-size:300% 300%;mix-blend-mode:screen;animation:holo 7s linear infinite}
+.pack .crimp{position:absolute;left:0;right:0;height:16px;background:repeating-linear-gradient(90deg,#ffffff30 0 5px,transparent 5px 10px)}
+.pack .crimp.t{top:0}.pack .crimp.b{bottom:0}
+.pack .lid{position:absolute;left:0;right:0;top:0;height:22%;border-bottom:1.5px dashed #ffffff55;transition:transform .55s cubic-bezier(.5,0,.3,1),opacity .55s}
+.pack .face{position:absolute;inset:22% 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:10px}
+.pack .face svg{width:56px;height:56px}
+.pack .pn{font:700 1.5rem/1 var(--f-display);letter-spacing:.04em}
+.pack .pc{font:600 .7rem/1 var(--f-mono);letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+.pack.ready{cursor:pointer;animation:wiggle 2.4s ease-in-out infinite}
+@keyframes wiggle{0%,80%,100%{transform:none}84%{transform:rotate(-3deg) scale(1.02)}88%{transform:rotate(3deg) scale(1.02)}92%{transform:rotate(-2deg)}96%{transform:rotate(1deg)}}
+.pack.torn{animation:none}
+.pack.torn .lid{transform:translateY(-120%) rotate(-12deg);opacity:0}
+.pack.gone{transition:transform .5s ease,opacity .5s ease;transform:translateY(40%) scale(.9);opacity:0}
+.pdots{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+.pdot{width:34px;height:34px;border-radius:9px;overflow:hidden;border:1.5px solid var(--line);position:relative;background:#1a1d27}
+.pdot img{width:100%;height:100%;object-fit:cover;opacity:.55}
+.pdot::after{content:"";position:absolute;inset:0;display:grid;place-items:center;font:700 .8rem var(--f-body)}
+.pdot.now{border-color:var(--t-rare);box-shadow:0 0 0 2px #5f8dff55}
+.pdot.ok{border-color:var(--accept)}.pdot.ok img{opacity:1}
+.pdot.dup{border-color:var(--consider)}.pdot.fix{border-color:var(--decline)}
+.pcount{text-align:center;font:600 .78rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.pcount b{color:var(--tx)}
+.bestpull{text-align:center;font:700 1rem/1 var(--f-display);letter-spacing:.14em;color:var(--t-legendary);text-transform:uppercase;animation:vin .5s .2s both}
+.rv{display:flex;flex-direction:column;gap:12px;align-items:center}
+.rv .vline{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;font:600 .9rem var(--f-mono);color:var(--silver);animation:vin .4s both}
+.rv .reveal{animation:none}
+.prog-pips{display:flex;gap:4px;justify-content:center}
+.prog-pips i{width:18px;height:4px;border-radius:99px;background:#2a2e3a}
+.prog-pips i.on{background:var(--tx)}
+.prog-pips i.last{background:var(--t-legendary)}
+.sumgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:370px){.sumgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sumgrid .card{cursor:pointer}
+.boostnote{text-align:center;font-size:.8rem;color:var(--mut);margin:0}
+.boostnote b{color:var(--gold)}
+.sheet .wide{max-width:520px}
+.tapnote{text-align:center;font-size:.8rem;color:var(--dim);margin:0}
 </style>
 
-<input type="file" id="file" accept="image/*">
+<input type="file" id="file" accept="image/*" multiple>
 
-<div class="wrap" id="home">
+<!-- ===== DEX ===== -->
+<div class="wrap" id="vDex">
   <header class="top">
     <div class="logo">
       <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="6" y="4" width="22" height="30" rx="4" stroke="#5f8dff" stroke-width="2.4" transform="rotate(-10 17 19)"/><rect x="12" y="6" width="22" height="30" rx="4" fill="#11131a" stroke="#f3c55a" stroke-width="2.4"/><path d="M19 23.5c0-1.6 1.4-2.3 3-2.3s3-.7 3-2.3-1.4-2.4-3-2.4-2.6.8-2.9 1.8M22 14.5v1.9M22 25.8v1.9" stroke="#f3c55a" stroke-width="2" stroke-linecap="round"/></svg>
@@ -233,40 +401,46 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
     <div class="count" id="countBox" hidden><b id="countN">0</b>in your Dex</div>
   </header>
 
-  <!-- empty state -->
   <section class="empty" id="empty">
     <div class="fan" aria-hidden="true"><span></span><span></span><span>$</span></div>
     <h2>Your Dex is empty</h2>
     <p>Screenshot a DoorDash or Uber Eats offer and scan it. You'll get an instant Accept, Consider or Decline, and the offer becomes a card.</p>
+    <p style="font-size:.9rem">Pick up to 10 screenshots at once to open a pack. The best offer comes last, with better odds of a special finish.</p>
     <div class="ladder" id="ladder"></div>
   </section>
 
-  <!-- collection -->
   <section id="col" hidden>
-    <div class="stats">
-      <div class="stat"><b id="stBest">–</b><span>Best score</span></div>
-      <div class="stat"><b id="stPPH">–</b><span>Avg $/hr</span></div>
-      <div class="stat"><b id="stSpec">0</b><span>Specials</span></div>
-    </div>
+    <div class="today" id="todayStrip"></div>
     <div class="chips" id="filters" role="toolbar" aria-label="Filter cards"></div>
-    <div class="grid" id="grid"></div>
+    <div id="days"></div>
   </section>
 </div>
 
-<!-- detail (replaces home) -->
-<div class="wrap" id="detailView" hidden><div class="detail" id="detail"></div></div>
-
-<div class="scanbar" id="scanbar">
-  <label class="scanbtn" for="file" role="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan an offer</label>
-  <div class="hint">On a computer you can also paste or drop a screenshot anywhere.</div>
+<!-- ===== STATS ===== -->
+<div class="wrap" id="vStats" hidden>
+  <div class="pagehead"><h1>Stats</h1><span id="statSpan"></span></div>
+  <div class="seg" id="range" role="group" aria-label="Time range">
+    <button data-r="today" aria-pressed="false">Today</button><button data-r="7" aria-pressed="true">7 days</button><button data-r="30" aria-pressed="false">30 days</button><button data-r="all" aria-pressed="false">All</button>
+  </div>
+  <div id="statsBody"></div>
 </div>
 
-<!-- full-screen scan result -->
+<!-- ===== CARD DETAIL ===== -->
+<div class="wrap" id="vDetail" hidden><div class="detail" id="detail"></div></div>
+
+<!-- ===== bottom nav ===== -->
+<nav class="nav" id="nav" aria-label="Main"><div class="row">
+  <button class="ntab" data-v="vDex" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="8" height="11" rx="2"/><rect x="13" y="4" width="8" height="11" rx="2"/><path d="M5 19h14"/></svg>Dex</button>
+  <label class="nscan" for="file" role="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg><span>Scan</span></label>
+  <button class="ntab" data-v="vStats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Stats</button>
+</div></nav>
+
+<!-- ===== scan result / pack sheet ===== -->
 <div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-label="Scan result">
-  <div class="col">
+  <div class="col" id="sheetCol">
     <button class="close" id="sClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <div class="shot" id="shot"><img id="shotImg" alt="Your offer screenshot"><div class="beam"></div></div>
-    <div class="status" id="status"><div class="bar"><i id="pbar"></i></div><p id="pstep">Checking your Dex</p></div>
+    <div class="shot" id="shot" hidden><img id="shotImg" alt="Your offer screenshot"><div class="beam"></div></div>
+    <div class="status" id="status" hidden><div class="bar"><i id="pbar"></i></div><p id="pstep">Checking your Dex</p></div>
     <div id="sBody"></div>
   </div>
 </div>
@@ -311,7 +485,10 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
       while ((m = re.exec(l))) {
         const v = num(m[1]);
         if (/^\s*\/\s*(hr|h|hour|mi|mile)/i.test(l.slice(m.index + m[0].length))) continue;  // a rate, not the payout
-        if (v > 0 && v < 500) pays.push({ v, i, hint: /incl|tip|guarant|total|est/i.test(l) });
+        let val = v;
+        // "$670" with the decimal point lost: a 3-4 digit whole number on a delivery offer is almost always cents
+        if (!/\./.test(m[1]) && m[1].length >= 3 && v >= 100) val = v / 100;
+        if (val > 0 && val < 500) pays.push({ v: val, i, hint: /incl|tip|guarant|total|est/i.test(l) });
       }
     });
     if (pays.length) {
@@ -323,13 +500,19 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
     const tripLine = lines.find(l => /\bmi\b|\bmiles?\b/i.test(l) && /\bmin/i.test(l)) || text;
 
     const mi = tripLine.match(/(\d{1,3}(?:\.\d)?)\s*(?:mi|miles?)\b/i) || text.match(/(\d{1,3}(?:\.\d)?)\s*(?:mi|miles?)\b/i);
-    if (mi) out.miles = num(mi[1]);
+    if (mi) {
+      out.miles = num(mi[1]);
+      if (out.miles >= 40 && !/\./.test(mi[1])) out.miles = out.miles / 10;   // "62 mi" for "6.2 mi"
+    }
 
     // "1 hr 5 min" or "23 min"
     const hr = tripLine.match(/(\d{1,2})\s*(?:hr|hour)s?\s*(\d{1,2})?\s*(?:min)?/i);
     const mn = tripLine.match(/(\d{1,3})\s*min/i) || text.match(/(\d{1,3})\s*min/i);
     if (hr) out.minutes = num(hr[1]) * 60 + (hr[2] ? num(hr[2]) : 0);
     else if (mn) out.minutes = num(mn[1]);
+
+    if (out.minutes != null && (out.minutes <= 0 || out.minutes > 300)) out.minutes = null;
+    if (out.miles != null && (out.miles <= 0 || out.miles > 150)) out.miles = null;
 
     const st = text.match(/(\d{1,2})\s*stops?\b/i);
     if (st) out.stops = num(st[1]);
@@ -347,13 +530,29 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
     const ti = lines.findIndex(l => l === tripLine);
     if (ti >= 0) {
       for (const l of lines.slice(ti + 1, ti + 4)) {
-        // the store icon often reads as "f@" or "f": drop a leading lowercase 1-2 letter token or symbols
-        const clean = l.replace(/^(?:[^A-Za-z0-9\s]+|[a-z]{1,2}[@©®]?)\s+(?=\S)/, "").replace(/^[^A-Za-z0-9'&]+/, "").trim();
+        const clean = cleanStore(l);
         if (!clean || /^\d+\s/.test(clean) || /customer|drop\s*-?\s*off|pick\s*-?\s*up|view items|accept|decline|incl|total/i.test(clean)) continue;
         if (clean.length >= 2) { out.store = clean.slice(0, 40); break; }
       }
     }
     return out;
+  }
+
+  /* The store icon in front of the name often reads as junk: "f@", "f", "tT", "&".
+     Drop a leading token of 1-2 characters when it has a lowercase letter or a symbol
+     (real short names like "7 Eleven" or "A1 Pizza" are kept). */
+  function cleanStore(l) {
+    let s = String(l || "").trim();
+    const m = s.match(/^(\S{1,3})\s+(?=\S{2,})/);
+    if (m && m[1].length <= 2 && /[a-z@©®&|!*•.,:;~^%#]/.test(m[1])) s = s.slice(m[0].length);
+    else if (m && m[1].length === 3 && /^[^A-Za-z0-9]+$/.test(m[1])) s = s.slice(m[0].length);
+    return s.replace(/^[^A-Za-z0-9'&]+/, "").trim();
+  }
+  /* "HOME DEPOT 6561" -> "Home Depot 6561", "FRITOS'S FACTORY" -> "Fritos's Factory" (mixed-case names are left alone) */
+  function titleCase(s) {
+    s = String(s || "");
+    if (!(/^[^a-z]+$/.test(s) && s.length > 4)) return s;
+    return s.toLowerCase().replace(/(^|[\s\-\/(&])([a-z])/g, (_, a, b) => a + b.toUpperCase());
   }
 
   /* ---------- 2. Scoring ---------- */
@@ -465,11 +664,51 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
    * roll: a number in [0,1). Pass one derived from the image hash so the same screenshot
    * always gives the same finish (re-uploading can't re-roll it).
    */
-  function rollFinish(tierId, roll) {
-    const o = FINISH_ODDS[tierId] || FINISH_ODDS.common;
+  function rollFinish(tierId, roll, boost) {
+    const o = finishOdds(tierId, boost);
     let acc = 0;
     for (const k of ["holo", "carbon", "inverted"]) { acc += o[k]; if (roll < acc) return k; }
     return "standard";
+  }
+  /* Odds after a boost multiplier, keeping the holo/carbon/inverted mix and capping the total at 95%. */
+  function finishOdds(tierId, boost) {
+    const o = FINISH_ODDS[tierId] || FINISH_ODDS.common, b = Math.max(1, +boost || 1);
+    const tot = o.holo + o.carbon + o.inverted, k = Math.min(b, 0.95 / tot);
+    return { holo: o.holo * k, carbon: o.carbon * k, inverted: o.inverted * k };
+  }
+  /* Pack bonus: only the last (best) card of a multi-scan gets it, and it grows with the number of new cards.
+     2 cards = x1.25 ... 10 cards = x3.25 */
+  const packBoost = n => (n >= 2 ? 1 + 0.25 * (Math.min(10, n) - 1) : 1);
+
+  /* ---------- 5. Offer time from the phone's status-bar clock ---------- */
+  // Status bar reads like "10:21" (12-hour, no am/pm). Returns {h, m} or null.
+  function parseClock(text) {
+    // no trailing word boundary: the location arrow next to the clock often reads as an extra digit ("9:067")
+    // "l1:12" / "|1:12": the first 1 of 10-12 o'clock often reads as l, I or |
+    const t = String(text || "").replace(/[lI|](?=[0-2][:.][0-5]\d)/g, "1");
+    const m = t.match(/(?:^|[^\d])([01]?\d|2[0-3])[:.]([0-5]\d)/);
+    if (!m) {
+      // colon lost ("11129" = 11:12 plus the location arrow): read the leading digits as H:MM or HH:MM
+      const d = (t.match(/^\D{0,3}(\d{3,6})/) || [])[1];
+      if (!d) return null;
+      const hh = +d.slice(0, 2), mm2 = +d.slice(2, 4), h1 = +d[0], mm1 = +d.slice(1, 3);
+      if (d.length >= 4 && hh >= 10 && hh <= 12 && mm2 < 60) return { h: hh, m: mm2 };
+      if (h1 >= 1 && mm1 < 60) return { h: h1, m: mm1 };
+      return null;
+    }
+    return { h: +m[1], m: +m[2] };
+  }
+  /* Pick the most recent moment at that clock time that isn't after `baseMs` (when the file was saved). */
+  function offerTime(clock, baseMs) {
+    const base = new Date(baseMs || Date.now());
+    if (!clock) return base;
+    const hours = clock.h > 12 ? [clock.h] : clock.h === 12 ? [0, 12] : [clock.h, clock.h + 12];
+    let best = null;
+    for (let back = 0; back <= 1; back++) for (const h of hours) {
+      const d = new Date(base); d.setDate(d.getDate() - back); d.setHours(h, clock.m, 0, 0);
+      if (d.getTime() <= base.getTime() + 5 * 60e3 && (!best || d > best)) best = d;
+    }
+    return best || base;
   }
 
   /* Same offer seen twice (two screenshots seconds apart): same pay, time, miles and store. */
@@ -477,7 +716,7 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
     String(o.store || "").toLowerCase().replace(/[^a-z0-9]/g, "")].join("|");
 
   const api = { parseOfferText, scoreOffer, tierFor, TIERS, curve, PPH_CURVE, PPM_CURVE,
-    verdictFor, rollFinish, FINISH_ODDS, FINISHES, offerKey };
+    verdictFor, rollFinish, finishOdds, packBoost, parseClock, offerTime, FINISH_ODDS, FINISHES, offerKey, cleanStore, titleCase };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.OfferCore = api;
 })(typeof window !== "undefined" ? window : globalThis);
@@ -490,17 +729,52 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const money=v=>"$"+(+v).toFixed(2);
 const TC={trash:"var(--t-trash)",common:"var(--t-common)",rare:"var(--t-rare)",epic:"var(--t-epic)",legendary:"var(--t-legendary)"};
+const VC={accept:"var(--accept)",consider:"var(--consider)",decline:"var(--decline)"};
 const RM=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const MAX_PACK=10;
+const sleep=ms=>new Promise(r=>setTimeout(r,RM?0:ms));
 
-/* ---------- storage (this browser only) ---------- */
-const KEY="offerdex.v2";
+/* =========================================================
+   Storage: card data in localStorage, card art in IndexedDB
+   (art is the heavy part; IndexedDB holds far more than localStorage's ~5 MB)
+   ========================================================= */
+const KEY="offerdex.v3",OLD="offerdex.v2";
 let store={cards:[],next:1};
-try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&Array.isArray(s.cards))store=Object.assign(store,s)}catch(e){}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(store));return true}catch(e){return false}}
+const ART=new Map();
+const idb=(()=>{let p=null;const open=()=>p||(p=new Promise((res,rej)=>{try{const r=indexedDB.open("offerdex",1);r.onupgradeneeded=()=>r.result.createObjectStore("art");r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}}));
+  const tx=async(mode,fn)=>{const db=await open();return new Promise((res,rej)=>{const t=db.transaction("art",mode),s=t.objectStore("art"),out=fn(s);t.oncomplete=()=>res(out&&out.result);t.onerror=()=>rej(t.error);t.onabort=()=>rej(t.error)})};
+  return{put:(k,v)=>tx("readwrite",s=>s.put(v,k)),del:k=>tx("readwrite",s=>s.delete(k)),clear:()=>tx("readwrite",s=>s.clear()),
+    all:async()=>{const db=await open();return new Promise((res,rej)=>{const out=new Map(),t=db.transaction("art","readonly"),r=t.objectStore("art").openCursor();r.onsuccess=()=>{const c=r.result;if(c){out.set(c.key,c.value);c.continue()}else res(out)};r.onerror=()=>rej(r.error)})}}})();
+let idbOK=true;
+function save(){
+  /* art stays out of localStorage when IndexedDB works */
+  const slim={...store,cards:store.cards.map(c=>idbOK&&c.artInDb?{...c,art:""}:c)};
+  try{localStorage.setItem(KEY,JSON.stringify(slim));return true}catch(e){console.error(e);return false}
+}
+async function putArt(c){
+  if(!c.art)return;ART.set(c.id,c.art);
+  if(!idbOK)return;
+  try{await idb.put(c.id,c.art);c.artInDb=true;c.art=""}catch(e){console.warn("IndexedDB unavailable",e);idbOK=false}
+}
+const artOf=c=>c.art||ART.get(c.id)||"";
+async function loadStore(){
+  try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&Array.isArray(s.cards))store=Object.assign(store,s)}catch(e){}
+  if(!store.cards.length){ /* bring cards over from the previous version */
+    try{const o=JSON.parse(localStorage.getItem(OLD)||"null");if(o&&Array.isArray(o.cards)&&o.cards.length){store.cards=o.cards;store.next=o.next||o.cards.length+1}}catch(e){}
+  }
+  try{const m=await idb.all();m.forEach((v,k)=>ART.set(k,v))}catch(e){idbOK=false}
+  let moved=false;
+  for(const c of store.cards){
+    c.added=c.added||c.ts;c.finish=c.finish||"standard";
+    if(c.art&&idbOK){await putArt(c);moved=true}
+  }
+  if(save()&&moved)try{localStorage.removeItem(OLD)}catch(e){}
+}
 
-/* ---------- duplicate detection ---------- */
+/* =========================================================
+   Duplicate detection
+   ========================================================= */
 async function sha256(blob){try{const b=await crypto.subtle.digest("SHA-256",await blob.arrayBuffer());return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return ""}}
-/* 256-bit difference hash of the screen below the status bar; survives recompression, resizing and small crops */
 function dHash(bm){
   const c=document.createElement("canvas");c.width=17;c.height=16;const x=c.getContext("2d",{willReadFrequently:true});
   const y0=Math.round(bm.height*0.06);x.imageSmoothingQuality="high";x.drawImage(bm,0,y0,bm.width,bm.height-y0,0,0,17,16);
@@ -510,32 +784,35 @@ function dHash(bm){
 }
 const POP=[0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4];
 const hamming=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=POP[parseInt(a[i],16)^parseInt(b[i],16)];return s};
-/* same screenshot (exact or near-identical image) — different offers measure 60+ bits apart, re-saved copies under 10 */
-const sameImage=(sha,ph)=>store.cards.find(c=>(sha&&c.sha===sha)||(ph&&c.ph&&c.ph.length===ph.length&&hamming(c.ph,ph)<=24));
-/* same offer captured twice (timer or clock changed between screenshots) within 12 hours */
-const sameOffer=o=>{const k=C.offerKey(o);return store.cards.find(c=>C.offerKey(c)===k&&Math.abs(Date.now()-new Date(c.ts))<12*3600e3)};
+/* different offers measure 60+ bits apart on real screenshots; re-saved copies under 10 */
+const sameImage=(sha,ph,pool)=>(pool||store.cards).find(c=>(sha&&c.sha===sha)||(ph&&c.ph&&c.ph.length===ph.length&&hamming(c.ph,ph)<=24));
+const sameOffer=(o,pool)=>{const k=C.offerKey(o);return (pool||store.cards).find(c=>C.offerKey(c)===k&&Math.abs(new Date(o.ts||Date.now())-new Date(c.ts))<12*3600e3)};
 
-/* ---------- cards ---------- */
-function makeCard(o,extra){
-  const r=C.scoreOffer(o),roll=extra.roll??Math.random();
+/* =========================================================
+   Cards
+   ========================================================= */
+function makeCard(o,ex){
+  const r=C.scoreOffer(o),roll=ex.roll??Math.random(),boost=ex.boost||1;
   return {id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),no:store.next++,
     store:o.store||"Mystery order",platform:o.platform||"",pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,
-    score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,finish:C.rollFinish(r.tier.id,roll),
-    art:extra.art||"",sha:extra.sha||"",ph:extra.ph||"",ts:new Date().toISOString()};
+    score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
+    art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:new Date().toISOString(),pack:ex.pack||"",took:null};
 }
-function rescore(c,o){const r=C.scoreOffer(o);Object.assign(c,o,{score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,finish:C.rollFinish(r.tier.id,c.roll)})}
+function rescore(c,o){const r=C.scoreOffer(o);Object.assign(c,o,{score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,finish:C.rollFinish(r.tier.id,c.roll,c.boost||1)})}
+const special=c=>c.finish&&c.finish!=="standard";
 const stars=t=>({trash:"",common:"★",rare:"★★",epic:"★★★",legendary:"★★★★"}[t]);
 function serial(c){const d=new Date(c.ts);return (c.platform==="Uber Eats"?"UE":"DD")+"-"+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(c.no).padStart(3,"0")}
 const FIN_SHORT={holo:"HOLO",carbon:"CARBON",inverted:"INVERTED"};
+const clock=d=>new Date(d).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
 function cardHTML(c){
-  const t=TIERS.find(x=>x.id===c.tier),f=c.finish&&c.finish!=="standard"?c.finish:"";
+  const t=TIERS.find(x=>x.id===c.tier),f=special(c)?c.finish:"",art=artOf(c);
   const order=c.stops<=2?"Single order":Math.max(1,c.stops-1)+" dropoffs";
   return `<article class="card" data-t="${c.tier}"${f?` data-f="${f}"`:""} data-id="${esc(c.id)}" tabindex="0" aria-label="${esc(c.store)}, ${t.name} ${c.score}${f?", "+FINISHES[f]:""}">
   <div class="in">
     <div class="c-top"><span class="pill"><span class="orb"></span>${t.name}<b>${c.score}</b></span><span class="rate">$${c.pph.toFixed(0)}<small>/HR</small></span></div>
     <h3 class="c-name">${esc(c.store)}</h3>
-    <div class="art">${c.art?`<img src="${c.art}" alt="" loading="lazy">`:`<div class="fallback">$${(+c.pay).toFixed(0)}</div>`}<span class="no">#${String(c.no).padStart(2,"0")}</span>${f?`<span class="fin">${FIN_SHORT[f]}</span>`:""}</div>
-    <div class="strip">${c.miles} mi<i>•</i>${c.minutes} min<i>•</i>${esc(c.platform||"Delivery")}</div>
+    <div class="art">${art?`<img src="${art}" alt="" decoding="async">`:`<div class="fallback">$${(+c.pay).toFixed(0)}</div>`}<span class="no">#${String(c.no).padStart(2,"0")}</span>${f?`<span class="fin">${FIN_SHORT[f]}</span>`:""}</div>
+    <div class="strip">${c.miles} mi<i>•</i>${c.minutes} min<i>•</i>${clock(c.ts)}</div>
     <div class="box">
       <div class="val"><div><span>PAYOUT</span><b>${money(c.pay)}</b></div><div class="r"><span>CLASS</span><b>${order.toUpperCase()}</b></div></div>
       <div class="specs">
@@ -547,46 +824,115 @@ function cardHTML(c){
     <div class="c-foot"><span>OFFERDEX</span><span class="rule"></span><span>NO. ${serial(c)} <b>${stars(c.tier)}</b></span></div>
   </div></article>`;
 }
-/* holo / sheen follows the finger or mouse */
+/* holo light follows the finger */
 document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.closest('.card[data-f="holo"]');if(!c)return;const r=c.getBoundingClientRect();
   c.style.setProperty("--mx",((e.clientX-r.left)/r.width*100).toFixed(1)+"%");c.style.setProperty("--my",((e.clientY-r.top)/r.height*100).toFixed(1)+"%")},{passive:true});
 
-/* ---------- home ---------- */
-let filter="all",fresh=null;
+/* =========================================================
+   Dates
+   ========================================================= */
+const dayKey=d=>{d=new Date(d);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const startOfDay=d=>{d=new Date(d);d.setHours(0,0,0,0);return d};
+function dayName(key){
+  const d=new Date(key+"T12:00:00"),t=startOfDay(new Date()),diff=Math.round((startOfDay(d)-t)/864e5);
+  const long=d.toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"});
+  return diff===0?["Today",long]:diff===-1?["Yesterday",long]:[d.toLocaleDateString([],{weekday:"long"}),d.toLocaleDateString([],{month:"short",day:"numeric",year:d.getFullYear()!==t.getFullYear()?"numeric":undefined})];
+}
+const agg=cs=>{const pay=cs.reduce((a,c)=>a+c.pay,0),min=cs.reduce((a,c)=>a+c.minutes,0),mi=cs.reduce((a,c)=>a+c.miles,0);
+  return {n:cs.length,pay,min,mi,pph:min?pay/min*60:0,ppm:mi?pay/mi:0,best:cs.length?Math.max(...cs.map(c=>c.score)):0,
+    good:cs.filter(c=>c.score>=51).length,mid:cs.filter(c=>c.score>=26&&c.score<=50).length,bad:cs.filter(c=>c.score<=25).length,
+    taken:cs.filter(c=>c.took===true),takenPay:cs.filter(c=>c.took===true).reduce((a,c)=>a+c.pay,0)}};
+
+/* =========================================================
+   Dex page
+   ========================================================= */
+let filter="all",fresh=new Set();const collapsed=new Map();
 function renderLadder(){
   const pct=t=>Math.round(Object.values(FINISH_ODDS[t]).reduce((a,b)=>a+b,0)*100);
   $("ladder").innerHTML=`<div class="lhead"><span>Rarity</span><span>Special finish odds</span></div>`+
     TIERS.map(t=>`<div class="lrow" style="--c:${TC[t.id]}"><i></i><b>${t.name}<small>${t.min}–${t.max}</small></b><span>${pct(t.id)}%</span></div>`).join("");
 }
-function renderHome(){
+function renderDex(){
   const cs=store.cards;
   $("empty").hidden=!!cs.length;$("col").hidden=!cs.length;$("countBox").hidden=!cs.length;
   if(!cs.length){renderLadder();return}
   $("countN").textContent=cs.length;
-  $("stBest").textContent=Math.max(...cs.map(c=>c.score));
-  const tp=cs.reduce((a,c)=>a+c.pay,0),tm=cs.reduce((a,c)=>a+c.minutes,0);
-  $("stPPH").textContent="$"+(tp/tm*60).toFixed(0);
-  const spec=cs.filter(c=>c.finish&&c.finish!=="standard").length;$("stSpec").textContent=spec;
+  const td=agg(cs.filter(c=>dayKey(c.ts)===dayKey(new Date())));
+  $("todayStrip").innerHTML=td.n?`<span>Today <b>${td.n}</b> offer${td.n>1?"s":""} · <b>$${td.pph.toFixed(0)}</b>/hr avg</span><span class="vdots"><span class="vd" style="--c:var(--accept)"><i></i>${td.good}</span><span class="vd" style="--c:var(--consider)"><i></i>${td.mid}</span><span class="vd" style="--c:var(--decline)"><i></i>${td.bad}</span></span>`
+    :`<span>No offers scanned today yet.</span><span class="vdots"><span class="vd" style="--c:var(--mut)">${cs.length} total</span></span>`;
+  const spec=cs.filter(special).length;
   const opts=[{id:"all",name:"All",n:cs.length},{id:"special",name:"Specials",n:spec,holo:1},...TIERS.map(t=>({id:t.id,name:t.name,n:cs.filter(c=>c.tier===t.id).length,c:TC[t.id]}))];
+  if(filter!=="all"&&!opts.find(o=>o.id===filter&&o.n))filter="all";
   $("filters").innerHTML=opts.filter(o=>o.id==="all"||o.n).map(o=>`<button class="fchip" data-f="${o.id}" aria-pressed="${filter===o.id}" style="--c:${o.c||"var(--mut)"}">${o.id==="all"?"":o.holo?'<i class="holo"></i>':"<i></i>"}${o.name} <span style="opacity:.6">${o.n}</span></button>`).join("");
-  const shown=cs.filter(c=>filter==="all"||(filter==="special"?c.finish&&c.finish!=="standard":c.tier===filter)).slice().reverse();
-  $("grid").innerHTML=shown.length?shown.map(cardHTML).join(""):`<div class="none">No cards here yet.</div>`;
-  if(fresh){const el=$("grid").querySelector(`[data-id="${fresh}"]`);if(el)el.classList.add("new");fresh=null}
+  const shown=cs.filter(c=>filter==="all"||(filter==="special"?special(c):c.tier===filter));
+  const groups=new Map();
+  for(const c of shown.slice().sort((a,b)=>new Date(b.ts)-new Date(a.ts))){const k=dayKey(c.ts);(groups.get(k)||groups.set(k,[]).get(k)).push(c)}
+  let i=0,html="";
+  for(const [k,list] of groups){
+    const a=agg(list),[n1,n2]=dayName(k),open=collapsed.has(k)?!collapsed.get(k):i<3;i++;
+    html+=`<section class="day" data-day="${k}" style="content-visibility:auto;contain-intrinsic-size:auto 600px">
+      <button class="dayhead" aria-expanded="${open}" data-day="${k}">
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        <span class="dw"><span class="dn">${n1}</span><span class="ds">${esc(n2)} · ${a.n} offer${a.n>1?"s":""} · $${a.pph.toFixed(0)}/hr avg · best ${a.best}</span></span>
+        <span class="dpay">${money(a.pay)}<small>OFFERED</small></span>
+      </button>
+      ${open?`<div class="grid">${list.map(cardHTML).join("")}</div>`:""}
+    </section>`;
+  }
+  $("days").innerHTML=html||`<div class="none">No cards here yet.</div>`;
+  if(fresh.size){for(const id of fresh){const el=$("days").querySelector(`[data-id="${id}"]`);if(el)el.classList.add("new")}fresh.clear()}
 }
-$("filters").onclick=e=>{const b=e.target.closest(".fchip");if(!b)return;filter=b.dataset.f;renderHome()};
-$("grid").onclick=e=>{const c=e.target.closest(".card");if(c)openDetail(c.dataset.id)};
-$("grid").onkeydown=e=>{if(e.key==="Enter"){const c=e.target.closest(".card");if(c)openDetail(c.dataset.id)}};
-function goHome(){$("detailView").hidden=true;$("home").hidden=false;$("scanbar").hidden=false;renderHome()}
+$("filters").onclick=e=>{const b=e.target.closest(".fchip");if(!b)return;filter=b.dataset.f;renderDex()};
+$("days").onclick=e=>{
+  const h=e.target.closest(".dayhead");if(h){const k=h.dataset.day;collapsed.set(k,h.getAttribute("aria-expanded")==="true");renderDex();return}
+  const c=e.target.closest(".card");if(c)openDetail(c.dataset.id);
+};
+$("days").onkeydown=e=>{if(e.key==="Enter"){const c=e.target.closest(".card");if(c)openDetail(c.dataset.id)}};
 
-/* ---------- detail ---------- */
+/* =========================================================
+   Navigation
+   ========================================================= */
+let view="vDex",lastList="vDex";
+function show(v){
+  view=v;for(const id of ["vDex","vStats","vDetail"])$(id).hidden=id!==v;
+  $("nav").hidden=v==="vDetail";
+  document.querySelectorAll(".ntab").forEach(t=>{if(t.dataset.v===v)t.setAttribute("aria-current","page");else t.removeAttribute("aria-current")});
+  if(v==="vDex"){lastList=v;renderDex()}
+  if(v==="vStats"){lastList=v;renderStats()}
+}
+document.querySelectorAll(".ntab").forEach(t=>t.onclick=()=>{show(t.dataset.v);window.scrollTo(0,0)});
+
+/* =========================================================
+   Card detail
+   ========================================================= */
+const toLocalInput=d=>{d=new Date(d);const p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`};
+function fieldsHTML(p,o,withTime){return `
+  <label>Pay ($)<input id="${p}Pay" type="number" inputmode="decimal" step="0.01" min="0" value="${o.pay??""}"></label>
+  <label>Time (min)<input id="${p}Min" type="number" inputmode="numeric" step="1" min="0" value="${o.minutes??""}"></label>
+  <label>Miles<input id="${p}Mi" type="number" inputmode="decimal" step="0.1" min="0" value="${o.miles??""}"></label>
+  <label>Total stops<input id="${p}Stops" type="number" inputmode="numeric" step="1" min="1" value="${o.stops??2}"></label>
+  <label class="full">Store<input id="${p}Store" type="text" maxlength="40" autocomplete="off" value="${esc(o.store||"")}" placeholder="Restaurant or store"></label>
+  ${withTime?`<label class="full">Offer time<input id="${p}When" type="datetime-local" value="${toLocalInput(o.ts||new Date())}"></label>`:""}`}
+const readFields=p=>{const o={pay:parseFloat($(p+"Pay").value),minutes:parseFloat($(p+"Min").value),miles:parseFloat($(p+"Mi").value),stops:Math.max(1,parseInt($(p+"Stops").value)||2),store:$(p+"Store").value.trim()};
+  const w=$(p+"When");if(w&&w.value){const d=new Date(w.value);if(!isNaN(d))o.ts=d.toISOString()}return o};
+const validOffer=o=>o.pay>0&&o.minutes>0&&o.miles>0;
+
 function openDetail(id){
   const c=store.cards.find(x=>x.id===id);if(!c)return;
-  const v=C.verdictFor(c.score),f=c.finish&&c.finish!=="standard"?c.finish:"";
+  const v=C.verdictFor(c.score),f=special(c)?c.finish:"";
   const bar=(lab,val,col,txt)=>`<div class="brow"><span>${lab}</span><div class="tr"><i style="width:${Math.max(2,Math.min(100,val))}%;--c:${col}"></i></div><b>${txt}</b></div>`;
-  $("detail").innerHTML=`<button class="close" id="dBack" aria-label="Back to your Dex" style="align-self:flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>`+cardHTML(c)+`
-   ${f?`<div class="pull ${f}" style="animation:none">${FINISHES[f]} finish</div>`:""}
+  const when=new Date(c.ts);
+  $("detail").innerHTML=`
+   <div class="topbar"><button class="close" id="dBack" aria-label="Back" style="align-self:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="tt">${esc(c.store)}</span></div>
+   ${cardHTML(c)}
+   ${f?`<div class="pull ${f}" style="animation:none">✦ ${FINISHES[f]} finish${c.boost>1?" · pack bonus":""} ✦</div>`:""}
+   <div class="panel">
+     <div class="took"><span class="lab">Did you take this offer?</span>
+       <button class="tbtn yes" data-took="1" aria-pressed="${c.took===true}">Took it</button><button class="tbtn no" data-took="0" aria-pressed="${c.took===false}">Passed</button></div>
+   </div>
    <div class="panel">
      <h2>${c.score} · ${v.label}</h2>
+     <p class="msg">${when.toLocaleDateString([],{weekday:"long",month:"short",day:"numeric"})} at ${clock(when)} · ${esc(c.platform||"Delivery")}</p>
      <div class="tiers">${TIERS.slice().reverse().map(t=>`<div style="--c:${TC[t.id]}" class="${t.id===c.tier?"on":""}">${t.name}<br>${t.min}–${t.max}</div>`).join("")}</div>
      <div class="break">
        ${bar("Pay / hour",c.parts.pph,"var(--t-rare)",c.parts.pph)}
@@ -596,160 +942,451 @@ function openDetail(id){
      </div>
      ${c.reasons.length?`<ul class="why-list">${c.reasons.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>`:""}
    </div>
-   <details class="panel"><summary style="color:var(--tx);font-weight:600;font-size:.95rem">Fix a misread number</summary>
-     <div class="fields" style="margin-top:12px">${fieldsHTML("e",c)}</div>
+   <details class="panel"><summary style="color:var(--tx);font-weight:600;font-size:.95rem">Fix a misread number or the time</summary>
+     <div class="fields" style="margin-top:12px">${fieldsHTML("e",c,true)}</div>
      <button class="btn" id="eSave" style="margin-top:12px">Save and re-grade</button>
    </details>
-   <button class="btn ghost" id="dDel" style="color:var(--decline)">Remove from Dex</button>`;
-  $("home").hidden=true;$("scanbar").hidden=true;$("detailView").hidden=false;window.scrollTo(0,0);
-  $("dBack").onclick=goHome;
-  $("eSave").onclick=()=>{const o=readFields("e");if(!(o.pay>0&&o.minutes>0&&o.miles>0)){toast("Pay, time and miles must be above zero");return}
+   <button class="btn ghost danger" id="dDel">Remove from Dex</button>`;
+  show("vDetail");window.scrollTo(0,0);
+  $("dBack").onclick=()=>show(lastList);
+  $("detail").querySelectorAll("[data-took]").forEach(b=>b.onclick=()=>{const val=b.dataset.took==="1";c.took=c.took===val?null:val;save();openDetail(c.id)});
+  $("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
     rescore(c,o);save();toast("Re-graded: "+c.score);openDetail(c.id)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to remove";return}
-    store.cards=store.cards.filter(x=>x.id!==id);save();goHome();toast("Card removed")};
+    store.cards=store.cards.filter(x=>x.id!==id);ART.delete(id);idb.del(id).catch(()=>{});save();show(lastList);toast("Card removed")};
 }
-function fieldsHTML(p,o){return `
-  <label>Pay ($)<input id="${p}Pay" type="number" inputmode="decimal" step="0.01" min="0" value="${o.pay??""}"></label>
-  <label>Time (min)<input id="${p}Min" type="number" inputmode="numeric" step="1" min="0" value="${o.minutes??""}"></label>
-  <label>Miles<input id="${p}Mi" type="number" inputmode="decimal" step="0.1" min="0" value="${o.miles??""}"></label>
-  <label>Total stops<input id="${p}Stops" type="number" inputmode="numeric" step="1" min="1" value="${o.stops??2}"></label>
-  <label class="full">Store<input id="${p}Store" type="text" maxlength="40" autocomplete="off" value="${esc(o.store||"")}" placeholder="Restaurant or store"></label>`}
-const readFields=p=>({pay:parseFloat($(p+"Pay").value),minutes:parseFloat($(p+"Min").value),miles:parseFloat($(p+"Mi").value),stops:parseInt($(p+"Stops").value)||2,store:$(p+"Store").value.trim()});
 
-/* ---------- OCR ---------- */
-let worker=null;
-async function getWorker(onProg){
-  if(worker)return worker;
-  const here=new URL("./assets/",location.href).href.replace(/\/$/,"");
-  const logger=m=>onProg&&onProg(m);
-  try{worker=await Tesseract.createWorker("eng",1,{workerPath:here+"/worker.min.js",corePath:here,langPath:here,workerBlobURL:false,logger})}
-  catch(e){console.warn("Local OCR files unavailable, using the CDN",e);worker=await Tesseract.createWorker("eng",1,{logger})}
-  return worker;
+/* =========================================================
+   OCR
+   ========================================================= */
+let worker=null,workerP=null,progressHook=null;
+function getWorker(){
+  if(worker)return Promise.resolve(worker);
+  if(workerP)return workerP;
+  workerP=(async()=>{
+    if(typeof Tesseract==="undefined")throw new Error("The scanner didn't load. Check your connection and reload the page.");
+    const here=new URL("./assets/",location.href).href.replace(/\/$/,"");
+    const logger=m=>progressHook&&progressHook(m);
+    try{worker=await Tesseract.createWorker("eng",1,{workerPath:here+"/worker.min.js",corePath:here,langPath:here,workerBlobURL:false,logger})}
+    catch(e){console.warn("Local OCR files unavailable, using the CDN",e);worker=await Tesseract.createWorker("eng",1,{logger})}
+    return worker;
+  })().finally(()=>{workerP=null});
+  return workerP;
 }
-/* dark app UI: grayscale, invert, stretch contrast, upscale small screenshots; capped for iPhone memory */
-function prep(bm,y0,y1){
-  const sw=bm.width,sh=Math.round((y1-y0)*bm.height),k=Math.min(2,Math.max(0.5,1400/sw));
-  const c=document.createElement("canvas");c.width=Math.round(sw*k);c.height=Math.round(sh*k);
-  const x=c.getContext("2d",{willReadFrequently:true});x.imageSmoothingQuality="high";
-  x.drawImage(bm,0,Math.round(y0*bm.height),sw,sh,0,0,c.width,c.height);
+/* iPhone Safari can fail createImageBitmap on big images: fall back to an <img> */
+async function loadBitmap(blob){
+  try{return await createImageBitmap(blob)}catch(e){}
+  const url=URL.createObjectURL(blob);
+  try{const im=new Image();im.src=url;await im.decode();const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;c.getContext("2d").drawImage(im,0,0);return c}
+  finally{URL.revokeObjectURL(url)}
+}
+const freeBm=bm=>{if(!bm)return;if(bm.close)bm.close();else{bm.width=bm.height=0}};
+/* dark app UI: grayscale, invert, stretch contrast; scaled so the text is big enough but phones don't run out of memory */
+function prep(bm,y0,y1,x1){
+  const sx=0,sw=Math.round((x1||1)*bm.width),sy=Math.round(y0*bm.height),sh=Math.round((y1-y0)*bm.height);
+  const k=Math.min(2,Math.max(0.5,1400/bm.width)),c=document.createElement("canvas");c.width=Math.round(sw*k);c.height=Math.round(sh*k);
+  const x=c.getContext("2d",{willReadFrequently:true});x.imageSmoothingQuality="high";x.drawImage(bm,sx,sy,sw,sh,0,0,c.width,c.height);
   const d=x.getImageData(0,0,c.width,c.height),p=d.data;
   for(let i=0;i<p.length;i+=4){let v=255-(0.299*p[i]+0.587*p[i+1]+0.114*p[i+2]);v=(v-140)*1.8+140;p[i]=p[i+1]=p[i+2]=v<0?0:v>255?255:v}
-  x.putImageData(d,0,0);return {c,k,off:Math.round(y0*bm.height)};
+  x.putImageData(d,0,0);return {c,k,off:sy};
 }
-/* card art: the route map above the offer sheet */
+/* status-bar clock: top-left corner, keep only pure-white text so map labels behind it vanish */
+function prepClock(bm,stretch){
+  /* stretched sideways: the phone font sets "11" so tight that the reader sees one letter */
+  const sx=0,sy=Math.round(bm.height*0.01),sw=Math.round(bm.width*0.42),sh=Math.round(bm.height*0.05),k=90/sh;
+  const W=Math.round(sw*k*(stretch||2)),H=90,c=document.createElement("canvas");c.width=W+40;c.height=H+40;
+  const x=c.getContext("2d",{willReadFrequently:true});x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.imageSmoothingQuality="high";x.drawImage(bm,sx,sy,sw,sh,20,20,W,H);
+  const d=x.getImageData(0,0,c.width,c.height),p=d.data;
+  for(let i=0;i<p.length;i+=4){const v=Math.min(p[i],p[i+1],p[i+2])>215?0:255;p[i]=p[i+1]=p[i+2]=v}
+  /* the white padding became ink: clear it again */
+  x.putImageData(d,0,0);x.fillStyle="#fff";x.fillRect(0,0,c.width,20);x.fillRect(0,H+20,c.width,20);x.fillRect(0,0,20,c.height);x.fillRect(W+20,0,20,c.height);
+  return c;
+}
 function artFrom(bm,payY){
   const top=Math.round(bm.height*0.12);let bot=payY?payY-Math.round(bm.height*0.045):Math.round(bm.height*0.52);
   if(bot-top<bm.height*0.18)bot=Math.round(bm.height*0.52);
-  const w=480,h=Math.round(w*(bot-top)/bm.width),c=document.createElement("canvas");c.width=w;c.height=h;
+  const w=440,h=Math.round(w*(bot-top)/bm.width),c=document.createElement("canvas");c.width=w;c.height=h;
   const x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(bm,0,top,bm.width,bot-top,0,0,w,h);
-  const u=c.toDataURL("image/jpeg",0.7);c.width=c.height=0;return u;
+  const u=c.toDataURL("image/jpeg",0.68);c.width=c.height=0;return u;
 }
-const progress=(f,label)=>{$("pbar").style.width=Math.round(f*100)+"%";if(label)$("pstep").textContent=label};
+function thumbFrom(bm){const c=document.createElement("canvas"),w=72,h=Math.round(72*bm.height/bm.width);c.width=w;c.height=h;c.getContext("2d").drawImage(bm,0,0,w,h);const u=c.toDataURL("image/jpeg",0.6);c.width=c.height=0;return u}
+const recog=async(w,canvas)=>{const r=(await w.recognize(canvas)).data;canvas.width=canvas.height=0;return r};
 
-/* ---------- scan flow ---------- */
-let scanId=0;
-function openSheet(){$("sheet").hidden=false;document.documentElement.classList.add("lock");$("sheet").scrollTop=0}
-function closeSheet(){$("sheet").hidden=true;document.documentElement.classList.remove("lock");scanId++;$("file").value="";goHome();window.scrollTo({top:0,behavior:RM?"auto":"smooth"})}
-$("sClose").onclick=closeSheet;
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
-const actions=(primary)=>`<div class="actions"><button class="btn ghost" data-act="home">Done</button><label class="btn" for="file" role="button">${primary||"Scan next"}</label></div>`;
-$("sBody").onclick=e=>{const b=e.target.closest("[data-act]");if(b&&b.dataset.act==="home")closeSheet()};
-
-async function scan(blob){
-  const id=++scanId;
-  openSheet();$("sBody").innerHTML="";$("status").hidden=false;
-  const shot=$("shot");shot.hidden=false;shot.className="shot scanning";$("shotImg").src=URL.createObjectURL(blob);
-  progress(0.03,"Checking your Dex");
-  let bm=null,sha="",ph="";
-  try{bm=await createImageBitmap(blob);[sha]=await Promise.all([sha256(blob)]);ph=dHash(bm)}catch(e){console.error(e)}
-  if(id!==scanId)return;
-  const dupImg=sameImage(sha,ph);
-  if(dupImg){shot.classList.remove("scanning");showDuplicate(dupImg,"You've already scanned this screenshot.",()=>readOffer(id,bm,sha,ph));return}
-  readOffer(id,bm,sha,ph);
-}
-async function readOffer(id,bm,sha,ph){
-  const shot=$("shot");shot.classList.add("scanning");$("status").hidden=false;$("sBody").innerHTML="";
-  let text="",payY=null,p={};
+/* Read one screenshot. Returns {status:"ok"|"dup"|"fix"|"error", ...}. onStep(fraction,label) reports progress. */
+async function readImage(file,pool,onStep){
+  const out={file,thumb:"",sha:"",ph:"",parsed:{},art:"",raw:"",ts:new Date(file.lastModified||Date.now())};
+  let bm=null;
   try{
-    if(!bm)throw new Error("couldn't open the image");
+    onStep&&onStep(0.02,"Checking your Dex");
+    bm=await loadBitmap(file);
+    out.thumb=thumbFrom(bm);
+    out.sha=await sha256(file);out.ph=dHash(bm);
+    const d=sameImage(out.sha,out.ph,pool);
+    if(d){out.status="dup";out.dupOf=d;out.why="You've already scanned this screenshot.";return out}
     let phase=0;
-    const w=await getWorker(m=>{if(id!==scanId)return;if(m.status==="recognizing text")progress(0.35+0.6*((phase+m.progress)/2),"Reading the offer");else if(/load|initializ/.test(m.status))progress(0.06+0.28*(m.progress||0),"Loading the reader (first scan only)")});
-    progress(0.35,"Reading the offer");
-    const a=prep(bm,0.45,1),r1=(await w.recognize(a.c)).data;a.c.width=a.c.height=0;phase=1;text=r1.text;
-    const pl=(r1.lines||[]).find(l=>/\$\s?\d/.test(l.text));if(pl)payY=a.off+Math.round(pl.bbox.y0/a.k);
-    p=C.parseOfferText(text);
-    if(p.pay==null||p.minutes==null||p.miles==null){
-      const b=prep(bm,0,1),r2=(await w.recognize(b.c)).data;b.c.width=b.c.height=0;text+="\n----\n"+r2.text;
+    progressHook=m=>{if(!onStep)return;if(m.status==="recognizing text")onStep(0.35+0.55*((phase+m.progress)/3),"Reading the offer");else if(/load|initializ/.test(m.status))onStep(0.06+0.28*(m.progress||0),"Loading the reader (first scan only)")};
+    const w=await getWorker();
+    onStep&&onStep(0.35,"Reading the offer");
+    /* pass 1: the offer sheet in the lower half */
+    const a=prep(bm,0.45,1),pl0=a.k,off=a.off,r1=await recog(w,a.c);phase=1;out.raw=r1.text;
+    const pl=(r1.lines||[]).find(l=>/\$\s?\d/.test(l.text));let payY=pl?off+Math.round(pl.bbox.y0/pl0):null;
+    let p=C.parseOfferText(r1.text);
+    /* pass 2: the whole screen when something is missing (other layouts) */
+    if(!(p.pay>0&&p.minutes>0&&p.miles>0)){
+      const b=prep(bm,0,1),r2=await recog(w,b.c);out.raw+="\n----\n"+r2.text;
       const q=C.parseOfferText(r2.text);for(const k in q)if(p[k]==null)p[k]=q[k];
       if(!payY){const l2=(r2.lines||[]).find(l=>/\$\s?\d/.test(l.text));if(l2)payY=Math.round(l2.bbox.y0/b.k)}
     }
-  }catch(e){console.error(e);text="(error: "+(e&&e.message||e)+")"}
-  if(id!==scanId)return;
-  const art=bm?artFrom(bm,payY):"";if(bm&&bm.close)bm.close();
-  progress(1,"Done");
-  if(p.store)p.store=titleCase(p.store);
-  /* one deterministic roll per screenshot: re-uploading the same image can't re-roll the finish */
-  const roll=sha?parseInt(sha.slice(0,8),16)/4294967296:Math.random();
-  const ctx={art,sha,ph,roll,platform:p.platform||"",raw:text};
-  const missing=["pay","minutes","miles"].filter(k=>!(p[k]>0));
-  if(missing.length){shot.classList.remove("scanning");askFix(p,missing,ctx);return}
-  grade(p,ctx);
+    phase=2;
+    /* pass 3: the status-bar clock, so cards land on the right day and time */
+    try{await w.setParameters({tessedit_char_whitelist:"0123456789:"});
+      let ck=C.parseClock((await recog(w,prepClock(bm,2))).text);
+      if(!ck)ck=C.parseClock((await recog(w,prepClock(bm,1.4))).text);
+      if(ck)out.ts=C.offerTime(ck,file.lastModified||Date.now())}
+    catch(e){console.warn(e)}
+    finally{try{await w.setParameters({tessedit_char_whitelist:""})}catch(e){}}
+    out.art=artFrom(bm,payY);
+    if(p.store)p.store=C.titleCase(p.store);
+    out.parsed=p;
+    out.roll=out.sha?parseInt(out.sha.slice(0,8),16)/4294967296:Math.random();
+    if(!(p.pay>0&&p.minutes>0&&p.miles>0)){out.status="fix";return out}
+    const o={...p,ts:out.ts};
+    const d2=sameOffer(o,pool);
+    if(d2){out.status="dup";out.dupOf=d2;out.why="Same pay, time, miles and store as a card you already have.";return out}
+    out.status="ok";return out;
+  }catch(e){console.error(e);out.status="error";out.error=e&&e.message||String(e);return out}
+  finally{progressHook=null;freeBm(bm)}
 }
-function grade(p,ctx,skipDup){
-  const o={pay:p.pay,minutes:p.minutes,miles:p.miles,stops:p.stops||2,store:p.store||"",platform:ctx.platform};
-  if(!skipDup){const d=sameOffer(o);if(d){$("shot").classList.remove("scanning");showDuplicate(d,"This looks like the same offer: same pay, time, miles and store.",()=>grade(p,ctx,true));return}}
-  const card=makeCard(o,ctx);store.cards.push(card);const saved=save();fresh=card.id;
-  const v=C.verdictFor(card.score),f=card.finish!=="standard"?card.finish:"";
-  $("status").hidden=true;
-  const shot=$("shot");shot.classList.remove("scanning");shot.classList.add("gone");
-  const why=card.reasons.filter(r=>!/clears|excellent/.test(r)).slice(0,2).join(" · ");
-  $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
-    <div class="verdict" data-v="${v.id}">
+const cardFrom=(r,extra)=>makeCard({...r.parsed,stops:r.parsed.stops||2},{art:r.art,sha:r.sha,ph:r.ph,roll:r.roll,ts:r.ts,...extra});
+
+/* =========================================================
+   Sheet basics
+   ========================================================= */
+let scanId=0,busy=false;
+function openSheet(){$("sheet").hidden=false;document.documentElement.classList.add("lock");$("sheet").scrollTop=0;$("sBody").innerHTML="";$("shot").hidden=true;$("status").hidden=true}
+function closeSheet(){
+  $("sheet").hidden=true;document.documentElement.classList.remove("lock");scanId++;busy=false;
+  const u=$("shotImg").getAttribute("src");if(u&&u.startsWith("blob:"))URL.revokeObjectURL(u);$("shotImg").removeAttribute("src");
+  show("vDex");window.scrollTo({top:0,behavior:RM?"auto":"smooth"});
+}
+$("sClose").onclick=closeSheet;
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
+const actions=(primary)=>`<div class="actions"><button class="btn ghost" data-act="home">Done</button><label class="btn" for="file" role="button">${primary||"Scan next"}</label></div>`;
+$("sBody").addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(b&&b.dataset.act==="home"){closeSheet();return}
+  const c=e.target.closest(".sumgrid .card");if(c){const id=c.dataset.id;closeSheet();openDetail(id)}
+});
+const progress=(f,label)=>{$("pbar").style.width=Math.round(f*100)+"%";if(label)$("pstep").textContent=label};
+function finishSave(cards){
+  const ok=save();
+  Promise.all(cards.map(putArt)).then(()=>save());
+  for(const c of cards)fresh.add(c.id);
+  return ok;
+}
+
+/* =========================================================
+   Single scan: verdict first, card right after
+   ========================================================= */
+async function scanOne(file){
+  const id=++scanId;busy=true;
+  openSheet();$("status").hidden=false;
+  const shot=$("shot");shot.hidden=false;shot.className="shot scanning";$("shotImg").src=URL.createObjectURL(file);
+  const r=await readImage(file,null,(f,l)=>{if(id===scanId)progress(f,l)});
+  if(id!==scanId)return;busy=false;
+  shot.classList.remove("scanning");$("status").hidden=true;
+  if(r.status==="error"){$("sBody").innerHTML=`<div class="panel"><h2>Couldn't read this image</h2><p class="msg err">${esc(r.error)}</p></div>${actions("Try another")}`;return}
+  if(r.status==="dup"){showDuplicate(r);return}
+  if(r.status==="fix"){askFix(r);return}
+  grade(r);
+}
+function verdictHTML(card){
+  const v=C.verdictFor(card.score),why=card.reasons.filter(x=>!/clears|excellent/.test(x)).slice(0,2).join(" · ");
+  return `<div class="verdict" data-v="${v.id}">
       <div class="vk">${esc(card.store)} · ${money(card.pay)}</div>
       <div class="vw">${v.label}</div>
       <div class="vl">${v.line}</div>
       <div class="vnums"><div><b>${money(card.pph)}</b><span>Per hour</span></div><div><b>${money(card.ppm)}</b><span>Per mile</span></div><div><b>${card.score}</b><span>Score</span></div></div>
       ${why?`<p class="vwhy">${esc(why)}</p>`:""}
-    </div>
+    </div>`;
+}
+function grade(r,parsedOverride){
+  if(parsedOverride)r.parsed={...r.parsed,...parsedOverride};
+  const card=cardFrom(r);store.cards.push(card);const saved=finishSave([card]);
+  const f=special(card)?card.finish:"";
+  $("shot").classList.add("gone");
+  $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
+    ${verdictHTML(card)}
     ${f?`<div class="pull ${f}">✦ ${FINISHES[f]} pull ✦</div>`:""}
     <div class="reveal"><div class="burst" style="--bc:${f==="holo"?"#c44fff":TC[card.tier]}"></div>${cardHTML(card)}</div>
-    ${saved?"":`<p class="msg err" style="text-align:center">This browser isn't saving cards (private mode?), so this one won't stay in your Dex.</p>`}
+    ${saved?"":`<p class="msg err" style="text-align:center">This browser isn't saving cards (private mode or storage full), so this one won't stay in your Dex.</p>`}
     ${actions()}
-    <details><summary>Fix a misread number</summary><p class="msg" style="margin:6px 0 0">Tap the card in your Dex and choose "Fix a misread number".</p><pre>${esc(ctx.raw)}</pre></details>
+    <p class="tapnote">Misread something? Open the card in your Dex and tap "Fix a misread number".</p>
   </div>`;
 }
-function askFix(p,missing,ctx){
-  $("status").hidden=true;
-  const names={pay:"pay",minutes:"time",miles:"miles"};
+function askFix(r,onDone){
+  const p=r.parsed||{},missing=["pay","minutes","miles"].filter(k=>!(p[k]>0)),names={pay:"pay",minutes:"time",miles:"miles"};
   $("sBody").innerHTML=`<div class="panel">
     <h2>Fill in what the scanner missed</h2>
     <p class="msg err">Couldn't read the ${missing.map(k=>names[k]).join(" and ")}. Copy ${missing.length>1?"them":"it"} from your screenshot.</p>
-    <div class="fields">${fieldsHTML("f",p)}</div>
+    <div class="fields">${fieldsHTML("f",{...p,ts:r.ts},true)}</div>
     <button class="btn" id="fGo" disabled>Grade this offer</button>
-    <details><summary>Text the scanner read</summary><pre>${esc(ctx.raw)}</pre></details>
-  </div>${actions("Scan a different one")}`;
+    <details><summary>Text the scanner read</summary><pre>${esc(r.raw)}</pre></details>
+  </div>${onDone?`<button class="btn ghost" id="fBack">Back to pack</button>`:actions("Scan a different one")}`;
   const check=()=>{const o=readFields("f");let ok=true;for(const [id,k] of [["fPay","pay"],["fMin","minutes"],["fMi","miles"]]){const bad=!(o[k]>0);$(id).classList.toggle("miss",bad);if(bad)ok=false}$("fGo").disabled=!ok};
   ["fPay","fMin","fMi"].forEach(id=>$(id).addEventListener("input",check));check();
-  $("fGo").onclick=()=>grade(readFields("f"),ctx);
-  const first=$(missing[0]==="pay"?"fPay":missing[0]==="minutes"?"fMin":"fMi");if(first&&!matchMedia("(hover:none)").matches)first.focus();
+  $("fGo").onclick=()=>{const o=readFields("f");if(o.ts){r.ts=new Date(o.ts);delete o.ts}
+    if(onDone){r.parsed={...r.parsed,...o};onDone(r);return}
+    const d=sameOffer({...o,ts:r.ts});if(d){r.dupOf=d;r.why="Same pay, time, miles and store as a card you already have.";showDuplicate(r,()=>grade(r,o));return}
+    grade(r,o)};
+  if($("fBack"))$("fBack").onclick=()=>onDone(null);
 }
-function showDuplicate(card,why,addAnyway){
-  $("status").hidden=true;
+function showDuplicate(r,addAnyway){
+  $("shot").classList.remove("scanning");
   $("sBody").innerHTML=`<div class="dup">
-      <h2>Already in your Dex</h2><p>${why}</p>
-      <div class="mini">${cardHTML(card)}</div>
+      <h2>Already in your Dex</h2><p>${esc(r.why)}</p>
+      <div class="mini">${cardHTML(r.dupOf)}</div>
     </div>
     ${actions()}
     <button class="linkbtn" id="dupAdd">It's a different offer, add it anyway</button>`;
-  $("dupAdd").onclick=addAnyway;
+  $("dupAdd").onclick=addAnyway||(()=>{if(r.parsed&&r.parsed.pay>0&&r.parsed.minutes>0&&r.parsed.miles>0)grade(r);else askFix(r)});
+  /* an exact-image duplicate hasn't been read yet: read it now */
+  if(!addAnyway&&!(r.parsed&&r.parsed.pay))$("dupAdd").onclick=async()=>{$("sBody").innerHTML="";$("status").hidden=false;$("shot").classList.add("scanning");
+    const id=scanId;const r2=await readImage(r.file,[],(f,l)=>{if(id===scanId)progress(f,l)});if(id!==scanId)return;$("status").hidden=true;$("shot").classList.remove("scanning");
+    if(r2.status==="fix")askFix(r2);else if(r2.status==="ok"||r2.status==="dup")grade(r2);else $("sBody").innerHTML=`<div class="panel"><p class="msg err">${esc(r2.error||"Couldn't read it")}</p></div>${actions()}`};
 }
-const titleCase=s=>/^[A-Z0-9'&\s-]+$/.test(s)&&s.length>4?s.toLowerCase().replace(/\b[a-z]/g,c=>c.toUpperCase()):s;
 
-$("file").onchange=e=>{const f=e.target.files[0];e.target.value="";if(f)scan(f)};
+/* =========================================================
+   Multi-scan: a pack of up to 10, worst first, best last
+   ========================================================= */
+const packSVG='<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="6" y="4" width="22" height="30" rx="4" stroke="#5f8dff" stroke-width="2.2" transform="rotate(-10 17 19)"/><rect x="12" y="6" width="22" height="30" rx="4" fill="#11131a" stroke="#f3c55a" stroke-width="2.2"/><path d="M19 23.5c0-1.6 1.4-2.3 3-2.3s3-.7 3-2.3-1.4-2.4-3-2.4-2.6.8-2.9 1.8M22 14.5v1.9M22 25.8v1.9" stroke="#f3c55a" stroke-width="2" stroke-linecap="round"/></svg>';
+async function scanPack(files){
+  const id=++scanId;busy=true;
+  openSheet();$("sheetCol").classList.add("wide");
+  const n=files.length,results=[];
+  $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
+    <div class="pack" id="pack"><div class="crimp t"></div><div class="lid"></div><div class="face">${packSVG}<div class="pn">OfferDex</div><div class="pc">${n} offers</div></div><div class="crimp b"></div></div>
+    <div class="status"><div class="bar"><i id="kbar"></i></div><p id="kstep">Getting ready</p></div>
+    <div class="pdots" id="pdots">${files.map((_,i)=>`<span class="pdot" id="pd${i}"></span>`).join("")}</div>
+    <p class="tapnote">Keep this screen open while the pack is read. About 3–6 seconds per screenshot.</p>
+  </div>`;
+  const pool=store.cards.slice();
+  for(let i=0;i<n;i++){
+    if(id!==scanId)return;
+    const dot=$("pd"+i);dot.className="pdot now";
+    const r=await readImage(files[i],pool,(f,l)=>{if(id===scanId){$("kbar").style.width=Math.round((i+f)/n*100)+"%";$("kstep").textContent=`Offer ${i+1} of ${n} · ${l}`}});
+    if(id!==scanId)return;
+    results.push(r);
+    dot.className="pdot "+(r.status==="ok"?"ok":r.status==="dup"?"dup":"fix");
+    if(r.thumb)dot.innerHTML=`<img src="${r.thumb}" alt="">`;
+    /* later screenshots in the same pack are checked against earlier ones too */
+    if(r.status==="ok")pool.push({...r.parsed,sha:r.sha,ph:r.ph,ts:r.ts.toISOString(),id:"pending"+i});
+  }
+  busy=false;
+  const ok=results.filter(r=>r.status==="ok");
+  /* build the cards: worst to best, the best one last with the pack bonus */
+  const packId="p"+Date.now().toString(36);
+  const scored=ok.map(r=>({r,s:C.scoreOffer({...r.parsed,stops:r.parsed.stops||2})})).sort((a,b)=>a.s.score-b.s.score||a.s.pph-b.s.pph);
+  const boost=C.packBoost(scored.length);
+  const cards=scored.map((x,i)=>cardFrom(x.r,{pack:packId,boost:i===scored.length-1?boost:1}));
+  store.cards.push(...cards);finishSave(cards);
+  const extras=results.filter(r=>r.status!=="ok");
+  if(!cards.length){packSummary(cards,extras,boost);return}
+  $("kbar").style.width="100%";$("kstep").textContent=`${cards.length} new card${cards.length>1?"s":""}${extras.length?` · ${extras.length} skipped`:""}`;
+  const pack=$("pack");pack.classList.add("ready");pack.setAttribute("role","button");pack.setAttribute("tabindex","0");pack.setAttribute("aria-label","Open pack");
+  $("sBody").querySelector(".tapnote").outerHTML=`<button class="btn" id="openPack">Open pack</button>${boost>1?`<p class="boostnote">Last card gets <b>×${boost.toFixed(2)}</b> special-finish odds</p>`:""}`;
+  const open=async()=>{pack.onclick=null;$("openPack").disabled=true;pack.classList.remove("ready");pack.classList.add("torn");await sleep(550);pack.classList.add("gone");await sleep(420);revealPack(cards,extras,boost,0)};
+  pack.onclick=open;$("openPack").onclick=open;pack.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}};
+}
+function revealPack(cards,extras,boost,i){
+  const c=cards[i],last=i===cards.length-1,v=C.verdictFor(c.score),f=special(c)?c.finish:"";
+  $("sBody").innerHTML=`<div class="rv">
+    <div class="prog-pips" aria-label="Card ${i+1} of ${cards.length}">${cards.map((_,k)=>`<i class="${k<=i?"on":""}${k===cards.length-1?" last":""}"></i>`).join("")}</div>
+    ${last&&cards.length>1?`<div class="bestpull">★ Best pull ★</div>`:`<div class="pcount">Card <b>${i+1}</b> of ${cards.length}</div>`}
+    <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span></div>
+    ${f?`<div class="pull ${f}" style="animation-delay:.7s">✦ ${FINISHES[f]} pull ✦</div>`:""}
+    <div class="reveal" id="rvCard"><div class="burst" style="--bc:${f==="holo"?"#c44fff":TC[c.tier]};${last?"":"animation-duration:1s"}"></div>${cardHTML(c)}</div>
+    <button class="btn" id="rvNext">${last?"See the whole pack":"Next card"}</button>
+    ${!last?`<button class="linkbtn" id="rvSkip">Skip to the pack summary</button>`:""}
+  </div>`;
+  $("rvCard").querySelector(".card").style.animation=`flip .8s cubic-bezier(.2,.9,.25,1.15) both`;
+  const next=()=>{if(last)packSummary(cards,extras,boost);else revealPack(cards,extras,boost,i+1)};
+  $("rvNext").onclick=next;$("rvCard").onclick=next;
+  if($("rvSkip"))$("rvSkip").onclick=()=>packSummary(cards,extras,boost);
+  $("sheet").scrollTop=0;
+}
+function packSummary(cards,extras,boost){
+  const a=agg(cards),spec=cards.filter(special).length;
+  const dups=extras.filter(r=>r.status==="dup"),fixes=extras.filter(r=>r.status==="fix"||r.status==="error");
+  const best=cards[cards.length-1];
+  $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
+    <div class="bhead"><h2>${cards.length?"Pack opened":"Nothing new in this pack"}</h2>
+      ${cards.length?`<p>${cards.length} new card${cards.length>1?"s":""}${best?` · best: ${esc(best.store)} (${best.score})`:""}</p>`:`<p>Every screenshot was already in your Dex or couldn't be read.</p>`}</div>
+    ${cards.length?`<div class="bsum"><span><b style="color:var(--accept)">${a.good}</b> accept</span><span><b style="color:var(--consider)">${a.mid}</b> consider</span><span><b style="color:var(--decline)">${a.bad}</b> decline</span><span><b>${spec}</b> special</span><span><b>$${a.pph.toFixed(0)}</b>/hr avg</span></div>
+    <div class="sumgrid">${cards.slice().reverse().map(cardHTML).join("")}</div>`:""}
+    ${fixes.length?`<div class="sbox"><h3>Needs your numbers <small>${fixes.length}</small></h3><ul class="blist">${fixes.map(r=>extraRow(r,"fix")).join("")}</ul></div>`:""}
+    ${dups.length?`<div class="sbox"><h3>Already in your Dex <small>${dups.length} skipped</small></h3><ul class="blist">${dups.map(r=>extraRow(r,"dup")).join("")}</ul></div>`:""}
+    ${actions("Scan more")}
+  </div>`;
+  $("sheet").scrollTop=0;
+  $("sBody").querySelectorAll("[data-fix]").forEach(b=>b.onclick=()=>{
+    const r=extras[+b.dataset.fix];
+    askFix(r,done=>{
+      if(done){const card=cardFrom(done,{});store.cards.push(card);finishSave([card]);cards.push(card);extras.splice(extras.indexOf(r),1);toast(C.verdictFor(card.score).label+" · "+card.score+" added")}
+      packSummary(cards,extras,boost);
+    });
+  });
+  $("sBody").querySelectorAll("[data-addany]").forEach(b=>b.onclick=()=>{
+    const r=extras[+b.dataset.addany];
+    if(!(r.parsed&&r.parsed.pay>0&&r.parsed.minutes>0&&r.parsed.miles>0)){askFix(r,done=>{if(done){const card=cardFrom(done,{});store.cards.push(card);finishSave([card]);cards.push(card);extras.splice(extras.indexOf(r),1)}packSummary(cards,extras,boost)});return}
+    const card=cardFrom(r,{});store.cards.push(card);finishSave([card]);cards.push(card);extras.splice(extras.indexOf(r),1);packSummary(cards,extras,boost);
+  });
+  function extraRow(r,kind){
+    const i=extras.indexOf(r);
+    const name=kind==="dup"?(r.dupOf&&r.dupOf.store)||"Earlier card":(r.parsed&&r.parsed.store)||r.file.name||"Screenshot";
+    const sub=kind==="dup"?esc(r.why):r.status==="error"?esc(r.error):"Couldn't read "+["pay","minutes","miles"].filter(k=>!(r.parsed&&r.parsed[k]>0)).map(k=>k==="minutes"?"time":k).join(", ");
+    return `<li class="bitem"><span class="th">${r.thumb?`<img src="${r.thumb}" alt="">`:""}</span><span class="bm"><span class="bn">${esc(name)}</span><span class="bs">${sub}</span></span>
+      ${kind==="fix"?`<button class="mini" data-fix="${i}">Fill in</button>`:r.dupOf&&!String(r.dupOf.id).startsWith("pending")&&r.parsed&&r.parsed.pay?`<button class="mini" data-addany="${i}">Add anyway</button>`:""}</li>`;
+  }
+}
+
+/* =========================================================
+   File input routing
+   ========================================================= */
+function handleFiles(list){
+  let files=[...list].filter(f=>f&&(f.type.startsWith("image/")||/\.(png|jpe?g|heic|webp)$/i.test(f.name)));
+  if(!files.length)return;
+  if(busy){toast("Finish the current scan first");return}
+  if(files.length>MAX_PACK){toast(`Packs hold ${MAX_PACK}. Reading the first ${MAX_PACK}.`);files=files.slice(0,MAX_PACK)}
+  $("sheetCol").classList.remove("wide");
+  if(files.length===1)scanOne(files[0]);else scanPack(files);
+}
+$("file").onchange=e=>{const fs=[...e.target.files];e.target.value="";handleFiles(fs)};
 document.addEventListener("dragover",e=>e.preventDefault());
-document.addEventListener("drop",e=>{e.preventDefault();const f=[...(e.dataTransfer?.files||[])].find(f=>f.type.startsWith("image/"));if(f)scan(f)});
-document.addEventListener("paste",e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith("image/"));if(it)scan(it.getAsFile())});
-let tT;function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tT);tT=setTimeout(()=>e.classList.remove("on"),1900)}
+document.addEventListener("drop",e=>{e.preventDefault();handleFiles(e.dataTransfer?.files||[])});
+document.addEventListener("paste",e=>{const fs=[...(e.clipboardData?.items||[])].filter(i=>i.type.startsWith("image/")).map(i=>i.getAsFile());if(fs.length)handleFiles(fs)});
+let tT;function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tT);tT=setTimeout(()=>e.classList.remove("on"),2000)}
 
-renderHome();
+/* =========================================================
+   Stats page
+   ========================================================= */
+let range="7",selDay=null;
+$("range").onclick=e=>{const b=e.target.closest("button");if(!b)return;range=b.dataset.r;selDay=null;
+  $("range").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));renderStats()};
+const BLOCKS=[["Early",5,9,"5–9 am"],["Morning",9,11,"9–11 am"],["Lunch",11,14,"11 am–2 pm"],["Afternoon",14,17,"2–5 pm"],["Dinner",17,21,"5–9 pm"],["Late",21,24,"9 pm–12 am"],["Overnight",0,5,"12–5 am"]];
+function inRange(c){
+  if(range==="all")return true;
+  const t=startOfDay(new Date()),d=new Date(c.ts);
+  if(range==="today")return d>=t;
+  const from=new Date(t);from.setDate(from.getDate()-(+range-1));return d>=from;
+}
+function streak(){
+  const days=new Set(store.cards.map(c=>dayKey(c.ts)));let n=0;const d=startOfDay(new Date());
+  if(!days.has(dayKey(d)))d.setDate(d.getDate()-1);
+  while(days.has(dayKey(d))){n++;d.setDate(d.getDate()-1)}return n;
+}
+function renderStats(){
+  const all=store.cards,cs=all.filter(inRange),a=agg(cs);
+  $("statSpan").textContent=all.length?`${all.length} card${all.length>1?"s":""} total`:"";
+  if(!all.length){$("statsBody").innerHTML=`<div class="sempty">Scan a few offers and your daily and weekly numbers show up here.</div>`;return}
+  const bestC=cs.slice().sort((x,y)=>y.score-x.score)[0];
+  let h=`<div class="kpis">
+    <div class="kpi"><b>${a.n}</b><span>Offers</span><small>${a.n?money(a.pay)+" offered":"none in this range"}</small></div>
+    <div class="kpi"><b>${a.n?"$"+a.pph.toFixed(2):"–"}</b><span>Avg per hour</span><small>${a.n?Math.round(a.min)+" min of driving":""}</small></div>
+    <div class="kpi"><b>${a.n?"$"+a.ppm.toFixed(2):"–"}</b><span>Avg per mile</span><small>${a.n?a.mi.toFixed(1)+" mi total":""}</small></div>
+    <div class="kpi"><b>${a.n?Math.round(a.good/a.n*100)+"%":"–"}</b><span>Worth taking</span><small>${a.good} of ${a.n} scored 51+</small></div>
+    <div class="kpi"><b>${money(a.takenPay)}</b><span>Taken</span><small>${a.taken.length} offer${a.taken.length===1?"":"s"} marked "Took it"</small></div>
+    <div class="kpi"><b>${bestC?bestC.score:"–"}</b><span>Best score</span><small>${bestC?esc(bestC.store):""}</small></div>
+  </div>`;
+  if(a.n){
+    h+=`<div class="sbox"><h3>Verdicts</h3>
+      <div class="split" role="img" aria-label="${a.good} accept, ${a.mid} consider, ${a.bad} decline">${[["good","accept"],["mid","consider"],["bad","decline"]].filter(([k])=>a[k]).map(([k,v])=>`<i style="flex:${a[k]};background:${VC[v]}"></i>`).join("")}</div>
+      <div class="legend"><span style="--c:var(--accept)"><i></i>Accept <b>${a.good}</b></span><span style="--c:var(--consider)"><i></i>Consider <b>${a.mid}</b></span><span style="--c:var(--decline)"><i></i>Decline <b>${a.bad}</b></span></div></div>`;
+  }
+  h+=dailyChart();
+  h+=weeklyTable();
+  if(a.n){
+    /* best hours */
+    const rows=BLOCKS.map(([n,s,e,lab])=>{const l=cs.filter(c=>{const hr=new Date(c.ts).getHours();return hr>=s&&hr<e});return {n,lab,a:agg(l)}}).filter(x=>x.a.n);
+    const mx=Math.max(...rows.map(x=>x.a.pph),1),top=rows.slice().sort((x,y)=>y.a.pph-x.a.pph)[0];
+    h+=`<div class="sbox"><h3>Best time to drive <small>avg $/hr</small></h3><div class="hbars">${rows.map(x=>`<div class="hb${x===top&&rows.length>1?" best":""}"><span class="hl">${x.n}<small>${x.lab} · ${x.a.n}</small></span><span class="ht"><i style="width:${x.a.pph/mx*100}%"></i></span><b>$${x.a.pph.toFixed(2)}</b></div>`).join("")}</div></div>`;
+    /* stores */
+    const sm=new Map();for(const c of cs){const k=c.store.toLowerCase().replace(/[^a-z0-9]/g,"");(sm.get(k)||sm.set(k,[]).get(k)).push(c)}
+    const st=[...sm.values()].map(l=>({name:l[0].store,a:agg(l),avg:l.reduce((s,c)=>s+c.score,0)/l.length})).sort((x,y)=>y.avg-x.avg);
+    const tierOf=s=>C.tierFor(Math.round(s)).id;
+    const srow=x=>`<div class="srow" style="--c:${TC[tierOf(x.avg)]}"><i></i><span class="sn">${esc(x.name)}<small>${x.a.n} offer${x.a.n>1?"s":""} · $${x.a.pph.toFixed(2)}/hr</small></span><b>${Math.round(x.avg)}<small>avg score</small></b></div>`;
+    h+=`<div class="sbox"><h3>Stores <small>by average score</small></h3><div class="stores">${st.slice(0,5).map(srow).join("")}</div>
+      ${st.length>5?`<h3 style="margin-top:4px">Worst stores</h3><div class="stores">${st.slice(-3).reverse().filter(x=>!st.slice(0,5).includes(x)).map(srow).join("")}</div>`:""}</div>`;
+    /* rarity */
+    const mt=Math.max(...TIERS.map(t=>cs.filter(c=>c.tier===t.id).length),1);
+    h+=`<div class="sbox"><h3>Rarity pulls</h3><div class="hbars">${TIERS.map(t=>{const n=cs.filter(c=>c.tier===t.id).length;return `<div class="hb"><span class="hl">${t.name}</span><span class="ht"><i style="width:${n/mt*100}%;--c:${TC[t.id]}"></i></span><b>${n}</b></div>`}).join("")}</div></div>`;
+  }
+  /* collection progress (all time) */
+  const fins=["holo","carbon","inverted"],have=new Set(all.filter(special).map(c=>c.tier+"|"+c.finish));
+  h+=`<div class="sbox"><h3>Finish collection <small>${have.size} of 15 · all time</small></h3>
+    <div class="tblwrap"><table class="wk"><thead><tr><th>Tier</th>${fins.map(f=>`<th>${FIN_SHORT[f]}</th>`).join("")}</tr></thead><tbody>
+    ${TIERS.map(t=>`<tr><td><span style="color:${TC[t.id]}">●</span> ${t.name}</td>${fins.map(f=>`<td>${have.has(t.id+"|"+f)?"✓":"<span style='color:var(--dim)'>–</span>"}</td>`).join("")}</tr>`).join("")}
+    </tbody></table></div>
+    <p class="msg">Scan streak: <b style="color:var(--tx)">${streak()} day${streak()===1?"":"s"}</b> in a row.</p></div>`;
+  /* data */
+  h+=`<div class="sbox data"><h3>Your data</h3>
+    <p class="msg">Cards are saved in this browser on this device only. Copy a backup as a spreadsheet (CSV) to keep your numbers.</p>
+    <div class="btnrow"><button class="btn sm" id="csv">Copy as CSV</button><button class="btn ghost sm danger" id="wipe">Erase all cards</button></div>
+    <textarea id="csvOut" readonly hidden aria-label="CSV backup"></textarea></div>`;
+  $("statsBody").innerHTML=h;
+  wireChart();
+  $("csv").onclick=async()=>{
+    const rows=[["offer_time","store","platform","pay","minutes","miles","stops","pay_per_hour","pay_per_mile","score","tier","verdict","finish","took"]].concat(
+      store.cards.map(c=>[new Date(c.ts).toISOString(),c.store,c.platform,c.pay,c.minutes,c.miles,c.stops,c.pph.toFixed(2),c.ppm.toFixed(2),c.score,c.tier,C.verdictFor(c.score).id,c.finish,c.took==null?"":c.took?"yes":"no"]));
+    const csv=rows.map(r=>r.map(v=>/[",\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':v).join(",")).join("\n");
+    try{await navigator.clipboard.writeText(csv);toast("Copied "+store.cards.length+" rows")}
+    catch(e){const t=$("csvOut");t.hidden=false;t.value=csv;t.focus();t.select();toast("Select all and copy")}
+  };
+  let armed=false;$("wipe").onclick=async e=>{if(!armed){armed=true;e.target.textContent="Tap again to erase";return}
+    store={cards:[],next:1};ART.clear();try{await idb.clear()}catch(err){}save();toast("All cards erased");renderStats()};
+}
+function chartDays(){
+  const n=range==="today"||range==="7"?7:range==="30"?30:Math.min(30,Math.max(7,Math.ceil((Date.now()-Math.min(...store.cards.map(c=>+new Date(c.ts))))/864e5)+1));
+  const out=[],t=startOfDay(new Date());
+  for(let i=n-1;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);const k=dayKey(d);out.push({k,d,a:agg(store.cards.filter(c=>dayKey(c.ts)===k))})}
+  return out;
+}
+let CH=[];
+function dailyChart(){
+  CH=chartDays();const n=CH.length,mx=Math.max(30,...CH.map(x=>x.a.pph))*1.08,goal=20;
+  if(!selDay||!CH.find(x=>x.k===selDay)){const withData=CH.filter(x=>x.a.n);selDay=(withData[withData.length-1]||CH[n-1]).k}
+  const lab=(x,i)=>n<=7?`${x.d.toLocaleDateString([],{weekday:"short"})}<b>${x.d.getDate()}</b>`:(i%5===0||i===n-1?`<b style="color:var(--mut)">${x.d.getMonth()+1}/${x.d.getDate()}</b>`:"");
+  return `<div class="sbox"><h3>Daily pay per hour <small>last ${n} days</small></h3>
+    <div class="readout" id="readout"></div>
+    <div class="vbars" id="vbars" style="gap:${n>14?2:6}px"><div class="goal" style="bottom:${goal/mx*100}%"><span>$20/hr</span></div>
+      ${CH.map(x=>`<button class="vb${x.a.n?"":" empty"}" data-k="${x.k}" aria-pressed="${x.k===selDay}" aria-label="${x.d.toDateString()}: ${x.a.n?"$"+x.a.pph.toFixed(2)+" per hour":"no offers"}">${n<=7&&x.a.n?`<span class="lv">$${x.a.pph.toFixed(0)}</span>`:""}<i style="height:${x.a.n?Math.max(2,x.a.pph/mx*100):2}%"></i></button>`).join("")}
+    </div>
+    <div class="vlabels" style="gap:${n>14?2:6}px">${CH.map((x,i)=>`<span>${lab(x,i)}</span>`).join("")}</div></div>`;
+}
+function wireChart(){
+  const upd=()=>{const x=CH.find(y=>y.k===selDay);if(!x)return;const [n1,n2]=dayName(x.k);
+    $("readout").innerHTML=x.a.n?`<b>${n1}</b> ${esc(n2)} · ${x.a.n} offer${x.a.n>1?"s":""} · <b>$${x.a.pph.toFixed(2)}/hr</b> · $${x.a.ppm.toFixed(2)}/mi · best ${x.a.best}`:`<b>${n1}</b> ${esc(n2)} · no offers`;
+    $("vbars").querySelectorAll(".vb").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===selDay))};
+  $("vbars").onclick=e=>{const b=e.target.closest(".vb");if(b){selDay=b.dataset.k;upd()}};
+  $("vbars").onpointerover=e=>{const b=e.target.closest(".vb");if(b&&e.pointerType==="mouse"){selDay=b.dataset.k;upd()}};
+  upd();
+}
+function weeklyTable(){
+  const wkStart=d=>{d=startOfDay(d);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return d};
+  const m=new Map();for(const c of store.cards){const k=dayKey(wkStart(new Date(c.ts)));(m.get(k)||m.set(k,[]).get(k)).push(c)}
+  const weeks=[...m.entries()].sort((x,y)=>y[0]<x[0]?-1:1).slice(0,8);
+  if(!weeks.length)return "";
+  const thisWk=dayKey(wkStart(new Date()));
+  return `<div class="sbox"><h3>Weekly <small>weeks start Monday</small></h3><div class="tblwrap"><table class="wk">
+    <thead><tr><th>Week of</th><th>Offers</th><th>$/hr</th><th>$/mi</th><th>Best</th><th>Taken</th></tr></thead><tbody>
+    ${weeks.map(([k,l])=>{const a=agg(l),d=new Date(k+"T12:00:00");return `<tr><td>${k===thisWk?"This week":d.toLocaleDateString([],{month:"short",day:"numeric"})}</td><td>${a.n}</td><td>$${a.pph.toFixed(2)}</td><td>$${a.ppm.toFixed(2)}</td><td>${a.best}</td><td>${money(a.takenPay)}</td></tr>`}).join("")}
+    </tbody></table></div></div>`;
+}
+
+/* =========================================================
+   Boot
+   ========================================================= */
+loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")});
+/* warm up the reader in the background so the first scan is faster */
+/* start loading the reader the moment Scan is touched, while the photo picker is still open */
+document.querySelector(".nscan").addEventListener("pointerdown",()=>getWorker().catch(()=>{}),{once:true});
 </script>
