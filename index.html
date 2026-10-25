@@ -12,7 +12,7 @@
 /* Layout: one phone column; home = collection with a thumb-reach scan bar; scans open a full-screen result sheet (verdict first, card second) */
 :root{
   --bg:#0b0c10; --bg2:#13151c; --panel:#171a23; --line:#262a36; --tx:#eef0f5; --mut:#8a90a2; --dim:#5d6375;
-  --gold:#e8c26a; --silver:#c9ccd6;
+  --gold:#e8c26a; --silver:#c9ccd6; --raise:#272b37; --raise-line:#3a3f4e; --track:#232733; --sunken:#0f1117; --navbg:#171a23f0; --navline:#2c3040;
   --accept:#3ddc84; --consider:#f5b83d; --decline:#ff5c5c;
   --t-trash:#9a8a74; --t-common:#4cc9a6; --t-rare:#5f8dff; --t-epic:#b27dff; --t-legendary:#f3c55a;
   --f-display:"Chakra Petch","Avenir Next Condensed","Arial Narrow",sans-serif;
@@ -48,7 +48,7 @@ button,input{font:inherit;color:inherit}
 .fchip{flex:none;min-height:40px;border:1px solid var(--line);background:var(--bg2);border-radius:99px;padding:8px 14px;font-weight:600;font-size:.88rem;color:var(--mut);cursor:pointer;display:flex;gap:7px;align-items:center}
 .fchip i{width:8px;height:8px;border-radius:99px;background:var(--c,var(--mut))}
 .fchip i.holo{background:conic-gradient(#ff4fa0,#ffd84f,#4fffc1,#4fb5ff,#c44fff,#ff4fa0)}
-.fchip[aria-pressed="true"]{background:#272b37;color:var(--tx);border-color:#3a3f4e}
+.fchip[aria-pressed="true"]{background:var(--raise);color:var(--tx);border-color:var(--raise-line)}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .grid .card{cursor:pointer;transition:transform .18s ease}
 .grid .card:active{transform:scale(.97)}
@@ -164,7 +164,7 @@ button,input{font:inherit;color:inherit}
 .shot.gone{opacity:0;filter:blur(14px) brightness(1.6);transform:scale(.85);max-height:0;margin-block:-7px;border-width:0}
 .status{text-align:center;display:grid;gap:8px}
 .status p{margin:0;color:var(--mut);font-size:.95rem}
-.bar{height:6px;border-radius:99px;background:#252935;overflow:hidden;width:min(240px,64%);margin:0 auto}.bar i{display:block;height:100%;width:0;background:var(--t-rare);transition:width .3s}
+.bar{height:6px;border-radius:99px;background:var(--track);overflow:hidden;width:min(240px,64%);margin:0 auto}.bar i{display:block;height:100%;width:0;background:var(--t-rare);transition:width .3s}
 
 .verdict{--v:var(--accept);border-radius:22px;padding:18px 18px 16px;text-align:center;border:1.5px solid color-mix(in srgb,var(--v) 70%,transparent);
   background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--v) 26%,transparent),transparent 70%),var(--panel);animation:vin .5s cubic-bezier(.2,.9,.25,1.2) both}
@@ -174,13 +174,13 @@ button,input{font:inherit;color:inherit}
 .verdict .vw{font:700 clamp(2.6rem,14vw,3.6rem)/1 var(--f-display);color:var(--v);letter-spacing:.02em;margin:8px 0 6px;text-transform:uppercase}
 .verdict .vl{color:var(--tx);font-weight:600}
 .vnums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:14px}
-.vnums div{background:#0f1117;border-radius:12px;padding:9px 4px}
+.vnums div{background:var(--sunken);border-radius:12px;padding:9px 4px}
 .vnums b{display:block;font:600 1.15rem/1.1 var(--f-display);font-variant-numeric:tabular-nums}
 .vnums span{font:500 .58rem/1 var(--f-mono);letter-spacing:.14em;color:var(--mut);text-transform:uppercase}
 .vwhy{margin:10px 0 0;font-size:.82rem;color:var(--mut)}
 .pull{text-align:center;font:700 .8rem/1 var(--f-mono);letter-spacing:.2em;text-transform:uppercase;animation:vin .5s .55s both}
 .pull.holo{background:linear-gradient(90deg,#ff4fa0,#ffd84f,#4fffc1,#4fb5ff,#c44fff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.pull.carbon{color:#d6d6d6}.pull.inverted{color:#fff}
+.pull.carbon{color:var(--silver)}.pull.inverted{color:var(--tx)}
 .reveal{position:relative;width:min(340px,100%);margin:0 auto;perspective:1200px}
 .reveal .card{transform-origin:50% 60%;animation:flip .9s .35s cubic-bezier(.2,.9,.25,1.15) both}
 @keyframes flip{0%{transform:rotateY(-95deg) scale(.7);opacity:0;filter:brightness(2.5)}60%{opacity:1}100%{transform:none;filter:none}}
@@ -211,7 +211,7 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
 .detail > .card{width:min(360px,100%);margin:0 auto}
 .break{display:grid;gap:8px}
 .brow{display:grid;grid-template-columns:7em 1fr 2.6em;align-items:center;gap:10px;font:500 .8rem var(--f-mono);color:var(--mut)}
-.brow .tr{height:8px;border-radius:99px;background:#232733;overflow:hidden}.brow .tr i{display:block;height:100%;border-radius:99px;background:var(--c)}
+.brow .tr{height:8px;border-radius:99px;background:var(--track);overflow:hidden}.brow .tr i{display:block;height:100%;border-radius:99px;background:var(--c)}
 .brow b{color:var(--tx);text-align:right;font-variant-numeric:tabular-nums}
 .tiers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;font:500 .6rem var(--f-mono);color:var(--mut);text-align:center}
 .tiers div{border-top:4px solid var(--c);padding-top:5px;opacity:.45}.tiers div.on{opacity:1;color:var(--tx)}
@@ -227,10 +227,10 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
   background:linear-gradient(transparent,var(--bg) 35%)}
 .nav .row{max-width:528px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
-  background:#171a23f0;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid #2c3040;border-radius:28px;padding:6px}
+  background:var(--navbg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--navline);border-radius:28px;padding:6px}
 .ntab{border:0;background:none;border-radius:22px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.74rem;font-weight:700;color:var(--mut);cursor:pointer}
 .ntab svg{width:24px;height:24px}
-.ntab[aria-current="page"]{background:#262a36;color:var(--tx)}
+.ntab[aria-current="page"]{background:var(--raise);color:var(--tx)}
 .nscan{display:flex;align-items:center;justify-content:center;gap:8px;min-height:56px;padding:0 22px;border-radius:22px;background:var(--tx);color:var(--bg);font:800 1rem var(--f-body);cursor:pointer;white-space:nowrap}
 .nscan svg{width:22px;height:22px}
 @media (max-width:350px){.nscan span{display:none}.nscan{padding:0 18px}}
@@ -258,7 +258,7 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
 .took .lab{grid-column:1/-1;font:500 .7rem/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mut);text-align:center}
 .tbtn{min-height:48px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);font-weight:700;cursor:pointer}
 .tbtn[aria-pressed="true"].yes{background:color-mix(in srgb,var(--accept) 22%,var(--bg2));border-color:var(--accept);color:var(--accept)}
-.tbtn[aria-pressed="true"].no{background:#262a36;border-color:#4a5063}
+.tbtn[aria-pressed="true"].no{background:var(--raise);border-color:var(--raise-line)}
 
 /* batch results */
 .bhead{display:grid;gap:8px;text-align:center}
@@ -283,9 +283,9 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
 .bsum b{color:var(--tx)}
 
 /* stats page */
-.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:14px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:4px}
 .seg button{min-height:40px;border:0;border-radius:10px;background:none;font-weight:700;font-size:.86rem;color:var(--mut);cursor:pointer}
-.seg button[aria-pressed="true"]{background:#2b2f3c;color:var(--tx)}
+.seg button[aria-pressed="true"]{background:var(--raise);color:var(--tx)}
 .kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}
 .kpi{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px;min-width:0}
 .kpi b{display:block;font:600 1.5rem/1.1 var(--f-display);font-variant-numeric:tabular-nums}
@@ -297,11 +297,11 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
 .readout{font:500 .8rem var(--f-mono);color:var(--mut);min-height:1.2em;font-variant-numeric:tabular-nums}
 .readout b{color:var(--tx);font-weight:600}
 .vbars{position:relative;display:flex;align-items:flex-end;gap:6px;height:150px;padding-top:6px}
-.vbars .goal{position:absolute;left:0;right:0;border-top:1.5px dashed #5d6375;pointer-events:none}
+.vbars .goal{position:absolute;left:0;right:0;border-top:1.5px dashed var(--dim);pointer-events:none}
 .vbars .goal span{position:absolute;left:0;top:-16px;font:500 .62rem var(--f-mono);color:var(--mut);background:var(--panel);padding:0 4px}
 .vb{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;background:none;border:0;padding:0;cursor:pointer;position:relative}
 .vb i{display:block;width:min(100%,34px);border-radius:4px 4px 0 0;background:var(--t-rare);min-height:2px;opacity:.85}
-.vb.empty i{background:#262a36;opacity:1}
+.vb.empty i{background:var(--track);opacity:1}
 .vb[aria-pressed="true"] i{opacity:1;box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px var(--t-rare)}
 .vb .lv{font:600 .62rem var(--f-mono);color:var(--tx);font-variant-numeric:tabular-nums}
 .vlabels{display:flex;gap:6px;border-top:1px solid var(--line);padding-top:6px}
@@ -311,7 +311,7 @@ pre{white-space:pre-wrap;word-break:break-word;font:.72rem/1.4 var(--f-mono);max
 .hb{display:grid;grid-template-columns:6.4em 1fr 4.2em;align-items:center;gap:10px;font-size:.84rem;min-width:0}
 .hb .hl{color:var(--silver);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb .hl small{display:block;font:500 .62rem var(--f-mono);color:var(--dim)}
-.hb .ht{height:10px;border-radius:99px;background:#232733;overflow:hidden}
+.hb .ht{height:10px;border-radius:99px;background:var(--track);overflow:hidden}
 .hb .ht i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--c,var(--t-rare))}
 .hb b{text-align:right;font:600 .84rem var(--f-mono);font-variant-numeric:tabular-nums}
 .hb.best .hl{color:var(--tx);font-weight:700}
@@ -364,7 +364,7 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
 .pack.torn .lid{transform:translateY(-120%) rotate(-12deg);opacity:0}
 .pack.gone{transition:transform .5s ease,opacity .5s ease;transform:translateY(40%) scale(.9);opacity:0}
 .pdots{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
-.pdot{width:34px;height:34px;border-radius:9px;overflow:hidden;border:1.5px solid var(--line);position:relative;background:#1a1d27}
+.pdot{width:34px;height:34px;border-radius:9px;overflow:hidden;border:1.5px solid var(--line);position:relative;background:var(--track)}
 .pdot img{width:100%;height:100%;object-fit:cover;opacity:.55}
 .pdot::after{content:"";position:absolute;inset:0;display:grid;place-items:center;font:700 .8rem var(--f-body)}
 .pdot.now{border-color:var(--t-rare);box-shadow:0 0 0 2px #5f8dff55}
@@ -377,7 +377,7 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
 .rv .vline{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;font:600 .9rem var(--f-mono);color:var(--silver);animation:vin .4s both}
 .rv .reveal{animation:none}
 .prog-pips{display:flex;gap:4px;justify-content:center}
-.prog-pips i{width:18px;height:4px;border-radius:99px;background:#2a2e3a}
+.prog-pips i{width:18px;height:4px;border-radius:99px;background:var(--track)}
 .prog-pips i.on{background:var(--tx)}
 .prog-pips i.last{background:var(--t-legendary)}
 .sumgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -387,13 +387,97 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
 .boostnote b{color:var(--gold)}
 .sheet .wide{max-width:520px}
 .tapnote{text-align:center;font-size:.8rem;color:var(--dim);margin:0}
+
+/* ===== v4: sticky page headers, 5-tab nav, light mode, profile, settings ===== */
+html,body{overflow-anchor:none}
+.wrap{padding-top:0}
+/* every page header sticks just under the status bar, so the top of a page is always reachable */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:8;background:var(--bg);
+  margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));
+  display:grid;gap:10px;box-shadow:0 1px 0 var(--line)}
+.top.appbar{display:flex;margin-bottom:12px}
+.appbar .pagehead{padding:0}
+#vStats .appbar,#vProfile .appbar,#vSettings .appbar{margin-bottom:14px}
+.top .logo{font-size:1.4rem}.top .logo svg{width:30px;height:30px}
+.count b{font-size:1.2rem}
+
+/* nav: Dex · Stats · Scan · Profile · Settings */
+.nav .row{grid-template-columns:1fr 1fr auto 1fr 1fr;gap:2px;padding:5px}
+.ntab{min-height:54px;font-size:.68rem;padding:0 2px;border-radius:20px}
+.ntab svg{width:22px;height:22px}
+.nscan{flex-direction:column;gap:1px;width:64px;height:64px;min-height:0;padding:0;border-radius:22px;font-size:.7rem;margin-block:-4px}
+.nscan svg{width:24px;height:24px}
+@media (max-width:350px){.nscan span{display:block}.nscan{width:58px;height:58px}.ntab{font-size:.62rem}}
+
+/* the card keeps its dark trading-card look in either theme */
+.card{--tx:#eef0f5;--mut:#8a90a2;--dim:#5d6375;--silver:#c9ccd6;--line:#262a36;color:var(--tx)}
+.pack{color:#eef0f5}
+
+/* light theme (Settings > Appearance) */
+html[data-od="light"]{--bg:#f2f3f7;--bg2:#ffffff;--panel:#ffffff;--line:#dcdfe8;--tx:#151821;--mut:#5b6274;--dim:#8b91a3;--silver:#3d4352;
+  --raise:#e6e8ef;--raise-line:#c8ccd8;--track:#e3e6ee;--sunken:#f1f2f6;--navbg:#ffffffeb;--navline:#d9dce6;
+  --accept:#12924f;--consider:#b06f00;--decline:#d43131;--gold:#a87a12;color-scheme:light}
+html[data-od="light"] .card{--gold:#e8c26a}
+html[data-od="light"] .verdict{background:radial-gradient(120% 90% at 50% 0%,color-mix(in srgb,var(--v) 16%,transparent),transparent 70%),var(--panel)}
+html[data-od="light"] .bestpull{color:#a87a12}
+html[data-od="light"] .scanbar,html[data-od="light"] .nav{background:linear-gradient(transparent,var(--bg) 35%)}
+html[data-od="light"] .grid .card,html[data-od="light"] .sumgrid .card{box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent),0 8px 20px -10px #0006}
+html[data-od="dark"]{color-scheme:dark}
+
+/* calm mode: no animations */
+html.calm *,html.calm *::before,html.calm *::after{animation:none!important;transition:none!important}
+
+/* settings */
+.seg.seg3{grid-template-columns:repeat(3,1fr)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;min-height:48px}
+.sw span{min-width:0}.sw b{display:block;font-weight:600}.sw small{display:block;color:var(--mut);font-size:.8rem;line-height:1.35;margin-top:2px}
+.sw input{position:absolute;opacity:0;width:1px;height:1px}
+.sw i{flex:none;width:50px;height:30px;border-radius:99px;background:var(--track);border:1px solid var(--line);position:relative;transition:background .2s}
+.sw i::after{content:"";position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:99px;background:#fff;box-shadow:0 1px 3px #0005;transition:transform .2s}
+.sw input:checked+i{background:var(--accept);border-color:var(--accept)}
+.sw input:checked+i::after{transform:translateX(20px)}
+.sw input:focus-visible+i{outline:2px solid var(--t-rare);outline-offset:2px}
+.grade{display:flex;gap:10px;align-items:flex-start;font-size:.88rem}
+.grade i{flex:none;width:10px;height:10px;border-radius:99px;background:var(--c);margin-top:6px}
+.grade small{font:500 .72rem var(--f-mono);color:var(--mut)}
+.grade .gd{color:var(--mut);font-size:.82rem}
+.about{text-align:center;color:var(--dim);font-size:.76rem;margin:4px 0 10px}
+
+/* profile */
+.phero{display:flex;gap:14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px}
+.avatar{flex:none;width:68px;height:68px;border-radius:22px;display:grid;place-items:center;font:700 1.9rem var(--f-display);color:#fff;
+  background:linear-gradient(150deg,color-mix(in srgb,var(--c) 70%,#0b0c10),#0b0c10);box-shadow:0 0 0 2px var(--c),0 8px 22px -8px var(--c)}
+.pmeta{flex:1;min-width:0;display:grid;gap:5px}
+.pname{width:100%;background:none;border:0;border-bottom:1px dashed transparent;font:700 1.3rem var(--f-display);color:var(--tx);padding:2px 0}
+.pname:focus{outline:none;border-bottom-color:var(--line)}
+.plvl{font:600 .78rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.xpbar{height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.xpbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--t-rare),var(--t-epic),var(--t-legendary))}
+.xpl{display:flex;justify-content:space-between;font:500 .7rem var(--f-mono);color:var(--mut);font-variant-numeric:tabular-nums}
+.kpi b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.showcase{width:min(300px,100%);margin:0 auto;cursor:pointer}
+.achs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:360px){.achs{grid-template-columns:1fr}}
+.ach{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--bg2);min-width:0;opacity:.62}
+.ach.on{opacity:1;border-color:color-mix(in srgb,var(--c) 60%,var(--line));background:color-mix(in srgb,var(--c) 10%,var(--bg2))}
+.ai{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--track);color:var(--dim)}
+.ach.on .ai{background:color-mix(in srgb,var(--c) 25%,transparent);color:var(--c)}
+.ai svg{width:18px;height:18px}
+.at{min-width:0;display:grid;gap:2px}
+.at b{font-size:.86rem;font-weight:700}
+.at small{color:var(--mut);font-size:.72rem;line-height:1.3}
+.ap{height:4px;border-radius:99px;background:var(--track);overflow:hidden;margin-top:3px}
+.ap i{display:block;height:100%;background:var(--c)}
+.bitem .th{background:var(--track)}
+.rate{display:inline-flex;align-items:baseline;gap:.4cqw}
+.rate small{margin-left:0}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
 
 <!-- ===== DEX ===== -->
 <div class="wrap" id="vDex">
-  <header class="top">
+  <header class="top appbar">
     <div class="logo">
       <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="6" y="4" width="22" height="30" rx="4" stroke="#5f8dff" stroke-width="2.4" transform="rotate(-10 17 19)"/><rect x="12" y="6" width="22" height="30" rx="4" fill="#11131a" stroke="#f3c55a" stroke-width="2.4"/><path d="M19 23.5c0-1.6 1.4-2.3 3-2.3s3-.7 3-2.3-1.4-2.4-3-2.4-2.6.8-2.9 1.8M22 14.5v1.9M22 25.8v1.9" stroke="#f3c55a" stroke-width="2" stroke-linecap="round"/></svg>
       OfferDex
@@ -418,11 +502,25 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
 
 <!-- ===== STATS ===== -->
 <div class="wrap" id="vStats" hidden>
-  <div class="pagehead"><h1>Stats</h1><span id="statSpan"></span></div>
-  <div class="seg" id="range" role="group" aria-label="Time range">
-    <button data-r="today" aria-pressed="false">Today</button><button data-r="7" aria-pressed="true">7 days</button><button data-r="30" aria-pressed="false">30 days</button><button data-r="all" aria-pressed="false">All</button>
+  <div class="appbar">
+    <div class="pagehead"><h1>Stats</h1><span id="statSpan"></span></div>
+    <div class="seg" id="range" role="group" aria-label="Time range">
+      <button data-r="today" aria-pressed="false">Today</button><button data-r="7" aria-pressed="true">7 days</button><button data-r="30" aria-pressed="false">30 days</button><button data-r="all" aria-pressed="false">All</button>
+    </div>
   </div>
   <div id="statsBody"></div>
+</div>
+
+<!-- ===== PROFILE ===== -->
+<div class="wrap" id="vProfile" hidden>
+  <div class="appbar"><div class="pagehead"><h1>Profile</h1><span id="profSince"></span></div></div>
+  <div id="profileBody"></div>
+</div>
+
+<!-- ===== SETTINGS ===== -->
+<div class="wrap" id="vSettings" hidden>
+  <div class="appbar"><div class="pagehead"><h1>Settings</h1><span>Saved on this device</span></div></div>
+  <div id="settingsBody"></div>
 </div>
 
 <!-- ===== CARD DETAIL ===== -->
@@ -431,8 +529,10 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
 <!-- ===== bottom nav ===== -->
 <nav class="nav" id="nav" aria-label="Main"><div class="row">
   <button class="ntab" data-v="vDex" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="8" height="11" rx="2"/><rect x="13" y="4" width="8" height="11" rx="2"/><path d="M5 19h14"/></svg>Dex</button>
-  <label class="nscan" for="file" role="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg><span>Scan</span></label>
   <button class="ntab" data-v="vStats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Stats</button>
+  <label class="nscan" for="file" role="button" aria-label="Scan offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg><span>Scan</span></label>
+  <button class="ntab" data-v="vProfile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Profile</button>
+  <button class="ntab" data-v="vSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
 </div></nav>
 
 <!-- ===== scan result / pack sheet ===== -->
@@ -532,6 +632,8 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
       for (const l of lines.slice(ti + 1, ti + 4)) {
         const clean = cleanStore(l);
         if (!clean || /^\d+\s/.test(clean) || /customer|drop\s*-?\s*off|pick\s*-?\s*up|view items|accept|decline|incl|total/i.test(clean)) continue;
+        // chips DoorDash puts between the trip line and the store ("Red Card", "Shop & pay", "Priority")
+        if (/^(red\s*card|shop\s*(&|and)?\s*pay|shop for items|priority|busy|exclusive|order ready)/i.test(clean)) continue;
         if (clean.length >= 2) { out.store = clean.slice(0, 40); break; }
       }
     }
@@ -546,7 +648,18 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
     const m = s.match(/^(\S{1,3})\s+(?=\S{2,})/);
     if (m && m[1].length <= 2 && /[a-z@©®&|!*•.,:;~^%#]/.test(m[1])) s = s.slice(m[0].length);
     else if (m && m[1].length === 3 && /^[^A-Za-z0-9]+$/.test(m[1])) s = s.slice(m[0].length);
-    return s.replace(/^[^A-Za-z0-9'&]+/, "").trim();
+    // a lone character before a capitalised word is the icon ("I Dairy Queen", "7 Dairy Queen", "B Red Card")
+    else if (m && m[1].length === 1 && /^[A-Z][a-z']{2,}/.test(s.slice(m[0].length))) s = s.slice(m[0].length);
+    s = s.replace(/^[^A-Za-z0-9'&]+/, "").trim();
+    // lost space between words: "BurgerKing" -> "Burger King" (short prefixes like "Mc" are left alone)
+    s = s.replace(/\b([A-Z][a-z]{3,})([A-Z][a-z]{2,})\b/g, "$1 $2");
+    return s;
+  }
+  /* tidy names saved by older versions */
+  function fixStoreName(s) {
+    s = cleanStore(s);
+    if (/^red\s*card\b/i.test(s)) return s;
+    return s.replace(/'S\b/g, "'s");
   }
   /* "HOME DEPOT 6561" -> "Home Depot 6561", "FRITOS'S FACTORY" -> "Fritos's Factory" (mixed-case names are left alone) */
   function titleCase(s) {
@@ -567,9 +680,11 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
     return pts[pts.length - 1][1];
   }
 
-  // Anchor points chosen so the thresholds in the spec land on tier edges.
-  const PPH_CURVE = [[8, 0], [15, 30], [20, 60], [22, 72], [25, 88], [32, 100]];
-  const PPM_CURVE = [[0.5, 0], [1.0, 30], [1.3, 50], [1.5, 65], [2.0, 88], [2.75, 100]];
+  // Scoring version 2 (rebalanced): curves climb slower so the top of the scale is rare.
+  // A score of 100 needs about $60/hr, $5/mile and a $20+ payout, all on one single order.
+  const SCORE_VERSION = 2;
+  const PPH_CURVE = [[8, 0], [15, 25], [20, 50], [25, 66], [30, 78], [40, 90], [60, 100]];
+  const PPM_CURVE = [[0.5, 0], [1.0, 25], [1.5, 50], [2.0, 65], [2.5, 77], [3.5, 90], [5, 100]];
   const W_PPH = 0.55, W_PPM = 0.45;
 
   const TIERS = [
@@ -586,15 +701,18 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
    * offer: { pay, minutes, miles, stops }  (stops = total pickups + dropoffs; DoorDash's "2 stops" is a single order)
    * Returns { score, tier, pph, ppm, parts, reasons[] }.
    *
-   * Method:
+   * Method (version 2):
    *   1. base = 55% pay-per-hour curve + 45% pay-per-mile curve.
-   *   2. Tier gates keep the label honest: an offer only reaches a tier if it clears that tier's
-   *      floor rates, and clearing them guarantees at least the tier's minimum score.
-   *        Trash  : under $15/hr, under $1/mi, or 25+ miles  -> capped at 25
-   *        Rare   : needs ~$20/hr and ~$1.30/mi (19 / 1.25)   -> else capped at 50
-   *        Epic   : needs $22/hr, $1.50/mi, 10 mi or less     -> else capped at 75
-   *        Legend : needs $25/hr, $2/mi, one order, 6 mi or less -> else capped at 90
-   *   3. Penalties come off after the gates, so they can drop an offer a tier:
+   *   2. Tier gates: an offer reaches a tier only if it clears that tier's rates, and clearing them
+   *      guarantees at least the tier's lowest score.
+   *        Trash     : under $15/hr, under $1/mi, or 25+ miles                     -> 1-25
+   *        Common    : everything else                                            -> 26-50
+   *        Rare      : $19/hr and $1.25/mi                                        -> 51-75
+   *        Epic      : $25/hr, $1.75/mi, 10 mi or less, $7+ payout                 -> 76-90
+   *        Legendary : $30/hr, $2.50/mi, single order, 8 mi or less, $10+ payout   -> 91-100
+   *      Inside Legendary the score climbs from 91 only as the base nears 100 and the payout nears $20,
+   *      so 95+ is very rare and 100 is close to impossible.
+   *   3. Penalties come off after the gates and can drop an offer a tier:
    *        3+ stops: -7 per stop over 2 (max -21); pay under $5: -10; every mile over 12: -1.5 (max -15).
    */
   function scoreOffer(o) {
@@ -609,17 +727,22 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
 
     const trash = pph < 15 || ppm < 1 || miles >= 25;
     const rare = pph >= 19 && ppm >= 1.25;
-    const epic = pph >= 22 && ppm >= 1.5 && miles <= 10;
-    const legend = pph >= 25 && ppm >= 2 && stops <= 2 && miles <= 6;
+    const epic = pph >= 25 && ppm >= 1.75 && miles <= 10 && pay >= 7;
+    const legendRates = pph >= 30 && ppm >= 2.5 && stops <= 2 && miles <= 8;
+    const legend = legendRates && pay >= 10;
 
     if (trash) {
       s = Math.min(s, 25);
       if (pph < 15) reasons.push(`Under $15/hr ($${pph.toFixed(2)})`);
       if (ppm < 1) reasons.push(`Under $1/mi ($${ppm.toFixed(2)})`);
       if (miles >= 25) reasons.push(`Extreme distance (${miles} mi)`);
-    } else if (legend) s = Math.max(s, 91);
-    else if (epic) s = Math.min(Math.max(s, 76), 90);
-    else if (rare) s = Math.min(Math.max(s, 51), 75);
+    } else if (legend) {
+      const t = Math.max(0, Math.min(1, (base - 85) / 15)), size = Math.min(1, pay / 20);
+      s = 91 + 9 * t * size;
+    } else if (epic) {
+      s = Math.min(Math.max(s, 76), 90);
+      if (legendRates) reasons.push(`Legendary needs a $10+ payout`);
+    } else if (rare) s = Math.min(Math.max(s, 51), 75);
     else s = Math.min(Math.max(s, 26), 50);
 
     let pen = 0;
@@ -628,10 +751,10 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
     if (miles > 12) { const p = Math.min(15, Math.round((miles - 12) * 1.5)); pen += p; reasons.push(`${miles} mi trip (−${p})`); }
     s -= pen;
 
-    const score = Math.max(1, Math.min(100, Math.round(s)));
-    if (pph >= 25 && !trash) reasons.unshift(`$${pph.toFixed(2)}/hr is excellent`);
+    const score = Math.max(1, Math.min(100, Math.floor(s + 0.5)));
+    if (pph >= 30 && !trash) reasons.unshift(`$${pph.toFixed(2)}/hr is excellent`);
     else if (pph >= 20 && !trash) reasons.unshift(`$${pph.toFixed(2)}/hr clears $20`);
-    if (ppm >= 2 && !trash) reasons.unshift(`$${ppm.toFixed(2)}/mi is excellent`);
+    if (ppm >= 2.5 && !trash) reasons.unshift(`$${ppm.toFixed(2)}/mi is excellent`);
     else if (ppm >= 1.5 && !trash) reasons.push(`$${ppm.toFixed(2)}/mi clears $1.50`);
     else if (ppm >= 1 && ppm < 1.3 && !trash) reasons.push(`$${ppm.toFixed(2)}/mi is thin`);
 
@@ -711,12 +834,22 @@ table.wk td{padding:9px 4px;border-top:1px solid var(--line);text-align:right;wh
     return best || base;
   }
 
+  /* Payout read from the digits-only strip: "$4.55", "4.55", "$455" */
+  function parsePay(text) {
+    const t = String(text || "").replace(/\s+/g, "");
+    let m = t.match(/\$?(\d{1,3})[.,](\d{2})/);
+    if (m) return +(m[1] + "." + m[2]);
+    m = t.match(/\$(\d{3,4})(?!\d)/);
+    if (m) return +m[1] / 100;
+    return null;
+  }
+
   /* Same offer seen twice (two screenshots seconds apart): same pay, time, miles and store. */
   const offerKey = o => [Math.round(+o.pay * 100), Math.round(+o.minutes), Math.round(+o.miles * 10),
     String(o.store || "").toLowerCase().replace(/[^a-z0-9]/g, "")].join("|");
 
   const api = { parseOfferText, scoreOffer, tierFor, TIERS, curve, PPH_CURVE, PPM_CURVE,
-    verdictFor, rollFinish, finishOdds, packBoost, parseClock, offerTime, FINISH_ODDS, FINISHES, offerKey, cleanStore, titleCase };
+    verdictFor, rollFinish, finishOdds, packBoost, parseClock, offerTime, FINISH_ODDS, FINISHES, offerKey, cleanStore, titleCase, fixStoreName, parsePay, SCORE_VERSION };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.OfferCore = api;
 })(typeof window !== "undefined" ? window : globalThis);
@@ -764,10 +897,14 @@ async function loadStore(){
   }
   try{const m=await idb.all();m.forEach((v,k)=>ART.set(k,v))}catch(e){idbOK=false}
   let moved=false;
+  const regrade=store.cards.length>0&&(store.scoreVer||1)<C.SCORE_VERSION;
   for(const c of store.cards){
     c.added=c.added||c.ts;c.finish=c.finish||"standard";
+    /* rarity rebalance: re-grade old cards with the new formula; finishes already pulled are kept */
+    if(regrade){c.store=C.fixStoreName(c.store)||c.store;try{rescore(c,c)}catch(e){}}
     if(c.art&&idbOK){await putArt(c);moved=true}
   }
+  store.scoreVer=C.SCORE_VERSION;
   if(save()&&moved)try{localStorage.removeItem(OLD)}catch(e){}
 }
 
@@ -798,7 +935,8 @@ function makeCard(o,ex){
     score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
     art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:new Date().toISOString(),pack:ex.pack||"",took:null};
 }
-function rescore(c,o){const r=C.scoreOffer(o);Object.assign(c,o,{score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,finish:C.rollFinish(r.tier.id,c.roll,c.boost||1)})}
+/* the finish is decided once, when the card is pulled: fixing numbers later re-grades the card but never re-rolls it */
+function rescore(c,o){const r=C.scoreOffer(o);Object.assign(c,{pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,store:o.store||c.store},o.ts?{ts:o.ts}:{},{score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts})}
 const special=c=>c.finish&&c.finish!=="standard";
 const stars=t=>({trash:"",common:"★",rare:"★★",epic:"★★★",legendary:"★★★★"}[t]);
 function serial(c){const d=new Date(c.ts);return (c.platform==="Uber Eats"?"UE":"DD")+"-"+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(c.no).padStart(3,"0")}
@@ -870,7 +1008,7 @@ function renderDex(){
   let i=0,html="";
   for(const [k,list] of groups){
     const a=agg(list),[n1,n2]=dayName(k),open=collapsed.has(k)?!collapsed.get(k):i<3;i++;
-    html+=`<section class="day" data-day="${k}" style="content-visibility:auto;contain-intrinsic-size:auto 600px">
+    html+=`<section class="day" data-day="${k}">
       <button class="dayhead" aria-expanded="${open}" data-day="${k}">
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
         <span class="dw"><span class="dn">${n1}</span><span class="ds">${esc(n2)} · ${a.n} offer${a.n>1?"s":""} · $${a.pph.toFixed(0)}/hr avg · best ${a.best}</span></span>
@@ -893,14 +1031,20 @@ $("days").onkeydown=e=>{if(e.key==="Enter"){const c=e.target.closest(".card");if
    Navigation
    ========================================================= */
 let view="vDex",lastList="vDex";
+const VIEWS=["vDex","vStats","vProfile","vSettings","vDetail"];
 function show(v){
-  view=v;for(const id of ["vDex","vStats","vDetail"])$(id).hidden=id!==v;
+  view=v;for(const id of VIEWS)$(id).hidden=id!==v;
   $("nav").hidden=v==="vDetail";
   document.querySelectorAll(".ntab").forEach(t=>{if(t.dataset.v===v)t.setAttribute("aria-current","page");else t.removeAttribute("aria-current")});
-  if(v==="vDex"){lastList=v;renderDex()}
-  if(v==="vStats"){lastList=v;renderStats()}
+  if(v!=="vDetail")lastList=v;
+  if(v==="vDex")renderDex();
+  if(v==="vStats")renderStats();
+  if(v==="vProfile")renderProfile();
+  if(v==="vSettings")renderSettings();
 }
-document.querySelectorAll(".ntab").forEach(t=>t.onclick=()=>{show(t.dataset.v);window.scrollTo(0,0)});
+/* always open a page at its top, so its header is never hidden under the status bar */
+const toTop=()=>{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0};
+document.querySelectorAll(".ntab").forEach(t=>t.onclick=()=>{if(view===t.dataset.v){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}show(t.dataset.v);toTop()});
 
 /* =========================================================
    Card detail
@@ -990,6 +1134,15 @@ function prep(bm,y0,y1,x1){
   for(let i=0;i<p.length;i+=4){let v=255-(0.299*p[i]+0.587*p[i+1]+0.114*p[i+2]);v=(v-140)*1.8+140;p[i]=p[i+1]=p[i+2]=v<0?0:v>255?255:v}
   x.putImageData(d,0,0);return {c,k,off:sy};
 }
+/* payout strip: the band just above the trip line, keeping only white text, scaled so digits are ~44px tall */
+function prepPay(bm,top,lh){
+  const sy=Math.max(0,Math.round(top-lh*3.6)),sh=Math.max(8,Math.round(lh*3.4)),sw=Math.round(bm.width*0.75),k=Math.min(3,Math.max(0.3,22/lh));
+  const W=Math.round(sw*k),H=Math.round(sh*k),c=document.createElement("canvas");c.width=W+40;c.height=H+40;
+  const x=c.getContext("2d",{willReadFrequently:true});x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.imageSmoothingQuality="high";x.drawImage(bm,0,sy,sw,sh,20,20,W,H);
+  const d=x.getImageData(20,20,W,H),q=d.data;
+  for(let i=0;i<q.length;i+=4){const v=Math.min(q[i],q[i+1],q[i+2])>200?0:255;q[i]=q[i+1]=q[i+2]=v}
+  x.putImageData(d,20,20);return c;
+}
 /* status-bar clock: top-left corner, keep only pure-white text so map labels behind it vanish */
 function prepClock(bm,stretch){
   /* stretched sideways: the phone font sets "11" so tight that the reader sees one letter */
@@ -1037,9 +1190,21 @@ async function readImage(file,pool,onStep){
       const q=C.parseOfferText(r2.text);for(const k in q)if(p[k]==null)p[k]=q[k];
       if(!payY){const l2=(r2.lines||[]).find(l=>/\$\s?\d/.test(l.text));if(l2)payY=Math.round(l2.bbox.y0/b.k)}
     }
+    /* pass 2b: the payout is huge text that the reader sometimes garbles. Read just the strip above the trip line, sized down, digits only */
+    if(!(p.pay>0)){
+      const tl=(r1.lines||[]).find(l=>/stops?\b|\bmi\b|\(\d/.test(l.text)&&/min/i.test(l.text));
+      if(tl){
+        const top=off+tl.bbox.y0/pl0,lh=(tl.bbox.y1-tl.bbox.y0)/pl0;
+        try{await w.setParameters({tessedit_char_whitelist:"$0123456789."});
+          const v=C.parsePay((await recog(w,prepPay(bm,top,lh))).text);
+          if(v){p.pay=v;payY=Math.round(top-lh*3);out.raw+="\n[payout strip] $"+v}}
+        catch(e){console.warn(e)}
+        finally{try{await w.setParameters({tessedit_char_whitelist:""})}catch(e){}}
+      }
+    }
     phase=2;
     /* pass 3: the status-bar clock, so cards land on the right day and time */
-    try{await w.setParameters({tessedit_char_whitelist:"0123456789:"});
+    if(SET.clock)try{await w.setParameters({tessedit_char_whitelist:"0123456789:"});
       let ck=C.parseClock((await recog(w,prepClock(bm,2))).text);
       if(!ck)ck=C.parseClock((await recog(w,prepClock(bm,1.4))).text);
       if(ck)out.ts=C.offerTime(ck,file.lastModified||Date.now())}
@@ -1327,22 +1492,8 @@ function renderStats(){
     ${TIERS.map(t=>`<tr><td><span style="color:${TC[t.id]}">●</span> ${t.name}</td>${fins.map(f=>`<td>${have.has(t.id+"|"+f)?"✓":"<span style='color:var(--dim)'>–</span>"}</td>`).join("")}</tr>`).join("")}
     </tbody></table></div>
     <p class="msg">Scan streak: <b style="color:var(--tx)">${streak()} day${streak()===1?"":"s"}</b> in a row.</p></div>`;
-  /* data */
-  h+=`<div class="sbox data"><h3>Your data</h3>
-    <p class="msg">Cards are saved in this browser on this device only. Copy a backup as a spreadsheet (CSV) to keep your numbers.</p>
-    <div class="btnrow"><button class="btn sm" id="csv">Copy as CSV</button><button class="btn ghost sm danger" id="wipe">Erase all cards</button></div>
-    <textarea id="csvOut" readonly hidden aria-label="CSV backup"></textarea></div>`;
   $("statsBody").innerHTML=h;
   wireChart();
-  $("csv").onclick=async()=>{
-    const rows=[["offer_time","store","platform","pay","minutes","miles","stops","pay_per_hour","pay_per_mile","score","tier","verdict","finish","took"]].concat(
-      store.cards.map(c=>[new Date(c.ts).toISOString(),c.store,c.platform,c.pay,c.minutes,c.miles,c.stops,c.pph.toFixed(2),c.ppm.toFixed(2),c.score,c.tier,C.verdictFor(c.score).id,c.finish,c.took==null?"":c.took?"yes":"no"]));
-    const csv=rows.map(r=>r.map(v=>/[",\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':v).join(",")).join("\n");
-    try{await navigator.clipboard.writeText(csv);toast("Copied "+store.cards.length+" rows")}
-    catch(e){const t=$("csvOut");t.hidden=false;t.value=csv;t.focus();t.select();toast("Select all and copy")}
-  };
-  let armed=false;$("wipe").onclick=async e=>{if(!armed){armed=true;e.target.textContent="Tap again to erase";return}
-    store={cards:[],next:1};ART.clear();try{await idb.clear()}catch(err){}save();toast("All cards erased");renderStats()};
 }
 function chartDays(){
   const n=range==="today"||range==="7"?7:range==="30"?30:Math.min(30,Math.max(7,Math.ceil((Date.now()-Math.min(...store.cards.map(c=>+new Date(c.ts))))/864e5)+1));
@@ -1352,12 +1503,12 @@ function chartDays(){
 }
 let CH=[];
 function dailyChart(){
-  CH=chartDays();const n=CH.length,mx=Math.max(30,...CH.map(x=>x.a.pph))*1.08,goal=20;
+  CH=chartDays();const n=CH.length,goal=+SET.goalHr||20,mx=Math.max(goal*1.5,...CH.map(x=>x.a.pph))*1.08;
   if(!selDay||!CH.find(x=>x.k===selDay)){const withData=CH.filter(x=>x.a.n);selDay=(withData[withData.length-1]||CH[n-1]).k}
   const lab=(x,i)=>n<=7?`${x.d.toLocaleDateString([],{weekday:"short"})}<b>${x.d.getDate()}</b>`:(i%5===0||i===n-1?`<b style="color:var(--mut)">${x.d.getMonth()+1}/${x.d.getDate()}</b>`:"");
   return `<div class="sbox"><h3>Daily pay per hour <small>last ${n} days</small></h3>
     <div class="readout" id="readout"></div>
-    <div class="vbars" id="vbars" style="gap:${n>14?2:6}px"><div class="goal" style="bottom:${goal/mx*100}%"><span>$20/hr</span></div>
+    <div class="vbars" id="vbars" style="gap:${n>14?2:6}px"><div class="goal" style="bottom:${goal/mx*100}%"><span>$${goal}/hr goal</span></div>
       ${CH.map(x=>`<button class="vb${x.a.n?"":" empty"}" data-k="${x.k}" aria-pressed="${x.k===selDay}" aria-label="${x.d.toDateString()}: ${x.a.n?"$"+x.a.pph.toFixed(2)+" per hour":"no offers"}">${n<=7&&x.a.n?`<span class="lv">$${x.a.pph.toFixed(0)}</span>`:""}<i style="height:${x.a.n?Math.max(2,x.a.pph/mx*100):2}%"></i></button>`).join("")}
     </div>
     <div class="vlabels" style="gap:${n>14?2:6}px">${CH.map((x,i)=>`<span>${lab(x,i)}</span>`).join("")}</div></div>`;
@@ -1380,6 +1531,142 @@ function weeklyTable(){
     <thead><tr><th>Week of</th><th>Offers</th><th>$/hr</th><th>$/mi</th><th>Best</th><th>Taken</th></tr></thead><tbody>
     ${weeks.map(([k,l])=>{const a=agg(l),d=new Date(k+"T12:00:00");return `<tr><td>${k===thisWk?"This week":d.toLocaleDateString([],{month:"short",day:"numeric"})}</td><td>${a.n}</td><td>$${a.pph.toFixed(2)}</td><td>$${a.ppm.toFixed(2)}</td><td>${a.best}</td><td>${money(a.takenPay)}</td></tr>`}).join("")}
     </tbody></table></div></div>`;
+}
+
+/* =========================================================
+   Settings (this device)
+   ========================================================= */
+const SKEY="offerdex.settings";
+const SET=Object.assign({theme:"dark",motion:true,goalHr:20,goalMi:1.5,clock:true,name:"",avatar:"legendary"},(()=>{try{return JSON.parse(localStorage.getItem(SKEY)||"{}")}catch(e){return {}}})());
+const saveSet=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}};
+const darkMQ=matchMedia("(prefers-color-scheme: dark)");
+function applyTheme(){
+  const t=SET.theme==="system"?(darkMQ.matches?"dark":"light"):SET.theme;
+  document.documentElement.setAttribute("data-od",t);
+  document.documentElement.classList.toggle("calm",!SET.motion);
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=t==="light"?"#f2f3f7":"#0b0c10";
+}
+try{darkMQ.addEventListener("change",()=>{if(SET.theme==="system")applyTheme()})}catch(e){}
+applyTheme();
+
+function storageInfo(){let n=0;try{n=(localStorage.getItem(KEY)||"").length}catch(e){}let a=0;ART.forEach(v=>a+=v.length);return {data:n,art:a}}
+const kb=n=>n>1e6?(n/1e6).toFixed(1)+" MB":Math.max(1,Math.round(n/1e3))+" KB";
+function renderSettings(){
+  const si=storageInfo();
+  const segBtn=(k,v,l)=>`<button data-k="${k}" data-v="${v}" aria-pressed="${SET[k]===v}">${l}</button>`;
+  $("settingsBody").innerHTML=`
+  <div class="sbox"><h3>Appearance</h3>
+    <div class="seg seg3" role="group" aria-label="Theme">${segBtn("theme","dark","Dark")}${segBtn("theme","light","Light")}${segBtn("theme","system","Match phone")}</div>
+    <label class="sw"><span><b>Card animations</b><small>Holo shimmer, card flips and the pack tear. Turn off to save battery.</small></span><input type="checkbox" id="setMotion" ${SET.motion?"checked":""}><i></i></label>
+  </div>
+  <div class="sbox"><h3>Goals <small>shown on your charts</small></h3>
+    <div class="fields">
+      <label>Pay per hour ($)<input id="setHr" type="number" inputmode="decimal" step="1" min="1" value="${SET.goalHr}"></label>
+      <label>Pay per mile ($)<input id="setMi" type="number" inputmode="decimal" step="0.05" min="0.1" value="${SET.goalMi}"></label>
+    </div>
+  </div>
+  <div class="sbox"><h3>Scanning</h3>
+    <label class="sw"><span><b>Read the time from the screenshot</b><small>Uses the clock in your status bar to put each card on the right day. Off: uses the time you scan.</small></span><input type="checkbox" id="setClock" ${SET.clock?"checked":""}><i></i></label>
+    <p class="msg">Tip: pick up to 10 screenshots at once to open a pack. Duplicates are skipped automatically.</p>
+  </div>
+  <div class="sbox"><h3>How cards are graded</h3>
+    <div class="hbars">${[["legendary","$30/hr, $2.50/mi, single order, 8 mi or less, $10+ pay"],["epic","$25/hr, $1.75/mi, 10 mi or less, $7+ pay"],["rare","$19/hr and $1.25/mi"],["common","Everything in between"],["trash","Under $15/hr, under $1/mi, or 25+ mi"]].map(([t,d])=>{const T=TIERS.find(x=>x.id===t);return `<div class="grade"><i style="--c:${TC[t]}"></i><span><b>${T.name}</b> <small>${T.min}–${T.max}</small><br><span class="gd">${d}</span></span></div>`}).join("")}</div>
+    <p class="msg">A 100 needs about $60/hr, $5/mi and a $20+ payout on one order. 3+ stops, payouts under $5 and trips over 12 mi lose points.</p>
+  </div>
+  <div class="sbox data"><h3>Your data <small>${store.cards.length} cards · ${kb(si.data+si.art)}</small></h3>
+    <p class="msg">Cards are saved in this browser on this phone only. Copy a backup as a spreadsheet (CSV) now and then.</p>
+    <div class="btnrow"><button class="btn sm" id="csv">Copy as CSV</button><button class="btn ghost sm danger" id="wipe">Erase all cards</button></div>
+    <textarea id="csvOut" readonly hidden aria-label="CSV backup"></textarea>
+  </div>
+  <p class="about">OfferDex prototype · grading v${C.SCORE_VERSION}</p>`;
+  $("settingsBody").querySelectorAll(".seg button").forEach(btn=>btn.onclick=()=>{SET[btn.dataset.k]=btn.dataset.v;saveSet();applyTheme();renderSettings()});
+  $("setMotion").onchange=e=>{SET.motion=e.target.checked;saveSet();applyTheme()};
+  $("setClock").onchange=e=>{SET.clock=e.target.checked;saveSet()};
+  const num=(id,k,min)=>$(id).onchange=e=>{const v=parseFloat(e.target.value);if(v>=min){SET[k]=v;saveSet();toast("Goal saved")}else e.target.value=SET[k]};
+  num("setHr","goalHr",1);num("setMi","goalMi",0.1);
+  wireData();
+}
+function wireData(){
+  $("csv").onclick=async()=>{
+    const rows=[["offer_time","store","platform","pay","minutes","miles","stops","pay_per_hour","pay_per_mile","score","tier","verdict","finish","took"]].concat(
+      store.cards.map(c=>[new Date(c.ts).toISOString(),c.store,c.platform,c.pay,c.minutes,c.miles,c.stops,c.pph.toFixed(2),c.ppm.toFixed(2),c.score,c.tier,C.verdictFor(c.score).id,c.finish,c.took==null?"":c.took?"yes":"no"]));
+    const csv=rows.map(r=>r.map(v=>/[",\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':v).join(",")).join("\n");
+    try{await navigator.clipboard.writeText(csv);toast("Copied "+store.cards.length+" rows")}
+    catch(e){const t=$("csvOut");t.hidden=false;t.value=csv;t.focus();t.select();toast("Select all and copy")}
+  };
+  let armed=false;$("wipe").onclick=async e=>{if(!armed){armed=true;e.target.textContent="Tap again to erase";return}
+    store={cards:[],next:1,scoreVer:C.SCORE_VERSION};ART.clear();try{await idb.clear()}catch(err){}save();toast("All cards erased");renderSettings()};
+}
+
+/* =========================================================
+   Profile: level, achievements, showcase
+   ========================================================= */
+const XP_T={trash:5,common:10,rare:25,epic:60,legendary:150},XP_F={holo:75,carbon:40,inverted:40};
+const xpOf=cs=>cs.reduce((a,c)=>a+(XP_T[c.tier]||0)+(XP_F[c.finish]||0)+(c.took?5:0),0)+new Set(cs.map(c=>c.pack).filter(Boolean)).size*10;
+const lvlStart=L=>50*L*(L-1);
+const levelOf=xp=>{let L=1;while(lvlStart(L+1)<=xp)L++;return L};
+const TITLES=[[1,"Rookie"],[3,"Regular"],[5,"Road Pro"],[8,"Route Boss"],[12,"Dex Master"],[20,"Living Legend"]];
+const titleOf=L=>TITLES.filter(t=>L>=t[0]).pop()[1];
+function longestStreak(){
+  const ks=[...new Set(store.cards.map(c=>dayKey(c.ts)))].sort();let best=0,run=0,prev=null;
+  for(const k of ks){const d=new Date(k+"T12:00:00");run=prev&&Math.round((d-prev)/864e5)===1?run+1:1;best=Math.max(best,run);prev=d}return best;
+}
+function achievements(){
+  const cs=store.cards,n=cs.length,cnt=t=>cs.filter(c=>c.tier===t).length,packs=new Map();
+  for(const c of cs)if(c.pack)packs.set(c.pack,(packs.get(c.pack)||0)+1);
+  const biggestPack=Math.max(0,...packs.values()),tiers=new Set(cs.map(c=>c.tier)).size,miles=cs.reduce((a,c)=>a+c.miles,0);
+  return [
+    ["First Card","Scan your first offer",Math.min(n,1),1,"#4cc9a6"],
+    ["Pack Opener","Open a pack of 2 or more",Math.min(packs.size,1),1,"#5f8dff"],
+    ["Full Pack","Open a pack with 10 new cards",biggestPack,10,"#5f8dff"],
+    ["Shiny","Pull any special finish",Math.min(cs.filter(special).length,1),1,"#c9ccd6"],
+    ["Holo Hunter","Pull a Holographic card",Math.min(cs.filter(c=>c.finish==="holo").length,1),1,"#c44fff"],
+    ["Epic Pull","Get an Epic card",Math.min(cnt("epic"),1),1,"#b27dff"],
+    ["Legendary","Get a Legendary card",Math.min(cnt("legendary"),1),1,"#f3c55a"],
+    ["Perfect 100","Score a perfect 100",Math.min(cs.filter(c=>c.score>=100).length,1),1,"#f3c55a"],
+    ["Full Spectrum","Own every rarity",tiers,5,"#4cc9a6"],
+    ["Big Payday","Scan a $20+ offer",Math.min(cs.filter(c=>c.pay>=20).length,1),1,"#3ddc84"],
+    ["On a Roll","Scan 7 days in a row",longestStreak(),7,"#f5b83d"],
+    ["Road Warrior","Scan 500 miles of offers",Math.round(miles),500,"#f5b83d"],
+    ["Trash Collector","Collect 10 Trash cards",cnt("trash"),10,"#9a8a74"],
+    ["Picky","Mark 10 offers as Passed",cs.filter(c=>c.took===false).length,10,"#ff5c5c"],
+    ["Grinder","Collect 100 cards",n,100,"#5f8dff"]
+  ].map(([name,desc,have,need,col])=>({name,desc,have:Math.min(have,need),need,col,done:have>=need}));
+}
+const BADGE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 15.4 6.8 18.2l1-5.8L3.5 8.2l5.9-.9z"/></svg>';
+function renderProfile(){
+  const cs=store.cards,xp=xpOf(cs),L=levelOf(xp),a=agg(cs),from=lvlStart(L),to=lvlStart(L+1);
+  const best=cs.slice().sort((x,y)=>y.score-x.score||(special(y)?1:0)-(special(x)?1:0))[0];
+  const first=cs.length?new Date(Math.min(...cs.map(c=>+new Date(c.ts)))):null;
+  $("profSince").textContent=first?"Driving since "+first.toLocaleDateString([],{month:"short",day:"numeric"}):"";
+  const sm=new Map();for(const c of cs){const k=c.store.toLowerCase().replace(/[^a-z0-9]/g,"");const e=sm.get(k)||{name:c.store,n:0};e.n++;sm.set(k,e)}
+  const fav=[...sm.values()].sort((x,y)=>y.n-x.n)[0];
+  const ach=achievements(),done=ach.filter(x=>x.done).length;
+  const name=SET.name||"Driver";
+  $("profileBody").innerHTML=`
+  <div class="phero">
+    <div class="avatar" style="--c:${best?TC[best.tier]:"var(--mut)"}">${esc(name.trim()[0]||"D").toUpperCase()}</div>
+    <div class="pmeta">
+      <input id="pName" class="pname" value="${esc(name)}" maxlength="24" autocomplete="off" aria-label="Your name">
+      <div class="plvl">Level ${L} · ${titleOf(L)}</div>
+      <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="${to-from}" aria-valuenow="${xp-from}"><i style="width:${(xp-from)/(to-from)*100}%"></i></div>
+      <div class="xpl"><span>${xp-from} / ${to-from} XP</span><span>${xp} total</span></div>
+    </div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b>${a.n}</b><span>Cards</span><small>${cs.filter(special).length} special</small></div>
+    <div class="kpi"><b>${money(a.pay)}</b><span>Offered</span><small>${a.mi.toFixed(0)} mi scanned</small></div>
+    <div class="kpi"><b>${money(a.takenPay)}</b><span>Taken</span><small>${a.taken.length} offer${a.taken.length===1?"":"s"}</small></div>
+    <div class="kpi"><b>${fav?esc(fav.name):"–"}</b><span>Most seen store</span><small>${fav?fav.n+" offer"+(fav.n>1?"s":""):""}</small></div>
+  </div>
+  ${best?`<div class="sbox"><h3>Best pull <small>tap to open</small></h3><div class="showcase">${cardHTML(best)}</div></div>`:`<div class="sempty">Scan your first offer to start leveling up.</div>`}
+  <div class="sbox"><h3>Achievements <small>${done} of ${ach.length}</small></h3>
+    <div class="achs">${ach.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
+  </div>
+  <p class="about">XP: Trash 5 · Common 10 · Rare 25 · Epic 60 · Legendary 150 · Holo +75 · Carbon or Inverted +40 · each pack +10</p>`;
+  $("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile()};
+  $("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
+  const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
 }
 
 /* =========================================================
