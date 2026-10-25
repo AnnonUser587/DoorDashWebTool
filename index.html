@@ -2,8 +2,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OfferDex</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0b0c10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -471,6 +469,15 @@ html.calm *,html.calm *::before,html.calm *::after{animation:none!important;tran
 .bitem .th{background:var(--track)}
 .rate{display:inline-flex;align-items:baseline;gap:.4cqw}
 .rate small{margin-left:0}
+
+.c-name .more{font:600 3.2cqw var(--f-mono);color:var(--gold);margin-left:1.6cqw;vertical-align:middle}
+/* pack progress tiles: skipped screenshots stay visible, with a mark */
+.pdot.dup img,.pdot.fix img{opacity:.7}
+.pdot.dup::after{content:"↺";color:#fff;background:#0008}
+.pdot.fix::after{content:"?";color:#fff;background:#0008}
+.pdot.ok::after{content:"";}
+
+body{padding-top:var(--top-fix,0px)}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -627,16 +634,28 @@ html.calm *,html.calm *::before,html.calm *::after{animation:none!important;tran
     if (/expected tip|uber|exclusive|trip/i.test(text) && !/incl\.?\s*tips/i.test(text)) out.platform = out.platform || "Uber Eats";
 
     // Store: first line after the trip summary that isn't an address, an icon read as letters, or a button.
+    // Stores: every name line after the trip summary until the dropoff line. Stacked orders list two or more.
     const ti = lines.findIndex(l => l === tripLine);
+    const stores = [];
     if (ti >= 0) {
-      for (const l of lines.slice(ti + 1, ti + 4)) {
+      for (const l of lines.slice(ti + 1, ti + 10)) {
+        if (/customer\s*drop|multiple\s*drop|^\W*accept\b/i.test(l)) break;
         const clean = cleanStore(l);
         if (!clean || /^\d+\s/.test(clean) || /customer|drop\s*-?\s*off|pick\s*-?\s*up|view items|accept|decline|incl|total/i.test(clean)) continue;
         // chips DoorDash puts between the trip line and the store ("Red Card", "Shop & pay", "Priority")
         if (/^(red\s*card|shop\s*(&|and)?\s*pay|shop for items|priority|busy|exclusive|order ready)/i.test(clean)) continue;
-        if (clean.length >= 2) { out.store = clean.slice(0, 40); break; }
+        // the rest of a wrapped address ("Fulshear, 77441 TX")
+        if (/\b\d{5}\b/.test(clean) || /,\s*[A-Z]{2}\b/.test(clean)) continue;
+        if (clean.length >= 2) stores.push(clean.slice(0, 40));
+        if (stores.length >= 3) break;
       }
     }
+    out.store = stores[0] || null;
+    out.stores = stores;
+    // "Multiple dropoffs (2 stops)"
+    const md = text.match(/multiple\s*drop\s*-?\s*offs?\s*\(?\s*(\d)\s*stops?/i);
+    out.dropoffs = md ? num(md[1]) : (out.stops ? Math.max(1, out.stops - Math.max(1, stores.length)) : null);
+    out.pickups = out.stops && out.dropoffs ? Math.max(1, out.stops - out.dropoffs) : Math.max(1, stores.length || 1);
     return out;
   }
 
@@ -649,7 +668,7 @@ html.calm *,html.calm *::before,html.calm *::after{animation:none!important;tran
     if (m && m[1].length <= 2 && /[a-z@©®&|!*•.,:;~^%#]/.test(m[1])) s = s.slice(m[0].length);
     else if (m && m[1].length === 3 && /^[^A-Za-z0-9]+$/.test(m[1])) s = s.slice(m[0].length);
     // a lone character before a capitalised word is the icon ("I Dairy Queen", "7 Dairy Queen", "B Red Card")
-    else if (m && m[1].length === 1 && /^[A-Z][a-z']{2,}/.test(s.slice(m[0].length))) s = s.slice(m[0].length);
+    else if (m && m[1].length === 1 && m[1] !== "A" && /^[A-Z][a-z']{2,}/.test(s.slice(m[0].length))) s = s.slice(m[0].length);
     s = s.replace(/^[^A-Za-z0-9'&]+/, "").trim();
     // lost space between words: "BurgerKing" -> "Burger King" (short prefixes like "Mc" are left alone)
     s = s.replace(/\b([A-Z][a-z]{3,})([A-Z][a-z]{2,})\b/g, "$1 $2");
@@ -848,7 +867,15 @@ html.calm *,html.calm *::before,html.calm *::after{animation:none!important;tran
   const offerKey = o => [Math.round(+o.pay * 100), Math.round(+o.minutes), Math.round(+o.miles * 10),
     String(o.store || "").toLowerCase().replace(/[^a-z0-9]/g, "")].join("|");
 
-  const api = { parseOfferText, scoreOffer, tierFor, TIERS, curve, PPH_CURVE, PPM_CURVE,
+  /* Card label for how the order is built: "Single order", "2 pickups · 2 drops" */
+  function orderClass(o) {
+    const stops = +o.stops || 2;
+    if (stops <= 2) return "Single order";
+    const d = +o.dropoffs || Math.max(1, stops - (+o.pickups || 1)), p = Math.max(1, stops - d);
+    return `${p} pickup${p > 1 ? "s" : ""} · ${d} drop${d > 1 ? "s" : ""}`;
+  }
+
+  const api = { orderClass, parseOfferText, scoreOffer, tierFor, TIERS, curve, PPH_CURVE, PPM_CURVE,
     verdictFor, rollFinish, finishOdds, packBoost, parseClock, offerTime, FINISH_ODDS, FINISHES, offerKey, cleanStore, titleCase, fixStoreName, parsePay, SCORE_VERSION };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.OfferCore = api;
@@ -932,6 +959,7 @@ function makeCard(o,ex){
   const r=C.scoreOffer(o),roll=ex.roll??Math.random(),boost=ex.boost||1;
   return {id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),no:store.next++,
     store:o.store||"Mystery order",platform:o.platform||"",pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,
+    stores:Array.isArray(o.stores)&&o.stores.length>1?o.stores.slice(0,3):undefined,dropoffs:o.dropoffs||undefined,
     score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
     art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:new Date().toISOString(),pack:ex.pack||"",took:null};
 }
@@ -944,11 +972,11 @@ const FIN_SHORT={holo:"HOLO",carbon:"CARBON",inverted:"INVERTED"};
 const clock=d=>new Date(d).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
 function cardHTML(c){
   const t=TIERS.find(x=>x.id===c.tier),f=special(c)?c.finish:"",art=artOf(c);
-  const order=c.stops<=2?"Single order":Math.max(1,c.stops-1)+" dropoffs";
+  const order=C.orderClass(c),more=c.stores&&c.stores.length>1?c.stores.length-1:0;
   return `<article class="card" data-t="${c.tier}"${f?` data-f="${f}"`:""} data-id="${esc(c.id)}" tabindex="0" aria-label="${esc(c.store)}, ${t.name} ${c.score}${f?", "+FINISHES[f]:""}">
   <div class="in">
     <div class="c-top"><span class="pill"><span class="orb"></span>${t.name}<b>${c.score}</b></span><span class="rate">$${c.pph.toFixed(0)}<small>/HR</small></span></div>
-    <h3 class="c-name">${esc(c.store)}</h3>
+    <h3 class="c-name">${esc(c.store)}${more?`<small class="more">+${more}</small>`:""}</h3>
     <div class="art">${art?`<img src="${art}" alt="" decoding="async">`:`<div class="fallback">$${(+c.pay).toFixed(0)}</div>`}<span class="no">#${String(c.no).padStart(2,"0")}</span>${f?`<span class="fin">${FIN_SHORT[f]}</span>`:""}</div>
     <div class="strip">${c.miles} mi<i>•</i>${c.minutes} min<i>•</i>${clock(c.ts)}</div>
     <div class="box">
@@ -1668,6 +1696,18 @@ function renderProfile(){
   $("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
   const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
 }
+
+/* If the phone reports a notch/status-bar inset but the page wasn't pushed down for it,
+   push it down ourselves so nothing starts hidden under the status bar. */
+function fixTopInset(){
+  try{
+    const d=document.createElement("div");d.style.cssText="position:fixed;top:0;left:0;width:1px;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none";
+    document.body.appendChild(d);const inset=d.getBoundingClientRect().height;d.remove();
+    const pad=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;
+    document.documentElement.style.setProperty("--top-fix",Math.max(0,inset-pad)+"px");
+  }catch(e){}
+}
+fixTopInset();addEventListener("orientationchange",()=>setTimeout(fixTopInset,300));
 
 /* =========================================================
    Boot
