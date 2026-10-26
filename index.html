@@ -7,12 +7,15 @@
    Set it to null to keep everything on the phone only. This config is not a secret; the security rules protect the data. */
 window.OFFERDEX_FIREBASE = {
   apiKey: "AIzaSyATkpK906fQqmpcnsNbWRaBMr6YnTfpcyo",
-  authDomain: "dashercards-17860.firebaseapp.com",
+  // On dasherdex.web.app, sign-in runs on the site's own address so it also works from the Home Screen app.
+  authDomain: /(^|\.)dasherdex\.web\.app$/.test(location.hostname) ? location.hostname : "dashercards-17860.firebaseapp.com",
   projectId: "dashercards-17860",
   storageBucket: "dashercards-17860.firebasestorage.app",
   messagingSenderId: "516297073486",
   appId: "1:516297073486:web:ba81c8e32e85545532f41f"
 };
+/* App Check (optional, recommended): paste your reCAPTCHA v3 SITE key between the quotes, e.g. "6Lc...". Leave null to keep it off. */
+window.OFFERDEX_APPCHECK_KEY = null;
 </script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#0b0c10">
@@ -753,6 +756,12 @@ html.calm .reveal.big .bp-back,html.calm .reveal.big .bp-name,html.calm .reveal.
 .art .chk2.ex{background:var(--t-rare);color:#fff}
 .istat{text-align:center;margin:0}
 .ibox.b1 i{left:0;top:-3px;transform:translateY(-100%)}
+
+.moved{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--track)}
+.moved>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.moved b{font-size:.92rem}.moved small{color:var(--mut);font-size:.78rem;line-height:1.35}
+.moved .btn{width:auto;padding-inline:14px;text-decoration:none;flex:none}
+.moved .mx{background:none;border:0;color:var(--mut);font-size:1.3rem;line-height:1;padding:4px;cursor:pointer;flex:none}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -769,6 +778,7 @@ html.calm .reveal.big .bp-back,html.calm .reveal.big .bp-name,html.calm .reveal.
       <div class="count" id="countBox" hidden><b id="countN">0</b>in your Dex</div>
     </div>
   </header>
+  <section class="moved" id="moved" hidden></section>
   <section class="quests" id="quests" aria-label="Daily quests"></section>
   <section class="goal" id="goal" aria-label="Daily goal" hidden></section>
 
@@ -1482,6 +1492,7 @@ function renderLadder(){
     TIERS.map(t=>`<div class="lrow" style="--c:${TC[t.id]}"><i></i><b>${t.name}<small>${t.min}–${t.max}</small></b><span>${pct(t.id)}%</span></div>`).join("");
 }
 function renderDex(){
+  try{movedBanner()}catch(e){}
   const cs=store.cards;
   $("empty").hidden=!!cs.length;$("col").hidden=!cs.length;$("countBox").hidden=!cs.length;
   if(!cs.length){renderLadder();return}
@@ -2550,6 +2561,12 @@ const Cloud={
         await Promise.all([loadJS(`https://cdn.jsdelivr.net/npm/firebase@${FBV}/firebase-auth-compat.js`),loadJS(`https://cdn.jsdelivr.net/npm/firebase@${FBV}/firebase-firestore-compat.js`)]);
       }
       if(!firebase.apps.length)firebase.initializeApp(FB_CFG);
+      /* App Check: proves requests come from this site, not a bot. Off until a reCAPTCHA v3 site key is pasted in index.html. */
+      const ack=window.OFFERDEX_APPCHECK_KEY;
+      if(ack&&/\.web\.app$|\.firebaseapp\.com$|\.github\.io$/.test(location.hostname)){
+        try{if(!firebase.appCheck)await loadJS(`https://cdn.jsdelivr.net/npm/firebase@${FBV}/firebase-app-check-compat.js`);
+          firebase.appCheck().activate(new firebase.appCheck.ReCaptchaV3Provider(ack),true)}catch(e){console.warn("App Check",e)}
+      }
       this.auth=firebase.auth();this.db=firebase.firestore();
       this.auth.getRedirectResult().catch(e=>{this.err=friendly(e);rerenderAccount()});
       this.auth.onAuthStateChanged(async u=>{
@@ -3126,10 +3143,22 @@ function fixTopInset(){
 }
 fixTopInset();addEventListener("orientationchange",()=>setTimeout(fixTopInset,300));
 
+/* Old github.io address: point people to the new home without forcing them.
+   Cards saved on this phone stay with this address, so signing in first carries them over. */
+const NEW_HOME="https://dasherdex.web.app/";
+function movedBanner(){
+  const el=$("moved");if(!el)return;
+  if(!/\.github\.io$/.test(location.hostname)||SET.movedHide){el.hidden=true;return}
+  el.hidden=false;
+  el.innerHTML=`<div><b>New home: dasherdex.web.app</b><small>${Cloud.user?"You're signed in, so your cards will be there when you sign in on the new site.":"Your cards are saved on this site only. Sign in with Google in Settings first, then sign in on the new site and they'll come with you."}</small></div>
+  <a class="btn sm" href="${NEW_HOME}">Open</a><button class="mx" aria-label="Hide">×</button>`;
+  el.querySelector(".mx").onclick=()=>{SET.movedHide=true;saveSet();el.hidden=true;padForBar&&padForBar()};
+}
+
 /* =========================================================
    Boot
    ========================================================= */
-loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")}).then(()=>Cloud.init());
+loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")}).then(()=>Cloud.init()).then(()=>{try{movedBanner()}catch(e){}});
 /* warm up the reader in the background so the first scan is faster */
 /* start loading the reader the moment Scan is touched, while the photo picker is still open */
 document.querySelector(".nscan").addEventListener("pointerdown",()=>getWorker().catch(()=>{}),{once:true});
