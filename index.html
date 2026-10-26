@@ -2,18 +2,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OfferDex</title>
 <script>
-/* Google sign-in, sync and friends. Paste your Firebase web config here (see SETUP.md), for example:
-   window.OFFERDEX_FIREBASE = {
-  apiKey: "AIzaSyATkpK906fQmpcnsNbWRaBMr6YnTfpcyo",
-  authDomain: "dashercards-17860.firebaseapp.com",
-  projectId: "dashercards-17860",
-  storageBucket: "dashercards-17860.firebasestorage.app",
-  messagingSenderId: "516297073486",
-  appId: "1:516297073486:web:ba81c8e32e85545532f41f"
-};
-   Leave it as null to keep everything on the phone only. This config is not a secret; the security rules protect the data. */
+/* Google sign-in, sync and friends: your Firebase web config (Project settings > General > Your apps > Config).
+   Copy and paste these values exactly; one wrong character in apiKey makes Google sign-in fail.
+   Set it to null to keep everything on the phone only. This config is not a secret; the security rules protect the data. */
 window.OFFERDEX_FIREBASE = {
-  apiKey: "AIzaSyATkpK906fQmpcnsNbWRaBMr6YnTfpcyo",
+  apiKey: "AIzaSyATkpK906fQqmpcnsNbWRaBMr6YnTfpcyo",
   authDomain: "dashercards-17860.firebaseapp.com",
   projectId: "dashercards-17860",
   storageBucket: "dashercards-17860.firebasestorage.app",
@@ -2022,6 +2015,8 @@ const Cloud={
   setSynced(m){try{localStorage.setItem(this.key(),JSON.stringify(m))}catch(e){}},
   async init(){
     if(!this.on)return;
+    /* every Firebase web API key is "AIza" + 35 characters: catch a mistyped key before Google shows a blank error page */
+    if(!/^AIza[0-9A-Za-z_-]{35}$/.test(String(FB_CFG.apiKey||""))){this.on=false;this.err="The apiKey in index.html looks incomplete ("+String(FB_CFG.apiKey||"").length+" characters; Firebase keys have 39). Copy it again from Firebase and paste it exactly.";rerenderAccount();return}
     try{
       if(!window.firebase){
         await loadJS(`https://cdn.jsdelivr.net/npm/firebase@${FBV}/firebase-app-compat.js`);
@@ -2205,6 +2200,8 @@ const Cloud={
 const myName=()=>(SET.name||(Cloud.user&&Cloud.user.displayName)||"Driver").trim().slice(0,24)||"Driver";
 function friendly(e){
   const c=(e&&e.code)||"",m=(e&&e.message)||String(e);
+  if(/invalid-api-key|api-key-not-valid|API key not valid/i.test(c+m))return "The apiKey in index.html isn't valid. Copy it again from Firebase (Project settings > General > Your apps > Config) and paste it exactly.";
+  if(/operation-not-allowed/.test(c))return "Google sign-in is turned off for this Firebase project. Turn it on in Authentication > Sign-in method > Google.";
   if(/unauthorized-domain/.test(c))return "This website isn't on your Firebase project's list of authorized domains yet (see SETUP.md, step 3).";
   if(/network|unavailable/.test(c+m))return "Couldn't reach the cloud. Check your connection; your cards are safe on this phone.";
   if(/permission/.test(c+m))return "The cloud refused that. Make sure the security rules from firestore.rules are published.";
