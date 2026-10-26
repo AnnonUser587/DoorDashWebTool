@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>OfferDex</title>
+<title>DasherDex</title>
 <script>
 /* Google sign-in, sync and friends: your Firebase web config (Project settings > General > Your apps > Config).
    Copy and paste these values exactly; one wrong character in apiKey makes Google sign-in fail.
@@ -24,7 +24,7 @@ window.OFFERDEX_APPCHECK_KEY = null;
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="OfferDex">
+<meta name="apple-mobile-web-app-title" content="DasherDex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
@@ -762,6 +762,11 @@ html.calm .reveal.big .bp-back,html.calm .reveal.big .bp-name,html.calm .reveal.
 .moved b{font-size:.92rem}.moved small{color:var(--mut);font-size:.78rem;line-height:1.35}
 .moved .btn{width:auto;padding-inline:14px;text-decoration:none;flex:none}
 .moved .mx{background:none;border:0;color:var(--mut);font-size:1.3rem;line-height:1;padding:4px;cursor:pointer;flex:none}
+/* DasherDex name: never wrap; shrink a little on narrow phones */
+.top .logo{white-space:nowrap;min-width:0;flex-shrink:1}
+.top .hright{flex-shrink:0}
+@media (max-width:400px){.top .logo{font-size:1.25rem;gap:8px}.top .logo svg{width:26px;height:26px}}
+@media (max-width:370px){.top .logo{font-size:1.1rem;gap:6px}.top .logo svg{width:24px;height:24px}}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -771,7 +776,7 @@ html.calm .reveal.big .bp-back,html.calm .reveal.big .bp-name,html.calm .reveal.
   <header class="top appbar">
     <div class="logo">
       <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="6" y="4" width="22" height="30" rx="4" stroke="#5f8dff" stroke-width="2.4" transform="rotate(-10 17 19)"/><rect x="12" y="6" width="22" height="30" rx="4" fill="#11131a" stroke="#f3c55a" stroke-width="2.4"/><path d="M19 23.5c0-1.6 1.4-2.3 3-2.3s3-.7 3-2.3-1.4-2.4-3-2.4-2.6.8-2.9 1.8M22 14.5v1.9M22 25.8v1.9" stroke="#f3c55a" stroke-width="2" stroke-linecap="round"/></svg>
-      OfferDex
+      DasherDex
     </div>
     <div class="hright">
       <div class="streak" id="streakBox" hidden title="Days in a row with a scan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.2-.6 5-2 6.6C8.5 10.3 7 12 7 14.6 7 18 9.3 21 12.5 21S18 18.4 18 15.2c0-2.4-1.2-4-2.3-5.3-.3 1.4-1 2.4-2.1 2.9.6-3.6-.3-7.6-1.6-10.8z"/></svg><b id="streakN">0</b></div>
@@ -856,7 +861,7 @@ html.calm .reveal.big .bp-back,html.calm .reveal.big .bp-name,html.calm .reveal.
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* OfferDex core: parse OCR text from a delivery offer and score it 1-100.
+/* DasherDex core: parse OCR text from a delivery offer and score it 1-100.
    Pure functions, no DOM. Works in the browser (window.OfferCore) and in Node (require). */
 (function (root) {
   "use strict";
@@ -998,11 +1003,11 @@ html.calm .reveal.big .bp-back,html.calm .reveal.big .bp-name,html.calm .reveal.
     ue: /\b(\d{1,3})\s*min\w*\s*[\(\[{]\s*(\d{1,3}(?:[.,]\d)?)\s*mi/i
   };
   function isTripLine(l) { return (TRIP_RE.dd.test(l) && /min/i.test(l)) || TRIP_RE.ue.test(l); }
-  // words that only appear on OfferDex's own screens (a screenshot of the app is not an offer)
-  const DEX_WORDS = /\b(offerdex|payout|per hour|per mile|single order|in your dex|did you take|best pull|daily quests|double-check|took it|rarity \d|grade \d+|specials|pickups? · \d drops?|dropoffs?\s*$)/gim;
+  // words that only appear on DasherDex's own screens (a screenshot of the app is not an offer)
+  const DEX_WORDS = /\b(offerdex|dasherdex|payout|per hour|per mile|single order|in your dex|did you take|best pull|daily quests|double-check|took it|rarity \d|grade \d+|specials|pickups? · \d drops?|dropoffs?\s*$)/gim;
   /**
    * Is this the text of one delivery offer?  Returns { ok, why }.
-   *   why: "dex"   a screenshot of OfferDex (or another app showing cards)
+   *   why: "dex"   a screenshot of DasherDex (or another app showing cards)
    *        "multi" more than one offer in the picture
    *        "none"  no offer on screen (no trip line like "2 stops (7.0 mi) • 23 min")
    */
@@ -1354,7 +1359,7 @@ async function loadStore(){
   for(const c of store.cards){
     c.added=c.added||c.ts;delete c.took;if(c.stores&&!(c.stops>=3))delete c.stores;c.finish=c.finish||"standard";
     /* rarity rebalance: re-grade old cards with the new formula; finishes already pulled are kept */
-    /* cards made from a screenshot of OfferDex itself (store name like "$7.25 Single Order") can't be trusted */
+    /* cards made from a screenshot of DasherDex itself (store name like "$7.25 Single Order") can't be trusted */
     if(c.verified!==false&&DEX_JUNK.test(c.store||""))c.verified=false;
     if(regrade){c.store=C.fixStoreName(c.store)||c.store;try{rescore(c,c)}catch(e){}}
     if(!c.ocr)c.ocr={pay:c.pay,minutes:c.minutes,miles:c.miles,stops:c.stops||2,legacy:1};
@@ -1460,7 +1465,7 @@ function cardHTML(c){
       </div>
       <p class="quote">${esc(t.blurb)}</p>
     </div>
-    <div class="c-foot"><span>OFFERDEX</span><span class="rule"></span><span>NO. ${serial(c)} <b>${stars(c.tier)}</b></span></div>
+    <div class="c-foot"><span>DASHERDEX</span><span class="rule"></span><span>NO. ${serial(c)} <b>${stars(c.tier)}</b></span></div>
   </div></article>`;
 }
 /* holo light follows the finger */
@@ -1732,14 +1737,14 @@ async function cardImage(c){
   cells.forEach(([k,v],i)=>{const cx=i%2?W/2+30:L+30,cy=996+(i<2?0:110);x.fillStyle="#8a90a2";x.font=`500 24px ${M}`;x.fillText(k,cx,cy+42);x.fillStyle="#eef0f5";x.font=`600 40px ${M}`;x.fillText(v,cx,cy+90)});
   /* quote + footer */
   x.fillStyle=col;x.fillRect(L,1252,6,44);x.fillStyle="#c9ccd6";x.font=`italic 400 30px ${M}`;x.fillText(t.blurb,L+24,1284);
-  x.fillStyle="#5d6375";x.font=`600 26px ${M}`;x.fillText("OFFERDEX",L,1380);x.textAlign="right";x.fillText(new Date(c.ts).toLocaleDateString([],{month:"short",day:"numeric",year:"numeric"}),R,1380);x.textAlign="left";
+  x.fillStyle="#5d6375";x.font=`600 26px ${M}`;x.fillText("DASHERDEX",L,1380);x.textAlign="right";x.fillText(new Date(c.ts).toLocaleDateString([],{month:"short",day:"numeric",year:"numeric"}),R,1380);x.textAlign="left";
   return new Promise(res=>cv.toBlob(res,"image/png"));
 }
 async function shareCard(c){
   const btn=$("dShare");if(btn)btn.disabled=true;
   try{
-    const blob=await cardImage(c),name=`offerdex-${String(c.store).toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,30)}.png`,file=new File([blob],name,{type:"image/png"});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"My OfferDex card"});return}
+    const blob=await cardImage(c),name=`dasherdex-${String(c.store).toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,30)}.png`,file=new File([blob],name,{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"My DasherDex card"});return}
     /* no share sheet (some browsers): show the picture so it can be pressed and saved */
     const u=URL.createObjectURL(blob);
     qrSheet(`<div class="qrcard"><h2>Your card</h2><img src="${u}" alt="Card picture" style="width:100%;border-radius:14px"><p class="msg">Press and hold the picture to save or share it.</p></div>`);
@@ -1862,7 +1867,7 @@ async function readImage(file,pool,onStep){
     const pl=(r1.lines||[]).find(l=>/\$\s?\d/.test(l.text));let payY=pl?off+Math.round(pl.bbox.y0/pl0):null;
     let p=C.parseOfferText(r1.text);
     /* is this one DoorDash / Uber Eats offer? */
-    const WHY={dex:"That's a screenshot of OfferDex, not a delivery offer.",multi:"This picture has more than one offer in it. Scan one offer per screenshot.",none:"This doesn't look like a DoorDash or Uber Eats offer screen."};
+    const WHY={dex:"That's a screenshot of DasherDex, not a delivery offer.",multi:"This picture has more than one offer in it. Scan one offer per screenshot.",none:"This doesn't look like a DoorDash or Uber Eats offer screen."};
     let v1=C.validateOffer(r1.text);
     if(!v1.ok&&v1.why!=="none"){out.status="invalid";out.why=WHY[v1.why];out.parsed={};return out}
     /* pass 2: the whole screen when something is missing (other layouts) */
@@ -2049,7 +2054,7 @@ async function scanPack(files){
   openSheet();$("sheetCol").classList.add("wide");
   const n=files.length,results=[];
   $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
-    <div class="pack" id="pack"><div class="crimp t"></div><div class="lid"></div><div class="face">${packSVG}<div class="pn">OfferDex</div><div class="pc">${n} offers</div></div><div class="crimp b"></div></div>
+    <div class="pack" id="pack"><div class="crimp t"></div><div class="lid"></div><div class="face">${packSVG}<div class="pn">DasherDex</div><div class="pc">${n} offers</div></div><div class="crimp b"></div></div>
     <div class="status"><div class="bar"><i id="kbar"></i></div><p id="kstep">Getting ready</p></div>
     <div class="pdots" id="pdots">${files.map((_,i)=>`<span class="pdot" id="pd${i}"></span>`).join("")}</div>
     <p class="tapnote">Keep this screen open while the pack is read. About 3–6 seconds per screenshot.</p>
@@ -2289,7 +2294,7 @@ function renderSettings(){
     <p class="msg">Tip: pick up to 10 screenshots at once to open a pack. Duplicates are skipped automatically.</p>
     <button class="btn ghost sm" id="setHow">Show the scanning guide</button>
   </div>
-  <div class="sbox"><h3>Add OfferDex to your Home Screen</h3>
+  <div class="sbox"><h3>Add DasherDex to your Home Screen</h3>
     <p class="msg">It opens full screen like an app, with its own icon.</p>
     <ol class="steps"><li>Open this page in <b>Safari</b>.</li><li>Tap the <b>Share</b> button ${SHARE_ICON.replace('<svg','<svg style="width:16px;height:16px;vertical-align:-3px"')} at the bottom.</li><li>Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.</li></ol>
     <p class="msg">The Home Screen app keeps its own copy of your cards. ${Cloud.on?"Sign in there with the same Google account and your Dex syncs over.":"Cards scanned in Safari won't appear there."}</p>
@@ -2311,8 +2316,8 @@ function renderSettings(){
     </details>
     <textarea id="csvOut" readonly hidden aria-label="CSV backup"></textarea>
   </div>
-  <p class="disclaimer"><b>Just for fun.</b> Grades, verdicts, rarities and stats are rough estimates from your screenshots, not financial advice. OfferDex isn't affiliated with DoorDash or Uber, and the scanner can misread things, so always check the offer in your app before you accept. Made with love for drivers <span class="heart">♥</span></p>
-  <p class="about">OfferDex · grading v${C.SCORE_VERSION}</p>`;
+  <p class="disclaimer"><b>Just for fun.</b> Grades, verdicts, rarities and stats are rough estimates from your screenshots, not financial advice. DasherDex is an independent fan project and isn't affiliated with or endorsed by DoorDash or Uber, and the scanner can misread things, so always check the offer in your app before you accept. Made with love for drivers <span class="heart">♥</span></p>
+  <p class="about">DasherDex · grading v${C.SCORE_VERSION}</p>`;
   $("settingsBody").querySelectorAll(".seg button").forEach(btn=>btn.onclick=()=>{SET[btn.dataset.k]=btn.dataset.v;saveSet();applyTheme();renderSettings()});
   $("setMotion").onchange=e=>{SET.motion=e.target.checked;saveSet();applyTheme()};
   $("setClock").onchange=e=>{SET.clock=e.target.checked;saveSet()};
@@ -2793,7 +2798,7 @@ const ago=t=>{if(!t)return "not yet";const s=Math.round((Date.now()-t)/1000);ret
 
 /* ---------- Settings: account + privacy ---------- */
 function accountHTML(){
-  if(!Cloud.on)return `<div class="sbox"><h3>Account</h3><p class="msg">Cloud sync isn't set up for this copy of OfferDex, so your cards are saved on this phone only.${FB_CFG===null&&window.OFFERDEX_FIREBASE===undefined?"":""} The site owner can turn on Google sign-in by following SETUP.md.</p>${Cloud.err?`<p class="msg err">${esc(Cloud.err)}</p>`:""}</div>`;
+  if(!Cloud.on)return `<div class="sbox"><h3>Account</h3><p class="msg">Cloud sync isn't set up for this copy of DasherDex, so your cards are saved on this phone only.${FB_CFG===null&&window.OFFERDEX_FIREBASE===undefined?"":""} The site owner can turn on Google sign-in by following SETUP.md.</p>${Cloud.err?`<p class="msg err">${esc(Cloud.err)}</p>`:""}</div>`;
   if(!Cloud.ready)return `<div class="sbox"><h3>Account</h3><p class="msg">Connecting…</p></div>`;
   if(!Cloud.user)return `<div class="sbox"><h3>Account</h3>
     <p class="msg">Sign in to save your Dex to your Google account, keep it in sync on every device, and add friends.</p>
@@ -2895,7 +2900,7 @@ async function openFriend(fid){
 
 /* =========================================================
    QR codes for adding friends
-   Your QR is a link to this site with ?add=CODE on the end. Pointing an iPhone camera at it opens OfferDex
+   Your QR is a link to this site with ?add=CODE on the end. Pointing an iPhone camera at it opens DasherDex
    and offers to add you. Inside the app, "Scan a QR" reads it with the camera, or from a photo.
    ========================================================= */
 const QR_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 17h3v3"/></svg>';
@@ -2919,12 +2924,12 @@ function closeQR(){stopCam();const el=$("qrSheet");if(el)el.hidden=true;if($("sh
 async function showMyQR(){
   const code=Cloud.profile&&Cloud.profile.code;if(!code)return;
   const link=addLink(code);
-  qrSheet(`<div class="qrcard"><h2>Add me on OfferDex</h2><div class="qrbox" id="qrBox"><p class="msg">Loading…</p></div>
-    <b class="qrcode">${esc(code.slice(0,4)+" "+code.slice(4))}</b><p class="msg">Have a friend point their iPhone camera at this, or tap Scan a QR in their OfferDex.</p></div>
+  qrSheet(`<div class="qrcard"><h2>Add me on DasherDex</h2><div class="qrbox" id="qrBox"><p class="msg">Loading…</p></div>
+    <b class="qrcode">${esc(code.slice(0,4)+" "+code.slice(4))}</b><p class="msg">Have a friend point their iPhone camera at this, or tap Scan a QR in their DasherDex.</p></div>
     <div class="btnrow"><button class="btn" id="qrShare">Share link</button><button class="btn ghost" id="qrCopy">Copy link</button></div>`);
   try{await needQR();const q=qrcode(0,"M");q.addData(link);q.make();$("qrBox").innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true})}
   catch(e){$("qrBox").innerHTML=`<p class="msg">The QR code couldn't load. Share the link instead.</p>`}
-  $("qrShare").onclick=async()=>{try{if(navigator.share){await navigator.share({title:"Add me on OfferDex",text:`Add me on OfferDex: ${code}`,url:link});return}}catch(e){if(e&&e.name==="AbortError")return}
+  $("qrShare").onclick=async()=>{try{if(navigator.share){await navigator.share({title:"Add me on DasherDex",text:`Add me on DasherDex: ${code}`,url:link});return}}catch(e){if(e&&e.name==="AbortError")return}
     try{await navigator.clipboard.writeText(link);toast("Link copied")}catch(e){toast(link)}};
   $("qrCopy").onclick=async()=>{try{await navigator.clipboard.writeText(link);toast("Link copied")}catch(e){toast(link)}};
 }
@@ -2940,7 +2945,7 @@ async function scanFriendQR(){
     try{await needJsQR();const bm=await loadBitmap(f);const W=Math.min(1200,bm.width),H=Math.round(bm.height*W/bm.width),cv=document.createElement("canvas");cv.width=W;cv.height=H;
       const x=cv.getContext("2d",{willReadFrequently:true});x.drawImage(bm,0,0,W,H);freeBm(bm);
       const r=jsQR(x.getImageData(0,0,W,H).data,W,H);const code=r&&codeFrom(r.data);
-      if(code)gotFriendCode(code);else $("camMsg").textContent="No OfferDex QR found in that picture."}
+      if(code)gotFriendCode(code);else $("camMsg").textContent="No DasherDex QR found in that picture."}
     catch(err){$("camMsg").textContent="Couldn't read that picture."}};
   try{
     await needJsQR();
@@ -3075,7 +3080,7 @@ function postSheet(c){
   const draw=()=>{
     qrSheet(`<div class="qrcard post"><h2>Post this card</h2>
       <div class="seg seg2" role="radiogroup" aria-label="Who sees it"><button data-aud="friends" aria-pressed="${aud==="friends"}">Friends</button><button data-aud="global" aria-pressed="${aud==="global"}">Global</button></div>
-      <p class="msg">${aud==="friends"?"Only your friends see it.":"Every signed-in OfferDex driver sees it, with your name and level."} The route map and address are never included.</p>
+      <p class="msg">${aud==="friends"?"Only your friends see it.":"Every signed-in DasherDex driver sees it, with your name and level."} The route map and address are never included.</p>
       <div class="pcard">${cardHTML({...c,_friend:true,_art:""})}</div>
       ${aud==="friends"?`<label class="nlab" for="pCap"><span>Caption</span><span id="pCount">${cap.length}/${CAPTION_MAX}</span></label><textarea id="pCap" maxlength="${CAPTION_MAX}" rows="2" placeholder="Say something (optional)">${esc(cap)}</textarea>`
         :`<div class="ntags" role="radiogroup" aria-label="Caption">${GLOBAL_CAPTIONS.map(t=>`<button class="ntag" data-cap="${esc(t)}" aria-pressed="${cap===t}">${esc(t)}</button>`).join("")}</div>`}
@@ -3095,11 +3100,11 @@ $("feedTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;feedAu
 async function renderFeed(force){
   document.querySelectorAll("#feedTabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.a===feedAud));
   const box=$("feedBody");
-  if(!Cloud.on){box.innerHTML=`<div class="sempty">The feed needs cloud sync, which isn't set up for this copy of OfferDex.</div>`;return}
+  if(!Cloud.on){box.innerHTML=`<div class="sempty">The feed needs cloud sync, which isn't set up for this copy of DasherDex.</div>`;return}
   if(!Cloud.ready){box.innerHTML=`<div class="sempty">Connecting…</div>`;return}
   if(!Cloud.user){box.innerHTML=`<div class="sempty">Sign in with Google to see what friends and other drivers are pulling.<br><br><button class="btn sm" id="feedIn" style="width:auto;padding-inline:20px">Go to Settings</button></div>`;$("feedIn").onclick=()=>{show("vSettings");toTop()};return}
   const aud=feedAud,fresh=feedCache[aud]&&Date.now()-feedAt[aud]<60000&&!force;
-  $("feedSub").textContent=aud==="friends"?"You and your friends":"Everyone on OfferDex";
+  $("feedSub").textContent=aud==="friends"?"You and your friends":"Everyone on DasherDex";
   if(!fresh){
     if(!feedCache[aud])box.innerHTML=`<div class="sempty">Loading…</div>`;
     try{feedCache[aud]=aud==="friends"?await Cloud.feedFriends():await Cloud.feedGlobal();feedAt[aud]=Date.now()}
