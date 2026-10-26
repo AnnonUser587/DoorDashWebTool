@@ -480,8 +480,15 @@ html.calm *,html.calm *::before,html.calm *::after{animation:none!important;tran
 body{padding-top:var(--top-fix,0px)}
 
 /* ===== v5: quests, streak, rewards, scan checks ===== */
-/* page headers sit in the page instead of floating over it, so nothing is ever covered */
-.appbar{position:relative;top:auto;box-shadow:none;border-bottom:1px solid var(--line);padding-top:12px}
+/* page headers stay pinned just below the iPhone status bar on every page, with a solid background
+   so the page scrolls underneath them instead of over them */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:12;background:var(--bg);box-shadow:none;border-bottom:1px solid var(--line);padding-top:12px}
+body::before{z-index:13}
+/* the close button on the scan / pack screen stays reachable while you scroll */
+.sheet .close{position:sticky;top:0;z-index:5;flex:none;box-shadow:0 4px 14px -4px #0008}
+/* never let a long word or number run off the side of the screen */
+.wrap,.sheet .col{overflow-wrap:anywhere}
+.kpi small,.ds,.msg,.bs,.qt{overflow-wrap:anywhere}
 .hright{display:flex;align-items:center;gap:12px}
 .streak{display:flex;align-items:center;gap:4px;min-height:36px;padding:0 10px;border-radius:99px;background:color-mix(in srgb,#ff8a3d 16%,var(--bg2));border:1px solid color-mix(in srgb,#ff8a3d 45%,var(--line));color:#ff8a3d;font:700 1rem var(--f-display);font-variant-numeric:tabular-nums}
 .streak svg{width:18px;height:18px}
@@ -519,6 +526,24 @@ body{padding-top:var(--top-fix,0px)}
 .checkbar .mini,.bitem button.mini{min-height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-weight:700;padding:0 14px;cursor:pointer;flex:none}
 .art .chk2{position:absolute;left:2cqw;bottom:2cqw;font:700 2.4cqw/1 var(--f-mono);letter-spacing:.12em;border-radius:1.6cqw;padding:1.2cqw 1.8cqw;background:#f5b83d;color:#111}
 html[data-od="light"] .qc{color:#fff}
+
+/* ===== v6: the top bar is pinned to the screen and the page is pushed down by exactly its height ===== */
+.appbar,.topbar{position:fixed!important;top:0!important;left:0;right:0;z-index:30;margin:0!important;
+  padding-top:calc(env(safe-area-inset-top,0px) + 10px)!important;padding-bottom:10px!important;
+  padding-left:max(16px,env(safe-area-inset-left,0px),calc(50% - 264px))!important;padding-right:max(16px,env(safe-area-inset-right,0px),calc(50% - 264px))!important;
+  background:var(--bg);border-bottom:1px solid var(--line);box-shadow:0 6px 16px -10px #0008}
+.top.appbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.topbar{display:flex;align-items:center;gap:10px}
+.topbar .tt{min-width:0}
+.wrap{padding-top:var(--bar-pad,90px)!important}
+body::before{display:none}
+/* long values wrap instead of being cut off */
+.kpi b{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere;font-size:clamp(1.05rem,5.2vw,1.5rem)}
+.pagehead h1{font-size:1.5rem}
+.count{white-space:nowrap}
+@media (max-width:370px){.top .logo{font-size:1.2rem}.count b{font-size:1.05rem}.count{font-size:.6rem}}
+.rchip.lk{color:var(--t-epic);border-color:color-mix(in srgb,var(--t-epic) 50%,var(--line))}
+.vpill[data-v="lucky"]{--v:var(--t-legendary)}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -748,7 +773,7 @@ html[data-od="light"] .qc{color:#fff}
 
   // Scoring version 2 (rebalanced): curves climb slower so the top of the scale is rare.
   // A score of 100 needs about $60/hr, $5/mile and a $20+ payout, all on one single order.
-  const SCORE_VERSION = 2;
+  const SCORE_VERSION = 3;
   const PPH_CURVE = [[8, 0], [15, 25], [20, 50], [25, 66], [30, 78], [40, 90], [60, 100]];
   const PPM_CURVE = [[0.5, 0], [1.0, 25], [1.5, 50], [2.0, 65], [2.5, 77], [3.5, 90], [5, 100]];
   const W_PPH = 0.55, W_PPM = 0.45;
@@ -841,12 +866,13 @@ html[data-od="light"] .qc{color:#fff}
 
   /* ---------- 4. Card finish (the random "pull") ---------- */
   // Chance of each special finish by tier. Trash almost never gets one; Legendary usually does.
+  // v3: rarer. Holo is the rarest finish at every tier.
   const FINISH_ODDS = {
-    trash:     { holo: 0.002, carbon: 0.004, inverted: 0.004 },   // 1% total
-    common:    { holo: 0.02,  carbon: 0.03,  inverted: 0.03 },    // 8%
-    rare:      { holo: 0.07,  carbon: 0.06,  inverted: 0.05 },    // 18%
-    epic:      { holo: 0.20,  carbon: 0.10,  inverted: 0.06 },    // 36%
-    legendary: { holo: 0.50,  carbon: 0.12,  inverted: 0.05 }     // 67%
+    trash:     { holo: 0.001, carbon: 0.002, inverted: 0.002 },   // 0.5% total
+    common:    { holo: 0.004, carbon: 0.008, inverted: 0.008 },   // 2%
+    rare:      { holo: 0.012, carbon: 0.019, inverted: 0.019 },   // 5%
+    epic:      { holo: 0.03,  carbon: 0.035, inverted: 0.035 },   // 10%
+    legendary: { holo: 0.12,  carbon: 0.07,  inverted: 0.06 }     // 25%
   };
   const FINISHES = { holo: "Holographic", carbon: "Carbon Fiber", inverted: "Inverted" };
   /**
@@ -867,7 +893,24 @@ html[data-od="light"] .qc{color:#fff}
   }
   /* Pack bonus: only the last (best) card of a multi-scan gets it, and it grows with the number of new cards.
      2 cards = x1.25 ... 10 cards = x3.25 */
-  const packBoost = n => (n >= 2 ? 1 + 0.25 * (Math.min(10, n) - 1) : 1);
+  const packBoost = n => (n >= 2 ? 1 + 0.2 * (Math.min(10, n) - 1) : 1);   // 2 cards x1.2 ... 10 cards x2.8
+
+  /* ---------- Luck: a little randomness in the rarity ----------
+     The offer's grade (and the Accept/Consider/Decline call) never changes. The card's rarity score is the
+     grade plus luck: usually -4..+4 (most often near 0), and a 3% "lucky pull" adds 8 more.
+     seed is a number in [0,1) taken from the screenshot, so re-uploading can't re-roll it. */
+  const frac = x => x - Math.floor(x);
+  function luckFor(seed) {
+    const s = +seed || 0, u1 = frac(s * 9301.37 + 0.211), u2 = frac(s * 49297.11 + 0.733), g = frac(s * 104729.53 + 0.417);
+    let luck = Math.round((u1 + u2 - 1) * 4);
+    if (g < 0.03) luck += 8;
+    return luck;
+  }
+  /* 100 stays reserved for offers that graded 97+ on their own */
+  function applyLuck(grade, luck) {
+    const s = grade + (+luck || 0);
+    return Math.max(1, Math.min(grade >= 97 ? 100 : 99, Math.round(s)));
+  }
 
   /* ---------- 5. Offer time from the phone's status-bar clock ---------- */
   // Status bar reads like "10:21" (12-hour, no am/pm). Returns {h, m} or null.
@@ -923,7 +966,7 @@ html[data-od="light"] .qc{color:#fff}
   }
 
   const api = { orderClass, parseOfferText, scoreOffer, tierFor, TIERS, curve, PPH_CURVE, PPM_CURVE,
-    verdictFor, rollFinish, finishOdds, packBoost, parseClock, offerTime, FINISH_ODDS, FINISHES, offerKey, cleanStore, titleCase, fixStoreName, parsePay, SCORE_VERSION };
+    verdictFor, rollFinish, finishOdds, packBoost, luckFor, applyLuck, parseClock, offerTime, FINISH_ODDS, FINISHES, offerKey, cleanStore, titleCase, fixStoreName, parsePay, SCORE_VERSION };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.OfferCore = api;
 })(typeof window !== "undefined" ? window : globalThis);
@@ -1002,16 +1045,23 @@ const sameOffer=(o,pool)=>{const k=C.offerKey(o);return (pool||store.cards).find
 /* =========================================================
    Cards
    ========================================================= */
+/* luck comes from a different part of the screenshot's fingerprint than the finish roll */
+const luckSeed=c=>c.sha?parseInt(c.sha.slice(8,16),16)/4294967296:(((+c.roll||0)*7.7713+0.1234)%1);
 function makeCard(o,ex){
-  const r=C.scoreOffer(o),roll=ex.roll??Math.random(),boost=ex.boost||1;
+  const g=C.scoreOffer(o),roll=ex.roll??Math.random(),boost=ex.boost||1;
+  const luck=C.luckFor(luckSeed({sha:ex.sha,roll})),score=C.applyLuck(g.score,luck),r={...g,score,tier:C.tierFor(score)};
   return {id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),no:store.next++,
     store:o.store||"Mystery order",platform:o.platform||"",pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,
     stores:Array.isArray(o.stores)&&o.stores.length>1?o.stores.slice(0,3):undefined,dropoffs:o.dropoffs||undefined,
-    score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
+    grade:g.score,luck,score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
     art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:new Date().toISOString(),pack:ex.pack||"",took:null};
 }
 /* the finish is decided once, when the card is pulled: fixing numbers later re-grades the card but never re-rolls it */
-function rescore(c,o){const r=C.scoreOffer(o);Object.assign(c,{pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,store:o.store||c.store},o.ts?{ts:o.ts}:{},{score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts})}
+function rescore(c,o){const r=C.scoreOffer(o);if(c.luck==null)c.luck=C.luckFor(luckSeed(c));const score=C.applyLuck(r.score,c.luck);
+  Object.assign(c,{pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,store:o.store||c.store},o.ts?{ts:o.ts}:{},{grade:r.score,score,tier:C.tierFor(score).id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts})}
+/* what to do with the offer comes from its grade; luck only moves the rarity */
+const gradeOf=c=>c.grade??c.score;
+const vOf=c=>C.verdictFor(gradeOf(c));
 const special=c=>c.finish&&c.finish!=="standard";
 const stars=t=>({trash:"",common:"★",rare:"★★",epic:"★★★",legendary:"★★★★"}[t]);
 function serial(c){const d=new Date(c.ts);return (c.platform==="Uber Eats"?"UE":"DD")+"-"+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(c.no).padStart(3,"0")}
@@ -1053,7 +1103,7 @@ function dayName(key){
 }
 const agg=cs=>{const pay=cs.reduce((a,c)=>a+c.pay,0),min=cs.reduce((a,c)=>a+c.minutes,0),mi=cs.reduce((a,c)=>a+c.miles,0);
   return {n:cs.length,pay,min,mi,pph:min?pay/min*60:0,ppm:mi?pay/mi:0,best:cs.length?Math.max(...cs.map(c=>c.score)):0,
-    good:cs.filter(c=>c.score>=51).length,mid:cs.filter(c=>c.score>=26&&c.score<=50).length,bad:cs.filter(c=>c.score<=25).length,
+    good:cs.filter(c=>gradeOf(c)>=51).length,mid:cs.filter(c=>gradeOf(c)>=26&&gradeOf(c)<=50).length,bad:cs.filter(c=>gradeOf(c)<=25).length,
     taken:cs.filter(c=>c.took===true),takenPay:cs.filter(c=>c.took===true).reduce((a,c)=>a+c.pay,0)}};
 
 /* =========================================================
@@ -1061,7 +1111,7 @@ const agg=cs=>{const pay=cs.reduce((a,c)=>a+c.pay,0),min=cs.reduce((a,c)=>a+c.mi
    ========================================================= */
 let filter="all",fresh=new Set();const collapsed=new Map();
 function renderLadder(){
-  const pct=t=>Math.round(Object.values(FINISH_ODDS[t]).reduce((a,b)=>a+b,0)*100);
+  const pct=t=>{const v=Object.values(FINISH_ODDS[t]).reduce((a,b)=>a+b,0)*100;return v<1?v.toFixed(1):Math.round(v)};
   $("ladder").innerHTML=`<div class="lhead"><span>Rarity</span><span>Special finish odds</span></div>`+
     TIERS.map(t=>`<div class="lrow" style="--c:${TC[t.id]}"><i></i><b>${t.name}<small>${t.min}–${t.max}</small></b><span>${pct(t.id)}%</span></div>`).join("");
 }
@@ -1111,6 +1161,15 @@ $("days").onkeydown=e=>{if(e.key==="Enter"){const c=e.target.closest(".card");if
    ========================================================= */
 let view="vDex",lastList="vDex";
 const VIEWS=["vDex","vStats","vProfile","vSettings","vDetail"];
+/* push the page down by the pinned top bar's height, so its first line is never underneath it */
+function padForBar(){
+  const v=$(view);if(!v)return;const bar=v.querySelector(".appbar,.topbar");
+  const offset=(parseFloat(getComputedStyle(document.documentElement).paddingTop)||0)+(parseFloat(getComputedStyle(document.body).paddingTop)||0);
+  const h=bar?bar.getBoundingClientRect().height:0;
+  v.style.setProperty("--bar-pad",Math.max(12,Math.round(h-offset+14))+"px");
+}
+const barRO=typeof ResizeObserver!=="undefined"?new ResizeObserver(()=>padForBar()):null;
+addEventListener("resize",()=>padForBar());
 function show(v){
   view=v;for(const id of VIEWS)$(id).hidden=id!==v;
   $("nav").hidden=v==="vDetail";
@@ -1120,6 +1179,8 @@ function show(v){
   if(v==="vStats")renderStats();
   if(v==="vProfile")renderProfile();
   if(v==="vSettings")renderSettings();
+  const bar=$(v).querySelector(".appbar,.topbar");if(bar&&barRO){barRO.disconnect();barRO.observe(bar)}
+  padForBar();
 }
 /* always open a page at its top, so its header is never hidden under the status bar */
 const toTop=()=>{const go=()=>{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0};go();requestAnimationFrame(go);setTimeout(go,60)};
@@ -1142,7 +1203,7 @@ const validOffer=o=>o.pay>0&&o.minutes>0&&o.miles>0;
 
 function openDetail(id){
   const c=store.cards.find(x=>x.id===id);if(!c)return;
-  const v=C.verdictFor(c.score),f=special(c)?c.finish:"";
+  const v=vOf(c),f=special(c)?c.finish:"";
   const bar=(lab,val,col,txt)=>`<div class="brow"><span>${lab}</span><div class="tr"><i style="width:${Math.max(2,Math.min(100,val))}%;--c:${col}"></i></div><b>${txt}</b></div>`;
   const when=new Date(c.ts);
   $("detail").innerHTML=`
@@ -1155,7 +1216,8 @@ function openDetail(id){
        <button class="tbtn yes" data-took="1" aria-pressed="${c.took===true}">Took it</button><button class="tbtn no" data-took="0" aria-pressed="${c.took===false}">Passed</button></div>
    </div>
    <div class="panel">
-     <h2>${c.score} · ${v.label}</h2>
+     <h2>Grade ${gradeOf(c)} · ${v.label}</h2>
+     <p class="msg">Rarity ${c.score} = grade ${gradeOf(c)} ${c.luck>=0?"+":"−"} ${Math.abs(c.luck||0)} luck${(c.luck||0)>=8?" · lucky pull":""}</p>
      <p class="msg">${when.toLocaleDateString([],{weekday:"long",month:"short",day:"numeric"})} at ${clock(when)} · ${esc(c.platform||"Delivery")}</p>
      <div class="tiers">${TIERS.slice().reverse().map(t=>`<div style="--c:${TC[t.id]}" class="${t.id===c.tier?"on":""}">${t.name}<br>${t.min}–${t.max}</div>`).join("")}</div>
      <div class="break">
@@ -1176,7 +1238,7 @@ function openDetail(id){
   $("detail").querySelectorAll("[data-took]").forEach(b=>b.onclick=()=>{const val=b.dataset.took==="1";c.took=c.took===val?null:val;save();openDetail(c.id)});
   if($("dCheck"))$("dCheck").onclick=()=>{const d=$("dFix");d.open=true;d.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
   $("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
-    rescore(c,o);c.check=false;save();toast("Re-graded: "+c.score);openDetail(c.id)};
+    rescore(c,o);c.check=false;save();toast("Re-graded: "+gradeOf(c)+" · "+vOf(c).label);openDetail(c.id)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to remove";return}
     store.cards=store.cards.filter(x=>x.id!==id);ART.delete(id);idb.del(id).catch(()=>{});save();show(lastList);toast("Card removed")};
 }
@@ -1358,12 +1420,12 @@ async function scanOne(file){
   grade(r);
 }
 function verdictHTML(card){
-  const v=C.verdictFor(card.score),why=card.reasons.filter(x=>!/clears|excellent/.test(x)).slice(0,2).join(" · ");
+  const v=vOf(card),why=card.reasons.filter(x=>!/clears|excellent/.test(x)).slice(0,2).join(" · ");
   return `<div class="verdict" data-v="${v.id}">
       <div class="vk">${esc(card.store)} · ${money(card.pay)}</div>
       <div class="vw">${v.label}</div>
       <div class="vl">${v.line}</div>
-      <div class="vnums"><div><b>${money(card.pph)}</b><span>Per hour</span></div><div><b>${money(card.ppm)}</b><span>Per mile</span></div><div><b>${card.score}</b><span>Score</span></div></div>
+      <div class="vnums"><div><b>${money(card.pph)}</b><span>Per hour</span></div><div><b>${money(card.ppm)}</b><span>Per mile</span></div><div><b>${gradeOf(card)}</b><span>Grade</span></div></div>
       ${why?`<p class="vwhy">${esc(why)}</p>`:""}
     </div>`;
 }
@@ -1395,7 +1457,7 @@ function wireQuickFix(card,after){
   const btn=$("qfixBtn"),open=()=>{
     $("qfix").innerHTML=`<div class="panel"><h2>Fix the numbers</h2><div class="fields">${fieldsHTML("q",card,true)}</div><button class="btn" id="qSave">Save and re-grade</button></div>`;
     $("qSave").onclick=()=>{const o=readFields("q");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
-      rescore(card,o);card.check=false;save();toast("Re-graded: "+card.score+" · "+C.verdictFor(card.score).label);after()};
+      rescore(card,o);card.check=false;save();toast("Re-graded: "+gradeOf(card)+" · "+vOf(card).label);after()};
   };
   if(btn)btn.onclick=open;
   const cb=$("checkFix");if(cb)cb.onclick=()=>{open();$("qfix").scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
@@ -1466,9 +1528,10 @@ async function scanPack(files){
   const ok=results.filter(r=>r.status==="ok");
   /* build the cards: worst to best, the best one last with the pack bonus */
   const packId="p"+Date.now().toString(36);
-  const scored=ok.map(r=>({r,s:C.scoreOffer({...r.parsed,stops:r.parsed.stops||2})})).sort((a,b)=>a.s.score-b.s.score||a.s.pph-b.s.pph);
-  const boost=C.packBoost(scored.length);
-  const cards=scored.map((x,i)=>cardFrom(x.r,{pack:packId,boost:i===scored.length-1?boost:1}));
+  const boost=C.packBoost(ok.length);
+  const cards=ok.map(r=>cardFrom(r,{pack:packId})).sort((a,b)=>a.score-b.score||a.pph-b.pph);
+  if(cards.length){const no0=store.next-cards.length;cards.forEach((c,i)=>c.no=no0+i);
+    const lastC=cards[cards.length-1];lastC.boost=boost;lastC.finish=C.rollFinish(lastC.tier,lastC.roll,boost)}
   const before=snap();
   store.cards.push(...cards);finishSave(cards);
   const extras=results.filter(r=>r.status!=="ok");
@@ -1481,11 +1544,11 @@ async function scanPack(files){
   pack.onclick=open;$("openPack").onclick=open;pack.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}};
 }
 function revealPack(P,i){
-  const {cards}=P,c=cards[i],last=i===cards.length-1,v=C.verdictFor(c.score),f=special(c)?c.finish:"";
+  const {cards}=P,c=cards[i],last=i===cards.length-1,v=vOf(c),f=special(c)?c.finish:"";
   $("sBody").innerHTML=`<div class="rv">
     <div class="prog-pips" aria-label="Card ${i+1} of ${cards.length}">${cards.map((_,k)=>`<i class="${k<=i?"on":""}${k===cards.length-1?" last":""}"></i>`).join("")}</div>
     ${last&&cards.length>1?`<div class="bestpull">★ Best pull ★</div>`:`<div class="pcount">Card <b>${i+1}</b> of ${cards.length}</div>`}
-    <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span>${c.check&&c.check.length?`<span class="vpill" data-v="consider">Check</span>`:""}</div>
+    <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span>${c.luck>=8?`<span class="vpill" data-v="lucky">Lucky +${c.luck}</span>`:""}${c.check&&c.check.length?`<span class="vpill" data-v="consider">Check</span>`:""}</div>
     ${f?`<div class="pull ${f}" style="animation-delay:.7s">✦ ${FINISHES[f]} pull ✦</div>`:""}
     <div class="reveal" id="rvCard"><div class="burst" style="--bc:${f==="holo"?"#c44fff":TC[c.tier]};${last?"":"animation-duration:1s"}"></div>${cardHTML(c)}</div>
     ${last?`<div class="packend">${P.rewards}${packExtrasHTML(P)}${actions("Scan more")}</div>`
@@ -1524,7 +1587,7 @@ function wirePackExtras(P,back){
     const r=P.extras[+btn.dataset.fix];
     askFix(r,done=>{
       if(done){const before=snap(),card=cardFrom(done,{});store.cards.push(card);finishSave([card]);P.cards.push(card);P.extras.splice(P.extras.indexOf(r),1);
-        const a=snap();toast(C.verdictFor(card.score).label+" · "+card.score+" added · +"+(a.xp-before.xp)+" XP")}
+        const a=snap();toast(vOf(card).label+" · "+gradeOf(card)+" added · +"+(a.xp-before.xp)+" XP")}
       back();
     });
   });
@@ -1684,6 +1747,8 @@ function renderSettings(){
   <div class="sbox"><h3>How cards are graded</h3>
     <div class="hbars">${[["legendary","$30/hr, $2.50/mi, single order, 8 mi or less, $10+ pay"],["epic","$25/hr, $1.75/mi, 10 mi or less, $7+ pay"],["rare","$19/hr and $1.25/mi"],["common","Everything in between"],["trash","Under $15/hr, under $1/mi, or 25+ mi"]].map(([t,d])=>{const T=TIERS.find(x=>x.id===t);return `<div class="grade"><i style="--c:${TC[t]}"></i><span><b>${T.name}</b> <small>${T.min}–${T.max}</small><br><span class="gd">${d}</span></span></div>`}).join("")}</div>
     <p class="msg">A 100 needs about $60/hr, $5/mi and a $20+ payout on one order. 3+ stops, payouts under $5 and trips over 12 mi lose points.</p>
+    <p class="msg">Rarity adds a little luck to the grade: usually up to 4 points either way, and 3% of scans are lucky pulls worth 8 more. Accept, Consider and Decline always use the grade alone.</p>
+    <p class="msg">Special finish odds: Trash 0.5% · Common 2% · Rare 5% · Epic 10% · Legendary 25%. Holo is the rarest. The best card in a pack gets up to ×2.8.</p>
   </div>
   <div class="sbox data"><h3>Your data <small>${store.cards.length} cards · ${kb(si.data+si.art)}</small></h3>
     <p class="msg">Cards are saved in this browser on this phone only. Copy a backup as a spreadsheet (CSV) now and then.</p>
@@ -1699,7 +1764,7 @@ function renderSettings(){
 function wireData(){
   $("csv").onclick=async()=>{
     const rows=[["offer_time","store","platform","pay","minutes","miles","stops","pay_per_hour","pay_per_mile","score","tier","verdict","finish","took"]].concat(
-      store.cards.map(c=>[new Date(c.ts).toISOString(),c.store,c.platform,c.pay,c.minutes,c.miles,c.stops,c.pph.toFixed(2),c.ppm.toFixed(2),c.score,c.tier,C.verdictFor(c.score).id,c.finish,c.took==null?"":c.took?"yes":"no"]));
+      store.cards.map(c=>[new Date(c.ts).toISOString(),c.store,c.platform,c.pay,c.minutes,c.miles,c.stops,c.pph.toFixed(2),c.ppm.toFixed(2),c.score,c.tier,vOf(c).id,c.finish,c.took==null?"":c.took?"yes":"no"]));
     const csv=rows.map(r=>r.map(v=>/[",\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':v).join(",")).join("\n");
     try{await navigator.clipboard.writeText(csv);toast("Copied "+store.cards.length+" rows")}
     catch(e){const t=$("csvOut");t.hidden=false;t.value=csv;t.focus();t.select();toast("Select all and copy")}
@@ -1750,7 +1815,7 @@ const QUEST_POOL=[
   {id:"scan6",t:"Scan 6 offers",need:6,xp:60,f:cs=>cs.length},
   {id:"scan10",t:"Scan 10 offers",need:10,xp:100,f:cs=>cs.length},
   {id:"rare",t:"Find a Rare or better",need:1,xp:60,f:cs=>cs.filter(c=>c.score>=51).length},
-  {id:"accept2",t:"Find 2 offers worth accepting",need:2,xp:80,f:cs=>cs.filter(c=>c.score>=51).length},
+  {id:"accept2",t:"Find 2 offers worth accepting",need:2,xp:80,f:cs=>cs.filter(c=>gradeOf(c)>=51).length},
   {id:"pack",t:"Open a pack",need:1,xp:40,f:cs=>new Set(cs.map(c=>c.pack).filter(Boolean)).size},
   {id:"stores",t:"Scan 3 different stores",need:3,xp:40,f:cs=>new Set(cs.map(c=>skey(c.store))).size},
   {id:"pph25",t:"Find an offer over $25/hr",need:1,xp:50,f:cs=>cs.filter(c=>c.pph>=25).length},
@@ -1793,6 +1858,7 @@ function rewardHTML(before,newCards){
   const after=snap(),gained=after.xp-before.xp,qs=questState(dayKey(new Date()),store.cards).filter(q=>q.done&&!before.q.has(q.id));
   const newStores=newCards.filter(c=>isFirstOfStore(c,store.cards));
   const chips=[`<span class="rchip xp">+${gained} XP</span>`];
+  if(newCards.length===1&&newCards[0].luck)chips.push(`<span class="rchip lk">${newCards[0].luck>=8?"Lucky pull":"Luck"} ${newCards[0].luck>0?"+":"−"}${Math.abs(newCards[0].luck)}</span>`);
   if(newStores.length)chips.push(`<span class="rchip ns">${newStores.length>1?newStores.length+" new stores":"New store"}</span>`);
   for(const q of qs)chips.push(`<span class="rchip qd">Quest done · ${esc(q.t)}</span>`);
   const up=after.L>before.L?`<div class="lvlup"><b>Level up</b><span>Level ${after.L} · ${titleOf(after.L)}</span></div>`:"";
