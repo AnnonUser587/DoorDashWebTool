@@ -478,6 +478,47 @@ html.calm *,html.calm *::before,html.calm *::after{animation:none!important;tran
 .pdot.ok::after{content:"";}
 
 body{padding-top:var(--top-fix,0px)}
+
+/* ===== v5: quests, streak, rewards, scan checks ===== */
+/* page headers sit in the page instead of floating over it, so nothing is ever covered */
+.appbar{position:relative;top:auto;box-shadow:none;border-bottom:1px solid var(--line);padding-top:12px}
+.hright{display:flex;align-items:center;gap:12px}
+.streak{display:flex;align-items:center;gap:4px;min-height:36px;padding:0 10px;border-radius:99px;background:color-mix(in srgb,#ff8a3d 16%,var(--bg2));border:1px solid color-mix(in srgb,#ff8a3d 45%,var(--line));color:#ff8a3d;font:700 1rem var(--f-display);font-variant-numeric:tabular-nums}
+.streak svg{width:18px;height:18px}
+
+.quests:empty{display:none}
+.quests{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:12px;display:grid;gap:8px}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.qhead b{font:600 1rem var(--f-display)}
+.qhead span{font:500 .7rem var(--f-mono);color:var(--mut);letter-spacing:.04em;text-align:right}
+.q{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:10px;min-height:36px}
+.qc{width:24px;height:24px;border-radius:8px;border:1.5px solid var(--raise-line);display:grid;place-items:center;color:#0b0c10}
+.qc svg{width:15px;height:15px}
+.q.done .qc{background:var(--accept);border-color:var(--accept)}
+.qt{font-size:.92rem;font-weight:600;min-width:0;display:grid;gap:5px}
+.q.done .qt{color:var(--mut);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--mut) 60%,transparent)}
+.qb{display:block;height:5px;border-radius:99px;background:var(--track);overflow:hidden}
+.qb i{display:block;height:100%;background:var(--t-rare);border-radius:99px}
+.qx{font:600 .74rem var(--f-mono);color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums}
+.q.done .qx{color:var(--mut)}
+
+/* rewards after a scan or pack */
+.rchips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;animation:vin .5s .9s both}
+.rchip{font:700 .78rem/1 var(--f-body);border-radius:99px;padding:8px 12px;border:1px solid var(--line);background:var(--bg2)}
+.rchip.xp{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 50%,var(--line));font-family:var(--f-mono)}
+.rchip.ns{color:var(--t-common);border-color:color-mix(in srgb,var(--t-common) 50%,var(--line))}
+.rchip.qd{color:var(--accept);border-color:color-mix(in srgb,var(--accept) 50%,var(--line))}
+.lvlup{text-align:center;border-radius:18px;padding:14px;background:linear-gradient(120deg,color-mix(in srgb,var(--t-epic) 30%,var(--panel)),color-mix(in srgb,var(--t-legendary) 30%,var(--panel)));border:1px solid color-mix(in srgb,var(--t-legendary) 55%,var(--line));animation:vin .6s 1.1s both}
+.lvlup b{display:block;font:700 1.6rem/1 var(--f-display);text-transform:uppercase;letter-spacing:.06em;color:var(--t-legendary)}
+.lvlup span{font-weight:600;font-size:.9rem}
+.packend{width:100%;display:flex;flex-direction:column;gap:12px}
+
+/* scanner wasn't sure */
+.checkbar{display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:14px;padding:10px 12px;background:color-mix(in srgb,var(--consider) 14%,var(--panel));border:1px solid color-mix(in srgb,var(--consider) 50%,var(--line));font-size:.88rem}
+.checkbar b{color:var(--consider)}
+.checkbar .mini,.bitem button.mini{min-height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-weight:700;padding:0 14px;cursor:pointer;flex:none}
+.art .chk2{position:absolute;left:2cqw;bottom:2cqw;font:700 2.4cqw/1 var(--f-mono);letter-spacing:.12em;border-radius:1.6cqw;padding:1.2cqw 1.8cqw;background:#f5b83d;color:#111}
+html[data-od="light"] .qc{color:#fff}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -489,8 +530,12 @@ body{padding-top:var(--top-fix,0px)}
       <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><rect x="6" y="4" width="22" height="30" rx="4" stroke="#5f8dff" stroke-width="2.4" transform="rotate(-10 17 19)"/><rect x="12" y="6" width="22" height="30" rx="4" fill="#11131a" stroke="#f3c55a" stroke-width="2.4"/><path d="M19 23.5c0-1.6 1.4-2.3 3-2.3s3-.7 3-2.3-1.4-2.4-3-2.4-2.6.8-2.9 1.8M22 14.5v1.9M22 25.8v1.9" stroke="#f3c55a" stroke-width="2" stroke-linecap="round"/></svg>
       OfferDex
     </div>
-    <div class="count" id="countBox" hidden><b id="countN">0</b>in your Dex</div>
+    <div class="hright">
+      <div class="streak" id="streakBox" hidden title="Days in a row with a scan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.2-.6 5-2 6.6C8.5 10.3 7 12 7 14.6 7 18 9.3 21 12.5 21S18 18.4 18 15.2c0-2.4-1.2-4-2.3-5.3-.3 1.4-1 2.4-2.1 2.9.6-3.6-.3-7.6-1.6-10.8z"/></svg><b id="streakN">0</b></div>
+      <div class="count" id="countBox" hidden><b id="countN">0</b>in your Dex</div>
+    </div>
   </header>
+  <section class="quests" id="quests" aria-label="Daily quests"></section>
 
   <section class="empty" id="empty">
     <div class="fan" aria-hidden="true"><span></span><span></span><span>$</span></div>
@@ -650,6 +695,8 @@ body{padding-top:var(--top-fix,0px)}
         if (stores.length >= 3) break;
       }
     }
+    // a 2-stop offer is one pickup: anything after the first name is a misread address piece
+    if (!(out.stops >= 3)) stores.length = Math.min(stores.length, 1);
     out.store = stores[0] || null;
     out.stores = stores;
     // "Multiple dropoffs (2 stops)"
@@ -926,7 +973,7 @@ async function loadStore(){
   let moved=false;
   const regrade=store.cards.length>0&&(store.scoreVer||1)<C.SCORE_VERSION;
   for(const c of store.cards){
-    c.added=c.added||c.ts;c.finish=c.finish||"standard";
+    c.added=c.added||c.ts;if(c.stores&&!(c.stops>=3))delete c.stores;c.finish=c.finish||"standard";
     /* rarity rebalance: re-grade old cards with the new formula; finishes already pulled are kept */
     if(regrade){c.store=C.fixStoreName(c.store)||c.store;try{rescore(c,c)}catch(e){}}
     if(c.art&&idbOK){await putArt(c);moved=true}
@@ -977,7 +1024,7 @@ function cardHTML(c){
   <div class="in">
     <div class="c-top"><span class="pill"><span class="orb"></span>${t.name}<b>${c.score}</b></span><span class="rate">$${c.pph.toFixed(0)}<small>/HR</small></span></div>
     <h3 class="c-name">${esc(c.store)}${more?`<small class="more">+${more}</small>`:""}</h3>
-    <div class="art">${art?`<img src="${art}" alt="" decoding="async">`:`<div class="fallback">$${(+c.pay).toFixed(0)}</div>`}<span class="no">#${String(c.no).padStart(2,"0")}</span>${f?`<span class="fin">${FIN_SHORT[f]}</span>`:""}</div>
+    <div class="art">${art?`<img src="${art}" alt="" decoding="async">`:`<div class="fallback">$${(+c.pay).toFixed(0)}</div>`}<span class="no">#${String(c.no).padStart(2,"0")}</span>${f?`<span class="fin">${FIN_SHORT[f]}</span>`:""}${c.check&&c.check.length?`<span class="chk2">CHECK</span>`:""}</div>
     <div class="strip">${c.miles} mi<i>•</i>${c.minutes} min<i>•</i>${clock(c.ts)}</div>
     <div class="box">
       <div class="val"><div><span>PAYOUT</span><b>${money(c.pay)}</b></div><div class="r"><span>CLASS</span><b>${order.toUpperCase()}</b></div></div>
@@ -1023,6 +1070,8 @@ function renderDex(){
   $("empty").hidden=!!cs.length;$("col").hidden=!cs.length;$("countBox").hidden=!cs.length;
   if(!cs.length){renderLadder();return}
   $("countN").textContent=cs.length;
+  const sk=streakNow();$("streakBox").hidden=!sk;$("streakN").textContent=sk;
+  renderQuests();
   const td=agg(cs.filter(c=>dayKey(c.ts)===dayKey(new Date())));
   $("todayStrip").innerHTML=td.n?`<span>Today <b>${td.n}</b> offer${td.n>1?"s":""} · <b>$${td.pph.toFixed(0)}</b>/hr avg</span><span class="vdots"><span class="vd" style="--c:var(--accept)"><i></i>${td.good}</span><span class="vd" style="--c:var(--consider)"><i></i>${td.mid}</span><span class="vd" style="--c:var(--decline)"><i></i>${td.bad}</span></span>`
     :`<span>No offers scanned today yet.</span><span class="vdots"><span class="vd" style="--c:var(--mut)">${cs.length} total</span></span>`;
@@ -1034,7 +1083,9 @@ function renderDex(){
   const groups=new Map();
   for(const c of shown.slice().sort((a,b)=>new Date(b.ts)-new Date(a.ts))){const k=dayKey(c.ts);(groups.get(k)||groups.set(k,[]).get(k)).push(c)}
   let i=0,html="";
+  const TR={legendary:5,epic:4,rare:3,common:2,trash:1};
   for(const [k,list] of groups){
+    list.sort((x,y)=>TR[y.tier]-TR[x.tier]||(special(y)?1:0)-(special(x)?1:0)||y.score-x.score);
     const a=agg(list),[n1,n2]=dayName(k),open=collapsed.has(k)?!collapsed.get(k):i<3;i++;
     html+=`<section class="day" data-day="${k}">
       <button class="dayhead" aria-expanded="${open}" data-day="${k}">
@@ -1071,7 +1122,7 @@ function show(v){
   if(v==="vSettings")renderSettings();
 }
 /* always open a page at its top, so its header is never hidden under the status bar */
-const toTop=()=>{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0};
+const toTop=()=>{const go=()=>{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0};go();requestAnimationFrame(go);setTimeout(go,60)};
 document.querySelectorAll(".ntab").forEach(t=>t.onclick=()=>{if(view===t.dataset.v){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}show(t.dataset.v);toTop()});
 
 /* =========================================================
@@ -1097,6 +1148,7 @@ function openDetail(id){
   $("detail").innerHTML=`
    <div class="topbar"><button class="close" id="dBack" aria-label="Back" style="align-self:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="tt">${esc(c.store)}</span></div>
    ${cardHTML(c)}
+   ${c.check&&c.check.length?`<div class="checkbar"><span><b>Double-check this one.</b> The scanner wasn't sure about ${c.check.map(k=>CHECK_TXT[k]).join(" and ")}.</span><button class="mini" id="dCheck">Fix</button></div>`:""}
    ${f?`<div class="pull ${f}" style="animation:none">✦ ${FINISHES[f]} finish${c.boost>1?" · pack bonus":""} ✦</div>`:""}
    <div class="panel">
      <div class="took"><span class="lab">Did you take this offer?</span>
@@ -1114,7 +1166,7 @@ function openDetail(id){
      </div>
      ${c.reasons.length?`<ul class="why-list">${c.reasons.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>`:""}
    </div>
-   <details class="panel"><summary style="color:var(--tx);font-weight:600;font-size:.95rem">Fix a misread number or the time</summary>
+   <details class="panel" id="dFix"><summary style="color:var(--tx);font-weight:600;font-size:.95rem">Fix a misread number or the time</summary>
      <div class="fields" style="margin-top:12px">${fieldsHTML("e",c,true)}</div>
      <button class="btn" id="eSave" style="margin-top:12px">Save and re-grade</button>
    </details>
@@ -1122,8 +1174,9 @@ function openDetail(id){
   show("vDetail");window.scrollTo(0,0);
   $("dBack").onclick=()=>show(lastList);
   $("detail").querySelectorAll("[data-took]").forEach(b=>b.onclick=()=>{const val=b.dataset.took==="1";c.took=c.took===val?null:val;save();openDetail(c.id)});
+  if($("dCheck"))$("dCheck").onclick=()=>{const d=$("dFix");d.open=true;d.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
   $("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
-    rescore(c,o);save();toast("Re-graded: "+c.score);openDetail(c.id)};
+    rescore(c,o);c.check=false;save();toast("Re-graded: "+c.score);openDetail(c.id)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to remove";return}
     store.cards=store.cards.filter(x=>x.id!==id);ART.delete(id);idb.del(id).catch(()=>{});save();show(lastList);toast("Card removed")};
 }
@@ -1218,18 +1271,28 @@ async function readImage(file,pool,onStep){
       const q=C.parseOfferText(r2.text);for(const k in q)if(p[k]==null)p[k]=q[k];
       if(!payY){const l2=(r2.lines||[]).find(l=>/\$\s?\d/.test(l.text));if(l2)payY=Math.round(l2.bbox.y0/b.k)}
     }
-    /* pass 2b: the payout is huge text that the reader sometimes garbles. Read just the strip above the trip line, sized down, digits only */
-    if(!(p.pay>0)){
-      const tl=(r1.lines||[]).find(l=>/stops?\b|\bmi\b|\(\d/.test(l.text)&&/min/i.test(l.text));
-      if(tl){
-        const top=off+tl.bbox.y0/pl0,lh=(tl.bbox.y1-tl.bbox.y0)/pl0;
-        try{await w.setParameters({tessedit_char_whitelist:"$0123456789."});
-          const v=C.parsePay((await recog(w,prepPay(bm,top,lh))).text);
-          if(v){p.pay=v;payY=Math.round(top-lh*3);out.raw+="\n[payout strip] $"+v}}
-        catch(e){console.warn(e)}
-        finally{try{await w.setParameters({tessedit_char_whitelist:""})}catch(e){}}
-      }
+    /* pass 2b: the payout is huge text the reader sometimes garbles. Read the strip just above the trip line again,
+       sized down and digits only: it fills in a missing payout and double-checks one that was read. */
+    const check=new Set();
+    const tl=(r1.lines||[]).find(l=>/stops?\b|\bmi\b|\(\d/.test(l.text)&&/min/i.test(l.text));
+    if(tl){
+      if(tl.confidence<70)check.add("trip");
+      const top=off+tl.bbox.y0/pl0,lh=(tl.bbox.y1-tl.bbox.y0)/pl0;
+      try{await w.setParameters({tessedit_char_whitelist:"$0123456789."});
+        const v=C.parsePay((await recog(w,prepPay(bm,top,lh))).text);
+        if(v){
+          out.raw+="\n[payout strip] $"+v;
+          if(!(p.pay>0)){p.pay=v;payY=Math.round(top-lh*3)}
+          else if(Math.abs(v-p.pay)>0.004){
+            /* the two reads disagree. A one-digit slip ($6.70 vs $8.70) can't be settled here, so ask;
+               a dropped decimal point ($67.0 / $670) is the strip's call */
+            if(Math.abs(v*10-p.pay)<0.01||Math.abs(v*100-p.pay)<0.01)p.pay=v;else check.add("pay");
+          }
+        }}
+      catch(e){console.warn(e)}
+      finally{try{await w.setParameters({tessedit_char_whitelist:""})}catch(e){}}
     }
+    if(pl&&pl.confidence<65)check.add("pay");
     phase=2;
     /* pass 3: the status-bar clock, so cards land on the right day and time */
     if(SET.clock)try{await w.setParameters({tessedit_char_whitelist:"0123456789:"});
@@ -1241,6 +1304,8 @@ async function readImage(file,pool,onStep){
     out.art=artFrom(bm,payY);
     if(p.store)p.store=C.titleCase(p.store);
     out.parsed=p;
+    if(p.pay>0&&p.minutes>0&&p.miles>0){const pph=p.pay/p.minutes*60,ppm=p.pay/p.miles;if(pph>90||pph<4||ppm>8||ppm<0.25)check.add("odd")}
+    out.check=[...check];
     out.roll=out.sha?parseInt(out.sha.slice(0,8),16)/4294967296:Math.random();
     if(!(p.pay>0&&p.minutes>0&&p.miles>0)){out.status="fix";return out}
     const o={...p,ts:out.ts};
@@ -1250,7 +1315,7 @@ async function readImage(file,pool,onStep){
   }catch(e){console.error(e);out.status="error";out.error=e&&e.message||String(e);return out}
   finally{progressHook=null;freeBm(bm)}
 }
-const cardFrom=(r,extra)=>makeCard({...r.parsed,stops:r.parsed.stops||2},{art:r.art,sha:r.sha,ph:r.ph,roll:r.roll,ts:r.ts,...extra});
+const cardFrom=(r,extra)=>{const c=makeCard({...r.parsed,stops:r.parsed.stops||2},{art:r.art,sha:r.sha,ph:r.ph,roll:r.roll,ts:r.ts,...extra});if(r.check&&r.check.length)c.check=r.check.slice();return c};
 
 /* =========================================================
    Sheet basics
@@ -1260,7 +1325,7 @@ function openSheet(){$("sheet").hidden=false;document.documentElement.classList.
 function closeSheet(){
   $("sheet").hidden=true;document.documentElement.classList.remove("lock");scanId++;busy=false;
   const u=$("shotImg").getAttribute("src");if(u&&u.startsWith("blob:"))URL.revokeObjectURL(u);$("shotImg").removeAttribute("src");
-  show("vDex");window.scrollTo({top:0,behavior:RM?"auto":"smooth"});
+  show("vDex");toTop();
 }
 $("sClose").onclick=closeSheet;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("sheet").hidden)closeSheet()});
@@ -1303,18 +1368,41 @@ function verdictHTML(card){
     </div>`;
 }
 function grade(r,parsedOverride){
-  if(parsedOverride)r.parsed={...r.parsed,...parsedOverride};
+  if(parsedOverride){r.parsed={...r.parsed,...parsedOverride};r.check=null}
+  const before=snap();
   const card=cardFrom(r);store.cards.push(card);const saved=finishSave([card]);
-  const f=special(card)?card.finish:"";
+  const rewards=rewardHTML(before,[card]);
   $("shot").classList.add("gone");
+  showSingle(card,rewards,saved,r.check);
+}
+/* the single-scan result: verdict first, card right after, then what it earned */
+function showSingle(card,rewards,saved,check){
+  const f=special(card)?card.finish:"";
   $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
     ${verdictHTML(card)}
+    ${check&&check.length?checkHTML(check):""}
     ${f?`<div class="pull ${f}">✦ ${FINISHES[f]} pull ✦</div>`:""}
     <div class="reveal"><div class="burst" style="--bc:${f==="holo"?"#c44fff":TC[card.tier]}"></div>${cardHTML(card)}</div>
-    ${saved?"":`<p class="msg err" style="text-align:center">This browser isn't saving cards (private mode or storage full), so this one won't stay in your Dex.</p>`}
+    ${rewards||""}
+    ${saved===false?`<p class="msg err" style="text-align:center">This browser isn't saving cards (private mode or storage full), so this one won't stay in your Dex.</p>`:""}
     ${actions()}
-    <p class="tapnote">Misread something? Open the card in your Dex and tap "Fix a misread number".</p>
+    <div id="qfix"><button class="linkbtn" id="qfixBtn">Misread a number? Fix it here</button></div>
   </div>`;
+  wireQuickFix(card,()=>showSingle(card,rewards,saved,null));
+}
+/* fix numbers right on the result screen: re-grades the card, keeps its finish */
+function wireQuickFix(card,after){
+  const btn=$("qfixBtn"),open=()=>{
+    $("qfix").innerHTML=`<div class="panel"><h2>Fix the numbers</h2><div class="fields">${fieldsHTML("q",card,true)}</div><button class="btn" id="qSave">Save and re-grade</button></div>`;
+    $("qSave").onclick=()=>{const o=readFields("q");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
+      rescore(card,o);card.check=false;save();toast("Re-graded: "+card.score+" · "+C.verdictFor(card.score).label);after()};
+  };
+  if(btn)btn.onclick=open;
+  const cb=$("checkFix");if(cb)cb.onclick=()=>{open();$("qfix").scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
+}
+const CHECK_TXT={pay:"the payout",trip:"the time and miles",odd:"numbers that look unusual"};
+function checkHTML(check){
+  return `<div class="checkbar"><span><b>Double-check this one.</b> The scanner wasn't sure about ${check.map(k=>CHECK_TXT[k]).join(" and ")}.</span><button class="mini" id="checkFix">Fix</button></div>`;
 }
 function askFix(r,onDone){
   const p=r.parsed||{},missing=["pay","minutes","miles"].filter(k=>!(p[k]>0)),names={pay:"pay",minutes:"time",miles:"miles"};
@@ -1381,65 +1469,65 @@ async function scanPack(files){
   const scored=ok.map(r=>({r,s:C.scoreOffer({...r.parsed,stops:r.parsed.stops||2})})).sort((a,b)=>a.s.score-b.s.score||a.s.pph-b.s.pph);
   const boost=C.packBoost(scored.length);
   const cards=scored.map((x,i)=>cardFrom(x.r,{pack:packId,boost:i===scored.length-1?boost:1}));
+  const before=snap();
   store.cards.push(...cards);finishSave(cards);
   const extras=results.filter(r=>r.status!=="ok");
-  if(!cards.length){packSummary(cards,extras,boost);return}
+  const P={cards,extras,boost,rewards:cards.length?rewardHTML(before,cards):""};
+  if(!cards.length){packEmpty(P);return}
   $("kbar").style.width="100%";$("kstep").textContent=`${cards.length} new card${cards.length>1?"s":""}${extras.length?` · ${extras.length} skipped`:""}`;
   const pack=$("pack");pack.classList.add("ready");pack.setAttribute("role","button");pack.setAttribute("tabindex","0");pack.setAttribute("aria-label","Open pack");
   $("sBody").querySelector(".tapnote").outerHTML=`<button class="btn" id="openPack">Open pack</button>${boost>1?`<p class="boostnote">Last card gets <b>×${boost.toFixed(2)}</b> special-finish odds</p>`:""}`;
-  const open=async()=>{pack.onclick=null;$("openPack").disabled=true;pack.classList.remove("ready");pack.classList.add("torn");await sleep(550);pack.classList.add("gone");await sleep(420);revealPack(cards,extras,boost,0)};
+  const open=async()=>{pack.onclick=null;$("openPack").disabled=true;pack.classList.remove("ready");pack.classList.add("torn");await sleep(550);pack.classList.add("gone");await sleep(420);revealPack(P,0)};
   pack.onclick=open;$("openPack").onclick=open;pack.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}};
 }
-function revealPack(cards,extras,boost,i){
-  const c=cards[i],last=i===cards.length-1,v=C.verdictFor(c.score),f=special(c)?c.finish:"";
+function revealPack(P,i){
+  const {cards}=P,c=cards[i],last=i===cards.length-1,v=C.verdictFor(c.score),f=special(c)?c.finish:"";
   $("sBody").innerHTML=`<div class="rv">
     <div class="prog-pips" aria-label="Card ${i+1} of ${cards.length}">${cards.map((_,k)=>`<i class="${k<=i?"on":""}${k===cards.length-1?" last":""}"></i>`).join("")}</div>
     ${last&&cards.length>1?`<div class="bestpull">★ Best pull ★</div>`:`<div class="pcount">Card <b>${i+1}</b> of ${cards.length}</div>`}
-    <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span></div>
+    <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span>${c.check&&c.check.length?`<span class="vpill" data-v="consider">Check</span>`:""}</div>
     ${f?`<div class="pull ${f}" style="animation-delay:.7s">✦ ${FINISHES[f]} pull ✦</div>`:""}
     <div class="reveal" id="rvCard"><div class="burst" style="--bc:${f==="holo"?"#c44fff":TC[c.tier]};${last?"":"animation-duration:1s"}"></div>${cardHTML(c)}</div>
-    <button class="btn" id="rvNext">${last?"See the whole pack":"Next card"}</button>
-    ${!last?`<button class="linkbtn" id="rvSkip">Skip to the pack summary</button>`:""}
+    ${last?`<div class="packend">${P.rewards}${packExtrasHTML(P)}${actions("Scan more")}</div>`
+      :`<button class="btn" id="rvNext">Next card</button>${cards.length>2?`<button class="linkbtn" id="rvSkip">Skip to the last card</button>`:""}`}
   </div>`;
   $("rvCard").querySelector(".card").style.animation=`flip .8s cubic-bezier(.2,.9,.25,1.15) both`;
-  const next=()=>{if(last)packSummary(cards,extras,boost);else revealPack(cards,extras,boost,i+1)};
-  $("rvNext").onclick=next;$("rvCard").onclick=next;
-  if($("rvSkip"))$("rvSkip").onclick=()=>packSummary(cards,extras,boost);
+  if(!last){
+    const next=()=>revealPack(P,i+1);
+    $("rvNext").onclick=next;$("rvCard").onclick=next;
+    if($("rvSkip"))$("rvSkip").onclick=()=>revealPack(P,cards.length-1);
+  }else{
+    $("rvCard").onclick=()=>{closeSheet();openDetail(c.id)};
+    wirePackExtras(P,()=>revealPack(P,cards.length-1));
+  }
   $("sheet").scrollTop=0;
 }
-function packSummary(cards,extras,boost){
-  const a=agg(cards),spec=cards.filter(special).length;
-  const dups=extras.filter(r=>r.status==="dup"),fixes=extras.filter(r=>r.status==="fix"||r.status==="error");
-  const best=cards[cards.length-1];
+/* a pack with nothing new to open */
+function packEmpty(P){
   $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
-    <div class="bhead"><h2>${cards.length?"Pack opened":"Nothing new in this pack"}</h2>
-      ${cards.length?`<p>${cards.length} new card${cards.length>1?"s":""}${best?` · best: ${esc(best.store)} (${best.score})`:""}</p>`:`<p>Every screenshot was already in your Dex or couldn't be read.</p>`}</div>
-    ${cards.length?`<div class="bsum"><span><b style="color:var(--accept)">${a.good}</b> accept</span><span><b style="color:var(--consider)">${a.mid}</b> consider</span><span><b style="color:var(--decline)">${a.bad}</b> decline</span><span><b>${spec}</b> special</span><span><b>$${a.pph.toFixed(0)}</b>/hr avg</span></div>
-    <div class="sumgrid">${cards.slice().reverse().map(cardHTML).join("")}</div>`:""}
-    ${fixes.length?`<div class="sbox"><h3>Needs your numbers <small>${fixes.length}</small></h3><ul class="blist">${fixes.map(r=>extraRow(r,"fix")).join("")}</ul></div>`:""}
-    ${dups.length?`<div class="sbox"><h3>Already in your Dex <small>${dups.length} skipped</small></h3><ul class="blist">${dups.map(r=>extraRow(r,"dup")).join("")}</ul></div>`:""}
-    ${actions("Scan more")}
+    <div class="bhead"><h2>Nothing new in this pack</h2><p>Every screenshot was already in your Dex or couldn't be read.</p></div>
+    ${packExtrasHTML(P)}${actions("Scan more")}</div>`;
+  wirePackExtras(P,()=>P.cards.length?revealPack(P,P.cards.length-1):packEmpty(P));
+}
+/* skipped screenshots, shown under the last card: duplicates in one line, unreadable ones with a Fill in button */
+function packExtrasHTML(P){
+  const dups=P.extras.filter(r=>r.status==="dup"),fixes=P.extras.filter(r=>r.status==="fix"||r.status==="error");
+  if(!dups.length&&!fixes.length)return "";
+  return `<div class="sbox">
+    ${fixes.length?`<h3>Needs your numbers <small>${fixes.length}</small></h3><ul class="blist">${fixes.map(r=>{const i=P.extras.indexOf(r);
+      return `<li class="bitem"><span class="th">${r.thumb?`<img src="${r.thumb}" alt="">`:""}</span><span class="bm"><span class="bn">${esc((r.parsed&&r.parsed.store)||"Screenshot")}</span><span class="bs">${r.status==="error"?esc(r.error):"Couldn't read "+["pay","minutes","miles"].filter(k=>!(r.parsed&&r.parsed[k]>0)).map(k=>k==="minutes"?"time":k).join(", ")}</span></span><button class="mini" data-fix="${i}">Fill in</button></li>`}).join("")}</ul>`:""}
+    ${dups.length?`<p class="msg">${dups.length} already in your Dex, skipped: ${esc([...new Set(dups.map(r=>(r.dupOf&&r.dupOf.store)||"earlier card"))].join(", "))}.</p>`:""}
   </div>`;
-  $("sheet").scrollTop=0;
-  $("sBody").querySelectorAll("[data-fix]").forEach(b=>b.onclick=()=>{
-    const r=extras[+b.dataset.fix];
+}
+function wirePackExtras(P,back){
+  $("sBody").querySelectorAll("[data-fix]").forEach(btn=>btn.onclick=()=>{
+    const r=P.extras[+btn.dataset.fix];
     askFix(r,done=>{
-      if(done){const card=cardFrom(done,{});store.cards.push(card);finishSave([card]);cards.push(card);extras.splice(extras.indexOf(r),1);toast(C.verdictFor(card.score).label+" · "+card.score+" added")}
-      packSummary(cards,extras,boost);
+      if(done){const before=snap(),card=cardFrom(done,{});store.cards.push(card);finishSave([card]);P.cards.push(card);P.extras.splice(P.extras.indexOf(r),1);
+        const a=snap();toast(C.verdictFor(card.score).label+" · "+card.score+" added · +"+(a.xp-before.xp)+" XP")}
+      back();
     });
   });
-  $("sBody").querySelectorAll("[data-addany]").forEach(b=>b.onclick=()=>{
-    const r=extras[+b.dataset.addany];
-    if(!(r.parsed&&r.parsed.pay>0&&r.parsed.minutes>0&&r.parsed.miles>0)){askFix(r,done=>{if(done){const card=cardFrom(done,{});store.cards.push(card);finishSave([card]);cards.push(card);extras.splice(extras.indexOf(r),1)}packSummary(cards,extras,boost)});return}
-    const card=cardFrom(r,{});store.cards.push(card);finishSave([card]);cards.push(card);extras.splice(extras.indexOf(r),1);packSummary(cards,extras,boost);
-  });
-  function extraRow(r,kind){
-    const i=extras.indexOf(r);
-    const name=kind==="dup"?(r.dupOf&&r.dupOf.store)||"Earlier card":(r.parsed&&r.parsed.store)||r.file.name||"Screenshot";
-    const sub=kind==="dup"?esc(r.why):r.status==="error"?esc(r.error):"Couldn't read "+["pay","minutes","miles"].filter(k=>!(r.parsed&&r.parsed[k]>0)).map(k=>k==="minutes"?"time":k).join(", ");
-    return `<li class="bitem"><span class="th">${r.thumb?`<img src="${r.thumb}" alt="">`:""}</span><span class="bm"><span class="bn">${esc(name)}</span><span class="bs">${sub}</span></span>
-      ${kind==="fix"?`<button class="mini" data-fix="${i}">Fill in</button>`:r.dupOf&&!String(r.dupOf.id).startsWith("pending")&&r.parsed&&r.parsed.pay?`<button class="mini" data-addany="${i}">Add anyway</button>`:""}</li>`;
-  }
 }
 
 /* =========================================================
@@ -1531,7 +1619,7 @@ function chartDays(){
 }
 let CH=[];
 function dailyChart(){
-  CH=chartDays();const n=CH.length,goal=+SET.goalHr||20,mx=Math.max(goal*1.5,...CH.map(x=>x.a.pph))*1.08;
+  CH=chartDays();const n=CH.length,goal=GOAL_HR,mx=Math.max(goal*1.5,...CH.map(x=>x.a.pph))*1.08;
   if(!selDay||!CH.find(x=>x.k===selDay)){const withData=CH.filter(x=>x.a.n);selDay=(withData[withData.length-1]||CH[n-1]).k}
   const lab=(x,i)=>n<=7?`${x.d.toLocaleDateString([],{weekday:"short"})}<b>${x.d.getDate()}</b>`:(i%5===0||i===n-1?`<b style="color:var(--mut)">${x.d.getMonth()+1}/${x.d.getDate()}</b>`:"");
   return `<div class="sbox"><h3>Daily pay per hour <small>last ${n} days</small></h3>
@@ -1565,6 +1653,8 @@ function weeklyTable(){
    Settings (this device)
    ========================================================= */
 const SKEY="offerdex.settings";
+/* fixed targets used by the charts (the same ones the grading is built around) */
+const GOAL_HR=20,GOAL_MI=1.5;
 const SET=Object.assign({theme:"dark",motion:true,goalHr:20,goalMi:1.5,clock:true,name:"",avatar:"legendary"},(()=>{try{return JSON.parse(localStorage.getItem(SKEY)||"{}")}catch(e){return {}}})());
 const saveSet=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}};
 const darkMQ=matchMedia("(prefers-color-scheme: dark)");
@@ -1587,12 +1677,6 @@ function renderSettings(){
     <div class="seg seg3" role="group" aria-label="Theme">${segBtn("theme","dark","Dark")}${segBtn("theme","light","Light")}${segBtn("theme","system","Match phone")}</div>
     <label class="sw"><span><b>Card animations</b><small>Holo shimmer, card flips and the pack tear. Turn off to save battery.</small></span><input type="checkbox" id="setMotion" ${SET.motion?"checked":""}><i></i></label>
   </div>
-  <div class="sbox"><h3>Goals <small>shown on your charts</small></h3>
-    <div class="fields">
-      <label>Pay per hour ($)<input id="setHr" type="number" inputmode="decimal" step="1" min="1" value="${SET.goalHr}"></label>
-      <label>Pay per mile ($)<input id="setMi" type="number" inputmode="decimal" step="0.05" min="0.1" value="${SET.goalMi}"></label>
-    </div>
-  </div>
   <div class="sbox"><h3>Scanning</h3>
     <label class="sw"><span><b>Read the time from the screenshot</b><small>Uses the clock in your status bar to put each card on the right day. Off: uses the time you scan.</small></span><input type="checkbox" id="setClock" ${SET.clock?"checked":""}><i></i></label>
     <p class="msg">Tip: pick up to 10 screenshots at once to open a pack. Duplicates are skipped automatically.</p>
@@ -1610,8 +1694,6 @@ function renderSettings(){
   $("settingsBody").querySelectorAll(".seg button").forEach(btn=>btn.onclick=()=>{SET[btn.dataset.k]=btn.dataset.v;saveSet();applyTheme();renderSettings()});
   $("setMotion").onchange=e=>{SET.motion=e.target.checked;saveSet();applyTheme()};
   $("setClock").onchange=e=>{SET.clock=e.target.checked;saveSet()};
-  const num=(id,k,min)=>$(id).onchange=e=>{const v=parseFloat(e.target.value);if(v>=min){SET[k]=v;saveSet();toast("Goal saved")}else e.target.value=SET[k]};
-  num("setHr","goalHr",1);num("setMi","goalMi",0.1);
   wireData();
 }
 function wireData(){
@@ -1630,7 +1712,7 @@ function wireData(){
    Profile: level, achievements, showcase
    ========================================================= */
 const XP_T={trash:5,common:10,rare:25,epic:60,legendary:150},XP_F={holo:75,carbon:40,inverted:40};
-const xpOf=cs=>cs.reduce((a,c)=>a+(XP_T[c.tier]||0)+(XP_F[c.finish]||0)+(c.took?5:0),0)+new Set(cs.map(c=>c.pack).filter(Boolean)).size*10;
+const xpOf=cs=>cs.reduce((a,c)=>a+(XP_T[c.tier]||0)+(XP_F[c.finish]||0)+(c.took?5:0),0)+new Set(cs.map(c=>c.pack).filter(Boolean)).size*10+questXP(cs);
 const lvlStart=L=>50*L*(L-1);
 const levelOf=xp=>{let L=1;while(lvlStart(L+1)<=xp)L++;return L};
 const TITLES=[[1,"Rookie"],[3,"Regular"],[5,"Road Pro"],[8,"Route Boss"],[12,"Dex Master"],[20,"Living Legend"]];
@@ -1660,6 +1742,61 @@ function achievements(){
     ["Picky","Mark 10 offers as Passed",cs.filter(c=>c.took===false).length,10,"#ff5c5c"],
     ["Grinder","Collect 100 cards",n,100,"#5f8dff"]
   ].map(([name,desc,have,need,col])=>({name,desc,have:Math.min(have,need),need,col,done:have>=need}));
+}
+/* ---------- Daily quests: three per day, picked from the date, rewarded in XP ----------
+   Progress counts cards scanned that day (by scan time), so a pack of older screenshots still counts. */
+const QUEST_POOL=[
+  {id:"scan3",t:"Scan 3 offers",need:3,xp:30,f:cs=>cs.length},
+  {id:"scan6",t:"Scan 6 offers",need:6,xp:60,f:cs=>cs.length},
+  {id:"scan10",t:"Scan 10 offers",need:10,xp:100,f:cs=>cs.length},
+  {id:"rare",t:"Find a Rare or better",need:1,xp:60,f:cs=>cs.filter(c=>c.score>=51).length},
+  {id:"accept2",t:"Find 2 offers worth accepting",need:2,xp:80,f:cs=>cs.filter(c=>c.score>=51).length},
+  {id:"pack",t:"Open a pack",need:1,xp:40,f:cs=>new Set(cs.map(c=>c.pack).filter(Boolean)).size},
+  {id:"stores",t:"Scan 3 different stores",need:3,xp:40,f:cs=>new Set(cs.map(c=>skey(c.store))).size},
+  {id:"pph25",t:"Find an offer over $25/hr",need:1,xp:50,f:cs=>cs.filter(c=>c.pph>=25).length},
+  {id:"pay10",t:"Find a $10+ offer",need:1,xp:40,f:cs=>cs.filter(c=>c.pay>=10).length},
+  {id:"took2",t:"Mark 2 offers as Took it",need:2,xp:40,f:cs=>cs.filter(c=>c.took===true).length},
+  {id:"special",t:"Pull a special finish",need:1,xp:120,f:cs=>cs.filter(special).length},
+  {id:"newstore",t:"Find a store new to your Dex",need:1,xp:50,f:(cs,all)=>cs.filter(c=>isFirstOfStore(c,all)).length}
+];
+const skey=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
+const addedKey=c=>dayKey(c.added||c.ts);
+function isFirstOfStore(c,all){const k=skey(c.store),t=+new Date(c.added||c.ts);return !all.some(o=>o!==c&&skey(o.store)===k&&+new Date(o.added||o.ts)<t)}
+function questsFor(key){
+  let h=0;for(const ch of key)h=(h*31+ch.charCodeAt(0))>>>0;
+  const pool=QUEST_POOL.slice(),out=[];
+  /* always one "scan N" quest plus two others */
+  const scans=pool.filter(q=>q.id.startsWith("scan")),rest=pool.filter(q=>!q.id.startsWith("scan"));
+  out.push(scans[h%scans.length]);
+  for(let i=0;i<2;i++){h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0])}
+  return out;
+}
+function questState(key,all){
+  const cs=all.filter(c=>addedKey(c)===key);
+  return questsFor(key).map(q=>{const have=Math.min(q.need,q.f(cs,all));return {...q,have,done:have>=q.need}});
+}
+const questXP=all=>[...new Set(all.map(addedKey))].reduce((a,k)=>a+questState(k,all).filter(q=>q.done).reduce((s,q)=>s+q.xp,0),0);
+function renderQuests(){
+  const qs=questState(dayKey(new Date()),store.cards),done=qs.filter(q=>q.done).length;
+  const ck='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  $("quests").innerHTML=`<div class="qhead"><b>Daily quests</b><span>${done===qs.length?"All done":done+" of "+qs.length+" done"}</span></div>
+    ${qs.map(q=>`<div class="q${q.done?" done":""}"><span class="qc">${q.done?ck:""}</span><span class="qt">${q.t}${q.need>1?`<span class="qb"><i style="width:${q.have/q.need*100}%"></i></span>`:""}</span><span class="qx">${q.need>1&&!q.done?q.have+"/"+q.need+" · ":""}+${q.xp} XP</span></div>`).join("")}`;
+}
+function streakNow(){
+  const days=new Set(store.cards.map(c=>dayKey(c.ts)).concat(store.cards.map(addedKey)));let n=0;const d=startOfDay(new Date());
+  if(!days.has(dayKey(d)))d.setDate(d.getDate()-1);
+  while(days.has(dayKey(d))){n++;d.setDate(d.getDate()-1)}return n;
+}
+/* what a scan earned: XP, quests finished, level ups, stores seen for the first time */
+const snap=()=>{const xp=xpOf(store.cards);return {xp,L:levelOf(xp),q:new Set(questState(dayKey(new Date()),store.cards).filter(q=>q.done).map(q=>q.id))}};
+function rewardHTML(before,newCards){
+  const after=snap(),gained=after.xp-before.xp,qs=questState(dayKey(new Date()),store.cards).filter(q=>q.done&&!before.q.has(q.id));
+  const newStores=newCards.filter(c=>isFirstOfStore(c,store.cards));
+  const chips=[`<span class="rchip xp">+${gained} XP</span>`];
+  if(newStores.length)chips.push(`<span class="rchip ns">${newStores.length>1?newStores.length+" new stores":"New store"}</span>`);
+  for(const q of qs)chips.push(`<span class="rchip qd">Quest done · ${esc(q.t)}</span>`);
+  const up=after.L>before.L?`<div class="lvlup"><b>Level up</b><span>Level ${after.L} · ${titleOf(after.L)}</span></div>`:"";
+  return `${up}<div class="rchips">${chips.join("")}</div>`;
 }
 const BADGE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 15.4 6.8 18.2l1-5.8L3.5 8.2l5.9-.9z"/></svg>';
 function renderProfile(){
@@ -1691,7 +1828,7 @@ function renderProfile(){
   <div class="sbox"><h3>Achievements <small>${done} of ${ach.length}</small></h3>
     <div class="achs">${ach.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
   </div>
-  <p class="about">XP: Trash 5 · Common 10 · Rare 25 · Epic 60 · Legendary 150 · Holo +75 · Carbon or Inverted +40 · each pack +10</p>`;
+  <p class="about">XP: Trash 5 · Common 10 · Rare 25 · Epic 60 · Legendary 150 · Holo +75 · Carbon or Inverted +40 · each pack +10 · daily quests 30–120</p>`;
   $("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile()};
   $("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
   const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
