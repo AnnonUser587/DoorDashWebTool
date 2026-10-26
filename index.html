@@ -1,6 +1,26 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OfferDex</title>
+<script>
+/* Google sign-in, sync and friends. Paste your Firebase web config here (see SETUP.md), for example:
+   window.OFFERDEX_FIREBASE = {
+  apiKey: "AIzaSyATkpK906fQmpcnsNbWRaBMr6YnTfpcyo",
+  authDomain: "dashercards-17860.firebaseapp.com",
+  projectId: "dashercards-17860",
+  storageBucket: "dashercards-17860.firebasestorage.app",
+  messagingSenderId: "516297073486",
+  appId: "1:516297073486:web:ba81c8e32e85545532f41f"
+};
+   Leave it as null to keep everything on the phone only. This config is not a secret; the security rules protect the data. */
+window.OFFERDEX_FIREBASE = {
+  apiKey: "AIzaSyATkpK906fQmpcnsNbWRaBMr6YnTfpcyo",
+  authDomain: "dashercards-17860.firebaseapp.com",
+  projectId: "dashercards-17860",
+  storageBucket: "dashercards-17860.firebasestorage.app",
+  messagingSenderId: "516297073486",
+  appId: "1:516297073486:web:ba81c8e32e85545532f41f"
+};
+</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#0b0c10">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -544,6 +564,32 @@ body::before{display:none}
 @media (max-width:370px){.top .logo{font-size:1.2rem}.count b{font-size:1.05rem}.count{font-size:.6rem}}
 .rchip.lk{color:var(--t-epic);border-color:color-mix(in srgb,var(--t-epic) 50%,var(--line))}
 .vpill[data-v="lucky"]{--v:var(--t-legendary)}
+
+/* ===== v7: account, privacy, friends ===== */
+.gbtn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0}
+.gbtn svg{width:20px;height:20px}
+.acct{display:flex;align-items:center;gap:12px}
+.acct b{display:block}.acct small{display:block;color:var(--mut);font-size:.8rem}
+.avatar.sm{width:40px;height:40px;border-radius:13px;font-size:1.1rem;box-shadow:0 0 0 1.5px var(--c)}
+.fcode{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg2);border:1px dashed var(--raise-line);border-radius:14px;padding:10px 12px}
+.fcode small{display:block;font:500 .66rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.fcode b{font:700 1.4rem var(--f-mono);letter-spacing:.12em;user-select:all;-webkit-user-select:all}
+.fadd{display:grid;grid-template-columns:1fr auto;gap:8px}
+.fadd input{min-height:46px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font:600 16px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--tx);min-width:0}
+.fadd .btn{width:auto;padding-inline:20px}
+.flist{display:grid;gap:6px}
+.flabel{font:500 .66rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin-top:4px}
+.frow{display:flex;align-items:center;gap:10px;min-height:52px;border-top:1px solid var(--line);padding-top:6px}
+.fopen{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-align:left;cursor:pointer;color:var(--tx)}
+.fn{flex:1;min-width:0}.fn b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fn small{display:block;color:var(--mut);font-size:.78rem}
+.frow .mini{min-height:40px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);font-weight:700;padding:0 14px;cursor:pointer;color:var(--tx);flex:none}
+.frow .mini.ghost{background:transparent}
+.mini.star{width:44px;padding:0;display:grid;place-items:center;color:var(--dim)}
+.mini.star svg{width:20px;height:20px}
+.mini.star.on{color:var(--t-legendary);border-color:color-mix(in srgb,var(--t-legendary) 55%,var(--line))}
+.linkbtn.danger{color:var(--decline)}
+#vFriend .grid{margin-top:4px}
+.fcode .mini{min-height:40px;border-radius:12px;border:1px solid var(--line);background:var(--raise);font-weight:700;padding:0 16px;cursor:pointer;color:var(--tx)}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -599,6 +645,9 @@ body::before{display:none}
   <div class="appbar"><div class="pagehead"><h1>Settings</h1><span>Saved on this device</span></div></div>
   <div id="settingsBody"></div>
 </div>
+
+<!-- ===== A FRIEND'S DEX ===== -->
+<div class="wrap" id="vFriend" hidden><div class="detail" id="friend"></div></div>
 
 <!-- ===== CARD DETAIL ===== -->
 <div class="wrap" id="vDetail" hidden><div class="detail" id="detail"></div></div>
@@ -718,6 +767,21 @@ body::before{display:none}
         if (/\b\d{5}\b/.test(clean) || /,\s*[A-Z]{2}\b/.test(clean)) continue;
         if (clean.length >= 2) stores.push(clean.slice(0, 40));
         if (stores.length >= 3) break;
+      }
+    }
+    // pickup address: the first line after the trip summary that starts with a street number,
+    // plus its wrapped second line ("Fulshear," / "77441 TX"). Only kept when the user allows it.
+    if (ti >= 0) {
+      const after = lines.slice(ti + 1, ti + 10);
+      const ai = after.findIndex(l => /^\W{0,3}\d{2,6}\s+[A-Za-z]/.test(l));
+      if (ai >= 0) {
+        let a = after[ai].replace(/^\W+/, "");
+        const nx = after[ai + 1] || "";
+        if (/,\s*$/.test(a) || /^\s*\d{5}\b|^[A-Za-z .'-]+,\s*\d{5}/.test(nx)) a += " " + nx.trim();
+        a = a.replace(/\s+/g, " ").trim().replace(/(\d{5})\s+\S{0,2}?([A-Z]{2})$/, "$1 $2").slice(0, 80);
+        out.addr = a;
+        const cm = a.match(/,\s*([A-Za-z][A-Za-z .'-]{1,30}?),?\s*(?:\d{5}|[A-Z]{2}\b)/);
+        out.city = cm ? cm[1].trim() : null;
       }
     }
     // a 2-stop offer is one pickup: anything after the first name is a misread address piece
@@ -999,14 +1063,14 @@ let idbOK=true;
 function save(){
   /* art stays out of localStorage when IndexedDB works */
   const slim={...store,cards:store.cards.map(c=>idbOK&&c.artInDb?{...c,art:""}:c)};
-  try{localStorage.setItem(KEY,JSON.stringify(slim));return true}catch(e){console.error(e);return false}
+  try{localStorage.setItem(KEY,JSON.stringify(slim));if(typeof Cloud!=="undefined")Cloud.soon();return true}catch(e){console.error(e);return false}
 }
 async function putArt(c){
   if(!c.art)return;ART.set(c.id,c.art);
   if(!idbOK)return;
   try{await idb.put(c.id,c.art);c.artInDb=true;c.art=""}catch(e){console.warn("IndexedDB unavailable",e);idbOK=false}
 }
-const artOf=c=>c.art||ART.get(c.id)||"";
+const artOf=c=>c._friend?(c._art||""):(c.art||ART.get(c.id)||"");
 async function loadStore(){
   try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&Array.isArray(s.cards))store=Object.assign(store,s)}catch(e){}
   if(!store.cards.length){ /* bring cards over from the previous version */
@@ -1053,11 +1117,13 @@ function makeCard(o,ex){
   return {id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),no:store.next++,
     store:o.store||"Mystery order",platform:o.platform||"",pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,
     stores:Array.isArray(o.stores)&&o.stores.length>1?o.stores.slice(0,3):undefined,dropoffs:o.dropoffs||undefined,
+    addr:SET.addr&&o.addr?o.addr:undefined,city:SET.addr&&o.city?o.city:undefined,upd:Date.now(),
     grade:g.score,luck,score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
     art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:new Date().toISOString(),pack:ex.pack||"",took:null};
 }
 /* the finish is decided once, when the card is pulled: fixing numbers later re-grades the card but never re-rolls it */
 function rescore(c,o){const r=C.scoreOffer(o);if(c.luck==null)c.luck=C.luckFor(luckSeed(c));const score=C.applyLuck(r.score,c.luck);
+  c.upd=Date.now();
   Object.assign(c,{pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,store:o.store||c.store},o.ts?{ts:o.ts}:{},{grade:r.score,score,tier:C.tierFor(score).id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts})}
 /* what to do with the offer comes from its grade; luck only moves the rarity */
 const gradeOf=c=>c.grade??c.score;
@@ -1160,7 +1226,7 @@ $("days").onkeydown=e=>{if(e.key==="Enter"){const c=e.target.closest(".card");if
    Navigation
    ========================================================= */
 let view="vDex",lastList="vDex";
-const VIEWS=["vDex","vStats","vProfile","vSettings","vDetail"];
+const VIEWS=["vDex","vStats","vProfile","vSettings","vDetail","vFriend"];
 /* push the page down by the pinned top bar's height, so its first line is never underneath it */
 function padForBar(){
   const v=$(view);if(!v)return;const bar=v.querySelector(".appbar,.topbar");
@@ -1172,12 +1238,12 @@ const barRO=typeof ResizeObserver!=="undefined"?new ResizeObserver(()=>padForBar
 addEventListener("resize",()=>padForBar());
 function show(v){
   view=v;for(const id of VIEWS)$(id).hidden=id!==v;
-  $("nav").hidden=v==="vDetail";
+  $("nav").hidden=v==="vDetail"||v==="vFriend";
   document.querySelectorAll(".ntab").forEach(t=>{if(t.dataset.v===v)t.setAttribute("aria-current","page");else t.removeAttribute("aria-current")});
-  if(v!=="vDetail")lastList=v;
+  if(v!=="vDetail"&&v!=="vFriend")lastList=v;
   if(v==="vDex")renderDex();
   if(v==="vStats")renderStats();
-  if(v==="vProfile")renderProfile();
+  if(v==="vProfile"){renderProfile();if(Cloud.user&&Date.now()-(Cloud.fAt||0)>20000){Cloud.fAt=Date.now();Cloud.loadFriends().catch(e=>Cloud.fail(e))}}
   if(v==="vSettings")renderSettings();
   const bar=$(v).querySelector(".appbar,.topbar");if(bar&&barRO){barRO.disconnect();barRO.observe(bar)}
   padForBar();
@@ -1218,6 +1284,7 @@ function openDetail(id){
    <div class="panel">
      <h2>Grade ${gradeOf(c)} · ${v.label}</h2>
      <p class="msg">Rarity ${c.score} = grade ${gradeOf(c)} ${c.luck>=0?"+":"−"} ${Math.abs(c.luck||0)} luck${(c.luck||0)>=8?" · lucky pull":""}</p>
+     ${c.addr?`<p class="msg">Pickup: ${esc(c.addr)}</p>`:""}
      <p class="msg">${when.toLocaleDateString([],{weekday:"long",month:"short",day:"numeric"})} at ${clock(when)} · ${esc(c.platform||"Delivery")}</p>
      <div class="tiers">${TIERS.slice().reverse().map(t=>`<div style="--c:${TC[t.id]}" class="${t.id===c.tier?"on":""}">${t.name}<br>${t.min}–${t.max}</div>`).join("")}</div>
      <div class="break">
@@ -1235,12 +1302,12 @@ function openDetail(id){
    <button class="btn ghost danger" id="dDel">Remove from Dex</button>`;
   show("vDetail");window.scrollTo(0,0);
   $("dBack").onclick=()=>show(lastList);
-  $("detail").querySelectorAll("[data-took]").forEach(b=>b.onclick=()=>{const val=b.dataset.took==="1";c.took=c.took===val?null:val;save();openDetail(c.id)});
+  $("detail").querySelectorAll("[data-took]").forEach(b=>b.onclick=()=>{const val=b.dataset.took==="1";c.took=c.took===val?null:val;c.upd=Date.now();save();openDetail(c.id)});
   if($("dCheck"))$("dCheck").onclick=()=>{const d=$("dFix");d.open=true;d.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
   $("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
     rescore(c,o);c.check=false;save();toast("Re-graded: "+gradeOf(c)+" · "+vOf(c).label);openDetail(c.id)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to remove";return}
-    store.cards=store.cards.filter(x=>x.id!==id);ART.delete(id);idb.del(id).catch(()=>{});save();show(lastList);toast("Card removed")};
+    store.cards=store.cards.filter(x=>x.id!==id);ART.delete(id);Cloud.forget(id);idb.del(id).catch(()=>{});save();show(lastList);toast("Card removed")};
 }
 
 /* =========================================================
@@ -1363,7 +1430,7 @@ async function readImage(file,pool,onStep){
       if(ck)out.ts=C.offerTime(ck,file.lastModified||Date.now())}
     catch(e){console.warn(e)}
     finally{try{await w.setParameters({tessedit_char_whitelist:""})}catch(e){}}
-    out.art=artFrom(bm,payY);
+    out.art=SET.maps!==false?artFrom(bm,payY):"";
     if(p.store)p.store=C.titleCase(p.store);
     out.parsed=p;
     if(p.pay>0&&p.minutes>0&&p.miles>0){const pph=p.pay/p.minutes*60,ppm=p.pay/p.miles;if(pph>90||pph<4||ppm>8||ppm<0.25)check.add("odd")}
@@ -1718,7 +1785,7 @@ function weeklyTable(){
 const SKEY="offerdex.settings";
 /* fixed targets used by the charts (the same ones the grading is built around) */
 const GOAL_HR=20,GOAL_MI=1.5;
-const SET=Object.assign({theme:"dark",motion:true,goalHr:20,goalMi:1.5,clock:true,name:"",avatar:"legendary"},(()=>{try{return JSON.parse(localStorage.getItem(SKEY)||"{}")}catch(e){return {}}})());
+const SET=Object.assign({theme:"dark",motion:true,clock:true,name:"",avatar:"legendary",addr:false,maps:true,share:true,shareLoc:true},(()=>{try{return JSON.parse(localStorage.getItem(SKEY)||"{}")}catch(e){return {}}})());
 const saveSet=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}};
 const darkMQ=matchMedia("(prefers-color-scheme: dark)");
 function applyTheme(){
@@ -1735,11 +1802,12 @@ const kb=n=>n>1e6?(n/1e6).toFixed(1)+" MB":Math.max(1,Math.round(n/1e3))+" KB";
 function renderSettings(){
   const si=storageInfo();
   const segBtn=(k,v,l)=>`<button data-k="${k}" data-v="${v}" aria-pressed="${SET[k]===v}">${l}</button>`;
-  $("settingsBody").innerHTML=`
+  $("settingsBody").innerHTML=`${accountHTML()}
   <div class="sbox"><h3>Appearance</h3>
     <div class="seg seg3" role="group" aria-label="Theme">${segBtn("theme","dark","Dark")}${segBtn("theme","light","Light")}${segBtn("theme","system","Match phone")}</div>
     <label class="sw"><span><b>Card animations</b><small>Holo shimmer, card flips and the pack tear. Turn off to save battery.</small></span><input type="checkbox" id="setMotion" ${SET.motion?"checked":""}><i></i></label>
   </div>
+  ${privacyHTML()}
   <div class="sbox"><h3>Scanning</h3>
     <label class="sw"><span><b>Read the time from the screenshot</b><small>Uses the clock in your status bar to put each card on the right day. Off: uses the time you scan.</small></span><input type="checkbox" id="setClock" ${SET.clock?"checked":""}><i></i></label>
     <p class="msg">Tip: pick up to 10 screenshots at once to open a pack. Duplicates are skipped automatically.</p>
@@ -1759,7 +1827,7 @@ function renderSettings(){
   $("settingsBody").querySelectorAll(".seg button").forEach(btn=>btn.onclick=()=>{SET[btn.dataset.k]=btn.dataset.v;saveSet();applyTheme();renderSettings()});
   $("setMotion").onchange=e=>{SET.motion=e.target.checked;saveSet();applyTheme()};
   $("setClock").onchange=e=>{SET.clock=e.target.checked;saveSet()};
-  wireData();
+  wireData();wireAccount();
 }
 function wireData(){
   $("csv").onclick=async()=>{
@@ -1873,7 +1941,7 @@ function renderProfile(){
   const sm=new Map();for(const c of cs){const k=c.store.toLowerCase().replace(/[^a-z0-9]/g,"");const e=sm.get(k)||{name:c.store,n:0};e.n++;sm.set(k,e)}
   const fav=[...sm.values()].sort((x,y)=>y.n-x.n)[0];
   const ach=achievements(),done=ach.filter(x=>x.done).length;
-  const name=SET.name||"Driver";
+  const name=myName();
   $("profileBody").innerHTML=`
   <div class="phero">
     <div class="avatar" style="--c:${best?TC[best.tier]:"var(--mut)"}">${esc(name.trim()[0]||"D").toUpperCase()}</div>
@@ -1890,15 +1958,355 @@ function renderProfile(){
     <div class="kpi"><b>${money(a.takenPay)}</b><span>Taken</span><small>${a.taken.length} offer${a.taken.length===1?"":"s"}</small></div>
     <div class="kpi"><b>${fav?esc(fav.name):"–"}</b><span>Most seen store</span><small>${fav?fav.n+" offer"+(fav.n>1?"s":""):""}</small></div>
   </div>
+  ${friendsHTML()}
   ${best?`<div class="sbox"><h3>Best pull <small>tap to open</small></h3><div class="showcase">${cardHTML(best)}</div></div>`:`<div class="sempty">Scan your first offer to start leveling up.</div>`}
   <div class="sbox"><h3>Achievements <small>${done} of ${ach.length}</small></h3>
     <div class="achs">${ach.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
   </div>
   <p class="about">XP: Trash 5 · Common 10 · Rare 25 · Epic 60 · Legendary 150 · Holo +75 · Carbon or Inverted +40 · each pack +10 · daily quests 30–120</p>`;
-  $("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile()};
+  $("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile();if(Cloud.user)Cloud.pushProfile().catch(err=>Cloud.fail(err))};
   $("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
   const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
+  wireFriends();
 }
+
+/* =========================================================
+   Cloud: Google sign-in, sync across devices, friends (Firebase)
+   Everything here is optional. With no Firebase config the app works exactly as before, on this device only.
+   Who can read what is enforced by the Firestore security rules (firestore.rules), not by this code.
+   ========================================================= */
+const FB_CFG=(window.OFFERDEX_FIREBASE&&window.OFFERDEX_FIREBASE.apiKey)?window.OFFERDEX_FIREBASE:null;
+const FBV="10.14.1";
+const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","took","check","upd"];
+const CODE_ABC="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const loadJS=src=>new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=()=>rej(new Error("Couldn't load "+src));document.head.appendChild(s)});
+const ART_RE=/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+const num0=v=>Number.isFinite(+v)?+v:0;
+/* anything read from the cloud (even your own) is cleaned before it is drawn */
+function cleanCard(d,id){
+  const c={};for(const k of PUB_FIELDS)if(d[k]!==undefined)c[k]=d[k];
+  c.id=String(id||c.id||"").slice(0,40);
+  for(const k of ["no","pay","minutes","miles","stops","grade","luck","score","pph","ppm","roll","boost","upd"])c[k]=num0(c[k]);
+  c.stops=c.stops||2;c.no=c.no||0;
+  if(!TIERS.some(t=>t.id===c.tier))c.tier=C.tierFor(c.score||1).id;
+  if(!["standard","holo","carbon","inverted"].includes(c.finish))c.finish="standard";
+  c.store=String(c.store||"Mystery order").slice(0,40);c.platform=String(c.platform||"").slice(0,20);
+  c.stores=Array.isArray(c.stores)?c.stores.slice(0,3).map(s=>String(s).slice(0,40)):undefined;
+  c.reasons=Array.isArray(c.reasons)?c.reasons.slice(0,8).map(s=>String(s).slice(0,80)):[];
+  c.parts=c.parts&&typeof c.parts==="object"?{pph:num0(c.parts.pph),ppm:num0(c.parts.ppm),base:num0(c.parts.base),penalty:num0(c.parts.penalty)}:{pph:0,ppm:0,base:0,penalty:0};
+  c.check=Array.isArray(c.check)?c.check.filter(k=>["pay","trip","odd"].includes(k)):false;
+  c.took=c.took===true?true:c.took===false?false:null;
+  c.ts=isNaN(new Date(c.ts))?new Date().toISOString():new Date(c.ts).toISOString();
+  c.added=isNaN(new Date(c.added))?c.ts:new Date(c.added).toISOString();
+  c.pack=String(c.pack||"").slice(0,30);
+  return c;
+}
+function cleanLoc(d){
+  const o={};if(!d)return o;
+  if(typeof d.art==="string"&&d.art.length<400000&&ART_RE.test(d.art))o.art=d.art;
+  if(typeof d.addr==="string")o.addr=d.addr.slice(0,80);
+  if(typeof d.city==="string")o.city=d.city.slice(0,40);
+  if(typeof d.sha==="string"&&/^[0-9a-f]{0,64}$/.test(d.sha))o.sha=d.sha;
+  if(typeof d.ph==="string"&&/^[0-9a-f]{0,64}$/.test(d.ph))o.ph=d.ph;
+  return o;
+}
+const pubOf=c=>{const o={};for(const k of PUB_FIELDS)if(c[k]!==undefined&&c[k]!==null)o[k]=c[k];if(c.took===null)o.took=null;return o};
+const locOf=c=>{const o={};const a=artOf(c);if(a&&SET.maps!==false&&a.length<400000)o.art=a;if(SET.addr&&c.addr)o.addr=c.addr;if(SET.addr&&c.city)o.city=c.city;if(c.sha)o.sha=c.sha;if(c.ph)o.ph=c.ph;return o};
+const sigOf=c=>{const l=locOf(c);return JSON.stringify(pubOf(c))+"|"+(l.art?l.art.length:0)+"|"+(l.addr||"")};
+
+const Cloud={
+  on:!!FB_CFG,ready:false,user:null,auth:null,db:null,busy:false,timer:0,last:0,err:"",
+  profile:null,friends:[],requests:[],
+  key(){return "offerdex.synced."+(this.user?this.user.uid:"")},
+  synced(){try{return JSON.parse(localStorage.getItem(this.key())||"{}")}catch(e){return {}}},
+  setSynced(m){try{localStorage.setItem(this.key(),JSON.stringify(m))}catch(e){}},
+  async init(){
+    if(!this.on)return;
+    try{
+      if(!window.firebase){
+        await loadJS(`https://cdn.jsdelivr.net/npm/firebase@${FBV}/firebase-app-compat.js`);
+        await Promise.all([loadJS(`https://cdn.jsdelivr.net/npm/firebase@${FBV}/firebase-auth-compat.js`),loadJS(`https://cdn.jsdelivr.net/npm/firebase@${FBV}/firebase-firestore-compat.js`)]);
+      }
+      if(!firebase.apps.length)firebase.initializeApp(FB_CFG);
+      this.auth=firebase.auth();this.db=firebase.firestore();
+      this.auth.getRedirectResult().catch(e=>{this.err=friendly(e);rerenderAccount()});
+      this.auth.onAuthStateChanged(async u=>{
+        this.user=u;this.ready=true;this.profile=null;this.friends=[];this.requests=[];rerenderAccount();
+        if(u){try{await this.fullSync();await this.loadFriends()}catch(e){this.fail(e)}}
+      });
+    }catch(e){this.on=false;this.err=friendly(e);console.warn(e);rerenderAccount()}
+  },
+  async signIn(){
+    this.err="";const p=new firebase.auth.GoogleAuthProvider();
+    try{await this.auth.signInWithPopup(p)}
+    catch(e){
+      if(e&&e.code==="auth/popup-closed-by-user"||e&&e.code==="auth/cancelled-popup-request")return;
+      if(e&&/popup-blocked|operation-not-supported|web-storage/.test(e.code||""))return this.auth.signInWithRedirect(p);
+      this.fail(e);
+    }
+  },
+  async signOut(){await this.auth.signOut();toast("Signed out. Your cards stay on this phone.")},
+  fail(e){console.error(e);this.err=friendly(e);this.busy=false;rerenderAccount()},
+  soon(){if(!this.user)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.push().catch(e=>this.fail(e)),2500)},
+  forget(id){/* the next sync notices the card is gone and deletes it from the cloud */},
+  me(){return this.db.collection("users").doc(this.user.uid)},
+  /* ---------- profile + friend code ---------- */
+  async ensureProfile(){
+    const ref=this.me(),snap=await ref.get();let p=snap.exists?snap.data():{};
+    if(!p.code){
+      for(let i=0;i<6&&!p.code;i++){
+        const code=Array.from(crypto.getRandomValues(new Uint8Array(8)),x=>CODE_ABC[x%CODE_ABC.length]).join("");
+        const cref=this.db.collection("codes").doc(code);
+        if((await cref.get()).exists)continue;
+        await cref.set({uid:this.user.uid,name:myName()});p.code=code;
+      }
+    }
+    if(!SET.name&&p.name){SET.name=p.name;saveSet()}
+    this.profile=p;await this.pushProfile();
+  },
+  async pushProfile(){
+    if(!this.user)return;
+    const cs=store.cards,xp=xpOf(cs),a=agg(cs),best=cs.slice().sort((x,y)=>y.score-x.score||(special(y)?1:0)-(special(x)?1:0))[0];
+    const p={name:myName(),code:(this.profile&&this.profile.code)||"",xp,level:levelOf(xp),cards:cs.length,specials:cs.filter(special).length,
+      pph:Math.round(a.pph*100)/100,ppm:Math.round(a.ppm*100)/100,streak:streakNow(),best:best?pubOf(best):null,
+      share:SET.share!==false,shareLoc:SET.shareLoc!==false,since:cs.length?new Date(Math.min(...cs.map(c=>+new Date(c.ts)))).toISOString():null,updated:Date.now()};
+    await this.me().set(p,{merge:true});this.profile={...this.profile,...p};
+    if(p.code){const cref=this.db.collection("codes").doc(p.code);await cref.set({uid:this.user.uid,name:p.name}).catch(()=>{})}
+  },
+  /* ---------- full merge: on sign-in, app open and "Sync now" ---------- */
+  async fullSync(){
+    if(!this.user||this.busy)return;this.busy=true;this.err="";rerenderAccount();
+    await this.ensureProfile();
+    /* another Google account used this phone before: its synced cards live in its own cloud copy, so take them off
+       this phone instead of copying them into this account. Cards that were never synced stay and join this account. */
+    let owner=null;try{owner=localStorage.getItem("offerdex.owner")}catch(e){}
+    if(owner&&owner!==this.user.uid){
+      let prev={};try{prev=JSON.parse(localStorage.getItem("offerdex.synced."+owner)||"{}")}catch(e){}
+      const gone=store.cards.filter(c=>prev[c.id]).map(c=>c.id);
+      if(gone.length){store.cards=store.cards.filter(c=>!prev[c.id]);for(const id of gone){ART.delete(id);idb.del(id).catch(()=>{})}save()}
+    }
+    try{localStorage.setItem("offerdex.owner",this.user.uid)}catch(e){}
+    const uid=this.user.uid,cardsCol=this.me().collection("cards"),locCol=this.me().collection("cardLoc");
+    const remote=new Map();(await cardsCol.get()).forEach(d=>remote.set(d.id,d.data()));
+    const synced=this.synced(),local=new Map(store.cards.map(c=>[c.id,c]));
+    const down=[],delLocal=[],delRemote=[];
+    for(const [id,d] of remote){
+      const l=local.get(id);
+      if(!l){if(synced[id])delRemote.push(id);else down.push(id)}
+      else if(num0(d.upd)>num0(l.upd)){Object.assign(l,cleanCard(d,id))}
+    }
+    for(const [id] of local)if(!remote.has(id)&&synced[id])delLocal.push(id);
+    /* cards made on another device: bring them (and their maps) here */
+    for(const id of down){
+      const c=cleanCard(remote.get(id),id);
+      try{const ls=await locCol.doc(id).get();if(ls.exists){const l=cleanLoc(ls.data());if(l.art)c.art=l.art;Object.assign(c,{addr:l.addr,city:l.city,sha:l.sha,ph:l.ph})}}catch(e){}
+      store.cards.push(c);if(c.art)await putArt(c);
+    }
+    /* deleted on another device */
+    if(delLocal.length){store.cards=store.cards.filter(c=>!delLocal.includes(c.id));for(const id of delLocal){ART.delete(id);idb.del(id).catch(()=>{})}}
+    store.next=Math.max(store.next||1,...store.cards.map(c=>(c.no||0)+1));
+    const s2={};for(const [id] of remote)if(!delRemote.includes(id))s2[id]=sigOf(cleanCard(remote.get(id),id));
+    this.setSynced(s2);
+    this.busy=false;
+    await this.push(delRemote);
+    save();if(view==="vDex")renderDex();
+    if(down.length||delLocal.length)toast(`Synced: ${down.length} card${down.length===1?"":"s"} from your other devices`);
+  },
+  /* ---------- push what changed here (no reads) ---------- */
+  async push(extraDeletes){
+    if(!this.user||this.busy)return;this.busy=true;
+    try{
+      const synced=this.synced(),ops=[],now={};
+      for(const c of store.cards){const s=sigOf(c);now[c.id]=s;if(synced[c.id]!==s)ops.push(["set",c])}
+      for(const id of Object.keys(synced))if(!now[id])ops.push(["del",id]);
+      for(const id of extraDeletes||[])if(!ops.some(o=>o[0]==="del"&&o[1]===id))ops.push(["del",id]);
+      const cardsCol=this.me().collection("cards"),locCol=this.me().collection("cardLoc");
+      for(let i=0;i<ops.length;i+=200){
+        const b=this.db.batch();
+        for(const [op,x] of ops.slice(i,i+200)){
+          if(op==="set"){b.set(cardsCol.doc(x.id),pubOf(x));b.set(locCol.doc(x.id),locOf(x))}
+          else{b.delete(cardsCol.doc(x));b.delete(locCol.doc(x))}
+        }
+        await b.commit();
+      }
+      this.setSynced(now);
+      if(ops.length||!this.last)await this.pushProfile();
+      this.last=Date.now();this.err="";
+    }finally{this.busy=false;rerenderAccount()}
+  },
+  async deleteCloud(){
+    if(!this.user)return;this.busy=true;rerenderAccount();
+    try{
+      const me=this.me();
+      for(const sub of ["cards","cardLoc","friends","requests"]){
+        const snap=await me.collection(sub).get();const docs=[];snap.forEach(d=>docs.push(d.ref));
+        for(let i=0;i<docs.length;i+=400){const b=this.db.batch();docs.slice(i,i+400).forEach(r=>b.delete(r));await b.commit()}
+      }
+      if(this.profile&&this.profile.code)await this.db.collection("codes").doc(this.profile.code).delete().catch(()=>{});
+      await me.delete();this.setSynced({});this.profile=null;this.friends=[];this.requests=[];
+      this.busy=false;await this.auth.signOut();toast("Cloud copy deleted. Your cards are still on this phone.");
+    }catch(e){this.fail(e)}
+  },
+  /* ---------- friends ---------- */
+  async loadFriends(){
+    if(!this.user)return;const uid=this.user.uid;
+    const [fs,rs]=await Promise.all([this.me().collection("friends").get(),this.me().collection("requests").get()]);
+    const list=[];fs.forEach(d=>list.push({id:d.id,...d.data()}));
+    const reqs=[];rs.forEach(d=>reqs.push({id:d.id,name:String(d.data().name||"Driver").slice(0,24),at:d.data().at||0}));
+    for(const f of list){
+      /* is the other side still there? (you can always read the doc they keep about you) */
+      let back=null;try{const s=await this.db.collection("users").doc(f.id).collection("friends").doc(uid).get();back=s.exists?s.data():null}catch(e){}
+      if(!f.accepted&&back&&back.accepted){await this.me().collection("friends").doc(f.id).update({accepted:true});f.accepted=true}
+      if(f.accepted&&!back){await this.me().collection("friends").doc(f.id).delete().catch(()=>{});f.gone=true;continue}
+      if(!f.accepted&&!back){let still=false;try{still=(await this.db.collection("users").doc(f.id).collection("requests").doc(uid).get()).exists}catch(e){}
+        if(!still){await this.me().collection("friends").doc(f.id).delete().catch(()=>{});f.gone=true;continue}}
+      f.theyClose=!!(back&&back.close);
+      if(f.accepted){try{const p=await this.db.collection("users").doc(f.id).get();if(p.exists)f.p=p.data()}catch(e){}}
+    }
+    this.friends=list.filter(f=>!f.gone);this.requests=reqs.filter(r=>!this.friends.some(f=>f.id===r.id&&f.accepted));
+    if(view==="vProfile")renderProfile();
+  },
+  async addByCode(code){
+    code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
+    if(code.length!==8)throw new Error("Friend codes are 8 letters and numbers.");
+    const s=await this.db.collection("codes").doc(code).get();
+    if(!s.exists)throw new Error("No driver has that code. Check it and try again.");
+    const {uid:fid,name}=s.data();
+    if(fid===this.user.uid)throw new Error("That's your own code.");
+    if(this.friends.some(f=>f.id===fid))throw new Error("You've already added "+name+".");
+    /* if they already asked you, adding them back accepts */
+    if(this.requests.some(r=>r.id===fid))return this.accept(fid,name);
+    await this.me().collection("friends").doc(fid).set({name:String(name||"Driver").slice(0,24),accepted:false,close:false,at:Date.now()});
+    await this.db.collection("users").doc(fid).collection("requests").doc(this.user.uid).set({name:myName(),at:Date.now()}).catch(e=>{if(!/permission/i.test(e.code||""))throw e});
+    await this.loadFriends();return "Request sent to "+name;
+  },
+  async accept(fid,name){
+    await this.me().collection("friends").doc(fid).set({name:String(name||"Driver").slice(0,24),accepted:true,close:false,at:Date.now()});
+    await this.me().collection("requests").doc(fid).delete();
+    await this.loadFriends();return "You and "+name+" are friends";
+  },
+  async decline(fid){await this.me().collection("requests").doc(fid).delete();await this.loadFriends()},
+  async remove(fid){
+    await this.me().collection("friends").doc(fid).delete();
+    await this.db.collection("users").doc(fid).collection("requests").doc(this.user.uid).delete().catch(()=>{});
+    await this.loadFriends();
+  },
+  async setClose(fid,close){await this.me().collection("friends").doc(fid).update({close});const f=this.friends.find(x=>x.id===fid);if(f)f.close=close},
+  async friendData(fid){
+    const u=this.db.collection("users").doc(fid);
+    let p={};try{p=(await u.get()).data()||{}}catch(e){p={share:false}}
+    let cards=[];try{(await u.collection("cards").orderBy("score","desc").limit(60).get()).forEach(d=>cards.push(cleanCard(d.data(),d.id)))}catch(e){if(!/permission/i.test(e.code||e.message))throw e}
+    let locs=null;
+    try{const back=(await u.collection("friends").doc(this.user.uid).get()).data();
+      if(back&&back.close&&p.shareLoc!==false){locs=new Map();(await u.collection("cardLoc").get()).forEach(d=>locs.set(d.id,cleanLoc(d.data())))}}catch(e){locs=null}
+    return {p,cards,locs};
+  }
+};
+const myName=()=>(SET.name||(Cloud.user&&Cloud.user.displayName)||"Driver").trim().slice(0,24)||"Driver";
+function friendly(e){
+  const c=(e&&e.code)||"",m=(e&&e.message)||String(e);
+  if(/unauthorized-domain/.test(c))return "This website isn't on your Firebase project's list of authorized domains yet (see SETUP.md, step 3).";
+  if(/network|unavailable/.test(c+m))return "Couldn't reach the cloud. Check your connection; your cards are safe on this phone.";
+  if(/permission/.test(c+m))return "The cloud refused that. Make sure the security rules from firestore.rules are published.";
+  if(/popup|redirect/.test(c))return "Google sign-in didn't open. In Safari, allow pop-ups for this site or try again.";
+  return m.slice(0,160);
+}
+function rerenderAccount(){if(view==="vSettings")renderSettings();if(view==="vProfile")renderProfile()}
+const maskEmail=e=>{if(!e)return "";const [u,d]=e.split("@");return (u.length>2?u.slice(0,2)+"…":u)+"@"+d};
+const ago=t=>{if(!t)return "not yet";const s=Math.round((Date.now()-t)/1000);return s<60?"just now":s<3600?Math.round(s/60)+" min ago":Math.round(s/3600)+" h ago"};
+
+/* ---------- Settings: account + privacy ---------- */
+function accountHTML(){
+  if(!Cloud.on)return `<div class="sbox"><h3>Account</h3><p class="msg">Cloud sync isn't set up for this copy of OfferDex, so your cards are saved on this phone only.${FB_CFG===null&&window.OFFERDEX_FIREBASE===undefined?"":""} The site owner can turn on Google sign-in by following SETUP.md.</p>${Cloud.err?`<p class="msg err">${esc(Cloud.err)}</p>`:""}</div>`;
+  if(!Cloud.ready)return `<div class="sbox"><h3>Account</h3><p class="msg">Connecting…</p></div>`;
+  if(!Cloud.user)return `<div class="sbox"><h3>Account</h3>
+    <p class="msg">Sign in to save your Dex to your Google account, keep it in sync on every device, and add friends.</p>
+    <button class="btn gbtn" id="gIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.8 14.2a6.6 6.6 0 0 1 0-4.3V7H2.1a11 11 0 0 0 0 9.9l3.7-2.7z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2A11 11 0 0 0 2.1 7l3.7 2.9C6.7 7.3 9.1 5.4 12 5.4z"/></svg>Sign in with Google</button>
+    ${Cloud.err?`<p class="msg err">${esc(Cloud.err)}</p>`:""}</div>`;
+  const u=Cloud.user;
+  return `<div class="sbox"><h3>Account <small>${Cloud.busy?"syncing…":"synced "+ago(Cloud.last)}</small></h3>
+    <div class="acct"><span class="avatar sm" style="--c:var(--t-rare)">${esc((myName()[0]||"D").toUpperCase())}</span><span><b>${esc(u.displayName||myName())}</b><small>${esc(maskEmail(u.email))}</small></span></div>
+    <div class="btnrow"><button class="btn sm" id="gSync" ${Cloud.busy?"disabled":""}>Sync now</button><button class="btn ghost sm" id="gOut">Sign out</button></div>
+    ${Cloud.err?`<p class="msg err">${esc(Cloud.err)}</p>`:""}
+    <button class="linkbtn danger" id="gDel" style="justify-self:start;padding-left:0">Delete my cloud data</button></div>`;
+}
+function privacyHTML(){
+  const sw=(id,k,t,d,def)=>`<label class="sw"><span><b>${t}</b><small>${d}</small></span><input type="checkbox" id="${id}" ${(SET[k]??def)?"checked":""}><i></i></label>`;
+  return `<div class="sbox"><h3>Privacy</h3>
+    ${sw("pAddr","addr","Read pickup addresses","Saves the restaurant's street address and city with each card. Off: addresses are skipped when scanning.",false)}
+    ${sw("pMaps","maps","Keep route maps on cards","The card picture is the route map from your screenshot, which shows where you were. Off: new cards get a plain picture.",true)}
+    ${Cloud.on?`${sw("pShare","share","Share my cards with friends","Friends see your level, stats and cards. Never your maps or addresses.",true)}
+    ${sw("pLoc","shareLoc","Close friends see maps and addresses","Only friends you've starred as close friends. Turn off to keep these to yourself.",true)}`:""}
+  </div>`;
+}
+function wireAccount(){
+  const on=(id,f)=>{const el=$(id);if(el)el.onclick=f};
+  on("gIn",()=>Cloud.signIn());
+  on("gOut",()=>Cloud.signOut());
+  on("gSync",async()=>{try{await Cloud.fullSync();await Cloud.loadFriends();toast("Synced")}catch(e){Cloud.fail(e)}});
+  let armed=false;on("gDel",e=>{if(!armed){armed=true;e.target.textContent="Tap again to delete your cloud copy and friends";return}Cloud.deleteCloud()});
+  const tog=(id,k)=>{const el=$(id);if(el)el.onchange=e=>{SET[k]=e.target.checked;saveSet();if(Cloud.user&&(k==="share"||k==="shareLoc"))Cloud.pushProfile().catch(err=>Cloud.fail(err));if(Cloud.user&&(k==="addr"||k==="maps"))Cloud.soon()}};
+  tog("pAddr","addr");tog("pMaps","maps");tog("pShare","share");tog("pLoc","shareLoc");
+}
+
+/* ---------- Profile: friends ---------- */
+function friendsHTML(){
+  if(!Cloud.on)return "";
+  if(!Cloud.user)return `<div class="sbox"><h3>Friends</h3><p class="msg">Sign in with Google to add friends and compare Dexes.</p><button class="btn ghost sm" id="toSettings">Go to Settings</button></div>`;
+  const code=Cloud.profile&&Cloud.profile.code;
+  const fr=Cloud.friends.filter(f=>f.accepted),pend=Cloud.friends.filter(f=>!f.accepted);
+  const star=on=>`<svg viewBox="0 0 24 24" fill="${on?"currentColor":"none"}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 15.4 6.8 18.2l1-5.8L3.5 8.2l5.9-.9z"/></svg>`;
+  return `<div class="sbox"><h3>Friends <small>${fr.length}</small></h3>
+    <div class="fcode"><span><small>Your friend code</small><b>${code?esc(code.slice(0,4)+" "+code.slice(4)):"…"}</b></span><button class="mini" id="cCopy" ${code?"":"disabled"}>Copy</button></div>
+    <div class="fadd"><input id="fCode" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Friend's code" aria-label="Friend's code"><button class="btn sm" id="fAdd">Add</button></div>
+    ${Cloud.requests.length?`<div class="flist"><div class="flabel">Requests</div>${Cloud.requests.map(r=>`<div class="frow"><span class="avatar sm" style="--c:var(--t-common)">${esc((r.name[0]||"D").toUpperCase())}</span><span class="fn"><b>${esc(r.name)}</b><small>wants to be friends</small></span><button class="mini" data-acc="${esc(r.id)}">Accept</button><button class="mini ghost" data-dec="${esc(r.id)}" aria-label="Decline">✕</button></div>`).join("")}</div>`:""}
+    ${fr.length?`<div class="flist">${fr.map(f=>`<div class="frow"><button class="fopen" data-open="${esc(f.id)}"><span class="avatar sm" style="--c:${f.close?"var(--t-legendary)":"var(--t-rare)"}">${esc(((f.p&&f.p.name)||f.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc((f.p&&f.p.name)||f.name)}</b><small>${f.p?`Level ${num0(f.p.level)} · ${num0(f.p.cards)} cards`:"Profile hidden"}</small></span></button><button class="mini star${f.close?" on":""}" data-close="${esc(f.id)}" aria-pressed="${!!f.close}" aria-label="Close friend">${star(f.close)}</button></div>`).join("")}</div>
+      <p class="msg">Star a friend to make them a close friend: they can also see your route maps and pickup addresses.</p>`:`<p class="msg">Share your code with a friend, or type theirs above.</p>`}
+    ${pend.length?`<div class="flist"><div class="flabel">Waiting for them to accept</div>${pend.map(f=>`<div class="frow"><span class="avatar sm" style="--c:var(--mut)">${esc((f.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(f.name)}</b><small>request sent</small></span><button class="mini ghost" data-cancel="${esc(f.id)}">Cancel</button></div>`).join("")}</div>`:""}
+  </div>`;
+}
+function wireFriends(){
+  const box=$("profileBody");if(!box)return;
+  const on=(id,f)=>{const el=$(id);if(el)el.onclick=f};
+  on("toSettings",()=>{show("vSettings");toTop()});
+  on("cCopy",async()=>{const c=Cloud.profile&&Cloud.profile.code;if(!c)return;try{await navigator.clipboard.writeText(c);toast("Code copied")}catch(e){toast("Your code: "+c)}});
+  const run=async(f,okMsg)=>{try{const m=await f();toast(m||okMsg||"Done")}catch(e){toast(e.message&&!e.code?e.message:friendly(e))}};
+  on("fAdd",()=>run(()=>Cloud.addByCode($("fCode").value)));
+  const inp=$("fCode");if(inp)inp.onkeydown=e=>{if(e.key==="Enter")$("fAdd").click()};
+  box.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>{const r=Cloud.requests.find(x=>x.id===b.dataset.acc);run(()=>Cloud.accept(r.id,r.name))});
+  box.querySelectorAll("[data-dec]").forEach(b=>b.onclick=()=>run(()=>Cloud.decline(b.dataset.dec),"Request declined"));
+  box.querySelectorAll("[data-cancel]").forEach(b=>b.onclick=()=>run(()=>Cloud.remove(b.dataset.cancel),"Request cancelled"));
+  box.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>{const f=Cloud.friends.find(x=>x.id===b.dataset.close);const v=!f.close;
+    run(async()=>{await Cloud.setClose(f.id,v);renderProfile();return v?`${(f.p&&f.p.name)||f.name} is a close friend`:`${(f.p&&f.p.name)||f.name} is a regular friend`})});
+  box.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openFriend(b.dataset.open));
+}
+
+/* ---------- a friend's Dex (read only) ---------- */
+async function openFriend(fid){
+  const f=Cloud.friends.find(x=>x.id===fid);if(!f)return;
+  const nm=(f.p&&f.p.name)||f.name||"Driver";
+  $("friend").innerHTML=`<div class="topbar"><button class="close" id="frBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="tt">${esc(nm)}</span></div><div class="sempty">Loading ${esc(nm)}'s Dex…</div>`;
+  show("vFriend");toTop();$("frBack").onclick=()=>{show("vProfile");toTop()};
+  let d;try{d=await Cloud.friendData(fid)}catch(e){$("friend").querySelector(".sempty").textContent=friendly(e);return}
+  if(view!=="vFriend")return;
+  const p=d.p||{},L=num0(p.level)||1,cards=d.cards.map(c=>{const l=d.locs&&d.locs.get(c.id);const o={...c,_friend:true};if(l&&l.art)o._art=l.art;if(l&&l.addr)o.addr=l.addr;return o});
+  const TR={legendary:5,epic:4,rare:3,common:2,trash:1};cards.sort((x,y)=>TR[y.tier]-TR[x.tier]||(special(y)?1:0)-(special(x)?1:0)||y.score-x.score);
+  $("friend").innerHTML=`<div class="topbar"><button class="close" id="frBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="tt">${esc(nm)}</span></div>
+    <div class="phero"><div class="avatar" style="--c:${f.close?"var(--t-legendary)":"var(--t-rare)"}">${esc(nm[0].toUpperCase())}</div>
+      <div class="pmeta"><b class="pname" style="border:0">${esc(nm)}</b><div class="plvl">Level ${L} · ${titleOf(L)}</div><div class="xpl"><span>${num0(p.xp)} XP</span><span>${num0(p.streak)?"Streak "+num0(p.streak)+" day"+(num0(p.streak)===1?"":"s"):""}</span></div></div></div>
+    <div class="kpis">
+      <div class="kpi"><b>${num0(p.cards)}</b><span>Cards</span><small>${num0(p.specials)} special</small></div>
+      <div class="kpi"><b>$${num0(p.pph).toFixed(2)}</b><span>Avg per hour</span><small>$${num0(p.ppm).toFixed(2)}/mi</small></div>
+    </div>
+    <p class="msg" style="margin:0 2px 12px">${d.locs?`${esc(nm)} shares route maps and pickup addresses with you.`:`Route maps and addresses are only shared with close friends.`}</p>
+    ${cards.length?`<div class="grid" id="frGrid">${cards.map(c=>cardHTML(c)).join("")}</div>`:`<div class="sempty">${p.share===false?esc(nm)+" keeps their cards private.":esc(nm)+" hasn't synced any cards yet."}</div>`}
+    <button class="btn ghost danger" id="frRemove" style="margin-top:16px">Remove friend</button>`;
+  $("frBack").onclick=()=>{show("vProfile");toTop()};
+  let armed=false;$("frRemove").onclick=async e=>{if(!armed){armed=true;e.target.textContent="Tap again to remove "+nm;return}
+    try{await Cloud.remove(fid);toast(nm+" removed");show("vProfile");toTop()}catch(err){toast(friendly(err))}};
+  padForBar();
+}
+
 
 /* If the phone reports a notch/status-bar inset but the page wasn't pushed down for it,
    push it down ourselves so nothing starts hidden under the status bar. */
@@ -1915,7 +2323,7 @@ fixTopInset();addEventListener("orientationchange",()=>setTimeout(fixTopInset,30
 /* =========================================================
    Boot
    ========================================================= */
-loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")});
+loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")}).then(()=>Cloud.init());
 /* warm up the reader in the background so the first scan is faster */
 /* start loading the reader the moment Scan is touched, while the photo picker is still open */
 document.querySelector(".nscan").addEventListener("pointerdown",()=>getWorker().catch(()=>{}),{once:true});
