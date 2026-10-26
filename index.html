@@ -1845,7 +1845,7 @@ async function readImage(file,pool,onStep){
     if(!out.base)out.base=file.lastModified||Date.now();
     const d=sameImage(out.sha,out.ph,pool);
     if(d){out.status="dup";out.dupOf=d;out.why="You've already scanned this screenshot.";out.img=true;return out}
-    if(seenHit(out.sha,out.ph)){out.status="dup";out.why="You scanned this screenshot before. Each screenshot can only become one card, even after a reset.";out.img=true;return out}
+    if(seenHit(out.sha,out.ph)){out.status="dup";out.why="You scanned this screenshot before. Each screenshot can only become one card.";out.img=true;return out}
     let phase=0;
     progressHook=m=>{if(!onStep)return;if(m.status==="recognizing text")onStep(0.35+0.55*((phase+m.progress)/3),"Reading the offer");else if(/load|initializ/.test(m.status))onStep(0.06+0.28*(m.progress||0),"Loading the reader (first scan only)")};
     const w=await getWorker();
@@ -2298,7 +2298,7 @@ function renderSettings(){
     <p class="msg">Cards are saved in this browser on this phone only. Copy a backup as a spreadsheet (CSV) now and then.</p>
     <button class="btn sm" id="csv">Copy as CSV</button>
     <details class="reset" id="resetBox"><summary class="danger">Reset all progress</summary>
-      <p class="msg">Deletes every card, your level, XP, quests, achievements and streak${Cloud.user?", here and in your cloud copy":""}. Your name, friends, location notes and settings stay. Screenshots you already scanned can't be scanned again. This can't be undone.</p>
+      <p class="msg">Deletes every card, your level, XP, quests, achievements and streak${Cloud.user?", here and in your cloud copy":""}. Your name, friends, location notes and settings stay. Afterwards you can scan your old screenshots again from scratch. This can't be undone.</p>
       <label class="fields"><span style="font:500 .66rem/1 var(--f-mono);letter-spacing:.14em;color:var(--mut)">TYPE RESET TO CONFIRM</span><input id="resetTxt" autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase"></label>
       <button class="btn danger-fill" id="wipe" disabled>Reset everything</button>
     </details>
@@ -2324,9 +2324,8 @@ function wireData(){
   $("resetTxt").oninput=e=>{$("wipe").disabled=e.target.value.trim().toUpperCase()!=="RESET"};
   $("wipe").onclick=async()=>{
     if($("resetTxt").value.trim().toUpperCase()!=="RESET")return;
-    /* keep the screenshot ledger so the same screenshots can't be farmed again after a reset */
-    const seen=seenList().slice();
-    store={cards:[],next:1,scoreVer:C.SCORE_VERSION,seen,notes:store.notes||{},resetAt:Date.now()};ART.clear();try{await idb.clear()}catch(err){}
+    /* a full reset also forgets which screenshots were scanned, so old offers can be scanned again */
+    store={cards:[],next:1,scoreVer:C.SCORE_VERSION,seen:[],notes:store.notes||{},resetAt:Date.now()};ART.clear();try{await idb.clear()}catch(err){}
     save();if(Cloud.user){try{await Cloud.push();await Cloud.pushProfile()}catch(err){Cloud.fail(err)}}
     toast("Progress reset. Level 1, fresh quests.");renderSettings()};
 }
@@ -2635,6 +2634,8 @@ const Cloud={
       store.cards.push(c);if(c.art)await putArt(c);
     }
     /* deleted on another device */
+    /* every card was deleted on another device (a full reset there): forget scanned screenshots here too */
+    if(delLocal.length&&!remote.size&&delLocal.length===store.cards.length)store.seen=[];
     if(delLocal.length){store.cards=store.cards.filter(c=>!delLocal.includes(c.id));for(const id of delLocal){ART.delete(id);idb.del(id).catch(()=>{})}}
     store.next=Math.max(store.next||1,...store.cards.map(c=>(c.no||0)+1));
     const s2={};for(const [id] of remote)if(!delRemote.includes(id))s2[id]=sigOf(cleanCard(remote.get(id),id));
