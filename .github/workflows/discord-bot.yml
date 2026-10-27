@@ -1,4 +1,5 @@
 # DasherDex Discord bot: levels, leaderboard and new-driver alerts. Runs about once an hour for free.
+# Needs GitHub secrets: DISCORD_BOT_TOKEN, DISCORD_GUILD_ID (and FIREBASE_SERVICE_ACCOUNT, which you already have).
 name: Discord bot
 on:
   schedule:

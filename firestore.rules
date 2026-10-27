@@ -1,0 +1,251 @@
+rules_version = '2';
+
+// OfferDex security rules.
+// Who can see what:
+//   you            everything of yours
+//   friends        your profile, stats and cards (only friends YOU accepted, and only while "Share my cards" is on)
+//   close friends  also your route maps, pickup addresses and screenshot fingerprints (cardLoc), while that setting is on
+//   location notes only you, never friends
+//   progress + lock list only you (users/{uid}/meta/state)
+//   feed posts     Friends posts: your friends. Global posts: every signed-in driver. Never maps or addresses.
+//   moderators     can remove any Global post and block drivers from Global (head moderator: jackemoseley@gmail.com)
+//   anyone else    nothing, except looking up a single driver ID to send a request
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isMe(uid) { return signedIn() && request.auth.uid == uid; }
+    function friendDoc(owner) { return /databases/$(db)/documents/users/$(owner)/friends/$(request.auth.uid); }
+    function profile(owner) { return get(/databases/$(db)/documents/users/$(owner)).data; }
+    // the owner has accepted the reader as a friend
+    function isFriendOf(owner) {
+      return signedIn() && exists(friendDoc(owner)) && get(friendDoc(owner)).data.accepted == true;
+    }
+    function sharesCards(owner) { return profile(owner).get('share', true) == true; }
+    function isCloseFriendOf(owner) {
+      return isFriendOf(owner) && get(friendDoc(owner)).data.close == true
+        && profile(owner).get('shareLoc', true) == true;
+    }
+    // the head moderator is one Google account; it can make other drivers moderators
+    function headMod() { return signedIn() && request.auth.token.email == 'jackemoseley@gmail.com' && request.auth.token.email_verified == true; }
+    function isMod() { return headMod() || (signedIn() && exists(/databases/$(db)/documents/mods/$(request.auth.uid))); }
+    function blocked() { return exists(/databases/$(db)/documents/bans/$(request.auth.uid)); }
+    function smallString(v, n) { return v is string && v.size() <= n; }
+    function recent(t) { return t is int && t > request.time.toMillis() - 300000 && t < request.time.toMillis() + 300000; }
+    function validPost(d, owner) {
+      return d.keys().hasOnly(['uid','name','level','caption','card','at'])
+        && d.uid == owner && smallString(d.name, 24) && d.level is int && recent(d.at)
+        && d.card is map && d.card.size() <= 30 && smallString(d.card.store, 40)
+        && d.card.get('verified', true) != false && d.card.get('dev', 0) == 0
+        && !('art' in d.card) && !('addr' in d.card) && !('city' in d.card);
+    }
+
+    // a Global post must be one of your own synced cards, with the same rarity, score and frame
+    function postMatchesCard(card, postId) {
+      return card.id is string && postId == request.auth.uid + '_' + card.id
+        && card.tier in ['trash','common','uncommon','rare','superrare','epic','legendary','mythic']
+        && card.get('finish', 'standard') in ['standard','holo','gold','neon','carbon','inverted']
+        && card.score is number && card.score >= 1 && card.score <= 100
+        && exists(/databases/$(db)/documents/users/$(request.auth.uid)/cards/$(card.id))
+        && get(/databases/$(db)/documents/users/$(request.auth.uid)/cards/$(card.id)).data.tier == card.tier
+        && get(/databases/$(db)/documents/users/$(request.auth.uid)/cards/$(card.id)).data.score == card.score
+        && get(/databases/$(db)/documents/users/$(request.auth.uid)/cards/$(card.id)).data.get('finish', 'standard') == card.get('finish', 'standard');
+    }
+
+    match /users/{uid} {
+      allow get: if isMe(uid) || (isFriendOf(uid) && sharesCards(uid)) || headMod();
+      allow list: if false;
+      allow create, update: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['name','username','code','xp','level','pr','cards','specials','pph','ppm','streak','best','week','pw','share','shareLoc','since','updated'])
+        && smallString(request.resource.data.name, 24);
+      allow delete: if isMe(uid);
+
+      // cards without anything location-related
+      match /cards/{cardId} {
+        allow read: if isMe(uid) || (isFriendOf(uid) && sharesCards(uid)) || headMod();
+        allow delete: if headMod();
+        allow write: if isMe(uid)
+          && (request.resource == null || (smallString(request.resource.data.store, 40) && request.resource.data.size() <= 40
+              && request.resource.data.get('score', 0) is number && request.resource.data.get('score', 0) <= 100));
+      }
+
+      // route map picture, pickup address, city, screenshot fingerprint
+      match /cardLoc/{cardId} {
+        allow read: if isMe(uid) || isCloseFriendOf(uid) || headMod();
+        allow delete: if headMod();
+        allow write: if isMe(uid)
+          && (request.resource == null
+              || (request.resource.data.keys().hasOnly(['art','addr','city','sha','ph'])
+                  && (!('art' in request.resource.data) || smallString(request.resource.data.art, 400000))
+                  && (!('addr' in request.resource.data) || smallString(request.resource.data.addr, 80))));
+      }
+
+      // friends-only posts: a copy of a card (no map, no address) and an optional caption
+      match /posts/{postId} {
+        allow read: if isMe(uid) || (isFriendOf(uid) && sharesCards(uid));
+        allow create: if isMe(uid) && validPost(request.resource.data, uid)
+          && smallString(request.resource.data.caption, 120);
+        allow delete: if isMe(uid) || headMod();
+        allow update: if false;
+      }
+
+      // what the head moderator set for this driver (level gifts, god packs, calibration, blocked offers).
+      // The driver's app can read it; only the head moderator can write it.
+      match /mod/{docId} {
+        allow read: if isMe(uid) || headMod();
+        allow write: if headMod() && docId == 'state'
+          && request.resource.data.keys().hasOnly(['xpGift','god','cal','nerf','gm','block','upd'])
+          && request.resource.data.block is list && request.resource.data.block.size() <= 500;
+      }
+
+      // private progress (luck cards, banked XP, finished quests, today's scan count) and the 24-hour lock list
+      // for deleted offers. Owner only, one small document, list sizes capped so it can't be used to store junk.
+      match /meta/{docId} {
+        allow read, delete: if isMe(uid);
+        // which cards were deleted, so your other devices only download what changed
+        allow create, update: if isMe(uid) && docId == 'dels'
+          && request.resource.data.keys().hasOnly(['ids','upd'])
+          && request.resource.data.ids is list && request.resource.data.ids.size() <= 2500;
+        // numbers of auto-deleted cards, kept apart so the progress document stays small
+        allow create, update: if isMe(uid) && docId == 'hist'
+          && request.resource.data.keys().hasOnly(['hist','rs','upd'])
+          && request.resource.data.hist is list && request.resource.data.hist.size() <= 1500;
+        allow create, update: if isMe(uid) && docId == 'state'
+          && request.resource.data.keys().hasOnly(['prog','del','use','hist','upd'])
+          && (!('hist' in request.resource.data) || (request.resource.data.hist is list && request.resource.data.hist.size() <= 1500))
+          && (!('del' in request.resource.data) || (request.resource.data.del is list && request.resource.data.del.size() <= 400))
+          && (!('prog' in request.resource.data) || (request.resource.data.prog is map
+                && request.resource.data.prog.get('luck', []).size() <= 400
+                && request.resource.data.prog.get('qd', {}).size() <= 400))
+          && (!('use' in request.resource.data) || request.resource.data.use is map);
+      }
+
+      // location notes ("long wait" etc.): private to the owner, never shared with anyone
+      match /notes/{noteId} {
+        allow read, delete: if isMe(uid);
+        allow create, update: if isMe(uid)
+          && request.resource.data.keys().hasOnly(['k','text','tags','upd'])
+          && smallString(request.resource.data.k, 200)
+          && smallString(request.resource.data.text, 80)
+          && request.resource.data.tags is list && request.resource.data.tags.size() <= 3;
+      }
+
+      // the people this user has added; each person can read the one doc about themselves
+      match /friends/{fid} {
+        allow read: if isMe(uid) || isMe(fid);
+        allow create, update: if isMe(uid) && fid != uid
+          && request.resource.data.keys().hasOnly(['name','accepted','close','at'])
+          && request.resource.data.accepted is bool && request.resource.data.close is bool
+          && smallString(request.resource.data.name, 24);
+        allow delete: if isMe(uid);
+      }
+
+      // friend requests sent to this user; only the sender can create one, as themselves
+      match /requests/{fromUid} {
+        allow read: if isMe(uid) || isMe(fromUid);
+        allow create: if isMe(fromUid) && fromUid != uid
+          && request.resource.data.keys().hasOnly(['name','at'])
+          && smallString(request.resource.data.name, 24);
+        allow delete: if isMe(uid) || isMe(fromUid);
+        allow update: if false;
+      }
+    }
+
+    // global posts: every signed-in driver can read them; preset captions only, so there's no free text to moderate
+    match /posts/{postId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && !blocked() && postId.matches(request.auth.uid + '_.+')
+        && validPost(request.resource.data, request.auth.uid)
+        && request.resource.data.caption in ['', 'Look at this pull!', 'Worth it?', 'Easy money', 'Not worth the gas', 'Lucky day', 'Rare find', 'Holo!', 'First Mythic!']
+        && postMatchesCard(request.resource.data.card, postId);
+      // your own post, or any post when you're a moderator
+      allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isMod());
+      allow update: if false;
+    }
+
+    // public profile: what any signed-in driver sees when they tap your name (level, prestige, achievements). No cards or email.
+    match /pub/{uid} {
+      allow read: if signedIn();
+      allow write: if isMe(uid) && request.resource.data.keys().hasOnly(['name','username','level','pr','ach','best','cards','updated'])
+        && smallString(request.resource.data.name, 24) && request.resource.data.ach is list && request.resource.data.ach.size() <= 100;
+    }
+    // the weekly community challenge counter: anyone signed in can add a little (one upload at a time), nobody can lower it
+    match /community/{wk} {
+      allow read: if signedIn();
+      allow create: if signedIn() && wk.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') && request.resource.data.keys().hasOnly(['scans','rare','upd'])
+        && request.resource.data.get('scans', 0) is int && request.resource.data.get('scans', 0) <= 30
+        && request.resource.data.get('rare', 0) is int && request.resource.data.get('rare', 0) <= 30;
+      allow update: if signedIn() && request.resource.data.keys().hasOnly(['scans','rare','upd'])
+        && request.resource.data.get('scans', 0) >= resource.data.get('scans', 0) && request.resource.data.get('scans', 0) <= resource.data.get('scans', 0) + 30
+        && request.resource.data.get('rare', 0) >= resource.data.get('rare', 0) && request.resource.data.get('rare', 0) <= resource.data.get('rare', 0) + 30;
+    }
+
+    // moderators: only the head moderator can add or remove them. A driver can check whether they're a moderator.
+    match /mods/{uid} {
+      allow get: if isMe(uid) || isMod();
+      allow list: if isMod();
+      allow create, update: if headMod() && uid != request.auth.uid
+        && request.resource.data.keys().hasOnly(['name','by','at']) && smallString(request.resource.data.name, 24);
+      allow delete: if headMod();
+    }
+
+    // drivers blocked from posting to Global. Moderators manage the list; a driver can see if they're blocked.
+    match /bans/{uid} {
+      allow get: if isMe(uid) || isMod();
+      allow list: if isMod();
+      allow create, update: if isMod() && uid != request.auth.uid
+        && (headMod() || !exists(/databases/$(db)/documents/mods/$(uid)))
+        && request.resource.data.keys().hasOnly(['name','by','at']) && smallString(request.resource.data.name, 24);
+      allow delete: if headMod() || (isMod() && uid != request.auth.uid);
+    }
+
+    // usernames: one per Google account, unique (a name that exists can't be created again)
+    match /usernames/{key} {
+      allow get: if signedIn();
+      allow list: if isMod();
+      allow create: if signedIn() && key.matches('^[a-z0-9_][a-z0-9_.]{2,19}$')
+        && request.resource.data.keys().hasOnly(['uid','name','at'])
+        && request.resource.data.uid == request.auth.uid && request.resource.data.name.lower() == key;
+      allow delete: if signedIn() && (resource.data.uid == request.auth.uid || headMod());
+      allow update: if false;
+    }
+
+    // the head moderator's inbox: new accounts, reported posts, offers that look too good to be true
+    match /signups/{uid} {
+      allow create, update: if isMe(uid) && request.resource.data.keys().hasOnly(['username','email','name','at','hk'])
+        && request.resource.data.email == request.auth.token.email;
+      allow read, delete: if headMod();
+    }
+    match /reports/{id} {
+      allow create: if signedIn() && id.matches(request.auth.uid + '_.+') && request.resource.data.by == request.auth.uid
+        && request.resource.data.keys().hasOnly(['post','aud','uid','name','by','byName','why','at']);
+      allow read, delete: if headMod();
+    }
+    match /flags/{id} {
+      allow create, update: if signedIn() && id.matches(request.auth.uid + '_.+') && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','name','why','card','at']);
+      allow read, delete: if headMod();
+    }
+
+    // announcement at the top of everyone's Dex; only the head moderator writes it
+    match /config/{doc} {
+      // the app's settings are public; the Discord alert addresses are only for signed-in drivers (the bot writes them)
+      allow read: if doc != 'hooks' || signedIn();
+      allow write: if headMod() && doc == 'app' && request.resource.data.keys().hasOnly(['msg','at','by','discord'])
+        && smallString(request.resource.data.get('msg', ''), 140) && smallString(request.resource.data.get('discord', ''), 100);
+    }
+
+    // driver IDs (12 characters): look up one code at a time; only the head moderator can search them
+    match /codes/{code} {
+      allow get: if signedIn();
+      allow list: if headMod();
+      allow create: if signedIn() && code.size() == 12
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','name']) && smallString(request.resource.data.name, 24);
+      allow update: if signedIn() && resource.data.uid == request.auth.uid
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','name']) && smallString(request.resource.data.name, 24);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+  }
+}

@@ -1064,6 +1064,88 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .dcbtn>span:nth-of-type(1){flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .dcbtn b{font-size:.92rem}.dcbtn small{font-size:.76rem;opacity:.85}
 .dcbtn .abgo{color:#fff;opacity:.8}
+/* ===== v1.7 rewards ===== */
+.gamebar{display:grid;gap:8px;margin-bottom:12px}
+.gcal{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px 14px;display:grid;gap:10px}
+.gcal-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.gcal-top b{font:600 1rem var(--f-display)}.gcal-top span{font:500 .72rem var(--f-mono);color:var(--mut);text-align:right}
+.cdays{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.cd{aspect-ratio:1;border-radius:12px;display:grid;place-items:center;font:700 .9rem var(--f-display);background:var(--track);border:1px solid var(--line);color:var(--mut)}
+.cd.got{background:color-mix(in srgb,var(--accept) 22%,var(--bg2));border-color:color-mix(in srgb,var(--accept) 55%,var(--line));color:var(--accept)}
+.cd.now{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 35%,transparent);animation:cdpulse 1.6s ease-in-out infinite}
+@keyframes cdpulse{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--gold) 15%,transparent)}}
+.gdx{display:flex;align-items:center;gap:8px;border-radius:14px;padding:10px 12px;background:linear-gradient(90deg,color-mix(in srgb,#f5b83d 22%,var(--panel)),var(--panel));border:1px solid color-mix(in srgb,#f5b83d 55%,var(--line));font-size:.9rem}
+.gdx span{margin-left:auto;font:500 .74rem var(--f-mono);color:var(--mut)}
+.gmeter,.gpass{display:grid;grid-template-columns:minmax(0,1fr) 34% auto;align-items:center;gap:10px;width:100%;text-align:left;border-radius:14px;padding:10px 12px;background:var(--panel);border:1px solid var(--line);color:var(--tx);cursor:pointer;font:inherit}
+.gpass{grid-template-columns:minmax(0,1fr) 34%}
+.gm-l{display:flex;flex-direction:column;gap:2px;min-width:0}.gm-l b{font-size:.88rem}.gm-l small{font-size:.72rem;color:var(--mut);line-height:1.3}
+.gm-bar{display:block;height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.gm-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#5f8dff,#c44fff,#ff4fa0)}
+.gpass .gm-bar i{background:linear-gradient(90deg,#f5b83d,#f3c55a)}
+.gm-p{font:700 .85rem var(--f-mono);min-width:3ch;text-align:right}
+.gmeter.full{border-color:#c44fff;box-shadow:0 0 18px -6px #c44fff}
+.gmeter.full .gm-bar i{background:conic-gradient(from 90deg,#ff4fa0,#ffd84f,#4fffc1,#4fb5ff,#c44fff,#ff4fa0);animation:holo 3s linear infinite}
+.bigmeter{position:relative;height:26px;border-radius:99px;background:var(--track);overflow:hidden;margin:6px 0 4px}
+.bigmeter i{display:block;height:100%;background:linear-gradient(90deg,#5f8dff,#c44fff,#ff4fa0);border-radius:99px}
+.bigmeter b{position:absolute;inset:0;display:grid;place-items:center;font:700 .9rem var(--f-mono);color:#fff;text-shadow:0 1px 3px #0009}
+.rchip.gm{color:#ffb057;border-color:color-mix(in srgb,#ffb057 55%,var(--line))}
+.prb{display:inline-flex;align-items:center;justify-content:center;min-width:1.6em;height:1.4em;padding:0 .35em;margin-right:6px;border-radius:99px;background:linear-gradient(135deg,#f3c55a,#ff4d8d);color:#1a1205;font:800 .72rem/1 var(--f-body);vertical-align:1px}
+.prmsg{margin:0 2px 12px}
+.passrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;color:var(--tx);cursor:pointer;font:inherit}
+.passrow span:first-child{flex:1;display:flex;flex-direction:column;gap:2px}.passrow small{color:var(--mut);font-size:.78rem}
+.bag .bagitems{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.bagit{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border-radius:14px;background:var(--bg2);border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));color:var(--tx);cursor:pointer;font:inherit;text-align:center;min-width:0}
+.bagit .li,.rec .li,.lootit .li{font-size:1.6rem;line-height:1}
+.bagit b{font-size:.74rem;line-height:1.2}.bagit small{font:700 .72rem var(--f-mono);color:var(--c)}
+.bagact{display:flex;flex-wrap:wrap;gap:6px}.bagact span{font-size:.76rem;border-radius:99px;padding:6px 10px;background:color-mix(in srgb,var(--accept) 14%,var(--bg2));border:1px solid color-mix(in srgb,var(--accept) 45%,var(--line))}
+.scrapbox{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:10px}
+.scrapbox div{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.scrapbox small{color:var(--mut);font-size:.74rem}
+.scrapbox .btn{width:auto;flex:none;padding-inline:14px}
+.itemcard{text-align:center}.bigitem{font-size:3.6rem;line-height:1;margin:8px auto 4px;width:96px;height:96px;display:grid;place-items:center;border-radius:28px;background:radial-gradient(circle,color-mix(in srgb,var(--c) 35%,transparent),transparent 70%)}
+.qrcard.scrap h3{font-size:.95rem;margin:10px 0 0;display:flex;justify-content:space-between}.qrcard.scrap h3 small{color:var(--mut);font-weight:500;font-size:.75rem}
+.recipes{display:grid;gap:8px;margin-top:8px}
+.rec{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid color-mix(in srgb,var(--c) 40%,var(--line));border-radius:12px;padding:8px 10px;background:var(--bg2);text-align:left}
+.rec span:nth-child(2){display:flex;flex-direction:column;gap:2px}.rec small{color:var(--mut);font-size:.72rem}
+.rec .mini{min-height:36px;border-radius:10px;border:1px solid var(--line);background:var(--panel);font-weight:700;padding:0 12px;cursor:pointer}
+.rec .mini:disabled{opacity:.4}
+.chestwrap{text-align:center}
+.chest-stage{display:grid;place-items:center;height:120px}
+.chest{font-size:4.4rem;animation:chshake .9s ease-in-out both}
+@keyframes chshake{0%{transform:scale(.6) rotate(0)}30%{transform:scale(1.1) rotate(-8deg)}45%{transform:rotate(8deg)}60%{transform:rotate(-5deg)}75%{transform:scale(1.15)}100%{transform:scale(1)}}
+.loot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.lootit{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px;border-radius:14px;border:1px solid color-mix(in srgb,var(--c) 55%,var(--line));background:radial-gradient(circle at 50% 0,color-mix(in srgb,var(--c) 22%,transparent),var(--bg2) 70%);opacity:0;animation:lootin .45s var(--d) both}
+.lootit b{font-size:.82rem}.lootit small{font-size:.7rem;color:var(--c)}
+@keyframes lootin{0%{opacity:0;transform:translateY(12px) scale(.8)}100%{opacity:1;transform:none}}
+.ptiers{display:grid;gap:6px;margin-top:8px;max-height:52vh;overflow:auto}
+.pt{display:grid;grid-template-columns:2.2em 1fr auto;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);font-size:.84rem;text-align:left}
+.pt.got{border-color:color-mix(in srgb,var(--accept) 50%,var(--line))}.pt.got .pts{color:var(--accept)}
+.pt.now{border-color:var(--gold)}
+.ptn{font:700 .9rem var(--f-display);text-align:center}.pts{font:600 .72rem var(--f-mono);color:var(--mut)}
+.gch{display:grid;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:12px}
+.gch-t{font:600 .66rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.gch b{font-size:.92rem}.gch small{font-size:.74rem;color:var(--mut)}
+.pubach{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.pubach span{font-size:.74rem;border-radius:99px;padding:5px 10px;background:var(--bg2);border:1px solid var(--line)}
+.pubgrid{margin:6px 0 10px}
+.axp{color:var(--gold)!important;font:600 .66rem var(--f-mono)!important}
+.rrbox .btn{margin-top:2px}
+.pn[data-who]{cursor:pointer}
+/* the glow tease */
+.rv.teasing .vline,.rv.teasing .pull{visibility:hidden}
+.cback{--g:#a9b2c3;position:relative;width:min(300px,82%);aspect-ratio:5/7;margin:0 auto;border-radius:22px;cursor:pointer;
+  background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--g) 28%,#1a1d27),#0e1016 70%);border:2px solid color-mix(in srgb,var(--g) 70%,#2b2f3b);
+  box-shadow:0 0 30px -4px var(--g),0 0 70px -20px var(--g);transition:box-shadow .25s,border-color .25s,background .25s;display:grid;place-items:center}
+.cback .cb-logo{font:700 2.6rem var(--f-display);color:color-mix(in srgb,var(--g) 70%,#fff);letter-spacing:.06em}
+.cback .cb-tap{position:absolute;bottom:12px;font:500 .62rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#8a90a2}
+.cback.pulse{animation:cbpulse .3s ease-out}
+@keyframes cbpulse{0%{transform:scale(1)}40%{transform:scale(1.045)}100%{transform:scale(1)}}
+.cback.miss{animation:cbmiss .45s ease-in-out}
+@keyframes cbmiss{20%{transform:translateX(-6px) rotate(-1deg)}40%{transform:translateX(6px) rotate(1deg)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+.cback[class*="frame-"]{border-color:#fff;box-shadow:0 0 40px 2px #fff8,0 0 90px -10px var(--g)}
+.cback.frame-holo{background:conic-gradient(from 0deg,#ff4fa0,#ffd84f,#4fffc1,#4fb5ff,#c44fff,#ff4fa0);animation:holo 2s linear infinite}
+.cback.frame-gold{background:linear-gradient(135deg,#7a5413,#f7d774,#b8862b,#ffe9a3)}
+.cback.frame-neon{border-color:#00e5ff;box-shadow:0 0 40px #00e5ff,0 0 80px -10px #ff3df2}
+.rv.teasing .packend{opacity:.25;transition:opacity .3s}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -1088,6 +1170,7 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
   <section class="evbar" id="event" hidden></section>
   <section class="gift" id="gift" hidden></section>
   <section class="quests" id="quests" aria-label="Daily quests"></section>
+  <section class="gamebar" id="gamebar" hidden></section>
   <section class="goal" id="goal" aria-label="Daily goal" hidden></section>
 
   <section class="empty" id="empty">
@@ -1756,12 +1839,12 @@ const DEX_JUNK=/\$\d|single order|per hour|per mile|payout|\bclass\b/i;
 const luckSeed=c=>c.sha?parseInt(c.sha.slice(8,16),16)/4294967296:(((+c.roll||0)*7.7713+0.1234)%1);
 function makeCard(o,ex){const c=makeCard0(o,ex);if(typeof rngCal==="function"&&rngCal())calCard(c);applyTrust(c);remember(c);return c}
 function makeCard0(o,ex){
-  const rc=ex.rc||0,g=C.scoreOffer({...o,extraMin:rc?C.RED_CARD_MIN:0}),roll=ex.roll??Math.random(),boost=(ex.boost||1)*luckMult();
+  const rc=ex.rc||0,g=C.scoreOffer({...o,extraMin:rc?C.RED_CARD_MIN:0}),roll=ex.roll??Math.random(),boost=(ex.boost||1)*luckMult()*(typeof frameMult==="function"?frameMult():1);
   const luck=C.luckFor(luckSeed({sha:ex.sha,roll}),luckMult()),score=C.applyLuck(g.score,luck),r={...g,score,tier:C.tierFor(score)};
   return {id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),no:store.next++,
     store:o.store||"Mystery order",platform:o.platform||"",pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,
     stores:Array.isArray(o.stores)&&o.stores.length>1?o.stores.slice(0,3):undefined,dropoffs:o.dropoffs||undefined,
-    addr:SET.addr&&o.addr?o.addr:undefined,city:SET.addr&&o.city?o.city:undefined,upd:Date.now(),
+    addr:SET.addr&&o.addr?o.addr:undefined,city:SET.addr&&o.city?o.city:undefined,upd:realNow(),
     ocr:ex.ocr||undefined,verified:ex.ocr?matchesOCR(ex.ocr,o):(ex.manual?false:true),
     rc:rc||undefined,vb:ex.vb||myBar().bar,
     grade:g.score,luck,score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
@@ -1771,7 +1854,7 @@ function makeCard0(o,ex){
 function rescore(c,o){const r=C.scoreOffer({...o,extraMin:c.rc?C.RED_CARD_MIN:0});if(c.luck==null)c.luck=C.luckFor(luckSeed(c));const score=C.applyLuck(r.score,c.luck);
   if(c.ocr)c.verified=matchesOCR(c.ocr,o)&&!DEX_JUNK.test(o.store||c.store);
   else if(c.verified!==false&&(Math.abs(+o.pay-c.pay)>0.006||Math.round(+o.minutes)!==Math.round(c.minutes)||Math.abs(+o.miles-c.miles)>0.06||(+o.stops||2)<(c.stops||2)))c.verified=false;
-  c.upd=Date.now();
+  c.upd=realNow();
   Object.assign(c,{pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,store:o.store||c.store},o.ts?{ts:o.ts}:{},{grade:r.score,score,tier:C.tierFor(score).id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts});applyTrust(c)}
 /* what to do with the offer comes from its grade; luck only moves the rarity */
 const gradeOf=c=>c.grade??c.score;
@@ -1863,7 +1946,7 @@ function renderDex(){
   if(!cs.length){renderLadder();return}
   $("countN").textContent=cs.length;
   const sk=streakNow();$("streakBox").hidden=!sk;$("streakN").textContent=sk;
-  renderQuests();renderGoal();
+  renderQuests();renderGoal();try{renderGameBar()}catch(e){console.warn(e)}
   $("groupBy").innerHTML=[["day","Days"],["shift","Shifts"],["loc","Locations"],["fav","★ Favorites"]].map(([v,l])=>`<button data-g="${v}" aria-pressed="${(SET.group||"day")===v}">${l}</button>`).join("");
   const td=agg(cs.filter(c=>dayKey(c.ts)===dayKey(today())));
   $("todayStrip").innerHTML=td.n?`<span>Today <b>${td.n}</b> offer${td.n>1?"s":""} · <b>$${td.pph.toFixed(0)}</b>/hr avg</span><span class="vdots"><span class="vd" style="--c:var(--accept)"><i></i>${td.good}</span><span class="vd" style="--c:var(--consider)"><i></i>${td.mid}</span><span class="vd" style="--c:var(--decline)"><i></i>${td.bad}</span></span>`
@@ -2002,6 +2085,7 @@ function openCard(c,friend){
      <div class="fields" style="margin-top:12px">${fieldsHTML("e",c,true)}</div>
      <button class="btn" id="eSave" style="margin-top:12px">Save and re-grade</button>
    </details>`:""}
+   ${own&&invOf("reroll")>0&&!special(c)&&trusted(c)&&!c.noxp&&!c.dev?`<div class="panel rrbox"><h2>🎲 Re-roll the frame</h2><p class="msg">Use a Re-roll Token for another shot at a special frame on this card, at 5× the usual odds. You have ${invOf("reroll")}.</p><button class="btn" id="dRoll">Re-roll</button></div>`:""}
    ${own?`<div class="delbox"><button class="btn ghost danger" id="dDel">Delete card</button><p class="about">Frees a spot in your Dex${Cloud.user?" and removes it from your posts":""}. You keep the XP. The same offer can't be scanned again for 24 hours.</p></div>`:""}`;
   const back=own?()=>show(lastList):friend.back;
   show("vDetail");toTop();
@@ -2009,9 +2093,11 @@ function openCard(c,friend){
   $("dShare").onclick=()=>shareCard(c,friend);
   if($("dPost"))$("dPost").onclick=()=>postSheet(c);
   if(!own)return;
-  $("dFav").onclick=e=>{const b=e.currentTarget;if(c.fav)delete c.fav;else c.fav=1;c.upd=Date.now();save();
+  $("dFav").onclick=e=>{const b=e.currentTarget;if(c.fav)delete c.fav;else c.fav=1;c.upd=realNow();save();
     b.textContent=c.fav?"★":"☆";b.setAttribute("aria-pressed",!!c.fav);b.setAttribute("aria-label",c.fav?"Remove from favorites":"Add to favorites");
     toast(c.fav?"Added to Favorites. It won't be auto-deleted.":"Removed from Favorites")};
+  if($("dRoll"))$("dRoll").onclick=async e=>{e.target.disabled=true;e.target.textContent="Rolling…";await sleep(RM?0:900);const f=rerollCard(c);
+    toast(f?`✦ ${FINISHES[f]} frame! Lucky.`:"No frame this time");openCard(c,null)};
   wireLocation(c);
   if($("dCheck"))$("dCheck").onclick=()=>{const d=$("dFix");if(!d)return;d.open=true;d.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
   if($("dRestore"))$("dRestore").onclick=()=>{const o=c.ocr;
@@ -2368,12 +2454,22 @@ async function readImage(file,pool,onStep){
 }
 const cardFrom=(r,extra)=>{const c=makeCard({...r.parsed,stops:r.parsed.stops||2},{art:r.art,sha:r.sha,ph:r.ph,roll:r.roll,ts:r.ts,ocr:r.ocr,manual:!r.ocr,rc:r.rc||0,...extra});
   /* an offer that was deleted and scanned again doesn't earn XP a second time */
-  if(wasDeleted(c)&&!isGod())c.noxp=1;if(r.check&&r.check.length)c.check=r.check.slice();return c};
+  if(wasDeleted(c)&&!isGod()){c.noxp=1;
+    /* and it can't be used to re-roll: no luck, no special frame, no sticker the second time */
+    if(!c.cb){c.luck=0;c.score=c.verified===false?Math.min(c.grade,C.UNVERIFIED_CAP):c.grade;c.tier=C.tierFor(c.score).id}c.finish="standard";delete c.finish0;delete c.stk}
+  if(r.check&&r.check.length)c.check=r.check.slice();return c};
 
 /* =========================================================
    Sheet basics
    ========================================================= */
 let scanId=0,busy=false;
+/* iPhone: overflow:hidden alone doesn't stop the page behind a sheet from scrolling, so the page is pinned in place
+   while a sheet is open and put back exactly where it was after */
+(()=>{let pinned=null;const html=document.documentElement;
+  const apply=()=>{const on=html.classList.contains("lock"),b=document.body;
+    if(on&&pinned===null){pinned=scrollY;Object.assign(b.style,{position:"fixed",top:-pinned+"px",left:"0",right:"0",width:"100%"})}
+    else if(!on&&pinned!==null){const y=pinned;pinned=null;Object.assign(b.style,{position:"",top:"",left:"",right:"",width:""});scrollTo(0,y)}};
+  new MutationObserver(apply).observe(html,{attributes:true,attributeFilter:["class"]});})();
 function openSheet(){$("sheet").hidden=false;document.documentElement.classList.add("lock");$("sheet").scrollTop=0;$("sBody").innerHTML="";$("shot").hidden=true;$("status").hidden=true}
 function closeSheet(){
   $("sheet").hidden=true;document.documentElement.classList.remove("lock");scanId++;busy=false;
@@ -2389,7 +2485,7 @@ $("sBody").addEventListener("click",e=>{
 });
 const progress=(f,label)=>{$("pbar").style.width=Math.round(f*100)+"%";if(label)$("pstep").textContent=label};
 function finishSave(cards){
-  addUse(cards.length);markQuests();
+  addUse(cards.length);markQuests();try{gameAfterScan(cards)}catch(e){console.warn(e)}
   const ok=save();checkLevel();
   Promise.all(cards.map(putArt)).then(()=>save());
   for(const c of cards)fresh.add(c.id);
@@ -2426,7 +2522,7 @@ function verdictHTML(card){
 function grade(r,parsedOverride){
   if(parsedOverride){r.parsed={...r.parsed,...parsedOverride};r.check=null}
   const before=snap();
-  const card=cardFrom(r);addStickers([card]);makeGod([card],"mod");applyBoost([card]);store.cards.push(card);const saved=finishSave([card]);checkSus([card]);
+  const card=cardFrom(r);addStickers([card]);makeGod([card],"mod");applyBoost([card]);applyMeter([card]);store.cards.push(card);const saved=finishSave([card]);checkSus([card]);
   const rewards=rewardHTML(before,[card]);
   $("shot").classList.add("gone");
   showSingle(card,rewards,saved,r.check);
@@ -2438,7 +2534,7 @@ function showSingle(card,rewards,saved,check){
     ${verdictHTML(card)}
     ${check&&check.length?checkHTML(check):""}
     ${f?`<div class="pull ${f}">✦ ${FINISHES[f]} pull ✦</div>`:""}
-    ${card.stk?`<div class="pull stkpull">🎃 Pumpkin sticker: ${esc(stkLabel(card.stk))}</div>`:""}
+    ${card.stk?`<div class="pull stkpull">${stkIcon(card.stk)} Sticker: ${esc(stkLabel(card.stk))}</div>`:""}
     ${revealHTML(card)}
     ${rewards||""}
     ${saved===false?`<p class="msg err" style="text-align:center">This browser isn't saving cards (private mode or storage full), so this one won't stay in your Dex.</p>`:""}
@@ -2536,7 +2632,7 @@ async function scanPack(files){
     const cards=all.slice(at,at+k);at+=k;const tier=C.packFor(k),pid="p"+Date.now().toString(36)+packs.length;
     for(const c of cards)c.pack=k>=2?pid:"";
     /* each pack's last card gets that pack's bonus odds for a special frame (on top of your luck) */
-    const last=cards[cards.length-1];if(k>=2){last.boost=tier.boost;last.finish=C.rollFinish(last.tier,last.roll,tier.boost*luckMult());
+    const last=cards[cards.length-1];if(k>=2&&!last.noxp){last.boost=tier.boost;last.finish=C.rollFinish(last.tier,last.roll,tier.boost*luckMult()*frameMult());
       if(rngCal()){if(last.cb)last.cb.f=last.finish;last.finish="standard"}else if(last.verified===false&&special(last)){last.finish0=last.finish;last.finish="standard"}}
     packs.push({cards,tier});
   }
@@ -2545,7 +2641,7 @@ async function scanPack(files){
     const tens=packs.filter(x=>x.cards.length===10),last=packs[packs.length-1];
     if(tens.length&&makeGod(tens[tens.length-1].cards,"w10"))tens[tens.length-1].god=true;
     else if(last&&makeGod(last.cards,"mod"))last.god=true;
-    applyBoost(all)}
+    applyBoost(all);applyMeter(all)}
   const before=snap();
   store.cards.push(...all);finishSave(all);checkSus(all);
   const extras=results.filter(r=>r.status!=="ok");
@@ -2557,10 +2653,10 @@ async function scanPack(files){
 function showPack(P,pi){
   const pk=P.packs[pi],t0=pk.tier,lastPack=pi===P.packs.length-1,ev=eventNow();
   /* during an event every pack is reskinned; the cards and odds are exactly the same */
-  const t=pk.god?{...t0,id:"god",name:"God Pack"}:ev?{...t0,name:(ev.id==="halloween"?"Haunted ":ev.name+" ")+t0.name}:t0;
+  const t=pk.god?{...t0,id:"god",name:"God Pack"}:ev?{...t0,name:(ev.pack||ev.name)+" "+t0.name}:t0;
   $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
     ${P.packs.length>1?`<div class="pk-row">${P.packs.map((x,k)=>`<span class="pk-chip${k===pi?" now":k<pi?" done":""}" style="--c:${PK_COL[x.tier.id]}"><i></i>${x.tier.name.replace(" Pack","")} · ${x.cards.length}</span>`).join("")}</div>`:""}
-    <div class="pack ready" id="pack" data-pk="${t.id}"${ev&&!pk.god?` data-ev="${ev.id}"`:""} role="button" tabindex="0" aria-label="Open ${esc(t.name)}"><div class="crimp t"></div><div class="lid"></div><div class="face">${pk.god?`<span class="pk-god">✦</span>`:ev&&ev.id==="halloween"?`<span class="pk-pump">${pumpkinSVG(t.id==="ruby"||t.id==="diamond"?"grin":"happy","")}</span>`:gemSVG(t.id)}<div class="pn">${esc(t.name)}</div><div class="pc">${pk.cards.length} card${pk.cards.length>1?"s":""}</div></div><div class="crimp b"></div></div>
+    <div class="pack ready" id="pack" data-pk="${t.id}"${ev&&!pk.god?` data-ev="${ev.id}"`:""} role="button" tabindex="0" aria-label="Open ${esc(t.name)}"><div class="crimp t"></div><div class="lid"></div><div class="face">${pk.god?`<span class="pk-god">✦</span>`:ev&&facesOf(ev.id).length?`<span class="pk-pump">${stickerSVG(facesOf(ev.id)[t.id==="ruby"||t.id==="diamond"?2:0].id,"")}</span>`:gemSVG(t.id)}<div class="pn">${esc(t.name)}</div><div class="pc">${pk.cards.length} card${pk.cards.length>1?"s":""}</div></div><div class="crimp b"></div></div>
     <button class="btn" id="openPack">Open ${esc(t.name)}</button>
     ${pk.god?`<p class="boostnote"><b>God Pack!</b> Every card in here has a special frame.</p>`:pk.cards.length>=2?`<p class="boostnote">${lastPack&&P.packs.length>1?"Your best card is in here. ":""}The last card gets <b>×${t.boost.toFixed(2)}</b> special-frame odds${luckShown()>1?` (plus your luck ${fmtLuck()})`:""}</p>`:""}
     ${pi===0&&P.extras.some(r=>r.status!=="ok")?`<p class="tapnote">${P.extras.length} screenshot${P.extras.length>1?"s":""} skipped. You'll see why after the last card.</p>`:""}
@@ -2574,17 +2670,20 @@ function showPack(P,pi){
 }
 function revealPack(P,pi,i){
   const pk=P.packs[pi],cards=pk.cards,c=cards[i],last=i===cards.length-1,lastPack=pi===P.packs.length-1,end=last&&lastPack,v=vOf(c),f=special(c)?c.finish:"";
-  $("sBody").innerHTML=`<div class="rv">
+  /* good cards get a glow tease first: the card back glows up through the rarities before it flips */
+  const tease=wantTease(c,last);
+  $("sBody").innerHTML=`<div class="rv${tease?" teasing":""}">
     <div class="prog-pips" aria-label="Card ${i+1} of ${cards.length}">${cards.map((_,k)=>`<i class="${k<=i?"on":""}${k===cards.length-1?" last":""}"></i>`).join("")}</div>
     ${end&&P.cards.length>1?`<div class="bestpull">★ Best pull ★</div>`:`<div class="pcount">${P.packs.length>1?esc(pk.tier.name)+" · ":""}Card <b>${i+1}</b> of ${cards.length}</div>`}
     <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span>${c.verified===false?`<span class="vpill" data-v="decline">Edited</span>`:""}${c.luck>=6?`<span class="vpill" data-v="lucky">Lucky pull</span>`:""}${c.rc?`<span class="vpill" data-v="consider">Red Card</span>`:""}${c.stk?`<span class="vpill" data-v="stk">🎃 Sticker</span>`:""}${c.check&&c.check.length?`<span class="vpill" data-v="consider">Check</span>`:""}</div>
     ${f?`<div class="pull ${f}" style="animation-delay:.7s">✦ ${FINISHES[f]} pull ✦</div>`:""}
-    ${c.stk?`<div class="pull stkpull" style="animation-delay:.9s">🎃 ${esc(stkLabel(c.stk))} sticker</div>`:""}
-    ${revealHTML(c,"rvCard")}
+    ${c.stk?`<div class="pull stkpull" style="animation-delay:.9s">${stkIcon(c.stk)} ${esc(stkLabel(c.stk))} sticker</div>`:""}
+    ${tease?`<div class="reveal" id="rvCard">${teaseBackHTML()}</div>`:revealHTML(c,"rvCard")}
     ${end?`<div class="packend">${P.rewards}${packExtrasHTML(P)}${actions("Scan more")}</div>`
-      :last?`<button class="btn" id="rvNext">Open the next pack: ${esc((eventNow()&&eventNow().id==="halloween"?"Haunted ":"")+P.packs[pi+1].tier.name)}</button>`
+      :last?`<button class="btn" id="rvNext">Open the next pack: ${esc((eventNow()?(eventNow().pack||eventNow().name)+" ":"")+P.packs[pi+1].tier.name)}</button>`
       :`<button class="btn" id="rvNext">Next card</button>${cards.length>2?`<button class="linkbtn" id="rvSkip">Skip to this pack's last card</button>`:""}`}
   </div>`;
+  const wire=()=>{
   if(!isBig(c))$("rvCard").querySelector(".card").style.animation=`flip .8s cubic-bezier(.2,.9,.25,1.15) both`;
   if(!end){
     const next=()=>last?showPack(P,pi+1):revealPack(P,pi,i+1);
@@ -2592,9 +2691,14 @@ function revealPack(P,pi,i){
     if($("rvSkip"))$("rvSkip").onclick=()=>revealPack(P,pi,cards.length-1);
   }else{
     $("rvCard").onclick=()=>{closeSheet();openDetail(c.id)};
-    wirePackExtras(P,()=>revealPack(P,pi,cards.length-1));
-    wireGiftBtn();
   }
+  };
+  /* the buttons under the last card work right away, even during the tease */
+  if(end){wirePackExtras(P,()=>revealPack(P,pi,cards.length-1));wireGiftBtn()}
+  /* tapping Next or the card during the tease just skips to the flip */
+  if(tease){const sk=()=>{const b=$("cBack");if(b)b.click()};if($("rvNext"))$("rvNext").onclick=sk}
+  if(tease)runTease(c,end,()=>{const el=$("rvCard");if(!el)return;el.outerHTML=revealHTML(c,"rvCard");const rv=document.querySelector(".rv.teasing");if(rv)rv.classList.remove("teasing");wire()});
+  else wire();
   $("sheet").scrollTop=0;
 }
 /* a pack with nothing new to open */
@@ -2810,7 +2914,7 @@ function renderSettings(){
   </div>
   <div class="sbox"><h3>How cards are graded</h3>
     <p class="msg">Each offer gets a grade from its pay per hour (55%) and pay per mile (45%). Accept, Consider and Decline come from the grade. Once you've scanned 12+ offers, the Accept line moves a little (up to 6 points) toward what's normal in your area, using only your recent grades. Rarity is the grade plus a little luck.</p>
-    <div class="hbars">${[["mythic","Grade 95+: about $45/hr, $3.50/mi and a $15+ payout on one order"],["legendary","$30/hr, $2.50/mi, single order, 8 mi or less, $10+ pay"],["epic","$25/hr, $1.75/mi, 10 mi or less, $7+ pay"],["superrare","The top of the Rare range: around $22/hr and $1.60/mi"],["rare","$19/hr and $1.25/mi"],["uncommon","Close to Rare, but short on $/hr or $/mi"],["common","Clears $15/hr and $1/mi, not much more"],["trash","Under $15/hr, under $1/mi, or 25+ mi"]].map(([t,d])=>{const T=TIERS.find(x=>x.id===t);return `<div class="grade"><i style="--c:${TC[t]}"></i><span><b>${T.name}</b> <small>${T.min}–${T.max}</small><br><span class="gd">${d}</span></span></div>`}).join("")}</div>
+    <div class="hbars">${[["mythic","Grade 95+: a Legendary order with outstanding rates. The bigger the payout (up to $20), the easier it is to reach."],["legendary","$30/hr, $2.50/mi, single order, 8 mi or less, $10+ pay"],["epic","$25/hr, $1.75/mi, 10 mi or less, $7+ pay"],["superrare","The top of the Rare range: around $22/hr and $1.60/mi"],["rare","$19/hr and $1.25/mi"],["uncommon","Close to Rare, but short on $/hr or $/mi"],["common","Clears $15/hr and $1/mi, not much more"],["trash","Under $15/hr, under $1/mi, or 25+ mi"]].map(([t,d])=>{const T=TIERS.find(x=>x.id===t);return `<div class="grade"><i style="--c:${TC[t]}"></i><span><b>${T.name}</b> <small>${T.min}–${T.max}</small><br><span class="gd">${d}</span></span></div>`}).join("")}</div>
     <p class="msg">Luck moves rarity up to 3 points either way, and about 2% of scans are lucky pulls. Luck never lifts a Trash offer out of Trash or creates a Mythic. 100 needs a grade of 97+.</p>
     <p class="msg">Special frame odds: Trash 0.1% · Common 0.2% · Uncommon 0.4% · Rare 0.8% · Super Rare 1.5% · Epic 2.5% · Legendary 6% · Mythic 15%. Holographic and Gold Foil are the rarest, then Neon, Carbon Fiber and Inverted. The last card of each pack gets a bonus, from ×1.03 for a Stone Pack up to ×2.4 for a Red Ruby Pack. Your luck (${fmtLuck()}, from luck cards you earn by leveling up) multiplies all of it.</p>
     <p class="msg">Cards whose numbers were typed or changed by hand are capped at Uncommon with no special finish, and screenshots that aren't one DoorDash or Uber Eats offer are refused.</p>
@@ -2876,7 +2980,7 @@ const trusted=c=>c.verified!==false;
 /* ---------- daily scan limit and Dex size ---------- */
 const signedIn=()=>typeof Cloud!=="undefined"&&!!Cloud.user;
 const uploadMax=()=>signedIn()?30:10;
-const dayLimit=()=>signedIn()?50:25;
+const dayLimit=()=>(signedIn()?50:25)+(typeof fxToday==="function"?fxToday("scans"):0);
 const capLimit=()=>signedIn()?300:100;
 const usedToday=()=>store.use&&store.use.d===dayKey(today())?(+store.use.n||0):0;
 function addUse(n){const d=dayKey(today());if(!store.use||store.use.d!==d)store.use={d,n:0};store.use.n+=n}
@@ -2919,7 +3023,7 @@ const AUTO_DAYS=30;
 function autoClean(){
   if(!SET.autoDel)return 0;const tiers=new Set(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]),cut=Date.now()-AUTO_DAYS*864e5;
   const ids=autoPool(tiers).filter(c=>+new Date(c.added||c.ts)<cut).map(c=>c.id);
-  if(!ids.length)return 0;deleteCards(ids,{quiet:true,hist:true});toast(`Auto-deleted ${ids.length} card${ids.length>1?"s":""} older than ${AUTO_DAYS} days. Your stats keep them.`);return ids.length;
+  if(!ids.length)return 0;const sc=addScrapFor(ids);deleteCards(ids,{quiet:true,hist:true});toast(`Auto-deleted ${ids.length} card${ids.length>1?"s":""} older than ${AUTO_DAYS} days${sc?` for ${sc} scrap`:""}. Your stats keep them.`);return ids.length;
 }
 /* cards auto-delete may take, least valuable first: never favorites, special frames, stickers, or today's cards */
 const cardValue=c=>(XP_T[c.tier]||0)+(XP_F[c.finish]||0)+c.score/100;
@@ -2932,8 +3036,8 @@ function autoPool(tiers){
 function makeRoom(want){
   if(!SET.autoDel)return 0;const need=Math.min(want,30)-(capLimit()-store.cards.length);if(need<=0)return 0;
   const ids=autoPool(new Set(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"])).slice(0,need).map(c=>c.id);
-  if(!ids.length)return 0;deleteCards(ids,{quiet:true,hist:true});
-  toast(`Dex full: auto-deleted your ${ids.length} least valuable card${ids.length>1?"s":""} to make room. Your stats keep them.`);return ids.length;
+  if(!ids.length)return 0;const sc=addScrapFor(ids);deleteCards(ids,{quiet:true,hist:true});
+  toast(`${sc?`+${sc} scrap. `:""}Dex full: auto-deleted your ${ids.length} least valuable card${ids.length>1?"s":""} to make room. Your stats keep them.`);return ids.length;
 }
 const delList=()=>Array.isArray(store.del)?store.del:(store.del=[]);
 function pruneDel(){const t=realNow()-LOCK_MS;store.del=delList().filter(x=>Array.isArray(x)&&+x[3]>t).slice(-400);return store.del}
@@ -2989,7 +3093,7 @@ const xpRaw=()=>{const k=xpKey();if(k!==xpMemo.k)xpMemo={k,v:xpOf(store.cards)};
 const DEVID=(()=>{try{let d=localStorage.getItem("offerdex.dev");if(!d||!/^[a-z0-9]{8}$/.test(d)){d=Math.random().toString(36).slice(2,10).padEnd(8,"0");localStorage.setItem("offerdex.dev",d)}return d}catch(e){return "local000"}})();
 function bankAdd(n){n=Math.round(+n||0);if(!n)return;const p=prog();if(!p.bd||typeof p.bd!=="object")p.bd={};p.bd[DEVID]=(+p.bd[DEVID]||0)+n}
 const bankTotal=()=>{const p=prog();return (+p.bank||0)+Object.values(p.bd||{}).reduce((a,v)=>a+(+v||0),0)};
-const totalXP=()=>xpRaw()+bankTotal()+weeklyXP();
+const totalXP=()=>xpRaw()+bankTotal()+weeklyXP()+(typeof evXP==="function"?evXP()+achXP():0);
 /* the old (v4) numbers, only to keep everyone's level when this version first opens */
 const OLD_XP_T={trash:2,common:4,uncommon:6,rare:10,superrare:16,epic:28,legendary:60,mythic:150},OLD_XP_F={holo:60,carbon:30,inverted:30};
 const oldLevel=cs=>{const xp=cs.reduce((a,c)=>a+(trusted(c)?(OLD_XP_T[c.tier]||0)+(OLD_XP_F[c.finish]||0):2),0)+new Set(cs.filter(trusted).map(c=>c.pack).filter(Boolean)).size*5+questXP(cs);
@@ -3003,9 +3107,11 @@ const LUCK_CARDS=[{id:"common",p:1,w:55},{id:"uncommon",p:2,w:25},{id:"rare",p:3
 const LUCK_MAX=2.5;
 function rollLuckCard(){let r=Math.random()*100;for(const c of LUCK_CARDS){if((r-=c.w)<0)return c}return LUCK_CARDS[0]}
 const luckPct=()=>prog().luck.reduce((a,x)=>a+(+x[2]||0),0);
-const luckShown=()=>Math.min(LUCK_MAX,1+luckPct()/100);
-const luckMult=()=>typeof rngCal==="function"&&rngCal()?1:luckShown();
-const fmtLuck=m=>"×"+(m||luckShown()).toFixed(2);
+const luckShown=()=>Math.min(LUCK_MAX,1+(luckPct()+(typeof prestigeLuck==="function"?prestigeLuck():0))/100);
+/* a Lucky Charm adds on top for one upload, even past the cap */
+const luckMult=()=>typeof rngCal==="function"&&rngCal()?1:luckShown()+(typeof charmPct==="function"?charmPct():0)/100;
+/* shown as a bonus: x1.00 is +0%, x1.25 is +25%, the max x2.50 is +150% */
+const fmtLuck=m=>"+"+Math.round(((m||luckShown())-1)*100)+"%";
 /* hand out a luck card for every level reached for the first time. Luck is saved right away; the pack is just the show. */
 function checkLevel(){
   const p=prog(),L=levelOf(totalXP());let n=0;
@@ -3020,6 +3126,7 @@ function markQuests(){
   if(!p.qv||typeof p.qv!=="object")p.qv={};if(!p.qv[k])p.qv[k]=questVer(k);
   qs.forEach((q,i)=>{if(q.done&&!(p.qd[k]||[]).includes(q.id)){p.qd[k]=[...(p.qd[k]||[]),q.id];(p.qt[k]=p.qt[k]||[])[i]=realNow()}});
   for(const d of Object.keys(p.qt))if(d<dayKey(realNow()-14*864e5))delete p.qt[d];
+  if(typeof grant==="function"&&qs.length&&qs.every(q=>q.done))grant("d:"+k,{chest_b:1},"All 3 daily challenges");
   markWeekly();try{markAch()}catch(e){}
 }
 /* ---------- weekly challenge: harder, lots of XP, and a very small chance of a God Pack ---------- */
@@ -3071,6 +3178,7 @@ function markWeekly(){
   const w=weeklyState(),p=prog();if(!p.wd||typeof p.wd!=="object")p.wd={};
   if(!w.done||p.wd[w.wk])return;
   p.wd[w.wk]=w.id;
+  if(typeof grant==="function")grant("w:"+w.wk,w.sup?{chest_g:2}:w.hard?{chest_g:1}:{chest_s:1},w.sup?"Super rare weekly":w.hard?"Hard weekly":"Weekly challenge");
   if(w.sup){p.boost=(+p.boost||0)+1;p.boostNew=1}
   if(Math.random()<WEEKLY_GOD){p.gb10=(+p.gb10||0)+1;p.gbNew=1}
 }
@@ -3129,7 +3237,7 @@ function achievements(){
 /* achievements stay earned: deleting cards (by hand or auto-delete) never takes one away, same as XP */
 function markAch(){
   const p=prog();if(!p.ach||typeof p.ach!=="object")p.ach={};let n=0;
-  for(const a of achievements())if(a.done&&!p.ach[a.name]){p.ach[a.name]=1;n++}
+  for(const a of achievements().concat(typeof collections==="function"?collections():[]))if(a.done&&!p.ach[a.name]){p.ach[a.name]=1;n++}
   return n;
 }
 /* ---------- Daily quests: three per day, picked from the date, rewarded in XP ----------
@@ -3194,16 +3302,20 @@ function questsFor2(key){
   h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0]);
   /* one swap a day: the swapped spot gets a different challenge */
   const sw=store.prog&&store.prog.sw&&store.prog.sw[key];
-  if(sw&&out[sw.i]){const alt=ALL_QUESTS.find(q=>q.id===sw.id);if(alt)out[sw.i]=alt}
+  if(sw){const m=sw.m&&typeof sw.m==="object"?sw.m:{[sw.i]:sw.id};for(const [i,id] of Object.entries(m)){const alt=ALL_QUESTS.find(q=>q.id===id);if(alt&&out[+i])out[+i]=alt}}
   return out;
 }
 function swapQuest(){
-  const k=dayKey(today()),p=prog();if(!p.sw||typeof p.sw!=="object")p.sw={};if(p.sw[k])return false;
+  const k=dayKey(today()),p=prog();if(!p.sw||typeof p.sw!=="object")p.sw={};
+  /* one free swap a day; Challenge Swap items give more */
+  let extra=false;if(p.sw[k]){if(!(typeof fxToday==="function"&&fxToday("swaps")>0))return false;extra=true}
   const qs=questState(k,store.cards),i=qs.findIndex(q=>!q.done);if(i<0)return false;
   const fast=SET.scanMode==="fast",used=new Set(qs.map(q=>q.id));
   const pool=QUEST_POOL2.filter(q=>!used.has(q.id)&&!(fast&&q.pack)&&(/^scan\d/.test(qs[i].id)?/^scan\d/.test(q.id):!/^scan\d/.test(q.id)));
   const alt=pool[Math.floor(Math.random()*pool.length)];if(!alt)return false;
-  p.sw[k]={i,id:alt.id};for(const d of Object.keys(p.sw))if(d<dayKey(realNow()-14*864e5))delete p.sw[d];
+  const m={...((p.sw[k]&&p.sw[k].m)||(p.sw[k]?{[p.sw[k].i]:p.sw[k].id}:{})),[i]:alt.id};
+  p.sw[k]={i,id:alt.id,m};if(extra){fx().swaps={d:k,n:fxToday("swaps")-1};saveSet()}
+  for(const d of Object.keys(p.sw))if(d<dayKey(realNow()-14*864e5))delete p.sw[d];
   save();return true;
 }
 /* daily challenges unlock one after another: each one only counts offers scanned after the one before it was done */
@@ -3230,7 +3342,7 @@ function renderGoal(){const el=$("goal"),g=goalState();el.hidden=!g;if(!g)return
 function renderQuests(){
   const qs=questState(dayKey(today()),store.cards),done=qs.filter(q=>q.done).length,w=weeklyState();
   const cur=qs.find(q=>!q.done),n=qs.indexOf(cur)+1;
-  const canSwap=cur&&questVer(dayKey(today()))===2&&!(store.prog&&store.prog.sw&&store.prog.sw[dayKey(today())]);
+  const canSwap=cur&&questVer(dayKey(today()))===2&&(!(store.prog&&store.prog.sw&&store.prog.sw[dayKey(today())])||(typeof fxToday==="function"&&fxToday("swaps")>0));
   const row=(tag,q,extra)=>`<div class="q2${q.done?" done":""}${q.hard?" hard":""}${q.sup?" sup":""}"><span class="qtag">${tag}</span><span class="qt">${esc(q.t)}${q.need>1&&!q.done?`<span class="qb"><i style="width:${q.have/q.need*100}%"></i></span>`:""}</span><span class="qx">${q.need>1&&!q.done?q.have+"/"+q.need+" · ":""}${q.done?"Done":"+"+q.xp+" XP"}${extra||""}</span></div>`;
   $("quests").innerHTML=`<div class="qhead"><b>Challenges</b><span>${done===qs.length?"Daily: all 3 done":"Daily "+n+" of 3"}</span></div>
     ${cur?row("Daily",cur,canSwap?` <button class="qswap" id="qSwap" aria-label="Swap this challenge (once a day)">↻</button>`:""):`<div class="q2 done"><span class="qtag">Daily</span><span class="qt">All 3 done. New ones tomorrow.</span><span class="qx">+${qs.reduce((a,q)=>a+q.xp,0)} XP</span></div>`}
@@ -3249,14 +3361,16 @@ function streakNow(){
 }
 /* ---------- this week (Monday to Sunday), shared with friends for the weekly awards. No money in it. ---------- */
 const weekStart=d=>{d=startOfDay(d||today());d.setDate(d.getDate()-((d.getDay()+6)%7));return d};
-function weekStats(){
-  const ws=+weekStart(),cs=store.cards.filter(c=>trusted(c)&&isFresh(c)&&+new Date(c.ts)>=ws);
+function weekStats(){return weekStatsFor(weekStart())}
+function weekStatsFor(d){
+  const ws=+weekStart(d),we=ws+7*864e5,cs=store.cards.filter(c=>trusted(c)&&isFresh(c)&&+new Date(c.ts)>=ws&&+new Date(c.ts)<we);
   const best=cs.slice().sort((x,y)=>y.score-x.score||(special(y)?1:0)-(special(x)?1:0))[0];
   return {wk:dayKey(new Date(ws)),scans:cs.length,specials:cs.filter(special).length,luck:Math.max(0,...cs.map(c=>c.luck||0)),
+    rare:cs.filter(c=>RANK[c.tier]>=RANK.rare).length,acc:cs.filter(isAccept).length,
     streak:streakNow(),best:best?{tier:best.tier,score:best.score,store:String(best.store).slice(0,40),finish:best.finish}:null};
 }
 /* what a scan earned: XP, quests finished, level ups, stores seen for the first time */
-const snap=()=>{const xp=totalXP(),g=goalState();return {xp,L:levelOf(xp),goal:!!(g&&g.done),w:weeklyState().done,q:new Set(questState(dayKey(today()),store.cards).filter(q=>q.done).map(q=>q.id))}};
+const snap=()=>{const xp=totalXP(),g=goalState();return {xp,L:myLevel(),pr:+prog().pr||0,goal:!!(g&&g.done),w:weeklyState().done,q:new Set(questState(dayKey(today()),store.cards).filter(q=>q.done).map(q=>q.id))}};
 function rewardHTML(before,newCards){
   const after=snap(),gained=after.xp-before.xp,qs=questState(dayKey(today()),store.cards).filter(q=>q.done&&!before.q.has(q.id));
   const newStores=newCards.filter(c=>isFirstOfStore(c,store.cards));
@@ -3273,12 +3387,12 @@ function rewardHTML(before,newCards){
     if(n>1)chips.push(`<span class="rchip vis">${ordinal(n)} offer from this ${esc(c.store)}</span>`);
     const nt=noteFor(c);if(nt&&(nt.text||nt.tags.length))chips.push(`<span class="rchip note">Your note: ${esc([...nt.tags,nt.text].filter(Boolean).join(" · "))}</span>`);
     if(!isFresh(c))chips.push(`<span class="rchip old">Older screenshot · doesn't count toward today</span>`)}
-  const up=after.L>before.L?`<div class="lvlup"><b>Level up</b><span>Level ${after.L} · ${titleOf(after.L)}</span>${(+prog().unseen||0)>0?`<button class="btn sm giftbtn" data-gift>Open your luck card${prog().unseen>1?"s":""}</button>`:""}</div>`:"";
-  return `${up}<div class="rchips">${chips.join("")}</div>`;
+  const up=after.L>before.L&&(+prog().pr||0)===(+before.pr||0)?`<div class="lvlup"><b>Level up</b><span>Level ${after.L} · ${titleOf(after.L)}</span>${(+prog().unseen||0)>0?`<button class="btn sm giftbtn" data-gift>Open your luck card${prog().unseen>1?"s":""}</button>`:""}</div>`:"";
+  return `${up}<div class="rchips">${chips.join("")}${gameChipsHTML()}</div>`;
 }
 const BADGE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 15.4 6.8 18.2l1-5.8L3.5 8.2l5.9-.9z"/></svg>';
 function renderProfile(){
-  const cs=store.cards,xp=totalXP(),L=levelOf(xp),a=agg(allOffers()),from=lvlStart(L),to=lvlStart(L+1);
+  const cs=store.cards,xp=myXP(),L=myLevel(),a=agg(allOffers()),from=lvlStart(L),to=lvlStart(L+1);try{gameMilestones()}catch(e){}
   const best=cs.slice().sort((x,y)=>y.score-x.score||(special(y)?1:0)-(special(x)?1:0))[0];
   const ao=allOffers(),first=ao.length?new Date(Math.min(...ao.map(c=>+new Date(c.ts)))):null;
   $("profSince").textContent=first?"Driving since "+first.toLocaleDateString([],{month:"short",day:"numeric"}):"";
@@ -3291,10 +3405,10 @@ function renderProfile(){
     <div class="avatar" style="--c:${best?TC[best.tier]:"var(--mut)"}">${esc(name.trim()[0]||"D").toUpperCase()}</div>
     <div class="pmeta">
       ${Cloud.user&&Cloud.username()?`<div class="pname unrow"><span>@${esc(Cloud.username())}</span><button class="mini ghost" id="pUname">Change</button></div>`:`<input id="pName" class="pname" value="${esc(name)}" maxlength="24" autocomplete="off" aria-label="Your name">`}
-      <div class="plvl">Level ${L} · ${titleOf(L)}</div>
+      <div class="plvl">${prBadge()}Level ${L} · ${titleOf(L)}</div>
       <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="${to-from}" aria-valuenow="${xp-from}"><i style="width:${(xp-from)/(to-from)*100}%"></i></div>
       <div class="xpl"><span>${xp-from} / ${to-from} XP</span><span>${xp} total</span></div>
-      <div class="luckline"><span class="clover">${CLOVER}</span><b>Luck ${fmtLuck()}</b><small>${prog().luck.length?`${prog().luck.length} luck card${prog().luck.length>1?"s":""} · boosts frames and lucky pulls`:"Level up to earn luck cards"}</small></div>
+      <div class="luckline"><span class="clover">${CLOVER}</span><b>Luck ${fmtLuck()}</b><small>${prog().luck.length?`${prog().luck.length} luck card${prog().luck.length>1?"s":""} · boosts frames and lucky pulls`:"Level up to earn luck cards"}${charmPct()?` · charm +${charmPct()}% next upload`:""}</small></div>
     </div>
   </div>
   <div class="kpis">
@@ -3303,19 +3417,22 @@ function renderProfile(){
     <div class="kpi"><b>${a.n?Math.round(a.good/a.n*100)+"%":"–"}</b><span>Recommended</span><small>${a.good} of ${a.n} worth accepting</small></div>
     <div class="kpi"><b>${fav?esc(fav.name):"–"}</b><span>Most seen store</span><small>${fav?fav.n+" offer"+(fav.n>1?"s":""):""}</small></div>
   </div>
+  ${prestigeHTML()}
+  ${bagHTML()}
+  ${passState()?`<button class="sbox passrow" id="prPass"><span><b>🎟️ ${esc(passState().name)}</b><small>Tier ${passState().tier} of ${PASS_TIERS} · free rewards all season</small></span><span class="abgo">›</span></button>`:""}
   ${stickerBookHTML()}
   ${friendsHTML()}
   ${weeklyHTML()}
   ${best?`<div class="sbox"><h3>Best pull <small>tap to open</small></h3><div class="showcase">${cardHTML(best)}</div></div>`:`<div class="sempty">Scan your first offer to start leveling up.</div>`}
-  <div class="sbox"><h3>Achievements <small>${done} of ${ach.length}</small></h3>
-    <div class="achs">${ach.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
-  </div>
+  ${[["Achievements",ach],["Collections",collections()]].map(([title,list])=>`<div class="sbox"><h3>${title} <small>${list.filter(x=>x.done).length} of ${list.length}</small></h3>
+    <div class="achs">${list.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${ACH_XP[x.name]?`<small class="axp">${x.done?"Earned":"+"} ${ACH_XP[x.name]} XP</small>`:""}${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
+  </div>`).join("")}
   <p class="about">XP per card: Trash 3 · Common 6 · Uncommon 10 · Rare 18 · Super Rare 30 · Epic 55 · Legendary 120 · Mythic 300 · Holo or Gold +150 · Neon +100 · Carbon or Inverted +60 · packs +7 to +23 · daily quests 15–80. Hand-edited cards earn 3. Every level gives you a luck card.</p>`;
   if($("pUname"))$("pUname").onclick=()=>usernameSheet(false).then(()=>renderProfile());
   if($("pName"))$("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile();renderProfBtns();if(Cloud.user)Cloud.pushProfile().catch(err=>Cloud.fail(err))};
   if($("pName"))$("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
   const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
-  wireFriends();
+  wireFriends();wireGame($("profileBody"));
 }
 
 
@@ -3463,7 +3580,7 @@ const Cloud={
       this.auth.onAuthStateChanged(async u=>{
         this.user=u;this.ready=true;this.profile=null;this.friends=[];this.requests=[];rerenderAccount();
         if(!u){this.isHead=this.isMod=false;applySkin();let pend=null;try{pend=localStorage.getItem("offerdex.pendingAdd")}catch(e){}if(pend)gotFriendCode(pend)}
-        if(u){this.checkMod().catch(()=>{});try{await this.fullSync();await this.loadFriends()}catch(e){this.fail(e)}
+        if(u){this.checkMod().catch(()=>{});try{await this.fullSync();await this.loadFriends();claimGroup().catch(()=>{})}catch(e){this.fail(e)}
           /* every account needs a username; existing accounts pick one the first time they open this version */
           if(this.user&&this.profile&&!this.profile.username)try{await usernameSheet(true)}catch(e){}
           if(this.isHead)this.loadInbox().catch(()=>{});
@@ -3506,18 +3623,20 @@ const Cloud={
   async pushProfile(){
     if(!this.user)return;
     const cs=store.cards,xp=totalXP(),a=agg(cs),best=cs.slice().sort((x,y)=>y.score-x.score||(special(y)?1:0)-(special(x)?1:0))[0];
-    const p={name:myName(),code:(this.profile&&this.profile.code)||"",xp,level:levelOf(xp),cards:cs.length,specials:cs.filter(special).length,
+    const p={name:myName(),code:(this.profile&&this.profile.code)||"",xp,level:myLevel(),pr:+prog().pr||0,pw:weekStatsFor(new Date(prevWeekKey()+"T12:00:00")),cards:cs.length,specials:cs.filter(special).length,
       pph:Math.round(a.pph*100)/100,ppm:Math.round(a.ppm*100)/100,streak:streakNow(),best:best?pubOf(best):null,
       week:weekStats(),share:SET.share!==false,shareLoc:SET.shareLoc!==false,since:cs.length?new Date(Math.min(...cs.map(c=>+new Date(c.ts)))).toISOString():null,updated:Date.now()};
     try{await this.me().set(p,{merge:true})}
     catch(e){if(!/permission/i.test(e.code||e.message||""))throw e;
       /* older security rules don't know the weekly stats yet: save the rest so sync keeps working */
-      delete p.week;await this.me().set(p,{merge:true});console.warn("Publish the latest firestore.rules to share weekly stats with friends")}
+      delete p.week;delete p.pw;delete p.pr;await this.me().set(p,{merge:true});console.warn("Publish the latest firestore.rules to share weekly stats with friends")}
+    try{await this.pushPub(p)}catch(e){}
     this.profile={...this.profile,...p};
     if(p.code){const cref=this.db.collection("codes").doc(p.code);await cref.set({uid:this.user.uid,name:p.name}).catch(()=>{})}
   },
   /* ---------- full merge: on sign-in, app open and "Sync now" ---------- */
-  async fullSync(){
+  async fullSync(force){try{return await this.fullSync0(force)}catch(e){this.busy=false;rerenderAccount();throw e}},
+  async fullSync0(force){
     if(!this.user||this.busy)return;this.busy=true;this.err="";rerenderAccount();
     await this.ensureProfile();
     /* another Google account used this phone before: its synced cards live in its own cloud copy, so take them off
@@ -3530,16 +3649,27 @@ const Cloud={
     }
     try{localStorage.setItem("offerdex.owner",this.user.uid)}catch(e){}
     const uid=this.user.uid,cardsCol=this.me().collection("cards"),locCol=this.me().collection("cardLoc");
-    const remote=new Map();(await cardsCol.get()).forEach(d=>remote.set(d.id,d.data()));
     let synced=this.synced();const local=new Map(store.cards.map(c=>[c.id,c]));
     {let sv=0;try{sv=+localStorage.getItem(svKey())||0}catch(e){}if(sv>(+store.sv||0)){console.warn("Local copy is older than the last sync: keeping cloud cards");synced={}}}
+    /* only cards that changed since the last sync are downloaded. A full check runs the first time on a device and once a month. */
+    const pk="offerdex.pull."+uid;let lastPull=0;try{lastPull=+localStorage.getItem(pk)||0}catch(e){}
+    const full=force===true||!lastPull||realNow()-lastPull>30*864e5||!Object.keys(synced).length;
+    const startedAt=realNow(),since=lastPull-15*60e3;
+    const remote=new Map();
+    if(full)(await cardsCol.get()).forEach(d=>remote.set(d.id,d.data()));
+    else (await cardsCol.where("upd",">",since).get()).forEach(d=>remote.set(d.id,d.data()));
+    /* cards deleted on your other devices */
+    let gone=new Set();
+    if(!full){try{const ds=await this.delsRef().get();if(ds.exists){const ids=Array.isArray(ds.data().ids)?ds.data().ids:[];for(const x of ids)gone.add(String(x).split("|")[0]);
+      if(ids.length>1500)await this.delsRef().set({ids:ids.slice(-800),upd:Date.now()}).catch(()=>{})}}catch(e){}}
     const down=[],delLocal=[],delRemote=[];
     for(const [id,d] of remote){
       const l=local.get(id);
-      if(!l){if(synced[id])delRemote.push(id);else down.push(id)}
+      if(!l){if(synced[id])delRemote.push(id);else if(!gone.has(id))down.push(id)}
       else if(num0(d.upd)>num0(l.upd)){Object.assign(l,cleanCard(d,id))}
     }
-    for(const [id] of local)if(!remote.has(id)&&synced[id])delLocal.push(id);
+    if(full){for(const [id] of local)if(!remote.has(id)&&synced[id])delLocal.push(id)}
+    else for(const id of gone)if(local.has(id)&&synced[id]&&!remote.has(id))delLocal.push(id);
     /* cards made on another device: bring them (and their maps) here */
     for(const id of down){
       const c=cleanCard(remote.get(id),id);
@@ -3548,13 +3678,17 @@ const Cloud={
     }
     /* deleted on another device */
     /* every card was deleted on another device (a full reset there): forget scanned screenshots here too */
-    if(delLocal.length&&!remote.size&&delLocal.length===store.cards.length)store.seen=[];
+    if(full&&delLocal.length&&!remote.size&&delLocal.length===store.cards.length)store.seen=[];
     if(delLocal.length){store.cards=store.cards.filter(c=>!delLocal.includes(c.id));for(const id of delLocal){ART.delete(id);idb.del(id).catch(()=>{})}}
     store.next=Math.max(store.next||1,...store.cards.map(c=>(c.no||0)+1));
     /* what the cloud already has: same card data, and (if it was synced from here before) the same map */
-    const s2={};for(const [id] of remote)if(!delRemote.includes(id)){const r=cleanCard(remote.get(id),id),l=local.get(id);
+    const s2=full?{}:{...synced};
+    for(const id of delLocal)delete s2[id];
+    for(const [id] of remote)if(!delRemote.includes(id)){const r=cleanCard(remote.get(id),id),l=local.get(id);
       if(l&&pubSig(l)===pubSig(r)){const old=synced[id];s2[id]=old&&old.startsWith(pubSig(r)+"|")?old:sigOf(l)}else s2[id]=sigOf(r)}
     this.setSynced(s2);
+    try{localStorage.setItem(pk,String(startedAt))}catch(e){}
+    this.lastPullN=remote.size;
     try{await this.pullNotes()}catch(e){console.warn("Notes not synced (publish the latest firestore.rules)",e)}
     try{await this.pullState()}catch(e){console.warn("Progress not synced (publish the latest firestore.rules)",e)}
     try{await this.pullModState()}catch(e){}
@@ -3565,6 +3699,7 @@ const Cloud={
     save();if(view==="vDex")renderDex();
     if(down.length||delLocal.length)toast(`Synced: ${down.length} card${down.length===1?"":"s"} from your other devices`);
   },
+  delsRef(){return this.me().collection("meta").doc("dels")},
   /* ---------- push what changed here (no reads) ---------- */
   async push(extraDeletes){
     if(!this.user||this.busy)return;this.busy=true;
@@ -3586,6 +3721,8 @@ const Cloud={
       try{await this.pushNotes()}catch(e){console.warn("Notes not synced (publish the latest firestore.rules)",e)}
       try{await this.pushState()}catch(e){console.warn("Progress not synced (publish the latest firestore.rules)",e)}
       /* a deleted card is taken off your posts too */
+      /* tell your other devices which cards were deleted, so they don't have to re-read every card */
+      {const del=ops.filter(o=>o[0]==="del").map(o=>o[1]+"|"+realNow());if(del.length){try{await this.delsRef().set({ids:firebase.firestore.FieldValue.arrayUnion(...del.slice(0,400)),upd:Date.now()},{merge:true})}catch(e){console.warn("dels",e)}}}
       /* auto-deleted cards keep their posts */
       const kp=new Set(store.kp||[]),gone=ops.filter(o=>o[0]==="del"&&!kp.has(o[1])).map(o=>o[1]);if(gone.length)this.dropPosts(gone).catch(e=>console.warn(e));
       if(kp.size){const left=(store.kp||[]).filter(id=>store.cards.some(c=>c.id===id));if(left.length!==store.kp.length){store.kp=left;save()}}
@@ -3639,7 +3776,8 @@ const Cloud={
   stateRef(){return this.me().collection("meta").doc("state")},
   stateOut(){const p=prog(),qd={};for(const k of Object.keys(p.qd).sort().slice(-400))qd[k]=p.qd[k].slice(0,3);
     return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,bd:Object.fromEntries(Object.entries(p.bd||{}).slice(-20).map(([k,v])=>[k,Math.round(+v||0)])),md:{xp:+((store.modDone||{}).xp)||0,god:+((store.modDone||{}).god)||0},
-      ach:Object.keys(p.ach||{}).slice(0,60),qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
+      ach:Object.keys(p.ach||{}).slice(0,80),ev:Object.fromEntries(Object.entries(p.ev||{}).slice(-3000)),cal:p.cal&&p.cal.d?{d:String(p.cal.d),n:+p.cal.n||1}:null,
+      pm:{p:Math.round((+(p.pm&&p.pm.p)||0)*10)/10,r:+(p.pm&&p.pm.r)||0},pr:+p.pr||0,prx:Math.round(+p.prx||0),ss:p.ss&&typeof p.ss==="object"?p.ss:{},qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
       del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0},
       ...(this.histOK()?{}:{hist:histList().slice(-1500)})}},
   /* auto-deleted cards' numbers live in their own document (meta/hist), written only when they change */
@@ -3660,7 +3798,7 @@ const Cloud={
       const qd={};if(R.qd&&typeof R.qd==="object")for(const [k,v] of Object.entries(R.qd).slice(0,400))if(/^\d{4}-\d\d-\d\d$/.test(k))qd[k]=String(v).split(",").filter(Boolean).slice(0,3);
       const bank=Math.max(0,Math.min(1e8,num0(R.bank))),lvlMax=Math.max(1,Math.min(400,Math.round(num0(R.lvlMax))||1));
       /* a reset on another device: start over here too (cards were already removed by the sync) */
-      if(rs>num0(P.rs)){store.prog={v:3,rs,bank,lvlMax,luck,unseen:0,qd,wd:{},bd:{},qv:{}};store.resetAt=Math.max(num0(store.resetAt),rs);store.hist=[];store.gone=[];store.kp=[]}
+      if(rs>num0(P.rs)){store.prog={v:3,rs,bank,lvlMax,luck,unseen:0,qd,wd:{},bd:{},qv:{}};store.resetAt=Math.max(num0(store.resetAt),rs);store.hist=[];store.gone=[];store.kp=[];store.seen=[]}
       const P2=prog();if(rs===num0(P2.rs))this.mergeExtra(P2,R);
       if(rs===num0(P.rs)){
         P.bank=Math.max(num0(P.bank),bank);P.lvlMax=Math.max(num0(P.lvlMax)||1,lvlMax);
@@ -3686,7 +3824,16 @@ const Cloud={
     if(!P.bd||typeof P.bd!=="object")P.bd={};
     if(R.bd&&typeof R.bd==="object")for(const [k,v] of Object.entries(R.bd).slice(0,40))if(/^[a-z0-9]{8}$/.test(k))P.bd[k]=Math.max(+P.bd[k]||0,Math.max(0,Math.min(1e8,Math.round(num0(v)))));
     if(R.md&&typeof R.md==="object"){const d=store.modDone||(store.modDone={xp:0,god:0});d.xp=Math.max(+d.xp||0,Math.max(0,num0(R.md.xp)));d.god=Math.max(+d.god||0,Math.max(0,num0(R.md.god)))}
-    if(!P.ach||typeof P.ach!=="object")P.ach={};if(Array.isArray(R.ach))for(const a of R.ach.slice(0,60))if(typeof a==="string"&&a.length<40)P.ach[a]=1;
+    if(!P.ach||typeof P.ach!=="object")P.ach={};if(Array.isArray(R.ach))for(const a of R.ach.slice(0,80))if(typeof a==="string"&&a.length<40)P.ach[a]=1;
+    /* rewards: every event is one-time, so merging is just adding the ones this phone doesn't have yet */
+    if(!P.ev||typeof P.ev!=="object")P.ev={};
+    if(R.ev&&typeof R.ev==="object")for(const [k,v] of Object.entries(R.ev).slice(-3000)){if(P.ev[k]||!/^[a-z0-9]{1,3}:[\w:.-]{1,60}$/i.test(k)||!v||typeof v!=="object")continue;
+      const o={};for(const [ik,n] of Object.entries(v))if((ITEMS[ik]||ik==="xp")&&Number.isFinite(+n)&&Math.abs(+n)<=50000)o[ik]=Math.round(+n);P.ev[k]=o}
+    if(R.cal&&typeof R.cal==="object"&&/^\d{4}-\d\d-\d\d$/.test(String(R.cal.d))&&(!P.cal||String(R.cal.d)>String(P.cal.d||"")))P.cal={d:String(R.cal.d),n:Math.max(1,Math.min(7,Math.round(num0(R.cal.n))))};
+    if(R.pm&&typeof R.pm==="object"){const m=P.pm&&typeof P.pm==="object"?P.pm:(P.pm={p:0,r:0}),rr=Math.round(num0(R.pm.r)),rp=Math.max(0,Math.min(60,num0(R.pm.p)));
+      if(rr>(+m.r||0)){m.r=rr;m.p=rp}else if(rr===(+m.r||0))m.p=Math.max(+m.p||0,rp)}
+    {const rpr=Math.max(0,Math.min(99,Math.round(num0(R.pr))));if(rpr>(+P.pr||0)){P.pr=rpr;P.prx=Math.max(0,num0(R.prx))}}
+    if(!P.ss||typeof P.ss!=="object")P.ss={};if(R.ss&&typeof R.ss==="object")for(const [k,v] of Object.entries(R.ss).slice(0,40))if(/^s\d{1,3}$/.test(k)&&Number.isFinite(+v))P.ss[k]=P.ss[k]==null?+v:Math.min(+P.ss[k],+v);
     if(!P.qt||typeof P.qt!=="object")P.qt={};if(R.qt&&typeof R.qt==="object")for(const [k,v] of Object.entries(R.qt).slice(-14))if(/^\d{4}-\d\d-\d\d$/.test(k)&&Array.isArray(v)){const a=P.qt[k]||(P.qt[k]=[]);v.slice(0,3).forEach((t,i)=>{t=num0(t);if(t>0&&!(a[i]>0))a[i]=t})}
     if(!P.sw||typeof P.sw!=="object")P.sw={};if(R.sw&&typeof R.sw==="object")for(const [k,v] of Object.entries(R.sw).slice(-14))if(/^\d{4}-\d\d-\d\d$/.test(k)&&v&&typeof v==="object"&&[0,1,2].includes(+v.i)&&ALL_QUESTS.some(q=>q.id===v.id)&&!P.sw[k])P.sw[k]={i:+v.i,id:String(v.id)};
   },
@@ -3880,7 +4027,10 @@ async function openFriend(fid,backTo){
     </div>
     <p class="msg" style="margin:0 2px 12px">${d.locs?`${esc(nm)} shares route maps and pickup addresses with you.`:`Route maps and addresses are only shared with close friends.`}</p>
     ${cards.length?`<p class="msg" style="margin:0 2px 10px">Tap a card to inspect it.</p><div class="grid" id="frGrid">${cards.map(c=>cardHTML(c)).join("")}</div>`:`<div class="sempty">${p.share===false?esc(nm)+" keeps their cards private.":esc(nm)+" hasn't synced any cards yet."}</div>`}
+    <div id="frAch"></div>
     <button class="btn ghost danger" id="frRemove" style="margin-top:16px">Remove friend</button>`;
+  Cloud.pubOf(fid).then(pub=>{const el=$("frAch");if(!el||!pub)return;const a=Array.isArray(pub.ach)?pub.ach:[];
+    if(a.length)el.innerHTML=`<div class="sbox" style="margin-top:14px"><h3>Achievements <small>${a.length}</small></h3><div class="pubach">${a.map(x=>`<span>${esc(x)}</span>`).join("")}</div></div>`}).catch(()=>{});
   $("frBack").onclick=goBack;
   /* inspect one of the friend's cards; Back returns to the same spot in their Dex */
   const g=$("frGrid");
@@ -4050,7 +4200,9 @@ Object.assign(Cloud,{
       let banned=false;try{banned=(await this.db.collection("bans").doc(this.user.uid).get()).exists}catch(e){}
       if(banned)throw new Error("A moderator has blocked you from posting to Global. You can still post to Friends.");
     }
-    const doc={uid:this.user.uid,name:myName(),level:levelOf(totalXP()),caption,card:postCard(c),at:Date.now()};
+    /* Global posts are checked against your synced card, so make sure this one is in the cloud first */
+    if(aud==="global"){const s=this.synced(),sg=sigOf(c);if(s[c.id]!==sg){await this.me().collection("cards").doc(c.id).set(pubOf(c));await this.me().collection("cardLoc").doc(c.id).set(locOf(c));s[c.id]=sg;this.setSynced(s)}}
+    const doc={uid:this.user.uid,name:myName(),level:myLevel(),caption,card:postCard(c),at:Date.now()};
     const ref=aud==="global"?this.db.collection("posts").doc(this.user.uid+"_"+c.id):this.me().collection("posts").doc(c.id);
     if((await ref.get().catch(()=>({exists:false}))).exists)throw new Error(aud==="global"?"You already posted this card to Global.":"You already posted this card to Friends.");
     await ref.set(doc);
@@ -4129,10 +4281,10 @@ async function renderFeed(force){
   const hidP=hiddenSet("hidePosts"),hidU=hiddenSet("hideUsers");
   const posts=(feedCache[aud]||[]).filter(p=>!hidP.has(p.id)&&!hidU.has(p.uid));
   const me=Cloud.user.uid;
-  box.innerHTML=(aud==="friends"?friendRowHTML():"")+`<div class="feedtop"><button class="linkbtn" id="feedRefresh">Refresh</button></div>`+
+  box.innerHTML=(aud==="friends"?friendRowHTML():"")+groupChallengeHTML(aud)+`<div class="feedtop"><button class="linkbtn" id="feedRefresh">Refresh</button></div>`+
     (posts.length?`<div class="posts">${posts.map(p=>`<article class="post" data-pid="${esc(p.id)}">
       <header><span class="avatar sm" style="--c:${TC[p.card.tier]||"var(--t-rare)"}">${esc((p.name[0]||"D").toUpperCase())}</span>
-        <span class="pn"${Cloud.isHead&&p.uid!==me?` data-who="${esc(p.uid)}" data-nm="${esc(p.name)}" role="button"`:""}><b>${p.uid===me?"You":esc(p.name)}</b><small>Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
+        <span class="pn"${p.uid!==me?` data-who="${esc(p.uid)}" data-nm="${esc(p.name)}" role="button" tabindex="0"`:""}><b>${p.uid===me?"You":esc(p.name)}</b><small>Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
         ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`${Cloud.isMod?`<button class="mini modbtn" data-mod="${esc(p.id)}">Mod</button>`:""}<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide or report this post">•••</button>`:""}</header>
       ${p.caption?`<p class="pcap">${esc(p.caption)}</p>`:""}
       <div class="pcard" data-open="${esc(p.id)}">${cardHTML({...p.card,_friend:true,_art:""})}</div>
@@ -4145,7 +4297,8 @@ async function renderFeed(force){
     openCard({...p.card,_friend:true,_art:""},{name:p.uid===me?"You":p.name,back:()=>{show("vFeed");requestAnimationFrame(()=>scrollTo(0,y))}})});
   box.querySelectorAll("[data-del]").forEach(el=>{let armed=false;el.onclick=async()=>{if(!armed){armed=true;el.textContent="Tap again";return}
     const p=posts.find(x=>x.id===el.dataset.del);try{await Cloud.deletePost(p);toast("Post deleted");renderFeed(true)}catch(e){toast(friendly(e))}}});
-  box.querySelectorAll("[data-who]").forEach(el=>el.onclick=()=>openDriver(el.dataset.who,el.dataset.nm));
+  box.querySelectorAll("[data-who]").forEach(el=>el.onclick=()=>openUser(el.dataset.who,el.dataset.nm,()=>{show("vFeed");toTop()}));
+  if(aud==="global")fillCommunity().catch(()=>{});claimGroup().catch(()=>{});
   box.querySelectorAll("[data-mod]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.mod);if(p)modSheet(p)});
   box.querySelectorAll("[data-hide]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.hide);
     qrSheet(`<div class="qrcard"><h2>This post</h2><p class="msg">Hidden posts only disappear for you.</p></div><div class="btnrow"><button class="btn ghost" id="hOne">Hide this post</button><button class="btn ghost" id="hAll">Hide everything from ${esc(p.name)}</button></div><button class="btn ghost danger" id="hRep">Report this post</button>`);
@@ -4159,25 +4312,40 @@ async function renderFeed(force){
    Events: limited-time seasons. Halloween runs Oct 24-31 every year: Halloween colors, haunted packs
    (same cards, same odds) and pumpkin stickers that can drop on cards. Stickers stay on the card forever.
    ========================================================= */
-const EVENTS=[{id:"halloween",name:"Halloween",from:[10,24],to:[10,31],skin:"halloween",icon:"🎃"}];
+/* Thanksgiving is the 4th Thursday of November; its event runs that Monday to Sunday */
+const thanksThu=y=>{const d=new Date(y,10,1);return new Date(y,10,1+(4-d.getDay()+7)%7+21)};
+const EVENTS=[
+  {id:"halloween",name:"Halloween",pack:"Haunted",skin:"halloween",icon:"🎃",noun:"pumpkin sticker",blurb:"Haunted packs are here.",dates:y=>[new Date(y,9,24),new Date(y,9,31)]},
+  {id:"thanksgiving",name:"Thanksgiving",pack:"Harvest",skin:"royal",icon:"🦃",noun:"harvest sticker",blurb:"Harvest packs are here.",dates:y=>{const t=thanksThu(y);return [new Date(y,10,t.getDate()-3),new Date(y,10,t.getDate()+3)]}},
+  {id:"christmas",name:"Christmas",pack:"Holiday",skin:"frost",icon:"🎄",noun:"holiday sticker",blurb:"Holiday packs are here.",dates:y=>[new Date(y,11,19),new Date(y,11,26)]},
+  {id:"newyear",name:"New Year",pack:"Party",skin:"neon",icon:"🎆",noun:"party sticker",blurb:"Party packs are here.",dates:y=>[new Date(y,11,30),new Date(y+1,0,2)]}
+];
+/* events turn on by themselves on their dates (the head moderator can preview one in the dev menu) */
 function eventNow(){
   const ov=SET.devEvent;if(ov==="none")return null;
-  const d=today(),y=d.getFullYear();
-  for(const e of EVENTS){const a=new Date(y,e.from[0]-1,e.from[1]),b=new Date(y,e.to[0]-1,e.to[1]+1);
-    if(ov===e.id||(d>=a&&d<b)){const end=d<b?b:new Date(y,e.to[0]-1,e.to[1]+1);return {...e,year:y,key:e.id+"-"+y,end:+end,left:Math.max(1,Math.ceil((end-d)/864e5))}}}
+  const d=today(),y=d.getFullYear(),mk=(e,yy)=>{const [a,last]=e.dates(yy),end=new Date(last.getFullYear(),last.getMonth(),last.getDate()+1);
+    return {...e,year:yy,key:e.id+"-"+yy,end:+end,left:Math.max(1,Math.ceil((end-d)/864e5)),from:a}};
+  if(ov){const e=EVENTS.find(x=>x.id===ov);if(e){const m=mk(e,y);if(m.end<=+d)m.end=+d+864e5;return m}}
+  for(const yy of [y-1,y])for(const e of EVENTS){const m=mk(e,yy);if(d>=m.from&&+d<m.end)return m}
   return null;
 }
 /* pumpkin stickers: about 1 card in 33 gets one; each pack's last card gets that pack's bonus; luck helps.
    Faces have their own rarity, and 1 in 10 stickers comes with a special trim. */
 const STK_FACES=[{id:"happy",name:"Happy Jack",r:"common",w:50},{id:"spooky",name:"Spooky",r:"uncommon",w:28},{id:"grin",name:"Grinning",r:"rare",w:14},
-  {id:"ghost",name:"Ghost Pumpkin",r:"epic",w:6},{id:"golden",name:"Golden Jack",r:"legendary",w:1.8},{id:"cursed",name:"Cursed Lantern",r:"mythic",w:0.2}];
+  {id:"ghost",name:"Ghost Pumpkin",r:"epic",w:6},{id:"golden",name:"Golden Jack",r:"legendary",w:1.8},{id:"cursed",name:"Cursed Lantern",r:"mythic",w:0.2}].map(f=>({...f,ev:"halloween"})).concat(
+  [["turkey","Gobbler","common"],["pie","Pumpkin Pie","uncommon"],["leaf","Maple Leaf","rare"],["horn","Cornucopia","epic"],["gturkey","Golden Gobbler","legendary"],["moon","Harvest Moon","mythic"]].map(x=>({id:x[0],name:x[1],r:x[2],ev:"thanksgiving"})),
+  [["snowman","Snowman","common"],["cane","Candy Cane","uncommon"],["ornament","Ornament","rare"],["ginger","Gingerbread","epic"],["bell","Golden Bell","legendary"],["star","North Star","mythic"]].map(x=>({id:x[0],name:x[1],r:x[2],ev:"christmas"})),
+  [["popper","Party Popper","common"],["hat","Party Hat","uncommon"],["firework","Firework","rare"],["clock","Midnight","epic"],["disco","Disco Ball","legendary"],["nova","Supernova","mythic"]].map(x=>({id:x[0],name:x[1],r:x[2],ev:"newyear"})));
+const STK_W={common:50,uncommon:28,rare:14,epic:6,legendary:1.8,mythic:0.2};
+STK_FACES.forEach(f=>{if(!f.w)f.w=STK_W[f.r]});
+const facesOf=evId=>STK_FACES.filter(f=>f.ev===evId);
 const STK_TRIMS={holo:"Holo",gold:"Gold Foil",neon:"Neon",inverted:"Inverted"};
 const STK_TRIM_ODDS=[["holo",0.02],["gold",0.02],["neon",0.03],["inverted",0.03]];
 const STK_BASE=0.03;
 function rollSticker(mult){
-  const ev=eventNow();if(!ev||ev.id!=="halloween")return null;
+  const ev=eventNow();if(!ev||!facesOf(ev.id).length)return null;
   if(Math.random()>=Math.min(0.5,STK_BASE*(mult||1)*luckMult()))return null;
-  let r=Math.random()*100,face=STK_FACES[0];for(const f of STK_FACES){if((r-=f.w)<0){face=f;break}}
+  const FS=facesOf(ev.id);let r=Math.random()*100,face=FS[0];for(const f of FS){if((r-=f.w)<0){face=f;break}}
   let t="",x=Math.random();const lm=Math.min(2,luckMult());for(const [k,p] of STK_TRIM_ODDS){if((x-=p*lm)<0){t=k;break}}
   return {e:ev.key,f:face.id,t};
 }
@@ -4208,33 +4376,68 @@ function pumpkinSVG(f,trim){
     ${trim==="neon"?`<ellipse cx="32" cy="35" rx="27" ry="20.5" fill="none" stroke="#00e5ff" stroke-width="2.4"/>`:""}
   </svg>`;
 }
+/* the sticker picture: pumpkins for Halloween, drawings for the other holidays */
+const stickerSVG=(f,trim)=>{const F=stkFace(f);return F&&F.ev!=="halloween"?holidaySVG(f,trim):pumpkinSVG(f,trim)};
+const stkIcon=s=>{const F=s&&stkFace(s.f),e=F&&EVENTS.find(x=>x.id===F.ev);return e?e.icon:"🎃"};
 function stickerHTML(s){
   if(!s||!stkFace(s.f))return "";
-  const F=stkFace(s.f);return `<span class="stk" data-t="${s.t||""}" title="${esc(F.name)} sticker${s.t?" · "+STK_TRIMS[s.t]:""}">${pumpkinSVG(s.f,s.t)}</span>`;
+  const F=stkFace(s.f);return `<span class="stk" data-t="${s.t||""}" title="${esc(F.name)} sticker${s.t?" · "+STK_TRIMS[s.t]:""}">${stickerSVG(s.f,s.t)}</span>`;
+}
+function holidaySVG(f,trim){
+  const n=++STK_N,G=`url(#hg${n})`;
+  const art={
+    turkey:`<g><path d="M32 40 L12 22 M32 40 L20 14 M32 40 L32 10 M32 40 L44 14 M32 40 L52 22" stroke-width="10" stroke-linecap="round" stroke="#e8752a"/><path d="M32 40 L16 26 M32 40 L26 18 M32 40 L38 18 M32 40 L48 26" stroke-width="5" stroke-linecap="round" stroke="#f5c542"/></g><ellipse cx="32" cy="42" rx="13" ry="14" fill="#8b5a2b"/><circle cx="32" cy="28" r="7" fill="#a0693a"/><circle cx="29.5" cy="27" r="1.6" fill="#111"/><circle cx="34.5" cy="27" r="1.6" fill="#111"/><path d="M31 30l2 0-1 3z" fill="#f5b83d"/><path d="M33 31c2 2 1 5-1 6" stroke="#d93a3a" stroke-width="2.4" fill="none"/>`,
+    pie:`<path d="M10 40 L54 40 L32 14 Z" fill="#e8913a"/><path d="M8 40h48v6c0 3-2 5-5 5H13c-3 0-5-2-5-5z" fill="#c98a4a"/><path d="M12 40c4-2 8 2 12 0s8 2 12 0 8 2 12 0 6 1 8 0" stroke="#f1d29a" stroke-width="3" fill="none"/><ellipse cx="32" cy="20" rx="6" ry="4" fill="#fff8ec"/>`,
+    leaf:`<path d="M32 8l5 10 8-4-2 10 9 1-7 7 5 6-11-1 1 10-8-6-8 6 1-10-11 1 5-6-7-7 9-1-2-10 8 4z" fill="#e2552c"/><path d="M32 18v40" stroke="#8a2d14" stroke-width="2.5" stroke-linecap="round"/><path d="M32 30l-9-6M32 30l9-6M32 40l-8-3M32 40l8-3" stroke="#8a2d14" stroke-width="1.6"/>`,
+    horn:`<path d="M10 22c10 0 26 4 36 14 4 4 6 10 4 14-10-2-20-6-28-14-6-6-10-10-12-14z" fill="#c98a3a"/><path d="M14 24c6 6 12 12 22 16M18 22c6 6 14 12 26 18" stroke="#8a5a20" stroke-width="2" fill="none"/><circle cx="44" cy="44" r="6" fill="#d93a3a"/><circle cx="52" cy="38" r="5" fill="#f5b83d"/><circle cx="36" cy="48" r="5" fill="#7ab648"/><circle cx="50" cy="48" r="4" fill="#8e44ad"/>`,
+    gturkey:`<g><path d="M32 40 L12 22 M32 40 L20 14 M32 40 L32 10 M32 40 L44 14 M32 40 L52 22" stroke-width="10" stroke-linecap="round" stroke="${G}"/></g><ellipse cx="32" cy="42" rx="13" ry="14" fill="${G}"/><circle cx="32" cy="28" r="7" fill="#ffe9a3"/><circle cx="29.5" cy="27" r="1.6" fill="#5a3e0a"/><circle cx="34.5" cy="27" r="1.6" fill="#5a3e0a"/><path d="M31 30l2 0-1 3z" fill="#b8862b"/>`,
+    moon:`<circle cx="32" cy="32" r="22" fill="#ff9a3d"/><circle cx="32" cy="32" r="22" fill="none" stroke="#ffd27a" stroke-width="3" opacity=".7"/><circle cx="24" cy="26" r="4" fill="#e57d24"/><circle cx="38" cy="38" r="5" fill="#e57d24"/><circle cx="40" cy="22" r="2.5" fill="#e57d24"/><path d="M8 50l6-3 2 4zM50 12l4 3-4 2z" fill="#fff6c9"/>`,
+    snowman:`<circle cx="32" cy="44" r="14" fill="#f4f8ff"/><circle cx="32" cy="24" r="10" fill="#f4f8ff"/><path d="M22 16h20v-3H22zM25 13V5h14v8z" fill="#22283a"/><circle cx="28.5" cy="22" r="1.6" fill="#222"/><circle cx="35.5" cy="22" r="1.6" fill="#222"/><path d="M32 25l9 2-9 1z" fill="#ff7b29"/><path d="M22 32c6 3 14 3 20 0l-2 4c-5 2-11 2-16 0z" fill="#d93a3a"/><circle cx="32" cy="42" r="1.6" fill="#222"/><circle cx="32" cy="48" r="1.6" fill="#222"/>`,
+    cane:`<path d="M24 56V22c0-8 6-13 12-13s12 5 12 13" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M24 56V22c0-8 6-13 12-13s12 5 12 13" stroke="#e23a3a" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="6 6"/>`,
+    ornament:`<rect x="27" y="8" width="10" height="7" rx="2" fill="#c9ccd6"/><circle cx="32" cy="36" r="20" fill="#2a7de1"/><path d="M13 32c6 4 32 4 38 0M13 40c6 4 32 4 38 0" stroke="#f3c55a" stroke-width="3" fill="none"/><circle cx="25" cy="28" r="4" fill="#fff" opacity=".5"/>`,
+    ginger:`<circle cx="32" cy="17" r="9" fill="#b8723a"/><path d="M20 26h24l8 8-4 4-6-5v12l6 12-6 2-8-11-8 11-6-2 6-12V33l-6 5-4-4z" fill="#b8723a"/><circle cx="29" cy="16" r="1.5" fill="#fff"/><circle cx="35" cy="16" r="1.5" fill="#fff"/><path d="M28 20c2 2 6 2 8 0" stroke="#fff" stroke-width="1.6" fill="none"/><circle cx="32" cy="34" r="1.8" fill="#e23a3a"/><circle cx="32" cy="41" r="1.8" fill="#3ddc84"/>`,
+    bell:`<path d="M32 10c-10 0-14 8-14 18v10l-6 8h40l-6-8V28c0-10-4-18-14-18z" fill="${G}"/><circle cx="32" cy="50" r="5" fill="#b8862b"/><path d="M26 8c2-3 10-3 12 0" stroke="#d93a3a" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M22 30c2-8 6-12 10-13" stroke="#fff7d6" stroke-width="2.5" fill="none" stroke-linecap="round"/>`,
+    star:`<path d="M32 4l7 19 20 1-16 12 6 20-17-12-17 12 6-20L5 24l20-1z" fill="#fff6b0"/><path d="M32 4l7 19 20 1-16 12 6 20-17-12-17 12 6-20L5 24l20-1z" fill="none" stroke="#7fe8ff" stroke-width="2"/><circle cx="32" cy="32" r="6" fill="#fff"/>`,
+    popper:`<path d="M14 54L26 22l16 16z" fill="#b27dff"/><path d="M18 44l6 6M21 36l9 9" stroke="#f3c55a" stroke-width="3"/><circle cx="44" cy="14" r="3" fill="#ff4d8d"/><circle cx="52" cy="26" r="3" fill="#3ddc84"/><path d="M36 10l3 5M48 34l5 2M40 22l4-2" stroke="#5f8dff" stroke-width="3" stroke-linecap="round"/>`,
+    hat:`<path d="M32 6L14 54h36z" fill="#ff4d8d"/><path d="M26 22l12 0M21 36l22 0" stroke="#fff" stroke-width="4"/><circle cx="32" cy="7" r="5" fill="#f3c55a"/><path d="M12 54h40" stroke="#5f8dff" stroke-width="5" stroke-linecap="round"/>`,
+    firework:`<circle cx="32" cy="30" r="4" fill="#fff"/><g stroke-linecap="round" stroke-width="3.5"><path d="M32 22V8M32 38v14M24 30H10M40 30h14" stroke="#ff4d8d"/><path d="M26 24l-9-9M38 24l9-9M26 36l-9 9M38 36l9 9" stroke="#f3c55a"/></g><circle cx="32" cy="6" r="2.5" fill="#7fe8ff"/><circle cx="56" cy="30" r="2.5" fill="#7fe8ff"/>`,
+    clock:`<circle cx="32" cy="32" r="22" fill="#22283a"/><circle cx="32" cy="32" r="18" fill="#f4f8ff"/><path d="M32 32V16M32 32l-2-14" stroke="#22283a" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="32" r="2.5" fill="#d93a3a"/><path d="M32 17v2M47 32h-2M32 47v-2M17 32h2" stroke="#22283a" stroke-width="2"/>`,
+    disco:`<circle cx="32" cy="34" r="20" fill="${G}"/><path d="M12 34h40M14 24h36M14 44h36M32 14v40M22 16c-4 12-4 24 0 36M42 16c4 12 4 24 0 36" stroke="#8c6418" stroke-width="1.4" fill="none"/><path d="M32 4v10" stroke="#c9ccd6" stroke-width="2"/><path d="M24 24l3 3-3 3-3-3z" fill="#fff"/>`,
+    nova:`<circle cx="32" cy="32" r="12" fill="#fff"/><g stroke-linecap="round"><path d="M32 4v14M32 46v14M4 32h14M46 32h14" stroke="#ff4fa0" stroke-width="4"/><path d="M12 12l10 10M52 12L42 22M12 52l10-10M52 52L42 42" stroke="#c44fff" stroke-width="4"/></g><circle cx="32" cy="32" r="18" fill="none" stroke="#4fb5ff" stroke-width="2.5" opacity=".8"/>`
+  };
+  return `<svg viewBox="0 0 64 64" aria-hidden="true"><defs>
+    <linearGradient id="hg${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a3"/><stop offset=".5" stop-color="#f3c55a"/><stop offset="1" stop-color="#b8862b"/></linearGradient>
+    <linearGradient id="hh${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff4fa0"/><stop offset=".25" stop-color="#ffd84f"/><stop offset=".5" stop-color="#4fffc1"/><stop offset=".75" stop-color="#4fb5ff"/><stop offset="1" stop-color="#c44fff"/></linearGradient>
+    <filter id="ho${n}" x="-20%" y="-20%" width="140%" height="140%"><feMorphology in="SourceAlpha" operator="dilate" radius="2.6" result="d"/><feFlood flood-color="#fff"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <g filter="url(#ho${n})">${art[f]||art.turkey}</g>
+    ${trim==="holo"?`<circle cx="32" cy="32" r="27" fill="url(#hh${n})" opacity=".45" style="mix-blend-mode:color-dodge"/>`:""}
+    ${trim==="gold"?`<circle cx="32" cy="32" r="29" fill="none" stroke="url(#hg${n})" stroke-width="3"/>`:""}
+    ${trim==="neon"?`<circle cx="32" cy="32" r="29" fill="none" stroke="#00e5ff" stroke-width="2.4"/>`:""}
+  </svg>`;
 }
 const stkLabel=s=>{const F=stkFace(s.f);return F?`${F.name}${s.t?" · "+STK_TRIMS[s.t]+" trim":""}`:"Sticker"};
 /* give fresh cards their stickers. lastBoost: each pack's last card gets that pack's bonus */
-function addStickers(cards,boostFor){for(const c of cards){const s=rollSticker(boostFor?boostFor(c):1);if(s)c.stk=s}}
+function addStickers(cards,boostFor){for(const c of cards){if(c.noxp)continue;const s=rollSticker(boostFor?boostFor(c):1);if(s)c.stk=s}}
 function renderEvent(){
   const el=$("event");if(!el)return;const ev=eventNow();el.hidden=!ev;if(!ev)return;
   const d=new Date(ev.end-1).toLocaleDateString([],{month:"short",day:"numeric"});
-  el.innerHTML=`<span class="ev-ic">${pumpkinSVG("happy","")}</span><div><b>${ev.name} event · ${evEnds(ev)}</b><small>Haunted packs are here. Any card can drop a pumpkin sticker, only until ${d}. Rare faces and trims are out there.</small></div>`;
+  const f0=facesOf(ev.id)[0];
+  el.innerHTML=`<span class="ev-ic">${f0?stickerSVG(f0.id,""):ev.icon}</span><div><b>${ev.name} event · ${evEnds(ev)}</b><small>${ev.blurb} Any card can drop a ${ev.noun}, only until ${d}. Rare faces and trims are out there.</small></div>`;
 }
 /* "Ends Oct 31", or "Last day!" on the final day: clearer than counting days */
 const evEnds=ev=>{const last=new Date(ev.end-1);return dayKey(last)===dayKey(today())?"Last day!":"Ends "+last.toLocaleDateString([],{month:"short",day:"numeric"})};
 function stickerBookHTML(){
-  const mine=store.cards.filter(c=>c.stk&&/^halloween-/.test(c.stk.e)),ev=eventNow();
-  if(!mine.length&&!(ev&&ev.id==="halloween"))return "";
-  const have=new Map();for(const c of mine){const k=c.stk.f;have.set(k,(have.get(k)||0)+1)}
-  const trims=mine.filter(c=>c.stk.t).length;
-  return `<div class="sbox"><h3>Pumpkin stickers <small>${have.size} of ${STK_FACES.length} faces${trims?` · ${trims} trimmed`:""}</small></h3>
-    <div class="stkbook">${STK_FACES.map(f=>`<div class="stkslot${have.has(f.id)?" on":""}" style="--c:${TC[f.r]}">${pumpkinSVG(f.id,"")}<b>${have.has(f.id)?esc(f.name):"???"}</b><small>${have.has(f.id)?`×${have.get(f.id)}`:TIERS.find(t=>t.id===f.r).name}</small></div>`).join("")}</div>
-    <p class="msg">${ev&&ev.id==="halloween"?`Only during Halloween week. ${evEnds(ev)}.`:"Back next Halloween."}</p></div>`;
+  const ev=eventNow();
+  return EVENTS.map(e=>{
+    const mine=store.cards.filter(c=>c.stk&&c.stk.e&&String(c.stk.e).startsWith(e.id+"-")),FS=facesOf(e.id),live=ev&&ev.id===e.id;
+    if(!mine.length&&!live)return "";
+    const have=new Map();for(const c of mine){const k=c.stk.f;have.set(k,(have.get(k)||0)+1)}
+    const trims=mine.filter(c=>c.stk.t).length;
+    return `<div class="sbox"><h3>${e.icon} ${e.name} stickers <small>${have.size} of ${FS.length} faces${trims?` · ${trims} trimmed`:""}</small></h3>
+      <div class="stkbook">${FS.map(f=>`<div class="stkslot${have.has(f.id)?" on":""}" style="--c:${TC[f.r]}">${stickerSVG(f.id,"")}<b>${have.has(f.id)?esc(f.name):"???"}</b><small>${have.has(f.id)?`×${have.get(f.id)}`:TIERS.find(t=>t.id===f.r).name}</small></div>`).join("")}</div>
+      <p class="msg">${live?`Only during ${e.name} week. ${evEnds(ev)}.`:`Back next ${e.name}.`}</p></div>`;
+  }).join("");
 }
-
-/* =========================================================
-   Themes: Classic, or an event's colors. Moderators can pick any theme for themselves.
-   ========================================================= */
 const SKINS={auto:"Auto (events)",classic:"Classic",halloween:"Halloween",frost:"Frost",neon:"Neon Night",royal:"Royal Gold"};
 function applySkin(){
   const ev=eventNow(),mod=typeof Cloud!=="undefined"&&Cloud.isMod;
@@ -4344,11 +4547,11 @@ function applyModState(d){
   /* God mode just ended: keep the best card of each offer, delete the copies (XP stays) */
   if(wasGod&&!ms.gm){const n=dedupeCards();if(n)toast(`${n} duplicate card${n>1?"s":""} cleaned up`)}
   if(ms.cal)for(const c of store.cards)calCard(c);
-  else if(was)for(const c of store.cards){const o=c.cb||c.nrf;if(o){Object.assign(c,{score:o.s,tier:o.t,finish:o.f});delete c.cb;delete c.nrf;c.upd=Date.now()}}
+  else if(was)for(const c of store.cards){const o=c.cb||c.nrf;if(o){Object.assign(c,{score:o.s,tier:o.t,finish:o.f});delete c.cb;delete c.nrf;c.upd=realNow()}}
   save();checkLevel();
 }
 const rngCal=()=>!!(store.modState&&(store.modState.cal||store.modState.nerf));
-function calCard(c){if(c.cb||c.nrf||c._friend)return;c.cb={s:c.score,t:c.tier,f:c.finish};c.score=Math.max(1,Math.min(c.score,Math.round(gradeOf(c)*0.3)));c.tier=C.tierFor(c.score).id;c.finish="standard";delete c.finish0;c.upd=Date.now()}
+function calCard(c){if(c.cb||c.nrf||c._friend)return;c.cb={s:c.score,t:c.tier,f:c.finish};c.score=Math.max(1,Math.min(c.score,Math.round(gradeOf(c)*0.3)));c.tier=C.tierFor(c.score).id;c.finish="standard";delete c.finish0;c.upd=realNow()}
 /* god packs waiting from the head moderator (weekly-challenge ones are counted separately in prog.gb10) */
 const godLeft=()=>Math.max(0,((store.modState&&store.modState.god)||0)-((store.modDone&&store.modDone.god)||0));
 /* a God Pack: every card gets a special frame and the best one is Holographic; stickers too during an event */
@@ -4357,7 +4560,7 @@ function makeGod(cards,kind){
   if(!cards.length||(kind==="mod"?!godLeft():!(+prog().gb10>0)||rngCal()))return false;
   const fr=["gold","neon","carbon","inverted","holo"];
   cards.forEach((c,i)=>{c.finish=i===cards.length-1?"holo":fr[Math.floor(Math.random()*fr.length)];c.god=1;
-    const ev=eventNow();if(ev&&ev.id==="halloween"){const f=STK_FACES[Math.min(STK_FACES.length-1,Math.floor(Math.random()*4)+(i===cards.length-1?2:0))];c.stk={e:ev.key,f:f.id,t:["holo","gold","neon","inverted"][Math.floor(Math.random()*4)]}}});
+    const ev=eventNow(),FS=ev?facesOf(ev.id):[];if(FS.length){const f=FS[Math.min(FS.length-1,Math.floor(Math.random()*4)+(i===cards.length-1?2:0))];c.stk={e:ev.key,f:f.id,t:["holo","gold","neon","inverted"][Math.floor(Math.random()*4)]}}});
   if(kind==="mod"){store.modDone=store.modDone||{xp:0,god:0};store.modDone.god=(store.modDone.god||0)+1}
   else prog().gb10=Math.max(0,(+prog().gb10||0)-1);
   return true;
@@ -4365,6 +4568,7 @@ function makeGod(cards,kind){
 /* super rare weekly reward: the best card of the next upload gets a guaranteed special frame */
 function applyBoost(cards){
   const p=prog();if(!(+p.boost>0)||!cards.length||rngCal())return false;
+  cards=cards.filter(c=>!c.noxp);if(!cards.length)return false;
   const best=cards.slice().sort((a,b)=>a.score-b.score||a.pph-b.pph)[cards.length-1];
   best.finish=Math.random()<0.5?"holo":"gold";delete best.finish0;best.boosted=1;p.boost=Math.max(0,p.boost-1);return true;
 }
@@ -4516,7 +4720,13 @@ Object.assign(Cloud,{
     await this.me().set({username:name,name},{merge:true});
     this.profile={...this.profile,username:name,name};SET.name=name;saveSet();
     /* the head moderator's inbox: one note per new account */
-    if(!old)await this.db.collection("signups").doc(this.user.uid).set({username:name,email:String(this.user.email||"").slice(0,120),name:String(this.user.displayName||"").slice(0,40),at:Date.now()}).catch(()=>{});
+    if(!old){
+      /* tell the head moderator right away in Discord; the hourly bot is the backup */
+      const email=String(this.user.email||"").slice(0,120),code=(this.profile&&this.profile.code)||"";
+      const sent=await this.alert("signup",{title:"🆕 New DasherDex driver",color:0x5f8dff,fields:[{name:"Username",value:"@"+name,inline:true},{name:"Player ID",value:code?fmtID(code):"not made yet",inline:true},
+        {name:"Gmail",value:email||"?"},{name:"Google name",value:String(this.user.displayName||"?").slice(0,60),inline:true}],timestamp:new Date().toISOString()});
+      await this.db.collection("signups").doc(this.user.uid).set({username:name,email,name:String(this.user.displayName||"").slice(0,40),at:Date.now(),...(sent?{hk:1}:{})}).catch(()=>{});
+    }
     await this.pushProfile().catch(()=>{});renderProfBtns();rerenderAccount();
     return name;
   }
@@ -4561,12 +4771,27 @@ Object.assign(Cloud,{inbox:{signups:[],reports:[],flags:[]},inboxAt:0,
     if(!this.user)throw new Error("Sign in to report posts.");
     await this.db.collection("reports").doc(this.user.uid+"_"+p.id.replace(/[^A-Za-z0-9_]/g,"").slice(0,80)).set({
       post:p.id,aud:p.aud,uid:p.uid,name:String(p.name||"").slice(0,24),by:this.user.uid,byName:myName(),why:REPORT_WHY.includes(why)?why:REPORT_WHY[3],at:Date.now()});
+    this.alert("sus",{title:"📣 Post reported",color:0xf5b83d,fields:[{name:"Reason",value:REPORT_WHY.includes(why)?why:REPORT_WHY[3]},{name:"Posted by",value:String(p.name||"?").slice(0,24),inline:true},
+      {name:"Reported by",value:"@"+(this.username()||myName()),inline:true},{name:"Card",value:`${String(p.card&&p.card.store||"").slice(0,40)} · ${p.card&&p.card.tier} ${p.card&&p.card.score}`}],timestamp:new Date().toISOString()});
   },
   /* a card that looks too good to be true is still added; the head moderator just gets a heads-up */
   async flag(c,why){
     if(!this.user)return;
     await this.db.collection("flags").doc(this.user.uid+"_"+c.id).set({uid:this.user.uid,name:myName(),why:String(why).slice(0,120),
       card:{store:String(c.store).slice(0,40),pay:+c.pay,minutes:+c.minutes,miles:+c.miles,score:+c.score,tier:c.tier},at:Date.now()}).catch(()=>{});
+    this.alert("sus",{title:"🚩 Suspicious offer",color:0xff5c5c,description:String(why).slice(0,200),fields:[{name:"Driver",value:"@"+(this.username()||myName()),inline:true},
+      {name:"Player ID",value:this.profile&&this.profile.code?fmtID(this.profile.code):"?",inline:true},{name:"Offer",value:`${String(c.store).slice(0,40)} · $${(+c.pay).toFixed(2)} · ${c.minutes} min · ${c.miles} mi · ${c.tier} ${c.score}`}],timestamp:new Date().toISOString()});
+  },
+  /* instant Discord alerts for the head moderator (the webhook addresses are made by the DasherDex bot) */
+  async hookUrl(kind){
+    if(!this.user)return "";
+    if(!this.hooks||Date.now()-this.hooksAt>3600e3){try{const s=await this.db.collection("config").doc("hooks").get();this.hooks=s.exists?s.data():{}}catch(e){this.hooks={}}this.hooksAt=Date.now()}
+    const u=String(this.hooks[kind]||"");return /^https:\/\/discord\.com\/api\/webhooks\/\d+\/[\w-]+$/.test(u)?u:"";
+  },
+  async alert(kind,embed){
+    try{const u=await this.hookUrl(kind);if(!u)return false;
+      const r=await fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"DasherDex Alerts",embeds:[embed],allowed_mentions:{parse:[]}})});
+      return r.ok}catch(e){return false}
   },
   async clearInbox(col,id){await this.db.collection(col).doc(id).delete();this.inbox[col]=this.inbox[col].filter(x=>x.id!==id);renderInboxBadge()},
   /* cheap driver search: usernames by first letters, or one exact ID */
@@ -4654,7 +4879,7 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="1.6";
+const APP_VER="1.7";
 /* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
 const DISCORD_DEFAULT="";
 const discordOK=u=>/^https:\/\/(discord\.gg|discord\.com\/invite)\/[A-Za-z0-9-]{2,40}\/?$/.test(String(u||""));
@@ -4662,6 +4887,20 @@ const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.
 const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["1.7","October 2026",[
+    "Items and a Bag: Lucky Charms, Double XP, Re-roll Tokens, Frame Boosters and more, each with its own rarity.",
+    "Bronze, Silver and Gold Chests from daily and weekly challenges, level milestones and the pass.",
+    "Season 1 pass (free): 30 tiers of rewards until the end of the year.",
+    "7-day login calendar with a Gold Chest on day 7.",
+    "Frame meter: every upload without a special frame fills it. Full means a big chance at one.",
+    "Double XP during peak hours: Friday to Sunday, 6 to 9 PM.",
+    "Prestige at level 50, scrap and crafting, collections, and XP for achievements.",
+    "Friends and community challenges: everyone who helps gets the reward.",
+    "Tap a driver on the feed to see their level, achievements and cards.",
+    "Luck now shows as a bonus (+0% to +150%), and good cards glow before they flip.",
+    "Thanksgiving, Christmas and New Year events with their own stickers.",
+    "Faster syncing that saves data, plus safety fixes.",
+    "My promise: DasherDex stays free to play. Packs, luck and chests will never cost real money, and your data is never sold. If DasherDex ever grows enough to need help with storage costs, it might offer extra card space, never gambling with real money."]],
   ["1.6","October 2026",[
     "Join the DasherDex Discord from Friends or Settings.",
     "The Discord server now has levels: chat once a day to earn XP and level roles.",
@@ -4744,6 +4983,412 @@ function termsSheet(){
     <ul><li>The DasherDex team can remove cards or posts, block drivers from Global, change rewards, or close accounts that break these rules.</li>
     <li>You can report any Global post from its ••• menu.</li></ul>
     <p class="msg">We may update these terms. Big changes will show up in What's new.</p></div>`);
+}
+/* =========================================================
+   Rewards: items, chests, the frame meter, the 7-day login calendar, level milestones, prestige,
+   the free season pass, scrap and crafting, and friend + community challenges.
+   Free to play: nothing here can ever be bought with real money.
+
+   Every reward is a one-time "event" in prog.ev, keyed by a unique id ("d:2026-10-27", "u:abc", ...).
+   Item counts and bonus XP are the sum of all events, so syncing two phones just merges the events.
+   ========================================================= */
+const ITEMS={
+  xp_s:  {n:"XP Snack",r:"common",i:"🍪",d:"+50 XP right away."},
+  xp_l:  {n:"XP Feast",r:"rare",i:"🍱",d:"+300 XP right away."},
+  charm: {n:"Lucky Charm",r:"uncommon",i:"🍀",d:"+10% luck on your next upload."},
+  charm2:{n:"Four-Leaf Charm",r:"rare",i:"☘️",d:"+25% luck on your next upload."},
+  frame: {n:"Frame Booster",r:"legendary",i:"✨",d:"Better special-frame odds on your next upload."},
+  dx5:   {n:"Double XP · 5 min",r:"common",i:"⚡",min:5,d:"Cards you scan earn double XP for 5 minutes."},
+  dx15:  {n:"Double XP · 15 min",r:"uncommon",i:"⚡",min:15,d:"Cards you scan earn double XP for 15 minutes."},
+  dx30:  {n:"Double XP · 30 min",r:"rare",i:"⚡",min:30,d:"Cards you scan earn double XP for 30 minutes."},
+  dx60:  {n:"Double XP · 1 hour",r:"epic",i:"⚡",min:60,d:"Cards you scan earn double XP for an hour."},
+  reroll:{n:"Re-roll Token",r:"epic",i:"🎲",d:"Open one of your cards and re-roll its special-frame chance at 5× the odds."},
+  swap:  {n:"Challenge Swap",r:"common",i:"🔄",d:"One extra swap for today's daily challenge."},
+  saver: {n:"Streak Saver",r:"rare",i:"🛡️",d:"Keeps your login calendar going if you miss a day. Used automatically."},
+  scans: {n:"+10 Scans",r:"uncommon",i:"📸",d:"Scan 10 more offers today, past the daily limit."},
+  chest_b:{n:"Bronze Chest",r:"uncommon",i:"📦",chest:1,d:"2 random items and some XP."},
+  chest_s:{n:"Silver Chest",r:"rare",i:"🎁",chest:1,d:"3 random items and more XP. Small chance of a Frame Booster."},
+  chest_g:{n:"Gold Chest",r:"epic",i:"🏆",chest:1,d:"4 random items and lots of XP. Best odds for rare items."},
+  scrap: {n:"Scrap",r:"common",i:"🔩",hide:1,d:"From scrapped cards. Craft items with it."}
+};
+const ITEM_ORDER=["chest_g","chest_s","chest_b","frame","reroll","charm2","charm","dx60","dx30","dx15","dx5","xp_l","xp_s","saver","scans","swap"];
+const CHEST={
+  chest_b:{rolls:2,xp:[25,60],t:[["xp_s",40],["charm",22],["dx5",20],["swap",13],["scans",5]]},
+  chest_s:{rolls:3,xp:[75,150],t:[["xp_s",22],["charm",24],["dx15",18],["scans",10],["saver",9],["charm2",10],["dx30",6],["frame",1]]},
+  chest_g:{rolls:4,xp:[200,400],t:[["charm2",22],["dx30",18],["xp_l",15],["saver",10],["dx60",10],["reroll",13],["chest_s",9],["frame",3]]}
+};
+const rid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const gEv=()=>{const p=prog();if(!p.ev||typeof p.ev!=="object")p.ev={};return p.ev};
+const invOf=k=>{let n=0;for(const e of Object.values(gEv()))n+=+e[k]||0;return Math.max(0,n)};
+const evXP=()=>invOf("xp");
+const itemLabel=(k,n)=>`${ITEMS[k]?ITEMS[k].i+" "+ITEMS[k].n:k}${n>1?" ×"+n:""}`;
+const lootText=items=>Object.entries(items).filter(([k,v])=>v>0).map(([k,v])=>k==="xp"?`+${v} XP`:k==="scrap"?`+${v} scrap`:itemLabel(k,v)).join(" · ");
+/* new rewards since the last scan or screen, shown as chips */
+let GAME_NEW=[];
+function grant(id,items,why){
+  const E=gEv();if(E[id])return false;E[id]=items;GAME_NEW.push(`${why?why+": ":""}${lootText(items)}`);return true;
+}
+/* local-only effects waiting to be used (a used item is already counted as used everywhere) */
+const fx=()=>{if(!SET.fx||typeof SET.fx!=="object")SET.fx={};return SET.fx};
+const fxToday=k=>{const v=fx()[k];return v&&v.d===dayKey(today())?+v.n||0:0};
+
+/* ---------- double XP: items, and peak hours every Friday, Saturday and Sunday 6 to 9 PM ---------- */
+const isPeak=()=>{const d=new Date(realNow()),w=d.getDay(),h=d.getHours();return (w===5||w===6||w===0)&&h>=18&&h<21};
+const dxLeft=()=>Math.max(0,(+fx().dx||0)-realNow());
+const dxOn=()=>dxLeft()>0||isPeak();
+
+/* ---------- luck shown as a percentage: x1.00 is +0%, x1.25 is +25% ---------- */
+const pctLuck=m=>"+"+Math.round(((m==null?luckShown():m)-1)*100)+"%";
+const charmPct=()=>+fx().charm||0;
+const prestigeLuck=()=>5*(+prog().pr||0);
+
+/* ---------- the frame meter: fills slowly with every upload that has no special frame ----------
+   The bar looks fast at first (square root) but the real bonus is small until it's full.
+   Full: each upload's best card has a 1 in 4 chance at a special frame. It empties when you get one. */
+const METER_FULL=60;
+const meter=()=>{const p=prog();if(!p.pm||typeof p.pm!=="object")p.pm={p:0,r:0};return p.pm};
+const meterPct=()=>Math.round(100*Math.sqrt(Math.min(METER_FULL,+meter().p||0)/METER_FULL));
+const meterFull=()=>(+meter().p||0)>=METER_FULL;
+/* extra special-frame odds for every card in the next upload */
+const frameMult=()=>(fx().frame?1.6:1)*(1+0.5*Math.min(1,(+meter().p||0)/METER_FULL));
+const METER_FRAMES=[["carbon",35],["inverted",30],["neon",20],["gold",8],["holo",7]];
+/* full meter: a 1 in 4 chance for the best new card (called while a scan is built) */
+function applyMeter(cards){
+  const ok=cards.filter(c=>!c.noxp&&trusted(c)&&!c.dev);if(!ok.length||!meterFull()||typeof rngCal==="function"&&rngCal())return false;
+  if(ok.some(special))return false;
+  if(Math.random()>=0.25)return false;
+  const best=ok.slice().sort((a,b)=>a.score-b.score||a.pph-b.pph)[ok.length-1];
+  let r=Math.random()*100,f="carbon";for(const [k,w] of METER_FRAMES){if((r-=w)<0){f=k;break}}
+  best.finish=f;delete best.finish0;best.meter=1;return true;
+}
+
+/* ---------- levels shown after prestige: prestige at level 50 starts the count again ---------- */
+const PRESTIGE_AT=50;
+const myLevel=()=>levelOf(Math.max(0,totalXP()-(+prog().prx||0)));
+const myXP=()=>Math.max(0,totalXP()-(+prog().prx||0));
+const prBadge=()=>{const n=+prog().pr||0;return n?`<span class="prb" title="Prestige ${n}">★${n>1?n:""}</span>`:""};
+
+/* ---------- the 7-day login calendar ---------- */
+const CAL=[{xp_s:1},{charm:1},{dx15:1},{chest_b:1},{swap:1,xp_s:1},{chest_s:1},{chest_g:1}];
+const prevKey=k=>{const d=new Date(k+"T12:00:00");d.setDate(d.getDate()-1);return dayKey(d)};
+function calState(){
+  const p=prog(),c=p.cal&&typeof p.cal==="object"?p.cal:{d:"",n:0},k=dayKey(today());
+  if(c.d===k)return {done:true,n:c.n,next:c.n%7+1};
+  const cont=c.d&&c.d===prevKey(k),save=!cont&&c.d&&invOf("saver")>0;
+  return {done:false,n:cont||save?c.n%7+1:1,saver:!!save,broke:!!(c.d&&!cont&&!save)};
+}
+function claimCal(){
+  const s=calState();if(s.done)return null;const k=dayKey(today()),p=prog();
+  if(s.saver)gEv()["u:"+rid()]={saver:-1};
+  grant("cal:"+k,CAL[s.n-1],`Day ${s.n} reward`);p.cal={d:k,n:s.n};save();return s.n;
+}
+
+/* ---------- seasons: a free pass with 30 tiers. Season 1 runs to the end of 2026. ---------- */
+function seasonsList(){
+  const L=[{id:"s1",name:"Season 1 · Harvest & Holidays",from:"2026-10-27",to:"2026-12-31"}];
+  /* after that, a new season every 3 months */
+  for(let i=0;i<12;i++){const y=2027+Math.floor(i/4),q=i%4,m0=q*3+1,m1=m0+2,last=new Date(y,m1,0).getDate();
+    L.push({id:"s"+(i+2),name:`Season ${i+2}`,from:`${y}-${String(m0).padStart(2,"0")}-01`,to:`${y}-${String(m1).padStart(2,"0")}-${last}`})}
+  return L;
+}
+const seasonNow=()=>{const k=dayKey(today());return seasonsList().find(s=>k>=s.from&&k<=s.to)||null};
+const PASS_XP=400,PASS_TIERS=30;
+const PASS=[{xp_s:1},{charm:1},{chest_b:1},{dx15:1},{chest_s:1},{swap:1},{charm:1},{chest_b:1},{dx30:1},{chest_g:1},
+  {xp_s:1,swap:1},{scans:1},{charm2:1},{chest_b:1},{reroll:1},{dx30:1},{chest_s:1},{saver:1},{charm2:1},{chest_g:1},
+  {xp_l:1},{dx60:1},{chest_s:1},{reroll:1},{charm2:1,chest_s:1},{dx60:1},{chest_g:1},{xp_l:1},{reroll:1},{frame:1,chest_g:1}];
+function passState(){
+  const s=seasonNow();if(!s)return null;const p=prog();if(!p.ss||typeof p.ss!=="object")p.ss={};
+  if(p.ss[s.id]==null)p.ss[s.id]=totalXP();
+  const sxp=Math.max(0,totalXP()-(+p.ss[s.id]||0)),tier=Math.min(PASS_TIERS,Math.floor(sxp/PASS_XP));
+  return {...s,sxp,tier,into:sxp-tier*PASS_XP,left:Math.max(0,Math.ceil((new Date(s.to+"T23:59:59")-today())/864e5))};
+}
+
+/* ---------- collections and achievements give XP once (counted from what's earned, so it syncs safely) ---------- */
+const ACH_XP={"First Card":25,"Pack Opener":25,"Red Ruby":100,"Shiny":50,"Holo Hunter":150,"Gold Rush":150,"Super Rare":50,"Epic Pull":75,"Legendary":150,"Mythic":300,
+  "Perfect 100":200,"Full Spectrum":200,"Big Payday":50,"On a Roll":150,"Road Warrior":150,"Trash Collector":50,"Good Eye":75,"Grinder":200,
+  "Frame Collector":500,"Store Regular":75,"Night Owl":75,"Lunch Rush":75,"Dinner Rush":75,"Mega Payday":150,"Short and Sweet":75,"Long Haul":75,"Two Apps":50,
+  "Sticker Hunter":150,"Prestige":500,"Season 1 Champion":500};
+const achXP=()=>{const a=(store.prog&&store.prog.ach)||{};let n=0;for(const k of Object.keys(a))n+=ACH_XP[k]||0;return n};
+function collections(){
+  const cs=store.cards.filter(trusted),all=allOffers(),hr=c=>new Date(c.ts).getHours(),stores=new Map();
+  for(const c of all){const k=skey(c.store);stores.set(k,(stores.get(k)||0)+1)}
+  const frames=new Set(cs.filter(special).map(c=>c.finish)),apps=new Set(all.map(c=>String(c.platform||"").toLowerCase()).filter(Boolean));
+  const stk=new Set(store.cards.filter(c=>c.stk).map(c=>c.stk.f));
+  return [
+    ["Frame Collector","Own all 5 special frames",frames.size,5,"#c44fff"],
+    ["Store Regular","10 offers from one store",Math.max(0,...stores.values()),10,"#4cc9a6"],
+    ["Night Owl","5 offers between midnight and 5 am",all.filter(c=>hr(c)<5).length,5,"#5f8dff"],
+    ["Lunch Rush","10 lunch offers (11 am to 2 pm)",all.filter(c=>hr(c)>=11&&hr(c)<14).length,10,"#f5b83d"],
+    ["Dinner Rush","10 dinner offers (5 to 9 pm)",all.filter(c=>hr(c)>=17&&hr(c)<21).length,10,"#ff8a3d"],
+    ["Mega Payday","Scan a $40+ offer",Math.min(1,all.filter(c=>+c.pay>=40).length),1,"#3ddc84"],
+    ["Short and Sweet","5 good offers under 3 miles",all.filter(c=>+c.miles<3&&isAccept(c)).length,5,"#22c7e6"],
+    ["Long Haul","Scan a 20+ mile offer",Math.min(1,all.filter(c=>+c.miles>=20).length),1,"#9a8a74"],
+    ["Two Apps","Offers from DoorDash and Uber Eats",Math.min(2,apps.size),2,"#a9b2c3"],
+    ["Sticker Hunter","Collect 6 different event stickers",stk.size,6,"#ff8a1f"]
+  ].map(([name,desc,have,need,col])=>{const kept=!!(store.prog&&store.prog.ach&&store.prog.ach[name]);return {name,desc,have:kept?need:Math.min(have,need),need,col,done:kept||have>=need,set:1}});
+}
+
+/* ---------- scrap and crafting: a long grind on purpose ---------- */
+const SCRAP_VAL={trash:1,common:2,uncommon:4,rare:10};
+const RECIPES=[["charm2",5000],["dx60",5000],["reroll",7500],["chest_g",10000],["frame",25000]];
+const scrapOK=c=>SCRAP_VAL[c.tier]&&!c.fav&&!special(c)&&!c.stk&&!c.dev&&!c.god&&!c._friend;
+const scrapOf=cs=>cs.reduce((a,c)=>a+(SCRAP_VAL[c.tier]||0),0);
+function addScrap(cards,why){const n=scrapOf(cards.filter(c=>SCRAP_VAL[c.tier]));if(n>0)grant("sc:"+rid(),{scrap:n},why||"Scrap");return n}
+/* auto-deleted cards turn into scrap too */
+function addScrapFor(ids){try{const set=new Set(ids),cs=store.cards.filter(c=>set.has(c.id)&&scrapOK(c));const n=addScrap(cs,"Auto-delete");GAME_NEW=[];return n}catch(e){return 0}}
+function craft(k){const r=RECIPES.find(x=>x[0]===k);if(!r||invOf("scrap")<r[1])return false;gEv()["cr:"+rid()]={scrap:-r[1],[k]:1};save();return true}
+
+/* ---------- friend and community challenges: change every week, everyone who helped gets the reward ---------- */
+const FRIEND_CH=[{id:"f_rare",t:"You and your friends: find 20 Rare or better",k:"rare",need:20},{id:"f_scan",t:"You and your friends: scan 100 offers",k:"scans",need:100},
+  {id:"f_acc",t:"You and your friends: find 40 offers worth accepting",k:"acc",need:40},{id:"f_spec",t:"You and your friends: pull 3 special frames",k:"specials",need:3}];
+const COMM_CH=[{id:"c_scan",t:"Everyone: scan 300 offers this week",k:"scans",need:300},{id:"c_rare",t:"Everyone: find 60 Rare or better this week",k:"rare",need:60}];
+const pickWk=(list,wk)=>{let h=11;for(const ch of wk)h=(h*31+ch.charCodeAt(0))>>>0;return list[h%list.length]};
+const FRIEND_REWARD={chest_b:1,xp:100},COMM_REWARD={chest_s:1,xp:150};
+const prevWeekKey=()=>{const d=weekStart();d.setDate(d.getDate()-7);return dayKey(d)};
+function friendProgress(wk,prev){
+  const ch=pickWk(FRIEND_CH,wk),mine=prev?weekStatsFor(new Date(wk+"T12:00:00")):weekStats();
+  let have=+mine[ch.k]||0;const who=[];
+  for(const f of (Cloud.friends||[]).filter(f=>f.accepted&&f.p)){const w=prev?f.p.pw:f.p.week;if(w&&w.wk===wk&&+w[ch.k]>0){have+=+w[ch.k];who.push(f.name||(f.p&&f.p.name)||"Friend")}}
+  return {...ch,wk,have:Math.min(ch.need,have),done:have>=ch.need,who};
+}
+async function commProgress(wk){
+  const ch=pickWk(COMM_CH,wk);let d=null;try{d=await Cloud.community(wk)}catch(e){}
+  const have=d?+d[ch.k]||0:0;return {...ch,wk,have:Math.min(ch.need,have),done:have>=ch.need};
+}
+/* rewards claim themselves, even a week later, so nobody misses one */
+async function claimGroup(){
+  if(typeof Cloud==="undefined"||!Cloud.user)return;
+  for(const prev of [false,true]){
+    const wk=prev?prevWeekKey():weekKey();
+    if(hasFriends()){const f=friendProgress(wk,prev);if(f.done&&grant("fc:"+wk,FRIEND_REWARD,"Friends challenge"))save()}
+    const c=await commProgress(wk);if(c.done&&grant("cc:"+wk,COMM_REWARD,"Community challenge"))save();
+  }
+  if(GAME_NEW.length)flushRewardsToast();
+}
+function flushRewardsToast(){if(!GAME_NEW.length)return;const t=GAME_NEW.join(" · ");GAME_NEW=[];toast("🎁 "+t)}
+
+/* ---------- after every scan: double XP, the frame meter, milestones, the pass, the community counter ---------- */
+function gameAfterScan(cards){
+  const p=prog(),real=cards.filter(c=>trusted(c)&&!c.noxp&&!c.dev);
+  /* double XP: the XP these cards earned, once more */
+  if(dxOn()&&real.length){const g=real.reduce((a,c)=>a+cardXP(c),0)+packXP(real);if(g>0)grant("dx:"+rid(),{xp:g},isPeak()&&!dxLeft()?"Peak hours double XP":"Double XP")}
+  /* charm and booster are used up by this upload */
+  if(fx().charm||fx().frame){delete fx().charm;delete fx().frame;saveSet()}
+  /* the frame meter */
+  if(real.length){const m=meter();
+    if(real.some(special)){if(m.p>0)GAME_NEW.push(real.some(c=>c.meter)?"Frame meter paid off!":"Frame meter reset: you got a frame");m.p=0;m.r=(+m.r||0)+1}
+    else{const was=meterFull();m.p=Math.min(METER_FULL,(+m.p||0)+(real.length>=2?0.3*real.length:0.3));if(!was&&meterFull())GAME_NEW.push("Frame meter is FULL")}}
+  gameMilestones();
+  if(typeof Cloud!=="undefined"&&Cloud.user&&real.length)Cloud.bumpCommunity(real.length,real.filter(c=>RANK[c.tier]>=RANK.rare).length).catch(()=>{});
+}
+/* level milestones every 5 levels, and season pass tiers */
+function gameMilestones(){
+  const L=myLevel(),pr=+prog().pr||0;
+  for(let l=5;l<=L;l+=5)grant(`L:${pr}:${l}`,l%10===0?{chest_g:1}:{chest_s:1},`Level ${l} reward`);
+  const s=passState();
+  if(s)for(let t=1;t<=s.tier;t++)grant(`bp:${s.id}:${t}`,PASS[t-1]||{xp_s:1},`Pass tier ${t}`);
+  if(s&&s.id==="s1"&&s.tier>=PASS_TIERS){const a=prog().ach||(prog().ach={});if(!a["Season 1 Champion"]){a["Season 1 Champion"]=1;GAME_NEW.push("Season 1 Champion badge")}}
+}
+function gameChipsHTML(){const out=GAME_NEW.map(t=>`<span class="rchip gm">🎁 ${esc(t)}</span>`).join("");GAME_NEW=[];return out}
+
+/* ---------- using items ---------- */
+function useItem(k){
+  const it=ITEMS[k];if(!it||invOf(k)<1)return false;
+  if(it.chest){openChest(k);return true}
+  const E=gEv(),id="u:"+rid(),f=fx();
+  if(k==="xp_s"||k==="xp_l"){E[id]={[k]:-1,xp:k==="xp_s"?50:300};save();checkLevel();toast(`+${k==="xp_s"?50:300} XP`);return true}
+  if(k==="charm"||k==="charm2"){if(f.charm){toast("A charm is already waiting for your next upload");return false}f.charm=k==="charm"?10:25}
+  else if(k==="frame"){if(f.frame){toast("A Frame Booster is already waiting");return false}f.frame=1}
+  else if(it.min){f.dx=Math.max(realNow(),+f.dx||0)+it.min*60e3}
+  else if(k==="scans"){const d=dayKey(today());f.scans={d,n:fxToday("scans")+10}}
+  else if(k==="swap"){const d=dayKey(today());f.swaps={d,n:fxToday("swaps")+1}}
+  else if(k==="reroll"){toast("Open one of your cards and tap Re-roll");return false}
+  else if(k==="saver"){toast("Streak Savers are used automatically");return false}
+  E[id]={[k]:-1};saveSet();save();
+  toast(k.startsWith("dx")?`⚡ Double XP for ${it.min} min`:k==="scans"?"+10 scans today":k==="swap"?"One more swap today":"Ready for your next upload");
+  return true;
+}
+/* re-roll a card's special-frame chance at 5x the odds */
+function rerollCard(c){
+  if(invOf("reroll")<1||special(c)||c.noxp||!trusted(c)||c.dev)return null;
+  gEv()["u:"+rid()]={reroll:-1};
+  const f=C.rollFinish(c.tier,Math.random(),5*luckMult());
+  if(f&&f!=="standard"&&!(typeof rngCal==="function"&&rngCal())){c.finish=f;c.upd=realNow()}
+  save();return special(c)?c.finish:"";
+}
+function rollLoot(k){
+  const T=CHEST[k],out={};let n=T.rolls;
+  while(n-->0){let r=Math.random()*T.t.reduce((a,x)=>a+x[1],0);for(const [it,w] of T.t){if((r-=w)<0){out[it]=(out[it]||0)+1;break}}}
+  out.xp=Math.round(T.xp[0]+Math.random()*(T.xp[1]-T.xp[0]));return out;
+}
+function openChest(k){
+  const loot=rollLoot(k);gEv()["o:"+rid()]={[k]:-1,...loot};save();checkLevel();
+  const items=Object.entries(loot).filter(([x])=>x!=="xp");
+  qrSheet(`<div class="qrcard chestwrap" data-r="${ITEMS[k].r}"><h2>${esc(ITEMS[k].n)}</h2>
+    <div class="chest-stage"><div class="chest" id="chBox">${ITEMS[k].i}</div></div>
+    <div class="loot" id="chLoot">${items.map(([x,n],i)=>`<div class="lootit" style="--c:${TC[ITEMS[x].r]};--d:${i*0.35+0.9}s"><span class="li">${ITEMS[x].i}</span><b>${esc(ITEMS[x].n)}${n>1?" ×"+n:""}</b><small>${TIERS.find(t=>t.id===ITEMS[x].r).name}</small></div>`).join("")}
+      <div class="lootit xp" style="--c:var(--gold);--d:${items.length*0.35+0.9}s"><span class="li">⭐</span><b>+${loot.xp} XP</b><small>Bonus</small></div></div></div>
+    <button class="btn" id="chDone">Nice!</button>`);
+  $("chDone").onclick=()=>{closeQR();if(view==="vProfile")renderProfile();if(view==="vDex")renderDex()};
+}
+
+/* ---------- Dex: calendar, double XP, frame meter and pass at a glance ---------- */
+function gameBarHTML(){
+  const cs=calState(),s=passState(),mp=meterPct(),full=meterFull();
+  const days=CAL.map((r,i)=>{const n=i+1,got=cs.done?n<=cs.n:n<cs.n,now=!cs.done&&n===cs.n;return `<span class="cd${got?" got":""}${now?" now":""}" title="Day ${n}: ${esc(lootText(r))}">${n===7?"👑":got?"✓":n}</span>`}).join("");
+  const dx=dxLeft(),peak=isPeak();
+  return `<div class="gcal">
+      <div class="gcal-top"><b>📅 Daily login</b><span>${cs.done?`Day ${cs.n} claimed · come back tomorrow`:cs.broke?"Streak reset. Day 1 again":`Day ${cs.n} of 7${cs.saver?" · Streak Saver used":""}`}</span></div>
+      <div class="cdays">${days}</div>
+      ${cs.done?"":`<button class="btn sm" id="calGo">Claim ${esc(lootText(CAL[cs.n-1]))}</button>`}
+    </div>
+    ${dx||peak?`<div class="gdx">⚡ <b>Double XP</b><span>${dx?`${Math.ceil(dx/60e3)} min left`:"Peak hours: Fri–Sun, 6–9 PM"}</span></div>`:""}
+    <button class="gmeter${full?" full":""}" id="gMeter"><span class="gm-l"><b>✦ Frame meter</b><small>${full?"FULL: big chance at a special frame every upload":"Fills with every upload without a special frame"}</small></span><span class="gm-bar"><i style="width:${mp}%"></i></span><span class="gm-p">${mp}%</span></button>
+    ${s?`<button class="gpass" id="gPass"><span class="gm-l"><b>🎟️ ${esc(s.name)}</b><small>Tier ${s.tier} of ${PASS_TIERS} · ${s.left} day${s.left===1?"":"s"} left</small></span><span class="gm-bar"><i style="width:${s.tier>=PASS_TIERS?100:s.into/PASS_XP*100}%"></i></span></button>`:""}`;
+}
+function renderGameBar(){
+  const el=$("gamebar");if(!el)return;
+  if(!store.cards.length&&!invOf("chest_b")){el.hidden=true;return}
+  el.hidden=false;el.innerHTML=gameBarHTML();
+  const c=$("calGo");if(c)c.onclick=()=>{const n=claimCal();if(n){flushRewardsToast();renderGameBar();if(view==="vProfile")renderProfile()}};
+  const m=$("gMeter");if(m)m.onclick=meterSheet;
+  const p=$("gPass");if(p)p.onclick=passSheet;
+}
+function meterSheet(){
+  const mp=meterPct(),full=meterFull();
+  qrSheet(`<div class="qrcard"><h2>✦ Frame meter</h2>
+    <div class="bigmeter${full?" full":""}"><i style="width:${mp}%"></i><b>${mp}%</b></div>
+    <p class="msg">Every upload without a special frame fills the meter a little. A pack of 10 fills it more than a single scan. The fuller it is, the better your odds.</p>
+    <p class="msg">${full?"<b>It's full!</b> Every upload now has a big chance at a special frame on its best card.":"When it's full, every upload gets a big chance at a special frame on its best card."} Any special frame empties it again.</p></div>`);
+}
+function passSheet(){
+  const s=passState();if(!s)return;
+  qrSheet(`<div class="qrcard pass"><h2>🎟️ ${esc(s.name)}</h2>
+    <p class="msg">Free for everyone. Every ${PASS_XP} XP you earn this season unlocks the next tier, and rewards go straight to your Bag. Ends ${new Date(s.to+"T12:00:00").toLocaleDateString([],{month:"short",day:"numeric"})}.</p>
+    <div class="ptiers">${PASS.map((r,i)=>{const t=i+1,got=s.tier>=t,now=s.tier+1===t;
+      return `<div class="pt${got?" got":""}${now?" now":""}"><span class="ptn">${t}</span><span class="ptr">${esc(lootText(r))}${t===PASS_TIERS&&s.id==="s1"?" · Season 1 Champion badge":""}</span><span class="pts">${got?"✓":now?`${s.into}/${PASS_XP}`:""}</span></div>`}).join("")}</div></div>`);
+}
+
+/* ---------- Profile: the Bag, scrap and crafting, prestige ---------- */
+function bagHTML(){
+  const have=ITEM_ORDER.filter(k=>invOf(k)>0),scrap=invOf("scrap"),f=fx(),act=[];
+  if(f.charm)act.push(`🍀 +${f.charm}% luck on your next upload`);if(f.frame)act.push("✨ Frame Booster on your next upload");
+  if(dxLeft())act.push(`⚡ Double XP · ${Math.ceil(dxLeft()/60e3)} min left`);
+  return `<div class="sbox bag"><h3>🎒 Bag <small>${have.reduce((a,k)=>a+invOf(k),0)} items</small></h3>
+    ${act.length?`<div class="bagact">${act.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
+    ${have.length?`<div class="bagitems">${have.map(k=>`<button class="bagit" data-item="${k}" style="--c:${TC[ITEMS[k].r]}"><span class="li">${ITEMS[k].i}</span><b>${esc(ITEMS[k].n)}</b><small>×${invOf(k)}</small></button>`).join("")}</div>`
+      :`<p class="msg">Earn items from the daily login, challenges, level milestones and the season pass.</p>`}
+    <div class="scrapbox"><div><b>🔩 Scrap: ${scrap.toLocaleString()}</b><small>Scrap Trash to Rare cards (1, 2, 4 or 10 each). Crafting takes a lot.</small></div><button class="btn ghost sm" id="scrapGo">Scrap &amp; craft</button></div>
+  </div>`;
+}
+function itemSheet(k){
+  const it=ITEMS[k],n=invOf(k);
+  qrSheet(`<div class="qrcard itemcard" style="--c:${TC[it.r]}"><div class="bigitem">${it.i}</div><h2>${esc(it.n)}</h2><p class="msg"><b style="color:${TC[it.r]}">${TIERS.find(t=>t.id===it.r).name}</b> · You have ${n}</p><p class="msg">${esc(it.d)}</p></div>
+    ${["reroll","saver"].includes(k)?"":`<button class="btn" id="itUse">${it.chest?"Open":"Use"}</button>`}`);
+  const b=$("itUse");if(b)b.onclick=()=>{if(it.chest){useItem(k);return}if(useItem(k)){closeQR();if(view==="vProfile")renderProfile();renderGameBar()}};
+}
+function scrapSheet(){
+  const pool=store.cards.filter(scrapOK),sel=new Set(Array.isArray(SET.scrapTiers)?SET.scrapTiers:["trash"]);
+  const pick=pool.filter(c=>sel.has(c.tier)),val=scrapOf(pick),scrap=invOf("scrap");
+  qrSheet(`<div class="qrcard scrap"><h2>🔩 Scrap &amp; craft</h2>
+    <p class="msg">Scrapping deletes cards for scrap. You keep their XP and their stats. Favorites, special frames and stickers are never scrapped.</p>
+    <div class="ntags">${["trash","common","uncommon","rare"].map(t=>`<button class="ntag" data-st="${t}" aria-pressed="${sel.has(t)}" style="--c:${TC[t]}">${TIERS.find(x=>x.id===t).name} · ${SCRAP_VAL[t]}</button>`).join("")}</div>
+    <button class="btn" id="scDo" ${pick.length?"":"disabled"}>Scrap ${pick.length} card${pick.length===1?"":"s"} for ${val} scrap</button>
+    <h3>Craft <small>you have ${scrap.toLocaleString()} scrap</small></h3>
+    <div class="recipes">${RECIPES.map(([k,cost])=>`<div class="rec" style="--c:${TC[ITEMS[k].r]}"><span class="li">${ITEMS[k].i}</span><span><b>${esc(ITEMS[k].n)}</b><small>${cost.toLocaleString()} scrap</small><span class="ap"><i style="width:${Math.min(100,scrap/cost*100)}%"></i></span></span><button class="mini" data-cr="${k}" ${scrap>=cost?"":"disabled"}>Craft</button></div>`).join("")}</div></div>`);
+  document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const t=b.dataset.st;if(sel.has(t))sel.delete(t);else sel.add(t);SET.scrapTiers=[...sel];saveSet();scrapSheet()});
+  let armed=false;$("scDo").onclick=e=>{if(!pick.length)return;if(!armed){armed=true;e.target.textContent=`Tap again to scrap ${pick.length}`;return}
+    const n=addScrap(pick,"Scrapped "+pick.length+" cards");deleteCards(pick.map(c=>c.id),{quiet:true,hist:true});save();GAME_NEW=[];toast(`+${n} scrap`);scrapSheet()};
+  document.querySelectorAll("[data-cr]").forEach(b=>b.onclick=()=>{if(craft(b.dataset.cr)){toast("Crafted "+ITEMS[b.dataset.cr].n);scrapSheet()}});
+}
+function prestigeHTML(){
+  const L=myLevel(),pr=+prog().pr||0;
+  if(L<PRESTIGE_AT)return pr?`<p class="msg prmsg">${prBadge()} Prestige ${pr} · +${5*pr}% luck for good</p>`:"";
+  return `<div class="sbox prestige"><h3>★ Prestige ${pr+1} is ready</h3><p class="msg">You hit level ${PRESTIGE_AT}! Prestige to start again at level 1 with a ★ next to your name, +5% luck for good, 2 Gold Chests and the level rewards all over again. You keep your cards, items and luck.</p><button class="btn" id="prGo">Prestige</button></div>`;
+}
+function doPrestige(){
+  const p=prog();if(myLevel()<PRESTIGE_AT)return;
+  p.pr=(+p.pr||0)+1;(p.ach||(p.ach={})).Prestige=1;p.prx=totalXP();
+  grant("pr:"+p.pr,{chest_g:2},"Prestige "+p.pr);save();flushRewardsToast();renderProfile();
+  if(typeof Cloud!=="undefined"&&Cloud.user)Cloud.pushProfile().catch(()=>{});
+}
+function wireGame(root){
+  root=root||document;
+  root.querySelectorAll("[data-item]").forEach(b=>b.onclick=()=>itemSheet(b.dataset.item));
+  const s=root.querySelector("#scrapGo");if(s)s.onclick=scrapSheet;
+  const pr=root.querySelector("#prGo");if(pr){let armed=false;pr.onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to prestige";return}doPrestige()}}
+  const pp=root.querySelector("#prPass");if(pp)pp.onclick=passSheet;
+}
+
+/* ---------- friend and community challenge cards on the feed ---------- */
+function groupChallengeHTML(aud){
+  if(aud==="friends"){if(!hasFriends())return "";const f=friendProgress(weekKey(),false);
+    return `<div class="gch"><span class="gch-t">🤝 Friends challenge · this week</span><b>${esc(f.t)}</b><span class="gm-bar"><i style="width:${f.have/f.need*100}%"></i></span><small>${f.have} of ${f.need}${f.done?" · Done! Everyone gets "+esc(lootText(FRIEND_REWARD)):" · Reward for everyone: "+esc(lootText(FRIEND_REWARD))}</small></div>`}
+  return `<div class="gch" id="commCh"><span class="gch-t">🌎 Community challenge · this week</span><b>Loading…</b></div>`;
+}
+async function fillCommunity(){
+  const el=$("commCh");if(!el)return;const c=await commProgress(weekKey());if(!$("commCh"))return;
+  el.innerHTML=`<span class="gch-t">🌎 Community challenge · this week</span><b>${esc(c.t)}</b><span class="gm-bar"><i style="width:${c.have/c.need*100}%"></i></span><small>${c.have} of ${c.need}${c.done?" · Done! Everyone gets "+esc(lootText(COMM_REWARD)):" · Reward for everyone: "+esc(lootText(COMM_REWARD))}</small>`;
+}
+
+/* ---------- cloud bits for rewards: the community counter and the public profile ---------- */
+Object.assign(Cloud,{
+  async community(wk){const s=await this.db.collection("community").doc(wk).get();return s.exists?s.data():null},
+  async bumpCommunity(n,rare){
+    if(!this.user||!n)return;const inc=firebase.firestore.FieldValue.increment;
+    await this.db.collection("community").doc(weekKey()).set({scans:inc(Math.min(30,n)),rare:inc(Math.min(30,rare||0)),upd:Date.now()},{merge:true});
+  },
+  /* what any signed-in driver can see when they tap your name: level, prestige and achievements. Never cards, maps or email. */
+  async pushPub(p){
+    if(!this.user)return;const a=Object.keys(prog().ach||{}).slice(0,80);
+    const doc={name:String(p.name||myName()).slice(0,24),username:String(this.username()||"").slice(0,20),level:Math.round(+p.level||1),pr:Math.round(+p.pr||0),
+      ach:a,best:p.best?{tier:p.best.tier,score:p.best.score,finish:p.best.finish||"standard",store:String(p.best.store||"").slice(0,40)}:null,cards:+p.cards||0,updated:Date.now()};
+    const sig=JSON.stringify({...doc,updated:0});if(sig===this.pubSig)return;
+    await this.db.collection("pub").doc(this.user.uid).set(doc);this.pubSig=sig;
+  },
+  async pubOf(uid){const s=await this.db.collection("pub").doc(uid).get();return s.exists?s.data():null},
+  async globalPostsOf(uid){const out=[];(await this.db.collection("posts").where("uid","==",uid).limit(30).get()).forEach(d=>{const p=cleanPost(d.data(),d.id,"global");if(p)out.push(p)});return out.sort((a,b)=>b.at-a.at)}
+});
+/* tap a driver on the feed: friends open their whole Dex; anyone else shows their level, achievements and Global posts */
+async function openUser(uid,nameHint,back){
+  if(Cloud.isHead){openDriver(uid,nameHint);return}
+  const fr=(Cloud.friends||[]).find(f=>f.id===uid&&f.accepted);
+  if(fr){openFriend(uid,back);return}
+  qrSheet(`<div class="qrcard pubp"><h2>${esc(nameHint||"Driver")}</h2><p class="msg">Loading…</p></div>`);
+  let pub=null,posts=[];try{[pub,posts]=await Promise.all([Cloud.pubOf(uid).catch(()=>null),Cloud.globalPostsOf(uid)])}catch(e){}
+  if($("qrSheet").hidden)return;
+  const nm=(pub&&pub.name)||nameHint||"Driver",L=(pub&&+pub.level)||1,ach=pub&&Array.isArray(pub.ach)?pub.ach:[];
+  qrSheet(`<div class="qrcard pubp">
+    <div class="drv-head"><span class="avatar" style="--c:${pub&&pub.best?TC[pub.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${esc(nm[0].toUpperCase())}</span>
+      <div><h2>${pub&&pub.username?"@"+esc(pub.username):esc(nm)}</h2><small>${pub&&pub.pr?`<span class="prb">★${pub.pr>1?pub.pr:""}</span>`:""}Level ${L} · ${titleOf(L)}${pub&&pub.cards?` · ${pub.cards} cards`:""}</small></div></div>
+    ${ach.length?`<div class="flabel">Achievements · ${ach.length}</div><div class="pubach">${ach.map(a=>`<span>${esc(a)}</span>`).join("")}</div>`:""}
+    <div class="flabel">Posted to Global · ${posts.length}</div>
+    ${posts.length?`<div class="grid pubgrid">${posts.map(p=>cardHTML({...p.card,_friend:true,_art:""})).join("")}</div>`:`<p class="msg">No Global posts yet.</p>`}
+    <p class="msg">Add ${esc(nm)} as a friend to see their whole Dex.</p></div>`);
+  document.querySelectorAll(".pubgrid .card").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.card.id===el.dataset.id);if(!p)return;closeQR();
+    openCard({...p.card,_friend:true,_art:""},{name:nm,back:back||(()=>{show("vFeed");toTop()})})});
+}
+
+/* ---------- the glow tease before a good card flips ---------- */
+const TEASE_ORDER=["common","uncommon","rare","superrare","epic","legendary","mythic"];
+const wantTease=(c,last)=>SET.motion!==false&&!RM&&(RANK[c.tier]>=RANK.rare||special(c)||(last&&RANK[c.tier]>=RANK.uncommon));
+const teaseBackHTML=()=>`<div class="cback" id="cBack" style="--g:${TC.common}"><span class="cb-logo">DD</span><span class="cb-tap">tap to skip</span></div>`;
+function runTease(c,best,done){
+  const el=$("cBack");if(!el){done();return}
+  const top=TEASE_ORDER.indexOf(c.tier),steps=TEASE_ORDER.slice(1,top+1),wait=best?520:300;
+  /* near miss: sometimes a Rare or Super Rare glows Epic for a moment, then fizzles back */
+  const miss=(c.tier==="rare"||c.tier==="superrare")&&!special(c)&&Math.random()<0.2;
+  let i=0,stopped=false,tm=0;
+  const finish=()=>{if(stopped)return;stopped=true;clearTimeout(tm);done()};
+  el.onclick=finish;
+  const tick=()=>{
+    if(stopped||!$("cBack"))return;
+    if(i<steps.length){el.style.setProperty("--g",TC[steps[i]]);el.classList.remove("pulse");void el.offsetWidth;el.classList.add("pulse");i++;tm=setTimeout(tick,wait);return}
+    if(miss&&!el.dataset.m){el.dataset.m=1;el.style.setProperty("--g",TC.epic);el.classList.add("pulse");tm=setTimeout(()=>{if(stopped)return;el.classList.add("miss");el.style.setProperty("--g",TC[c.tier]);tm=setTimeout(tick,520)},420);return}
+    if(special(c)&&!el.dataset.f){el.dataset.f=1;el.classList.add("frame-"+c.finish);tm=setTimeout(tick,best?700:480);return}
+    tm=setTimeout(finish,best?380:180);
+  };
+  tm=setTimeout(tick,best?500:250);
 }
 /* =========================================================
    Español. Casual, the way drivers talk ("tú", "oferta", "pedido", "sobre").
@@ -4884,7 +5529,7 @@ const ES={
 "The Home Screen app keeps its own copy of your cards. Cards scanned in Safari won't appear there.":"La app de inicio guarda su propia copia de tus tarjetas. Las que escanees en Safari no salen ahí.","The Home Screen app keeps its own copy of your cards. Sign in there with the same Google account and your Dex syncs over.":"La app de inicio guarda su propia copia de tus tarjetas. Inicia sesión ahí con la misma cuenta de Google y tu Dex se sincroniza.",
 "How cards are graded":"Cómo se califican las tarjetas",
 "Each offer gets a grade from its pay per hour ({n}) and pay per mile ({n}). Accept, Consider and Decline come from the grade. Once you've scanned {n}+ offers, the Accept line moves a little (up to {n} points) toward what's normal in your area, using only your recent grades. Rarity is the grade plus a little luck.":"Cada oferta se califica por su pago por hora ({n}) y pago por milla ({n}). Aceptar, Pensarlo y Rechazar salen de la calificación. Cuando llevas {n}+ ofertas, la línea de Aceptar se mueve un poco (hasta {n} puntos) hacia lo normal en tu zona, usando solo tus calificaciones recientes. La rareza es la calificación más un poco de suerte.",
-"Grade {n}+: about {n}/hr, {n}/mi and a {n}+ payout on one order":"Calificación {n}+: como {n}/h, {n}/mi y un pago de {n}+ en un pedido","{n}/hr, {n}/mi, single order, {n} mi or less, {n}+ pay":"{n}/h, {n}/mi, pedido individual, {n} mi o menos, pago de {n}+","{n}/hr, {n}/mi, {n} mi or less, {n}+ pay":"{n}/h, {n}/mi, {n} mi o menos, pago de {n}+","The top of the Rare range: around {n}/hr and {n}/mi":"Lo más alto de Raro: como {n}/h y {n}/mi","{n}/hr and {n}/mi":"{n}/h y {n}/mi","Close to Rare, but short on $/hr or $/mi":"Casi Raro, pero le falta $/h o $/mi","Clears {n}/hr and {n}/mi, not much more":"Pasa de {n}/h y {n}/mi, no mucho más","Under {n}/hr, under {n}/mi, or {n}+ mi":"Menos de {n}/h, menos de {n}/mi, o {n}+ mi",
+"Grade {n}+: a Legendary order with outstanding rates. The bigger the payout (up to {n}), the easier it is to reach.":"Calificación {n}+: un pedido Legendario con tarifas buenísimas. Entre más grande el pago (hasta {n}), más fácil llegar.","{n}/hr, {n}/mi, single order, {n} mi or less, {n}+ pay":"{n}/h, {n}/mi, pedido individual, {n} mi o menos, pago de {n}+","{n}/hr, {n}/mi, {n} mi or less, {n}+ pay":"{n}/h, {n}/mi, {n} mi o menos, pago de {n}+","The top of the Rare range: around {n}/hr and {n}/mi":"Lo más alto de Raro: como {n}/h y {n}/mi","{n}/hr and {n}/mi":"{n}/h y {n}/mi","Close to Rare, but short on $/hr or $/mi":"Casi Raro, pero le falta $/h o $/mi","Clears {n}/hr and {n}/mi, not much more":"Pasa de {n}/h y {n}/mi, no mucho más","Under {n}/hr, under {n}/mi, or {n}+ mi":"Menos de {n}/h, menos de {n}/mi, o {n}+ mi",
 "Luck moves rarity up to {n} points either way, and about {n} of scans are lucky pulls. Luck never lifts a Trash offer out of Trash or creates a Mythic. {n} needs a grade of {n}+.":"La suerte mueve la rareza hasta {n} puntos para arriba o abajo, y como el {n} de los escaneos son tiradas con suerte. La suerte nunca saca una oferta de Basura ni crea un Mítico. El {n} necesita calificación de {n}+.",
 "Cards whose numbers were typed or changed by hand are capped at Uncommon with no special finish, and screenshots that aren't one DoorDash or Uber Eats offer are refused.":"Las tarjetas con números escritos o cambiados a mano quedan en Poco común sin acabado especial, y las capturas que no son una oferta de DoorDash o Uber Eats se rechazan.",
 "Your data":"Tus datos","Copy as CSV":"Copiar como CSV","Select all and copy":"Selecciona todo y copia","Delete Trash cards ({n})":"Borrar tarjetas Basura ({n})","Favorites were kept":"Los favoritos se quedaron",
@@ -4927,6 +5572,37 @@ const ES={
 "Events show their end date, shared card pictures show your pumpkin sticker as a tag, and DasherDex opens even with no signal.":"Los eventos muestran su fecha final, las imágenes compartidas muestran tu calcomanía de calabaza como etiqueta, y DasherDex abre aunque no tengas señal.",
 "Join the DasherDex Discord":"Únete al Discord de DasherDex","Patch notes, best pulls and other drivers":"Novedades, mejores tiradas y otros repartidores",
 "Join the DasherDex Discord from Friends or Settings.":"Únete al Discord de DasherDex desde Amigos o Ajustes.","The Discord server now has levels: chat once a day to earn XP and level roles.":"El servidor de Discord ahora tiene niveles: escribe una vez al día para ganar XP y roles de nivel.","Patch notes now post to Discord automatically.":"Las novedades ahora se publican solas en Discord.",
+"XP Snack":"Snack de XP","+50 XP right away.":"+50 XP al instante.","XP Feast":"Banquete de XP","+300 XP right away.":"+300 XP al instante.","Lucky Charm":"Amuleto de suerte","+10% luck on your next upload.":"+10% de suerte en tu siguiente subida.","Four-Leaf Charm":"Trébol de cuatro hojas","+25% luck on your next upload.":"+25% de suerte en tu siguiente subida.",
+"Frame Booster":"Potenciador de marcos","Better special-frame odds on your next upload.":"Más chance de marco especial en tu siguiente subida.","Double XP · 5 min":"XP doble · 5 min","Double XP · 15 min":"XP doble · 15 min","Double XP · 30 min":"XP doble · 30 min","Double XP · 1 hour":"XP doble · 1 hora",
+"Cards you scan earn double XP for 5 minutes.":"Las tarjetas que escanees dan XP doble por 5 minutos.","Cards you scan earn double XP for 15 minutes.":"Las tarjetas que escanees dan XP doble por 15 minutos.","Cards you scan earn double XP for 30 minutes.":"Las tarjetas que escanees dan XP doble por 30 minutos.","Cards you scan earn double XP for an hour.":"Las tarjetas que escanees dan XP doble por una hora.",
+"Re-roll Token":"Ficha de re-tiro","Open one of your cards and re-roll its special-frame chance at 5× the odds.":"Abre una de tus tarjetas y vuelve a tirar por un marco especial con 5× la chance.","Challenge Swap":"Cambio de reto","One extra swap for today's daily challenge.":"Un cambio extra para el reto de hoy.",
+"Streak Saver":"Salvarrachas","Keeps your login calendar going if you miss a day. Used automatically.":"Mantiene tu calendario si fallas un día. Se usa solo.","+10 Scans":"+10 escaneos","Scan 10 more offers today, past the daily limit.":"Escanea 10 ofertas más hoy, arriba del límite diario.",
+"Bronze Chest":"Cofre de bronce","Silver Chest":"Cofre de plata","Gold Chest":"Cofre de oro","2 random items and some XP.":"2 objetos al azar y algo de XP.","3 random items and more XP. Small chance of a Frame Booster.":"3 objetos al azar y más XP. Pequeña chance de un Potenciador de marcos.","4 random items and lots of XP. Best odds for rare items.":"4 objetos al azar y mucho XP. La mejor chance de objetos raros.",
+"Scrap":"Chatarra","Daily login":"Inicio diario","Claim":"Reclamar","Nice!":"¡Bien!","Bonus":"Bono","Use":"Usar","✦ Frame meter":"✦ Medidor de marcos","Fills with every upload without a special frame":"Se llena con cada subida sin marco especial","FULL: big chance at a special frame every upload":"LLENO: gran chance de marco especial en cada subida",
+"Every upload without a special frame fills the meter a little. A pack of 10 fills it more than a single scan. The fuller it is, the better your odds.":"Cada subida sin marco especial llena un poco el medidor. Un sobre de 10 lo llena más que un escaneo suelto. Entre más lleno, mejor tu chance.",
+"When it's full, every upload gets a big chance at a special frame on its best card.":"Cuando se llena, cada subida tiene gran chance de marco especial en su mejor tarjeta.","It's full!":"¡Está lleno!","Every upload now has a big chance at a special frame on its best card.":"Ahora cada subida tiene gran chance de marco especial en su mejor tarjeta.","Any special frame empties it again.":"Cualquier marco especial lo vacía otra vez.","When it's full, every upload gets a big chance at a special frame on its best card. Any special frame empties it again.":"Cuando se llena, cada subida tiene gran chance de marco especial en su mejor tarjeta. Cualquier marco especial lo vacía otra vez.",
+"Double XP":"XP doble","Peak hours: Fri–Sun, 6–9 PM":"Horas pico: vie a dom, 6 a 9 PM","Day {n} claimed · come back tomorrow":"Día {n} reclamado · vuelve mañana","Streak reset. Day {n} again":"Racha reiniciada. Día {n} otra vez","Day {n} of {n}":"Día {n} de {n}","Day {n} of {n} · Streak Saver used":"Día {n} de {n} · se usó un Salvarrachas",
+"🎒 Bag":"🎒 Mochila","Earn items from the daily login, challenges, level milestones and the season pass.":"Gana objetos con el inicio diario, retos, niveles y el pase de temporada.","Scrap & craft":"Chatarra y crafteo","Scrap Trash to Rare cards (1, 2, 4 or 10 each). Crafting takes a lot.":"Haz chatarra con tarjetas de Basura a Raro (1, 2, 4 o 10 c/u). Craftear cuesta mucho.",
+"🔩 Scrap & craft":"🔩 Chatarra y crafteo","Scrapping deletes cards for scrap. You keep their XP and their stats. Favorites, special frames and stickers are never scrapped.":"Hacer chatarra borra tarjetas a cambio de chatarra. Te quedas con su XP y sus stats. Los favoritos, marcos especiales y calcomanías nunca se hacen chatarra.",
+"Craft":"Craftear","free rewards all season":"premios gratis toda la temporada","Free for everyone. Every {n} XP you earn this season unlocks the next tier, and rewards go straight to your Bag.":"Gratis para todos. Cada {n} XP que ganes esta temporada desbloquea el siguiente nivel, y los premios van directo a tu Mochila.",
+"Prestige":"Prestigio","Tap again to prestige":"Toca otra vez para hacer prestigio","🎲 Re-roll the frame":"🎲 Volver a tirar el marco","Re-roll":"Volver a tirar","Rolling…":"Tirando…","No frame this time":"Esta vez no salió marco",
+"Collections":"Colecciones","Frame Collector":"Coleccionista de marcos","Own all 5 special frames":"Ten los 5 marcos especiales","Store Regular":"Cliente frecuente","10 offers from one store":"10 ofertas de una misma tienda","Night Owl":"Búho nocturno","5 offers between midnight and 5 am":"5 ofertas entre medianoche y las 5 am",
+"Lunch Rush":"Hora de comida","10 lunch offers (11 am to 2 pm)":"10 ofertas de comida (11 am a 2 pm)","Dinner Rush":"Hora de cena","10 dinner offers (5 to 9 pm)":"10 ofertas de cena (5 a 9 pm)","Mega Payday":"Megapaga","Scan a $40+ offer":"Escanea una oferta de $40+","Short and Sweet":"Corto y bueno","5 good offers under 3 miles":"5 buenas ofertas de menos de 3 millas",
+"Long Haul":"Viaje largo","Scan a 20+ mile offer":"Escanea una oferta de 20+ millas","Two Apps":"Dos apps","Offers from DoorDash and Uber Eats":"Ofertas de DoorDash y Uber Eats","Sticker Hunter":"Cazacalcomanías","Collect 6 different event stickers":"Junta 6 calcomanías de evento distintas",
+"🤝 Friends challenge · this week":"🤝 Reto de amigos · esta semana","🌎 Community challenge · this week":"🌎 Reto de la comunidad · esta semana","You and your friends: find 20 Rare or better":"Tú y tus amigos: encuentren 20 Raros o mejor","You and your friends: scan 100 offers":"Tú y tus amigos: escaneen 100 ofertas",
+"You and your friends: find 40 offers worth accepting":"Tú y tus amigos: encuentren 40 ofertas que valga aceptar","You and your friends: pull 3 special frames":"Tú y tus amigos: saquen 3 marcos especiales","Everyone: scan 300 offers this week":"Todos: escaneen 300 ofertas esta semana","Everyone: find 60 Rare or better this week":"Todos: encuentren 60 Raros o mejor esta semana",
+"Posted to Global":"Publicadas en Global","No Global posts yet.":"Todavía no publica en Global.","Frame meter is FULL":"El medidor de marcos está LLENO","Frame meter paid off!":"¡El medidor de marcos pagó!","Frame meter reset: you got a frame":"Medidor reiniciado: te salió un marco",
+"tap to skip":"toca para saltar","Thanksgiving":"Acción de Gracias","Christmas":"Navidad","New Year":"Año Nuevo","Halloween":"Halloween",
+"Gobbler":"Pavito","Pumpkin Pie":"Pay de calabaza","Maple Leaf":"Hoja de maple","Cornucopia":"Cornucopia","Golden Gobbler":"Pavito dorado","Harvest Moon":"Luna de cosecha","Snowman":"Muñeco de nieve","Candy Cane":"Bastón de dulce","Ornament":"Esfera","Gingerbread":"Galleta de jengibre","Golden Bell":"Campana dorada","North Star":"Estrella del norte",
+"Party Popper":"Cañón de confeti","Party Hat":"Gorrito de fiesta","Firework":"Fuego artificial","Midnight":"Medianoche","Disco Ball":"Bola disco","Supernova":"Supernova",
+"Items and a Bag: Lucky Charms, Double XP, Re-roll Tokens, Frame Boosters and more, each with its own rarity.":"Objetos y Mochila: Amuletos de suerte, XP doble, Fichas de re-tiro, Potenciadores de marcos y más, cada uno con su rareza.",
+"Bronze, Silver and Gold Chests from daily and weekly challenges, level milestones and the pass.":"Cofres de bronce, plata y oro por retos diarios y semanales, niveles y el pase.","Season 1 pass (free): 30 tiers of rewards until the end of the year.":"Pase de la Temporada 1 (gratis): 30 niveles de premios hasta fin de año.",
+"7-day login calendar with a Gold Chest on day 7.":"Calendario de 7 días con un Cofre de oro el día 7.","Frame meter: every upload without a special frame fills it. Full means a big chance at one.":"Medidor de marcos: cada subida sin marco especial lo llena. Lleno significa gran chance de uno.",
+"Double XP during peak hours: Friday to Sunday, 6 to 9 PM.":"XP doble en horas pico: de viernes a domingo, de 6 a 9 PM.","Prestige at level 50, scrap and crafting, collections, and XP for achievements.":"Prestigio en el nivel 50, chatarra y crafteo, colecciones y XP por logros.",
+"Friends and community challenges: everyone who helps gets the reward.":"Retos de amigos y de la comunidad: todos los que ayudan reciben el premio.","Tap a driver on the feed to see their level, achievements and cards.":"Toca a un repartidor en el feed para ver su nivel, logros y tarjetas.",
+"Luck now shows as a bonus (+0% to +150%), and good cards glow before they flip.":"La suerte ahora se ve como bono (+0% a +150%), y las buenas tarjetas brillan antes de voltearse.","Thanksgiving, Christmas and New Year events with their own stickers.":"Eventos de Acción de Gracias, Navidad y Año Nuevo con sus propias calcomanías.",
+"Faster syncing that saves data, plus safety fixes.":"Sincronización más rápida que ahorra datos, y arreglos de seguridad.",
+"My promise: DasherDex stays free to play. Packs, luck and chests will never cost real money, and your data is never sold. If DasherDex ever grows enough to need help with storage costs, it might offer extra card space, never gambling with real money.":"Mi promesa: DasherDex sigue siendo gratis. Los sobres, la suerte y los cofres nunca van a costar dinero real, y tus datos nunca se venden. Si DasherDex crece tanto que necesite ayuda con los costos de almacenamiento, podría ofrecer más espacio para tarjetas, pero nunca apuestas con dinero real.",
 "Halloween event with pumpkin stickers and Haunted packs.":"Evento de Halloween con calcomanías de calabaza y sobres embrujados.","Daily and weekly challenges.":"Retos diarios y semanales.","Driver IDs are longer and safer.":"Los ID son más largos y seguros.",
 "Grades, verdicts, rarities and stats are rough estimates from your screenshots, not financial advice. DasherDex is an independent fan project and isn't affiliated with or endorsed by DoorDash or Uber, and the scanner can misread things, so always check the offer in your app before you accept. Made with love for drivers":"Las calificaciones, veredictos, rarezas y stats son estimados de tus capturas, no consejo financiero. DasherDex es un proyecto independiente de fans y no está afiliado ni respaldado por DoorDash ni Uber, y el escáner se puede equivocar, así que siempre revisa la oferta en tu app antes de aceptar. Hecho con cariño para repartidores",
 "Special frame odds: Trash {n} · Common {n} · Uncommon {n} · Rare {n} · Super Rare {n} · Epic {n} · Legendary {n} · Mythic {n}. Holographic and Gold Foil are the rarest, then Neon, Carbon Fiber and Inverted. The last card of each pack gets a bonus, from ×{n} for a Stone Pack up to ×{n} for a Red Ruby Pack. Your luck (×{n}, from luck cards you earn by leveling up) multiplies all of it.":"Chance de marco especial: Basura {n} · Común {n} · Poco común {n} · Raro {n} · Súper raro {n} · Épico {n} · Legendario {n} · Mítico {n}. Holográfico y Lámina de oro son los más raros, luego Neón, Fibra de carbono e Invertido. La última tarjeta de cada sobre tiene bono, desde ×{n} en un Sobre de Piedra hasta ×{n} en un Sobre de Rubí Rojo. Tu suerte (×{n}, de las cartas de suerte que ganas al subir de nivel) multiplica todo.",
@@ -4937,7 +5613,7 @@ const ES_NUM=/\$?\d[\d,]*(?:\.\d+)?%?/g;
 const ES_T={
 "+{n} XP":"+{n} XP","October {n}":"octubre {n}","{n} / {n} XP":"{n} / {n} XP","{n} total":"{n} total","{n} offer":"{n} oferta","{n} offers":"{n} ofertas","{n} card":"{n} tarjeta","{n} cards":"{n} tarjetas","{n} cards total":"{n} tarjetas en total","{n} special":"{n} especiales","{n} mi total":"{n} mi en total","{n} min of driving":"{n} min manejando","{n} new":"{n} nuevas","{n} day":"{n} día","{n} days":"{n} días","{n}/{n} today":"{n}/{n} hoy","{n} of {n}":"{n} de {n}","of {n}":"de {n}","{n} offered":"{n} ofrecido",
 "{n}/hr":"{n}/h","/hr avg":"/h prom.","$/hr":"$/h","$/mi":"$/mi","/HR":"/H","{n}/hr · {n}/mi":"{n}/h · {n}/mi","{n} offer · {n}/hr":"{n} oferta · {n}/h","{n} MI":"{n} MI","{n} mi":"{n} mi","{n} min":"{n} min","{n} of {n} faces":"{n} de {n} caras","{n} of {n} scored {n}+":"{n} de {n} sacaron {n}+","{n} of {n} · all time":"{n} de {n} · de siempre",
-"Card {n} of {n}":"Tarjeta {n} de {n}","Grade {n} · Accept":"Calificación {n} · Aceptar","Grade {n} · Consider":"Calificación {n} · Pensarlo","Grade {n} · Decline":"Calificación {n} · Rechazar","Luck ×{n}":"Suerte ×{n}","Level {n}":"Nivel {n}","Version {n}":"Versión {n}","DasherDex v{n}":"DasherDex v{n}","DasherDex · grading v{n}":"DasherDex · calificación v{n}",
+"Card {n} of {n}":"Tarjeta {n} de {n}","Grade {n} · Accept":"Calificación {n} · Aceptar","Grade {n} · Consider":"Calificación {n} · Pensarlo","Grade {n} · Decline":"Calificación {n} · Rechazar","Luck ×{n}":"Suerte ×{n}","Luck +{n}":"Suerte +{n}","+{n} luck on your next upload":"+{n} de suerte en tu siguiente subida","charm +{n} next upload":"amuleto +{n} siguiente subida","Level {n}":"Nivel {n}","Version {n}":"Versión {n}","DasherDex v{n}":"DasherDex v{n}","DasherDex · grading v{n}":"DasherDex · calificación v{n}",
 "{n}/hr is excellent":"{n}/h es excelente","{n}/mi is excellent":"{n}/mi es excelente","{n}/mi is thin":"{n}/mi está flojo","{n}/hr clears {n}":"{n}/h pasa de {n}","{n}/mi clears {n}":"{n}/mi pasa de {n}","Under {n}/hr ({n})":"Menos de {n}/h ({n})","Under {n}/mi ({n})":"Menos de {n}/mi ({n})","Under {n} total (−{n})":"Menos de {n} en total (−{n})","{n} mi trip (−{n})":"Viaje de {n} mi (−{n})","{n} stops (−{n})":"{n} paradas (−{n})","Extreme distance ({n} mi)":"Distancia extrema ({n} mi)","Legendary needs a {n}+ payout":"Legendario necesita pago de {n}+","Red Card order: +{n} min to order and wait":"Pedido Red Card: +{n} min para ordenar y esperar",
 "{n} screenshots skipped. You'll see why after the last card.":"{n} capturas saltadas. Después de la última tarjeta verás por qué.","{n} screenshot skipped. You'll see why after the last card.":"{n} captura saltada. Después de la última tarjeta verás por qué.",
 "You've scanned {n} offers today, the daily limit of {n}. It resets at midnight.":"Hoy escaneaste {n} ofertas, el límite diario de {n}. Se reinicia a medianoche.","You can scan {n} at once ({n} when signed in). Reading the first {n}.":"Puedes escanear {n} a la vez ({n} con sesión). Leyendo las primeras {n}.","You can scan {n} at once. Reading the first {n}.":"Puedes escanear {n} a la vez. Leyendo las primeras {n}.",
@@ -4984,6 +5660,25 @@ const ES_RX=[
  [/^The scanner wasn't sure about (.+)\. Compare it with your offer screen\.$/,(m,a)=>"El escáner no estaba seguro de "+({"the payout":"el pago","the time and miles":"el tiempo y las millas","numbers that look unusual":"unos números raros"}[a]||a)+". Compáralo con tu pantalla de la oferta."],
  [/^That's an example, so it isn't added to your Dex\. (.+)$/,(m,a)=>"Es un ejemplo, así que no se agrega a tu Dex."],
  [/^Sign in with Google to (hold up to 300 cards|scan up to 50 a day)\.$/,(m,a)=>"Inicia sesión con Google para "+(a[0]==="h"?"guardar hasta 300 tarjetas":"escanear hasta 50 al día")+"."],
+ [/^Free for everyone\. Every (\d+) XP you earn this season unlocks the next tier, and rewards go straight to your Bag\. Ends (.+)\.$/,(m,a,b)=>"Gratis para todos. Cada "+a+" XP que ganes esta temporada desbloquea el siguiente nivel, y los premios van directo a tu Mochila. Termina el "+b+"."],
+ [/^· You have (\d+)$/,(m,a)=>"· Tienes "+a],
+ [/^Claim (.+)$/,(m,a)=>"Reclamar "+trES(a)],
+ [/^Level (\d+) reward$/,(m,a)=>"Premio de nivel "+a],[/^Day (\d+) reward$/,(m,a)=>"Premio del día "+a],[/^Pass tier (\d+)$/,(m,a)=>"Nivel "+a+" del pase"],
+ [/^Tier (\d+) of (\d+) · (\d+) days? left$/,(m,a,b,c)=>"Nivel "+a+" de "+b+" · faltan "+c+" día"+(c==="1"?"":"s")],[/^Tier (\d+) of (\d+) · free rewards all season$/,(m,a,b)=>"Nivel "+a+" de "+b+" · premios gratis toda la temporada"],
+ [/^(\d+) of (\d+) · Reward for everyone: (.+)$/,(m,a,b,c)=>a+" de "+b+" · Premio para todos: "+trES(c)],[/^(\d+) of (\d+) · Done! Everyone gets (.+)$/,(m,a,b,c)=>a+" de "+b+" · ¡Listo! Todos reciben "+trES(c)],
+ [/^Scrap (\d+) cards? for (\d+) scrap$/,(m,a,b)=>"Hacer chatarra "+a+" tarjeta"+(a==="1"?"":"s")+" por "+b],[/^Tap again to scrap (\d+)$/,(m,a)=>"Toca otra vez para hacer chatarra "+a],
+ [/^🔩 Scrap: (.+)$/,(m,a)=>"🔩 Chatarra: "+a],[/^you have (.+) scrap$/,(m,a)=>"tienes "+a+" de chatarra"],[/^([\d,]+) scrap$/,(m,a)=>a+" de chatarra"],[/^\+(\d+) scrap$/,(m,a)=>"+"+a+" de chatarra"],
+ [/^(\d+) items$/,(m,a)=>a+" objetos"],[/^You have (\d+)$/,(m,a)=>"Tienes "+a],[/^(\d+) min left$/,(m,a)=>"Quedan "+a+" min"],
+ [/^Prestige (\d+)$/,(m,a)=>"Prestigio "+a],[/^★ Prestige (\d+) is ready$/,(m,a)=>"★ El prestigio "+a+" está listo"],[/^Prestige (\d+) · \+(\d+)% luck for good$/,(m,a,b)=>"Prestigio "+a+" · +"+b+"% de suerte para siempre"],
+ [/^Season (\d+)(.*)$/,(m,a,b)=>"Temporada "+a+(b===" · Harvest & Holidays"?" · Cosecha y Fiestas":b)],
+ [/^(Earned|\+) (\d+) XP$/,(m,a,b)=>(a==="Earned"?"Ganado":"+")+" "+b+" XP"],
+ [/^Add (.+) as a friend to see their whole Dex\.$/,(m,a)=>"Agrega a "+a+" como amigo para ver todo su Dex."],[/^Achievements · (\d+)$/,(m,a)=>"Logros · "+a],[/^Posted to Global · (\d+)$/,(m,a)=>"Publicadas en Global · "+a],
+ [/^(.+) packs are here\. Any card can drop a (.+), only until (.+)\. Rare faces and trims are out there\.$/,(m,a,b,c)=>"Llegaron los sobres "+({Haunted:"embrujados",Harvest:"de cosecha",Holiday:"navideños",Party:"de fiesta"}[a]||a)+". Cualquier tarjeta puede soltar una "+({"pumpkin sticker":"calcomanía de calabaza","harvest sticker":"calcomanía de cosecha","holiday sticker":"calcomanía navideña","party sticker":"calcomanía de fiesta"}[b]||b)+", solo hasta el "+c+". Hay caras y bordes raros por ahí."],
+ [/^(\S+) (.+) stickers$/u,(m,a,b)=>{const t=trES(b);return t!==b?a+" Calcomanías de "+t:null}],
+ [/^Use a Re-roll Token for another shot at a special frame on this card, at 5× the usual odds\. You have (\d+)\.$/,(m,a)=>"Usa una Ficha de re-tiro para otra oportunidad de marco especial en esta tarjeta, con 5× la chance normal. Tienes "+a+"."],
+ [/^(\p{Extended_Pictographic}️?) (.+)$/u,(m,a,b)=>{const t=trES(b);return t!==b?a+" "+t:null}],
+ [/^(.+) ×(\d+)$/,(m,a,b)=>{const t=trES(a);return t!==a?t+" ×"+b:null}],
+ [/^(.+?)( · .+)+$/,(m)=>{const parts=m.split(" · "),out=parts.map(x=>trES(x));return out.some((x,i)=>x!==parts[i])?out.join(" · "):null}],
 ];
 const PACK_ES={Single:"Individual",Stone:"Piedra",Bronze:"Bronce",Silver:"Plata",Jade:"Jade",Sapphire:"Zafiro",Amethyst:"Amatista",Gold:"Oro",Diamond:"Diamante","Red Ruby":"Rubí Rojo",God:"God"};
 function esPack(s,raw){

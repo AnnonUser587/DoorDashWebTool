@@ -23,7 +23,7 @@ function info(html) {
   let embed;
   if (!before || before.ver !== now.ver) {
     const entry = (now.notes || []).find(e => e[0] === now.ver) || (now.notes || [])[0] || [now.ver, "", []];
-    const items = (entry[2] || []).slice(0, 10).map(x => "• " + x).join("\n");
+    const items = (entry[2] || []).slice(0, 16).map(x => "• " + x).join("\n");
     embed = { title: `🛠️ DasherDex ${now.ver} is out!`, url: "https://dasherdex.web.app", color: 0xf3c55a,
       description: (items || "Improvements and fixes.") + "\n\n**Get it:** close DasherDex and open it again.", footer: { text: "dasherdex.web.app" }, timestamp: new Date().toISOString() };
   } else {

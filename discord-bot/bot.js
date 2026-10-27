@@ -10,6 +10,13 @@ const XP_MSG = 5, MSG_CAP = 20, XP_CHECKIN = 25, STREAK_STEP = 5, STREAK_MAX = 2
 const needXP = lv => 50 * lv * (lv - 1);                 // level 2: 100 XP, 6: 1,500, 10: 4,500, 30: 43,500
 const levelOf = xp => { let lv = 1; while (needXP(lv + 1) <= xp) lv++; return lv; };
 const STATE_DOC = "/discordbot/state";
+const SETUP_VER = 2;
+/* permission numbers */
+const P = { view: 1024n, send: 2048n, history: 65536n, react: 64n, embed: 16384n, attach: 32768n, threads: 34359738368n, sendThreads: 274877906944n,
+  connect: 1048576n, speak: 2097152n, voiceAct: 33554432n, extEmoji: 262144n, invite: 1n, manageMsgs: 8192n, timeout: 1099511627776n, admin: 8n };
+const perm = list => list.reduce((a, x) => a | x, 0n).toString();
+const SAFE_EVERYONE = perm([P.view, P.send, P.history, P.react, P.embed, P.attach, P.threads, P.sendThreads, P.connect, P.speak, P.voiceAct, P.extEmoji, P.invite]);
+const ACTIVITY_ROLES = [["🌱 Newcomer", 0x7ab648], ["💬 Chatterbox", 0x5f8dff], ["🔥 On Fire", 0xff8a3d], ["🎖️ Veteran", 0xc9ccd6]];
 
 async function loadState() {
   const d = await L.fs("GET", STATE_DOC);
@@ -43,6 +50,8 @@ async function levels(state, chans, roles) {
     const id = m.author.id, day = L.dayKey(Date.parse(m.timestamp));
     const u = state.users[id] || (state.users[id] = { xp: 0, lv: 1, day: "", n: 0, streak: 0, last: "" });
     u.name = m.author.global_name || m.author.username;
+    u.total = (u.total || 0) + 1; if (!u.first) u.first = Date.parse(m.timestamp);
+    if (u.joined === undefined) { const mem = await L.discord("GET", `/guilds/${L.GUILD}/members/${id}`).catch(() => null); u.joined = mem && mem.joined_at ? Date.parse(mem.joined_at) : 0; }
     const before = u.lv;
     if (u.day !== day) { u.day = day; u.n = 0; }
     if (u.n < MSG_CAP) { u.xp += XP_MSG; u.n++; }
@@ -78,6 +87,69 @@ async function levels(state, chans, roles) {
   return msgs.length > 0;
 }
 
+/* keeps the server tidy and locked down. Runs once per SETUP_VER, so it never fights changes you make by hand later. */
+async function upkeep(state, chans, roles) {
+  if ((state.setup || 0) >= SETUP_VER) return false;
+  const head = roles.find(r => L.nounOf(r.name) === "head mod"), mod = roles.find(r => L.nounOf(r.name) === "mod");
+  // @everyone: only safe everyday permissions (no pinging everyone, no managing anything)
+  await L.discord("PATCH", `/guilds/${L.GUILD}/roles/${L.GUILD}`, { permissions: SAFE_EVERYONE }).catch(e => console.warn("everyone perms: " + e.message));
+  // Mods: delete messages and time people out. Helpers: delete messages. Only the Head Mod can do more.
+  const basic = [P.view, P.send, P.history, P.react, P.embed, P.attach, P.threads, P.sendThreads, P.connect, P.speak];
+  if (mod) await L.discord("PATCH", `/guilds/${L.GUILD}/roles/${mod.id}`, { permissions: perm([...basic, P.manageMsgs, P.timeout]) }).catch(() => {});
+  const helper = roles.find(r => L.nounOf(r.name) === "helper");
+  if (helper) await L.discord("PATCH", `/guilds/${L.GUILD}/roles/${helper.id}`, { permissions: perm([...basic, P.manageMsgs]) }).catch(() => {});
+  // activity roles the bot hands out
+  for (const [name, color] of ACTIVITY_ROLES) if (!roles.some(r => L.nounOf(r.name) === L.nounOf(name))) {
+    const r = await L.discord("POST", `/guilds/${L.GUILD}/roles`, { name, color, hoist: false, mentionable: false, permissions: "0" }).catch(() => null); if (r) roles.push(r);
+  }
+  // head-mod-only channels: new drivers (with Gmails) and suspicious activity
+  const modsCat = chans.find(c => c.type === 4 && L.keyOf(c.name) === "mods");
+  const headOnly = [{ id: L.GUILD, type: 0, allow: "0", deny: P.view.toString() }].concat(mod ? [{ id: mod.id, type: 0, allow: "0", deny: P.view.toString() }] : [])
+    .concat(head ? [{ id: head.id, type: 0, allow: perm([P.view, P.send, P.history]), deny: "0" }] : []);
+  let nd = L.findChan(chans, "new-drivers");
+  if (nd) await L.discord("PATCH", `/channels/${nd.id}`, { permission_overwrites: headOnly, topic: "New DasherDex accounts: username, ID and Gmail. Only the Head Mod can see this." }).catch(() => {});
+  let sus = L.findChan(chans, "sus-alerts");
+  if (!sus) { sus = await L.discord("POST", `/guilds/${L.GUILD}/channels`, { name: "🚩・sus-alerts", type: 0, parent_id: modsCat ? modsCat.id : undefined, permission_overwrites: headOnly, topic: "Suspicious offers and reports from the app, the moment they happen. Head Mod only." }).catch(() => null); if (sus) chans.push(sus); }
+  state.setup = SETUP_VER; console.log("Server upkeep done (v" + SETUP_VER + ")"); return true;
+}
+
+/* instant alerts: the app posts new drivers and suspicious activity straight to Discord through these webhooks.
+   The bot makes them and stores their addresses in your database; it remakes them if one is ever deleted. */
+async function hooks(state, chans) {
+  const want = [["signup", "new-drivers"], ["sus", "sus-alerts"]], out = {};
+  for (const [k, ch] of want) {
+    const c = L.findChan(chans, ch); if (!c) continue;
+    const list = await L.discord("GET", `/channels/${c.id}/webhooks`).catch(() => []);
+    let w = list.find(x => x.name === "DasherDex Alerts" && x.token);
+    if (!w) w = await L.discord("POST", `/channels/${c.id}/webhooks`, { name: "DasherDex Alerts" }).catch(() => null);
+    if (w && w.token) out[k] = `https://discord.com/api/webhooks/${w.id}/${w.token}`;
+  }
+  const sig = JSON.stringify(out);
+  if (Object.keys(out).length && sig !== state.hooks) {
+    await L.fs("PATCH", "/config/hooks", { fields: Object.fromEntries(Object.entries(out).map(([k, v]) => [k, { stringValue: v }]).concat([["upd", { integerValue: String(Date.now()) }]])) });
+    state.hooks = sig; console.log("Alert webhooks saved for the app");
+  }
+}
+
+/* activity roles: newcomers for their first week, chatty members, streaks, and long-time regulars */
+async function activityRoles(state, roles) {
+  const R = Object.fromEntries(ACTIVITY_ROLES.map(([n]) => [L.nounOf(n), roles.find(r => L.nounOf(r.name) === L.nounOf(n))]));
+  const today = L.dayKey(Date.now()), now = Date.now();
+  for (const [id, u] of Object.entries(state.users)) {
+    u.roles = u.roles || {};
+    const want = {
+      newcomer: u.joined ? now - u.joined < 7 * 864e5 : false,
+      chatterbox: (u.total || 0) >= 250,
+      "on fire": u.streak >= 7 && (u.last === today || u.last === L.prevDay(today)),
+      veteran: u.first ? now - u.first >= 60 * 864e5 && u.lv >= 6 : false
+    };
+    for (const [k, on] of Object.entries(want)) {
+      const role = R[k]; if (!role || !!u.roles[k] === on) continue;
+      try { await L.discord(on ? "PUT" : "DELETE", `/guilds/${L.GUILD}/members/${id}/roles/${role.id}`); u.roles[k] = on ? 1 : 0; } catch (e) { if (e.status === 404) u.roles[k] = on ? 1 : 0; }
+    }
+  }
+}
+
 async function leaderboard(state, chans) {
   const ch = L.findChan(chans, "leaderboard"); if (!ch) return;
   const top = Object.entries(state.users).sort((a, b) => b[1].xp - a[1].xp).slice(0, 15);
@@ -97,6 +169,7 @@ async function newDrivers(state, chans) {
   for (const row of rows) {
     if (!row.document) continue;
     const s = L.fieldsOf(row.document), uid = row.document.name.split("/").pop();
+    if (s.hk) { state.lastSignup = Math.max(state.lastSignup || 0, s.at || 0); continue; }   // already sent instantly by the app
     const user = L.fieldsOf(await L.fs("GET", "/users/" + uid));
     const fields = [
       { name: "Username", value: "@" + (s.username || user.username || "?"), inline: true },
@@ -114,8 +187,11 @@ async function newDrivers(state, chans) {
   L.need(); await L.checkGuild();
   const state = await loadState();
   const [chans, roles] = await Promise.all([L.channels(), L.discord("GET", `/guilds/${L.GUILD}/roles`)]);
+  try { await upkeep(state, chans, roles); } catch (e) { console.error("Upkeep: " + e.message); }
+  try { await hooks(state, chans); } catch (e) { console.error("Webhooks: " + e.message); }
   try { await newDrivers(state, chans); } catch (e) { console.error("New drivers: " + e.message); }
   await levels(state, chans, roles);
+  try { await activityRoles(state, roles); } catch (e) { console.error("Activity roles: " + e.message); }
   await leaderboard(state, chans);
   await saveState(state);
   console.log("Done.");
