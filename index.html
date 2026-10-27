@@ -874,6 +874,18 @@ input.glow{box-shadow:0 0 0 3px color-mix(in srgb,var(--t-rare) 60%,transparent)
 .xpl{gap:8px}
 .luckline{flex-wrap:wrap;row-gap:4px}.luckline small{flex-basis:100%}
 .xpl span{white-space:nowrap}
+
+/* ===== v10: offers from this pickup chart ===== */
+.trend .tg{width:100%;height:auto;display:block;margin:6px 0 2px;overflow:visible}
+.tg-grid{stroke:var(--line);stroke-width:1;stroke-dasharray:3 4}
+.tg-ax{font:500 9px var(--f-mono);fill:var(--dim)}
+.tg-line{fill:none;stroke:var(--t-rare);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.tg-now{stroke:var(--tx);stroke-width:1.4;stroke-dasharray:4 3;opacity:.8}
+.tg-dot{stroke:var(--panel);stroke-width:2;cursor:pointer}
+.tg-dot.on{stroke:var(--tx);stroke-width:2.5}
+.tg-tag{fill:var(--tx)}.tg-tagt{font:700 10px var(--f-mono);fill:var(--bg)}
+/* never let a page be shorter than the screen: on iPhone a short page (an empty feed) left the tab bar floating mid-screen */
+.wrap{min-height:100vh;min-height:100lvh;box-sizing:border-box}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -1775,7 +1787,7 @@ function openCard(c,friend){
      ${c.reasons.length?`<ul class="why-list">${c.reasons.map(r=>`<li>${esc(r)}</li>`).join("")}</ul>`:""}
      ${own&&(c.vb||51)!==51?`<p class="msg">Your Accept line was ${c.vb} for this one, tuned to your recent offers.</p>`:""}
    </div>
-   ${own?`<div class="panel rcbox"><label class="sw"><span><b>Red Card / Order &amp; Pay</b><small>${c.rc===1?"Found on the screenshot. Counts "+C.RED_CARD_MIN+" extra minutes to order and wait.":"You order and pay in the store. Counts "+C.RED_CARD_MIN+" extra minutes to order and wait."}</small></span><input type="checkbox" id="dRc" ${c.rc?"checked":""} ${c.rc===1?"disabled":""}><i></i></label></div>`:""}
+   ${own?trendHTML(c):""}
    ${own?locationHTML(c):""}
    ${own?`<details class="panel" id="dFix"><summary style="color:var(--tx);font-weight:600;font-size:.95rem">Fix a misread number or the time</summary>
      <p class="msg" style="margin-top:10px">Match the numbers on your screenshot. Numbers that don't match what the scanner read cap the card at Uncommon.</p>
@@ -1794,8 +1806,7 @@ function openCard(c,friend){
   if($("dRestore"))$("dRestore").onclick=()=>{const o=c.ocr;
     rescore(c,{pay:o.pay>0?o.pay:o.strip,minutes:o.minutes,miles:o.miles,stops:Math.max(+o.stops||2,1),store:c.store,ts:c.ts});c.check=false;save();checkLevel();
     toast(c.verified===false?"Couldn't restore this one":"Restored · "+TIERS.find(t=>t.id===c.tier).name+" "+c.score);openCard(c,null)};
-  $("dRc").onchange=e=>{if(c.rc===1){e.target.checked=true;return}c.rc=e.target.checked?2:0;if(!c.rc)delete c.rc;
-    rescore(c,c);save();checkLevel();toast("Re-graded: "+gradeOf(c)+" · "+vOf(c).label);openCard(c,null)};
+  wireTrend();
   $("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
     rescore(c,o);c.check=false;save();checkLevel();toast(c.verified===false?"Saved. Hand-edited cards are capped at Uncommon.":"Re-graded: "+gradeOf(c)+" · "+vOf(c).label);openCard(c,null)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to delete";setTimeout(()=>{armed=false;if(e.target.isConnected)e.target.textContent="Delete card"},4000);return}
@@ -1915,6 +1926,45 @@ async function shareCard(c){
 }
 
 /* ---------- this location: visits, how its offers grade, your note ---------- */
+/* every offer from the same pickup (the exact address when it was read, otherwise the same store name),
+   drawn like a stock chart with a line marking the card you're looking at */
+function sameSpot(c){
+  const k=placeKey(c);
+  if(k)return {exact:true,list:store.cards.filter(x=>placeKey(x)===k)};
+  const n=skey(c.store);return {exact:false,list:store.cards.filter(x=>skey(x.store)===n)};
+}
+function trendHTML(c){
+  const {exact,list}=sameSpot(c);if(list.length<2)return "";
+  const pts=list.slice().sort((a,b)=>new Date(a.ts)-new Date(b.ts)),me=pts.findIndex(x=>x.id===c.id);if(me<0)return "";
+  const prev=pts[me-1],g=gradeOf(c),best=Math.max(...pts.map(gradeOf));
+  const d=x=>new Date(x.ts).toLocaleDateString([],{month:"short",day:"numeric"});
+  let line;
+  if(!prev)line=`<b>First offer</b> from here. ${pts.length-1} more came after it.`;
+  else{const dg=g-gradeOf(prev),dh=c.pph-prev.pph;
+    line=dg>0?`<b style="color:var(--accept)">Better</b> than the last offer here (${d(prev)}): grade ${g} vs ${gradeOf(prev)}, $${Math.abs(dh).toFixed(2)}/hr ${dh>=0?"more":"less"}.`
+      :dg<0?`<b style="color:var(--decline)">Worse</b> than the last offer here (${d(prev)}): grade ${g} vs ${gradeOf(prev)}, $${Math.abs(dh).toFixed(2)}/hr ${dh>=0?"more":"less"}.`
+      :`<b>Same grade</b> as the last offer here (${d(prev)}).`}
+  /* chart: grade 0-100 up the side, offers in time order across */
+  const W=320,H=150,L=26,R=10,T=12,B=22,n=pts.length,X=i=>n===1?(L+W-R)/2:L+(W-L-R)*i/(n-1),Y=v=>T+(H-T-B)*(1-v/100);
+  const path=pts.map((x,i)=>`${i?"L":"M"}${X(i).toFixed(1)} ${Y(gradeOf(x)).toFixed(1)}`).join(" ");
+  const area=`${path} L${X(n-1).toFixed(1)} ${Y(0)} L${X(0).toFixed(1)} ${Y(0)} Z`;
+  const mx=X(me),my=Y(g),lab=`${g}`,lx=Math.min(W-R-28,Math.max(L+2,mx-14));
+  const grid=[[26,"Common"],[51,"Rare"],[76,"Epic"]].map(([v])=>`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" class="tg-grid"/><text x="${L-4}" y="${Y(v)+3}" class="tg-ax" text-anchor="end">${v}</text>`).join("");
+  return `<div class="panel trend"><h2>Offers from this pickup <small class="lsub">${n} total</small></h2>
+    <p class="msg">${line}${g===best&&n>2?" Your best one here.":""}</p>
+    <svg class="tg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Grades of ${n} offers from this pickup; this card is number ${me+1}">
+      <defs><linearGradient id="tgFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--t-rare)" stop-opacity=".35"/><stop offset="1" stop-color="var(--t-rare)" stop-opacity="0"/></linearGradient></defs>
+      ${grid}
+      <path d="${area}" fill="url(#tgFill)"/>
+      <path d="${path}" class="tg-line"/>
+      <line x1="${mx}" x2="${mx}" y1="${T-4}" y2="${Y(0)}" class="tg-now"/>
+      ${pts.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(gradeOf(x)).toFixed(1)}" r="${i===me?6:4}" fill="${TC[x.tier]}" class="tg-dot${i===me?" on":""}" data-tid="${esc(x.id)}"><title>${esc(d(x))} · grade ${gradeOf(x)}</title></circle>`).join("")}
+      <rect x="${lx}" y="${Math.max(0,my-26)}" width="28" height="16" rx="5" class="tg-tag"/><text x="${lx+14}" y="${Math.max(0,my-26)+12}" text-anchor="middle" class="tg-tagt">${lab}</text>
+      <text x="${L}" y="${H-6}" class="tg-ax">${esc(d(pts[0]))}</text><text x="${W-R}" y="${H-6}" class="tg-ax" text-anchor="end">${esc(d(pts[n-1]))}</text>
+    </svg>
+    <p class="msg">${exact?"Same address.":"Same store name. Turn on Settings › Privacy › Read pickup addresses to track one exact location."} Tap a dot to open that offer.</p></div>`;
+}
+function wireTrend(){document.querySelectorAll("#detail .tg-dot").forEach(el=>el.onclick=()=>{const id=el.dataset.tid,cur=document.querySelector("#detail .tg-dot.on");if(cur&&cur.dataset.tid===id)return;openDetail(id)})}
 function locationHTML(c){
   const k=placeKey(c);
   if(!k)return `<div class="panel"><h2>This location</h2><p class="msg">${SET.addr?"The scanner couldn't read this store's address, so notes and visit counts aren't available for this card.":"Turn on Settings › Privacy › Read pickup addresses to keep notes and count offers for each store location."}</p></div>`;
@@ -2498,7 +2548,7 @@ function renderSettings(){
   <div class="sbox"><h3>Scanning <small>${usedToday()}/${dayLimit()} today</small></h3>
     <div class="seg seg2" role="group" aria-label="Scan mode">${segBtn("scanMode","auto","Auto")}${segBtn("scanMode","fast","Fast")}</div>
     <p class="msg">${(SET.scanMode||"auto")==="fast"?"<b>Fast:</b> one screenshot at a time, straight to the verdict.":`<b>Auto:</b> one screenshot is a quick scan. Pick several to open packs: up to ${uploadMax()} at once${signedIn()?"":" (30 when signed in)"}, 10 cards per pack. Bigger packs are better packs.`}</p>
-    <label class="sw"><span><b>Red Card / Order &amp; Pay</b><small>When the screenshot says Red Card, count ${C.RED_CARD_MIN} extra minutes to order and wait. You can also mark an offer yourself on its card.</small></span><input type="checkbox" id="setRc" ${SET.redCard!==false?"checked":""}><i></i></label>
+    <label class="sw"><span><b>Red Card / Order &amp; Pay</b><small>When the screenshot says Red Card, count ${C.RED_CARD_MIN} extra minutes to order and wait. On by default.</small></span><input type="checkbox" id="setRc" ${SET.redCard!==false?"checked":""}><i></i></label>
     <label class="sw"><span><b>Read the time from the screenshot</b><small>Uses the clock in your status bar to put each card on the right day. Off: uses the time you scan.</small></span><input type="checkbox" id="setClock" ${SET.clock?"checked":""}><i></i></label>
     <p class="msg">Limits: ${dayLimit()} scans a day and ${capLimit()} cards in your Dex${signedIn()?"":". Signed in: 50 a day and 300 cards"}. Duplicates are skipped automatically.</p>
     <button class="btn ghost sm" id="setHow">Show the scanning guide</button>
