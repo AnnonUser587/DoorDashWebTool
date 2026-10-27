@@ -1,0 +1,25 @@
+# DasherDex Discord bot: levels, leaderboard and new-driver alerts. Runs about once an hour for free.
+name: Discord bot
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+concurrency:
+  group: discord-bot
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: discord-bot
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node discord-bot/bot.js
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
