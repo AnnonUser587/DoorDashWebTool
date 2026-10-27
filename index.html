@@ -3107,7 +3107,8 @@ const Cloud={
     }catch(e){this.on=false;this.err=friendly(e);console.warn(e);rerenderAccount()}
   },
   async signIn(){
-    this.err="";const p=new firebase.auth.GoogleAuthProvider();
+    /* always show Google's account chooser, so a different account can be picked after signing out */
+    this.err="";const p=new firebase.auth.GoogleAuthProvider();try{p.setCustomParameters({prompt:"select_account"})}catch(e){}
     try{await this.auth.signInWithPopup(p)}
     catch(e){
       if(e&&e.code==="auth/popup-closed-by-user"||e&&e.code==="auth/cancelled-popup-request")return;
@@ -3387,7 +3388,8 @@ function accountHTML(){
   const u=Cloud.user;
   return `<div class="sbox"><h3>Account <small>${Cloud.busy?"syncing…":"synced "+ago(Cloud.last)}</small></h3>
     <div class="acct"><span class="avatar sm" style="--c:var(--t-rare)">${esc((myName()[0]||"D").toUpperCase())}</span><span><b>${esc(u.displayName||myName())}</b><small>${esc(maskEmail(u.email))}</small></span></div>
-    <div class="btnrow"><button class="btn sm" id="gSync" ${Cloud.busy?"disabled":""}>Sync now</button><button class="btn ghost sm" id="gOut">Sign out</button></div>
+    <button class="btn sm" id="gSync" ${Cloud.busy?"disabled":""}>Sync now</button>
+    <div class="btnrow"><button class="btn ghost sm" id="gSwitch">Switch account</button><button class="btn ghost sm" id="gOut">Sign out</button></div>
     ${Cloud.err?`<p class="msg err">${esc(Cloud.err)}</p>`:""}
     <button class="linkbtn danger" id="gDel" style="justify-self:start;padding-left:0">Delete my cloud data</button></div>`;
 }
@@ -3404,6 +3406,9 @@ function wireAccount(){
   const on=(id,f)=>{const el=$(id);if(el)el.onclick=f};
   on("gIn",()=>Cloud.signIn());
   on("gOut",()=>Cloud.signOut());
+  /* open Google's account chooser straight away (still inside the tap, so iPhone allows the pop-up).
+     Picking another account replaces this one; its cards come down and this account's synced cards leave the phone. */
+  on("gSwitch",()=>Cloud.signIn());
   on("gSync",async()=>{try{await Cloud.fullSync();await Cloud.loadFriends();toast("Synced")}catch(e){Cloud.fail(e)}});
   let armed=false;on("gDel",e=>{if(!armed){armed=true;e.target.textContent="Tap again to delete your cloud copy and friends";return}Cloud.deleteCloud()});
   const tog=(id,k)=>{const el=$(id);if(el)el.onchange=e=>{SET[k]=e.target.checked;saveSet();if(Cloud.user&&(k==="share"||k==="shareLoc"))Cloud.pushProfile().catch(err=>Cloud.fail(err));if(Cloud.user&&(k==="addr"||k==="maps"))Cloud.soon()}};
