@@ -991,6 +991,8 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .modbox .fadd .btn{width:auto;flex:none;white-space:nowrap;padding-inline:16px}
 .modbox .fadd input{min-width:0;flex:1}
 .modbox #drvQ{text-transform:none;letter-spacing:normal;font:500 .95rem var(--f-body)}
+.autotiers{margin-top:-4px}.autotiers .ntag[aria-pressed="true"]{border-color:var(--c);color:var(--tx);background:color-mix(in srgb,var(--c) 18%,transparent)}
+.tg-dot.old{opacity:.45;cursor:default}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -1630,7 +1632,7 @@ async function loadStore(){
     if(c.art&&idbOK){await putArt(c);moved=true}
   }
   store.scoreVer=C.SCORE_VERSION;
-  pruneDel();migrateProgress();
+  pruneDel();migrateProgress();autoClean();
   if(save()&&moved)try{localStorage.removeItem(OLD)}catch(e){}
 }
 
@@ -1702,7 +1704,7 @@ const isAccept=c=>vOf(c).id==="accept";
 const special=c=>c.finish&&c.finish!=="standard";
 /* store location key (chain + street address) when the address was saved */
 const placeKey=c=>c&&c.addr?C.locKey(c.store,c.addr):"";
-const visitsTo=(c,cards)=>{const k=placeKey(c);return k?(cards||store.cards).filter(x=>placeKey(x)===k).length:0};
+const visitsTo=(c,cards)=>{const k=placeKey(c);return k?(cards||allOffers()).filter(x=>placeKey(x)===k).length:0};
 /* notes for one store location, kept on this phone (and synced privately when signed in) */
 const NOTE_MAX=80,NOTE_TAGS=["Long wait","Fast pickup","Hard parking","Busy at lunch","Orders often wrong","Friendly staff"];
 const notesMap=()=>store.notes&&typeof store.notes==="object"?store.notes:(store.notes={});
@@ -2045,8 +2047,8 @@ async function shareCard(c){
    drawn like a stock chart with a line marking the card you're looking at */
 function sameSpot(c){
   const k=placeKey(c);
-  if(k)return {exact:true,list:store.cards.filter(x=>placeKey(x)===k)};
-  const n=skey(c.store);return {exact:false,list:store.cards.filter(x=>skey(x.store)===n)};
+  if(k)return {exact:true,list:allOffers().filter(x=>placeKey(x)===k)};
+  const n=skey(c.store);return {exact:false,list:allOffers().filter(x=>skey(x.store)===n)};
 }
 function trendHTML(c){
   const {exact,list}=sameSpot(c);if(list.length<2)return "";
@@ -2073,17 +2075,17 @@ function trendHTML(c){
       <path d="${area}" fill="url(#tgFill)"/>
       <path d="${path}" class="tg-line"/>
       <line x1="${mx}" x2="${mx}" y1="${T-4}" y2="${Y(0)}" class="tg-now"/>
-      ${pts.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(gradeOf(x)).toFixed(1)}" r="${i===me?6:4}" fill="${TC[x.tier]}" class="tg-dot${i===me?" on":""}" data-tid="${esc(x.id)}"><title>${esc(d(x))} · grade ${gradeOf(x)}</title></circle>`).join("")}
+      ${pts.map((x,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(gradeOf(x)).toFixed(1)}" r="${i===me?6:4}" fill="${TC[x.tier]}" class="tg-dot${i===me?" on":""}${x._h?" old":""}"${x._h?"":` data-tid="${esc(x.id)}"`}><title>${esc(d(x))} · grade ${gradeOf(x)}</title></circle>`).join("")}
       <rect x="${lx}" y="${Math.max(0,my-26)}" width="28" height="16" rx="5" class="tg-tag"/><text x="${lx+14}" y="${Math.max(0,my-26)+12}" text-anchor="middle" class="tg-tagt">${lab}</text>
       <text x="${L}" y="${H-6}" class="tg-ax">${esc(d(pts[0]))}</text><text x="${W-R}" y="${H-6}" class="tg-ax" text-anchor="end">${esc(d(pts[n-1]))}</text>
     </svg>
     <p class="msg tg-note">Tap a dot to open that offer. ${exact?"Based on this exact address.":"Based on the store name, not the location."}</p></div>`;
 }
-function wireTrend(){document.querySelectorAll("#detail .tg-dot").forEach(el=>el.onclick=()=>{const id=el.dataset.tid,cur=document.querySelector("#detail .tg-dot.on");if(cur&&cur.dataset.tid===id)return;openDetail(id)})}
+function wireTrend(){document.querySelectorAll("#detail .tg-dot[data-tid]").forEach(el=>el.onclick=()=>{const id=el.dataset.tid,cur=document.querySelector("#detail .tg-dot.on");if(cur&&cur.dataset.tid===id)return;openDetail(id)})}
 function locationHTML(c){
   const k=placeKey(c);
   if(!k)return `<div class="panel"><h2>This location</h2><p class="msg">${SET.addr?"The scanner couldn't read this store's address, so notes and visit counts aren't available for this card.":"Turn on Settings › Privacy › Read pickup addresses to keep notes and count offers for each store location."}</p></div>`;
-  const same=store.cards.filter(x=>placeKey(x)===k),a=agg(same),nt=noteFor(c)||{text:"",tags:[]};
+  const same=allOffers().filter(x=>placeKey(x)===k),a=agg(same),nt=noteFor(c)||{text:"",tags:[]};
   return `<div class="panel" id="locBox"><h2>This location <small class="lsub">${esc(c.addr.split(",")[0])}</small></h2>
     <p class="msg">${same.length} offer${same.length>1?"s":""} from this ${esc(c.store)} · <span style="color:var(--accept)">${a.good} accept</span> · <span style="color:var(--consider)">${a.mid} consider</span> · <span style="color:var(--decline)">${a.bad} decline</span></p>
     ${a.n>1?`<div class="split" role="img" aria-label="Recommended: ${a.good} accept, ${a.mid} consider, ${a.bad} decline">${[["good","accept"],["mid","consider"],["bad","decline"]].filter(([q])=>a[q]).map(([q,v])=>`<i style="flex:${a[q]};background:${VC[v]}"></i>`).join("")}</div>`:""}
@@ -2182,11 +2184,11 @@ async function readImage(file,pool,onStep){
     /* when the screenshot was taken: the photo's own date if it has one, else the file date */
     try{const pd=C.photoDate(new Uint8Array(await file.slice(0,262144).arrayBuffer()));if(pd&&pd<=Date.now()+6e5){out.base=+pd;out.ts=new Date(out.base);out.dated=true}}catch(e){}
     if(!out.base)out.base=file.lastModified||Date.now();
-    const d=sameImage(out.sha,out.ph,pool);
+    const d=isGod()?null:sameImage(out.sha,out.ph,pool);
     if(d){out.status="dup";out.dupOf=d;out.why="You've already scanned this screenshot.";out.img=true;return out}
     if(modBlocked(out.sha,out.ph,null)){out.status="locked";out.why="A moderator removed this offer from your Dex, so it can't be added again.";return out}
     {const lk=lockLeft(out.sha,out.ph,null);if(lk){out.status="locked";out.why=`You deleted this offer recently. You can scan it again in ${fmtLeft(lk)}.`;return out}}
-    if(seenHit(out.sha,out.ph)){out.status="dup";out.why="You scanned this screenshot before. Each screenshot can only become one card.";out.img=true;return out}
+    if(!isGod()&&seenHit(out.sha,out.ph)){out.status="dup";out.why="You scanned this screenshot before. Each screenshot can only become one card.";out.img=true;return out}
     let phase=0;
     progressHook=m=>{if(!onStep)return;if(m.status==="recognizing text")onStep(0.35+0.55*((phase+m.progress)/3),"Reading the offer");else if(/load|initializ/.test(m.status))onStep(0.06+0.28*(m.progress||0),"Loading the reader (first scan only)")};
     const w=await getWorker();
@@ -2253,7 +2255,7 @@ async function readImage(file,pool,onStep){
     const o={...p,ts:out.ts};
     if(modBlocked(null,null,C.offerKey(o))){out.status="locked";out.why="A moderator removed this offer from your Dex, so it can't be added again.";return out}
     {const lk=lockLeft(null,null,C.offerKey(o));if(lk){out.status="locked";out.why=`You deleted this offer recently. You can scan it again in ${fmtLeft(lk)}.`;return out}}
-    const d2=sameOffer(o,pool);
+    const d2=isGod()?null:sameOffer(o,pool);
     if(d2){out.status="dup";out.dupOf=d2;out.why="Same pay, time, miles and store as a card you already have.";return out}
     out.status="ok";return out;
   }catch(e){console.error(e);out.status="error";out.error=e&&e.message||String(e);return out}
@@ -2261,7 +2263,7 @@ async function readImage(file,pool,onStep){
 }
 const cardFrom=(r,extra)=>{const c=makeCard({...r.parsed,stops:r.parsed.stops||2},{art:r.art,sha:r.sha,ph:r.ph,roll:r.roll,ts:r.ts,ocr:r.ocr,manual:!r.ocr,rc:r.rc||0,...extra});
   /* an offer that was deleted and scanned again doesn't earn XP a second time */
-  if(wasDeleted(c))c.noxp=1;if(r.check&&r.check.length)c.check=r.check.slice();return c};
+  if(wasDeleted(c)&&!isGod())c.noxp=1;if(r.check&&r.check.length)c.check=r.check.slice();return c};
 
 /* =========================================================
    Sheet basics
@@ -2552,7 +2554,7 @@ function inRange(c){
 }
 function streak(){return streakNow()}
 function renderStats(){
-  const all=store.cards,cs=all.filter(inRange),a=agg(cs);
+  const all=allOffers(),cs=all.filter(inRange),a=agg(cs);
   $("statSpan").textContent=all.length?`${all.length} card${all.length>1?"s":""} total`:"";
   if(!all.length){$("statsBody").innerHTML=`<div class="sempty">Scan a few offers and your daily and weekly numbers show up here.</div>`;return}
   const bestC=cs.slice().sort((x,y)=>y.score-x.score)[0];
@@ -2598,9 +2600,9 @@ function renderStats(){
   wireChart();
 }
 function chartDays(){
-  const n=range==="today"||range==="7"?7:range==="30"?30:Math.min(30,Math.max(7,Math.ceil((Date.now()-Math.min(...store.cards.map(c=>+new Date(c.ts))))/864e5)+1));
+  const n=range==="today"||range==="7"?7:range==="30"?30:Math.min(30,Math.max(7,Math.ceil((Date.now()-Math.min(...allOffers().map(c=>+new Date(c.ts))))/864e5)+1));
   const out=[],t=startOfDay(new Date());
-  for(let i=n-1;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);const k=dayKey(d);out.push({k,d,a:agg(store.cards.filter(c=>dayKey(c.ts)===k))})}
+  for(let i=n-1;i>=0;i--){const d=new Date(t);d.setDate(d.getDate()-i);const k=dayKey(d);out.push({k,d,a:agg(allOffers().filter(c=>dayKey(c.ts)===k))})}
   return out;
 }
 let CH=[];
@@ -2625,7 +2627,7 @@ function wireChart(){
 }
 function weeklyTable(){
   const wkStart=d=>{d=startOfDay(d);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return d};
-  const m=new Map();for(const c of store.cards){const k=dayKey(wkStart(new Date(c.ts)));(m.get(k)||m.set(k,[]).get(k)).push(c)}
+  const m=new Map();for(const c of allOffers()){const k=dayKey(wkStart(new Date(c.ts)));(m.get(k)||m.set(k,[]).get(k)).push(c)}
   const weeks=[...m.entries()].sort((x,y)=>y[0]<x[0]?-1:1).slice(0,8);
   if(!weeks.length)return "";
   const thisWk=dayKey(wkStart(new Date()));
@@ -2690,6 +2692,8 @@ function renderSettings(){
   <div class="sbox data"><h3>Your data <small>${store.cards.length} cards · ${kb(si.data+si.art)}</small></h3>
     <p class="msg">${store.cards.length} of ${capLimit()} card spots used. ${Cloud.user?"Synced to your Google account.":"Cards are saved in this browser on this phone only. Copy a backup as a spreadsheet (CSV) now and then."}</p>
     <div class="btnrow"><button class="btn sm" id="csv">Copy as CSV</button>${store.cards.some(c=>c.tier==="trash")?`<button class="btn ghost sm" id="delTrash">Delete Trash cards (${store.cards.filter(c=>c.tier==="trash").length})</button>`:""}</div>
+    <label class="sw"><span><b>Auto-delete after ${AUTO_DAYS} days</b><small>Frees up space. Cards of the rarities you pick are deleted ${AUTO_DAYS} days after you scan them. You keep the XP, and their numbers stay in your stats and charts. Cards with a special frame or sticker are never auto-deleted.</small></span><input type="checkbox" id="setAuto" ${SET.autoDel?"checked":""}><i></i></label>
+    ${SET.autoDel?`<div class="ntags autotiers" role="group" aria-label="Rarities to auto-delete">${TIERS.slice().reverse().map(t=>`<button class="ntag" data-auto="${t.id}" aria-pressed="${(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]).includes(t.id)}" style="--c:${TC[t.id]}">${t.name}</button>`).join("")}</div>`:""}
     <details class="reset" id="resetBox"><summary class="danger">Reset all progress</summary>
       <p class="msg">Deletes every card, your level, XP, luck, quests, achievements and streak${Cloud.user?", plus your posts, here and in your cloud copy":""}. Your name, friends, location notes and settings stay. Your old screenshots can be scanned again after 24 hours. This can't be undone.</p>
       <label class="fields"><span style="font:500 .66rem/1 var(--f-mono);letter-spacing:.14em;color:var(--mut)">TYPE RESET TO CONFIRM</span><input id="resetTxt" autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase"></label>
@@ -2711,7 +2715,7 @@ function renderSettings(){
 function wireData(){
   $("csv").onclick=async()=>{
     const rows=[["offer_time","store","platform","pay","minutes","miles","stops","pay_per_hour","pay_per_mile","score","tier","verdict","finish"]].concat(
-      store.cards.map(c=>[new Date(c.ts).toISOString(),c.store,c.platform,c.pay,c.minutes,c.miles,c.stops,c.pph.toFixed(2),c.ppm.toFixed(2),c.score,c.tier,vOf(c).id,c.finish]));
+      allOffers().map(c=>[new Date(c.ts).toISOString(),c.store,c.platform,c.pay,c.minutes,c.miles,c.stops,c.pph.toFixed(2),c.ppm.toFixed(2),c.score,c.tier,vOf(c).id,c.finish]));
     const csv=rows.map(r=>r.map(v=>/[",\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':v).join(",")).join("\n");
     try{await navigator.clipboard.writeText(csv);toast("Copied "+store.cards.length+" rows")}
     catch(e){const t=$("csvOut");t.hidden=false;t.value=csv;t.focus();t.select();toast("Select all and copy")}
@@ -2719,6 +2723,9 @@ function wireData(){
   if($("delTrash")){let armed=false;$("delTrash").onclick=e=>{const ids=store.cards.filter(c=>c.tier==="trash").map(c=>c.id);
     if(!armed){armed=true;e.target.textContent=`Tap again to delete ${ids.length}`;return}
     deleteCards(ids);toast(`Deleted ${ids.length} Trash card${ids.length>1?"s":""}`);renderSettings()}}
+  $("setAuto").onchange=e=>{SET.autoDel=e.target.checked;if(!Array.isArray(SET.autoTiers))SET.autoTiers=["trash","common"];saveSet();if(SET.autoDel)autoClean();renderSettings()};
+  $("settingsBody").querySelectorAll("[data-auto]").forEach(b=>b.onclick=()=>{const t=b.dataset.auto,L=new Set(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]);
+    if(L.has(t))L.delete(t);else L.add(t);SET.autoTiers=[...L];saveSet();renderSettings()});
   $("resetTxt").oninput=e=>{$("wipe").disabled=e.target.value.trim().toUpperCase()!=="RESET"};
   $("wipe").onclick=async()=>{
     if($("resetTxt").value.trim().toUpperCase()!=="RESET")return;
@@ -2745,7 +2752,18 @@ const dayLimit=()=>signedIn()?50:25;
 const capLimit=()=>signedIn()?300:100;
 const usedToday=()=>store.use&&store.use.d===dayKey(new Date())?(+store.use.n||0):0;
 function addUse(n){const d=dayKey(new Date());if(!store.use||store.use.d!==d)store.use={d,n:0};store.use.n+=n}
-const roomLeft=()=>SET.devNoLimit&&typeof Cloud!=="undefined"&&Cloud.isHead?999:Math.max(0,Math.min(dayLimit()-usedToday(),capLimit()-store.cards.length));
+const roomLeft=()=>SET.devNoLimit&&typeof Cloud!=="undefined"&&Cloud.isHead?999:Math.max(0,Math.min(isGod()?999:dayLimit()-usedToday(),capLimit()-store.cards.length));
+/* God mode (given by the head moderator, or the head moderator's own switch): the same offers can be scanned,
+   deleted and scanned again for XP every time, with no 24-hour lock and no daily limit. The card cap still applies. */
+function isGod(){return (typeof Cloud!=="undefined"&&Cloud.isHead&&!!SET.devGod)||!!(store.modState&&store.modState.gm)}
+/* when God mode ends: one card per offer stays, the best one. Levels and XP are kept. */
+function dedupeCards(){
+  const groups=new Map();
+  for(const c of store.cards){const k=c.sha?"s:"+c.sha.slice(0,16):"k:"+C.offerKey(c);(groups.get(k)||groups.set(k,[]).get(k)).push(c)}
+  const drop=[];
+  for(const list of groups.values())if(list.length>1){list.sort((a,b)=>(special(b)?1:0)-(special(a)?1:0)||b.score-a.score||(b.stk?1:0)-(a.stk?1:0));drop.push(...list.slice(1).map(c=>c.id))}
+  if(drop.length)deleteCards(drop,{quiet:true});return drop.length;
+}
 function limitSheet(){
   const full=store.cards.length>=capLimit(),day=usedToday()>=dayLimit();
   qrSheet(`<div class="qrcard"><h2>${full?"Your Dex is full":"That's all for today"}</h2>
@@ -2760,10 +2778,25 @@ function limitSheet(){
    Each deleted card leaves a small fingerprint (16 characters of the screenshot hash, the 64-character picture hash
    and the offer's numbers). They're pruned after 24 hours and capped at 400, so they never grow. */
 const LOCK_MS=24*3600e3;
+/* ---------- offer history: when a card is auto-deleted, its numbers (no picture) stay for stats and charts ---------- */
+const histList=()=>Array.isArray(store.hist)?store.hist:(store.hist=[]);
+function keepHist(c){histList().push({i:c.id,ts:c.ts,s:c.store,pl:c.platform||"",p:+c.pay,m:+c.minutes,mi:+c.miles,st:c.stops||2,g:gradeOf(c),sc:c.score,t:c.tier,vb:c.vb||51,rc:c.rc||0,a:c.addr||""});
+  if(store.hist.length>3000)store.hist=store.hist.slice(-3000)}
+const histCard=h=>({id:h.i,_h:1,ts:h.ts,added:h.ts,store:h.s,platform:h.pl,pay:h.p,minutes:h.m,miles:h.mi,stops:h.st,grade:h.g,score:h.sc,tier:h.t,vb:h.vb,rc:h.rc||undefined,
+  addr:h.a||undefined,pph:h.m?h.p/(h.m+(h.rc?C.RED_CARD_MIN:0))*60:0,ppm:h.mi?h.p/h.mi:0,finish:"standard",verified:true,reasons:[],parts:{}});
+/* every offer ever scanned: cards you still have plus the history of auto-deleted ones */
+const allOffers=()=>histList().length?store.cards.concat(histList().map(histCard)):store.cards;
+/* ---------- auto-delete: cards of the rarities you pick go after 30 days. XP stays; frames and stickers are never auto-deleted ---------- */
+const AUTO_DAYS=30;
+function autoClean(){
+  if(!SET.autoDel)return 0;const tiers=new Set(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]),cut=Date.now()-AUTO_DAYS*864e5;
+  const ids=store.cards.filter(c=>tiers.has(c.tier)&&!special(c)&&!c.stk&&+new Date(c.added||c.ts)<cut).map(c=>c.id);
+  if(!ids.length)return 0;deleteCards(ids,{quiet:true,hist:true});toast(`Auto-deleted ${ids.length} card${ids.length>1?"s":""} older than ${AUTO_DAYS} days. Your stats keep them.`);return ids.length;
+}
 const delList=()=>Array.isArray(store.del)?store.del:(store.del=[]);
 function pruneDel(){const t=Date.now()-LOCK_MS;store.del=delList().filter(x=>Array.isArray(x)&&+x[3]>t).slice(-400);return store.del}
 function lockLeft(sha,ph,key){
-  if(SET.devNoLock&&typeof Cloud!=="undefined"&&Cloud.isHead)return 0;
+  if(isGod())return 0;
   const now=Date.now(),k16=(sha||"").slice(0,16);
   for(const [s,p,k,t] of pruneDel()){
     if((k16&&s===k16)||(ph&&p&&p.length===ph.length&&hamming(p,ph)<=24)||(key&&k===key))return Math.max(1,+t+LOCK_MS-now)}
@@ -2772,12 +2805,13 @@ function lockLeft(sha,ph,key){
 const fmtLeft=ms=>{const t=Math.ceil(ms/60e3),h=Math.floor(t/60),m=t%60;return h?`${h}h${m?` ${m}m`:""}`:`${m} min`};
 const goneList=()=>Array.isArray(store.gone)?store.gone:(store.gone=[]);
 const wasDeleted=c=>{const g=goneList();return (c.sha&&g.includes(c.sha.slice(0,16)))||g.includes("k:"+C.offerKey(c))};
-function deleteCards(ids){
-  ids=new Set(ids);if(!ids.size)return 0;
-  const before=xpRaw(),gone=store.cards.filter(c=>ids.has(c.id));
+function deleteCards(ids,opt){
+  ids=new Set(ids);if(!ids.size)return 0;opt=opt||{};
+  const before=xpRaw(),gone=store.cards.filter(c=>ids.has(c.id)),quiet=opt.quiet||isGod();
   for(const c of gone){
-    delList().push([(c.sha||"").slice(0,16),c.ph||"",C.offerKey(c),Date.now()]);
-    const g=goneList();if(c.sha)g.push(c.sha.slice(0,16));g.push("k:"+C.offerKey(c));
+    if(opt.hist)keepHist(c);
+    if(!quiet){delList().push([(c.sha||"").slice(0,16),c.ph||"",C.offerKey(c),Date.now()]);
+      const g=goneList();if(c.sha)g.push(c.sha.slice(0,16));g.push("k:"+C.offerKey(c))}
     store.seen=seenList().filter(([s,p])=>!((c.sha&&s===c.sha.slice(0,16))||(c.ph&&p===c.ph)));
     ART.delete(c.id);idb.del(c.id).catch(()=>{});
   }
@@ -2962,9 +2996,9 @@ function rewardHTML(before,newCards){
 }
 const BADGE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 15.4 6.8 18.2l1-5.8L3.5 8.2l5.9-.9z"/></svg>';
 function renderProfile(){
-  const cs=store.cards,xp=totalXP(),L=levelOf(xp),a=agg(cs),from=lvlStart(L),to=lvlStart(L+1);
+  const cs=store.cards,xp=totalXP(),L=levelOf(xp),a=agg(allOffers()),from=lvlStart(L),to=lvlStart(L+1);
   const best=cs.slice().sort((x,y)=>y.score-x.score||(special(y)?1:0)-(special(x)?1:0))[0];
-  const first=cs.length?new Date(Math.min(...cs.map(c=>+new Date(c.ts)))):null;
+  const ao=allOffers(),first=ao.length?new Date(Math.min(...ao.map(c=>+new Date(c.ts)))):null;
   $("profSince").textContent=first?"Driving since "+first.toLocaleDateString([],{month:"short",day:"numeric"}):"";
   const sm=new Map();for(const c of cs){const k=c.store.toLowerCase().replace(/[^a-z0-9]/g,"");const e=sm.get(k)||{name:c.store,n:0};e.n++;sm.set(k,e)}
   const fav=[...sm.values()].sort((x,y)=>y.n-x.n)[0];
@@ -2982,7 +3016,7 @@ function renderProfile(){
     </div>
   </div>
   <div class="kpis">
-    <div class="kpi"><b>${a.n}</b><span>Cards</span><small>${cs.filter(special).length} special</small></div>
+    <div class="kpi"><b>${cs.length}</b><span>Cards</span><small>${cs.filter(special).length} special${a.n>cs.length?` · ${a.n} offers`:""}</small></div>
     <div class="kpi"><b>${money(a.pay)}</b><span>Offered</span><small>${a.mi.toFixed(0)} mi scanned</small></div>
     <div class="kpi"><b>${a.n?Math.round(a.good/a.n*100)+"%":"–"}</b><span>Recommended</span><small>${a.good} of ${a.n} worth accepting</small></div>
     <div class="kpi"><b>${fav?esc(fav.name):"–"}</b><span>Most seen store</span><small>${fav?fav.n+" offer"+(fav.n>1?"s":""):""}</small></div>
@@ -3228,6 +3262,7 @@ const Cloud={
     try{await this.pullNotes()}catch(e){console.warn("Notes not synced (publish the latest firestore.rules)",e)}
     try{await this.pullState()}catch(e){console.warn("Progress not synced (publish the latest firestore.rules)",e)}
     try{await this.pullModState()}catch(e){}
+    try{autoClean()}catch(e){}
     this.busy=false;
     try{checkLevel()}catch(e){}
     await this.push(delRemote);
@@ -3305,7 +3340,8 @@ const Cloud={
   stateRef(){return this.me().collection("meta").doc("state")},
   stateOut(){const p=prog(),qd={};for(const k of Object.keys(p.qd).sort().slice(-400))qd[k]=p.qd[k].slice(0,3);
     return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
-      del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0}}},
+      del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0},
+      hist:histList().slice(-1500)}},
   async pullState(){
     if(!this.user)return;const snap=await this.stateRef().get();if(!snap.exists)return;
     const d=snap.data()||{},R=d.prog&&typeof d.prog==="object"?d.prog:null,P=prog();
@@ -3324,6 +3360,11 @@ const Cloud={
     if(Array.isArray(d.del)){const have=new Set(delList().map(x=>x[0]+"|"+x[2]));
       for(const x of d.del.slice(0,400)){const [a,b,k0,t]=String(x).split("|");let k="";try{k=decodeURIComponent(k0||"")}catch(e){}if(!/^[0-9a-f]{0,16}$/.test(a||"")||!/^[0-9a-f]{0,64}$/.test(b||""))continue;
         if(!have.has(a+"|"+k))delList().push([a,b,String(k||"").slice(0,60),num0(t)])}pruneDel()}
+    /* numbers of auto-deleted cards, so charts match on every device */
+    if(Array.isArray(d.hist)){const have=new Set(histList().map(h=>h.i)),R=num0(d.prog&&d.prog.rs);
+      if(R>=num0(prog().rs))for(const h of d.hist.slice(-1500))if(h&&typeof h==="object"&&!have.has(String(h.i))&&TIERS.some(t=>t.id===h.t)&&!isNaN(new Date(h.ts)))
+        histList().push({i:String(h.i).slice(0,40),ts:new Date(h.ts).toISOString(),s:String(h.s||"").slice(0,40),pl:String(h.pl||"").slice(0,20),p:num0(h.p),m:num0(h.m),mi:num0(h.mi),st:num0(h.st)||2,g:num0(h.g),sc:num0(h.sc),t:h.t,vb:num0(h.vb)||51,rc:num0(h.rc),a:String(h.a||"").slice(0,80)});
+      if(store.hist.length>3000)store.hist=store.hist.slice(-3000)}
     if(d.use&&d.use.d===dayKey(new Date())){addUse(0);store.use.n=Math.max(+store.use.n||0,Math.min(500,num0(d.use.n)))}
     save();renderGift();
   },
@@ -3934,7 +3975,7 @@ Object.assign(Cloud,{
     return {uid,p:p.exists?p.data():{},ms:ms&&ms.exists?ms.data():{},isMod:!!(mod&&mod.exists),banned:!!(ban&&ban.exists),cards};
   },
   async setModState(uid,patch){const ref=this.modRef(uid),s=await ref.get();const cur=s.exists?s.data():{};
-    await ref.set({xpGift:0,god:0,nerf:false,block:[],...cur,...patch,upd:Date.now()})},
+    await ref.set({xpGift:0,god:0,nerf:false,gm:false,block:[],...cur,...patch,upd:Date.now()})},
   async killCard(uid,c){
     /* delete the card, its map and its posts, and block that offer for this driver */
     const u=this.db.collection("users").doc(uid);let loc={};try{const l=await u.collection("cardLoc").doc(c.id).get();if(l.exists)loc=cleanLoc(l.data())}catch(e){}
@@ -3959,13 +4000,15 @@ Object.assign(Cloud,{
   }
 });
 function applyModState(d){
-  const ms={xpGift:Math.max(0,Math.round(num0(d.xpGift))),god:Math.max(0,Math.round(num0(d.god))),nerf:d.nerf===true,
+  const ms={xpGift:Math.max(0,Math.round(num0(d.xpGift))),god:Math.max(0,Math.round(num0(d.god))),nerf:d.nerf===true,gm:d.gm===true,
     block:(Array.isArray(d.block)?d.block:[]).slice(-500).map(String)};
   const done=store.modDone||(store.modDone={xp:0,god:0});
   if(ms.xpGift>done.xp){prog().bank+=ms.xpGift-done.xp;done.xp=ms.xpGift}
   /* nerf: rarity, luck and frames only; the grade and the verdict stay true */
-  const was=!!(store.modState&&store.modState.nerf);
+  const was=!!(store.modState&&store.modState.nerf),wasGod=!!(store.modState&&store.modState.gm);
   store.modState=ms;
+  /* God mode just ended: keep the best card of each offer, delete the copies (XP stays) */
+  if(wasGod&&!ms.gm){const n=dedupeCards();if(n)toast(`${n} duplicate card${n>1?"s":""} cleaned up`)}
   if(ms.nerf)for(const c of store.cards)nerfCard(c);
   else if(was)for(const c of store.cards)if(c.nrf){Object.assign(c,{score:c.nrf.s,tier:c.nrf.t,finish:c.nrf.f});delete c.nrf;c.upd=Date.now()}
   save();checkLevel();
@@ -3995,7 +4038,7 @@ async function openDriver(uid,nameHint){
   let d;try{d=await Cloud.driver(uid)}catch(e){qrSheet(`<div class="qrcard"><h2>Couldn't load</h2><p class="msg">${esc(friendly(e))}</p></div>`);return}
   const p=d.p,ms=d.ms,nm=String(p.name||nameHint||"Driver").slice(0,24),L=num0(p.level)||1,xp=num0(p.xp);
   const cards=d.cards.sort((a,b)=>RANK[b.tier]-RANK[a.tier]||b.score-a.score);
-  const chips=[d.isMod?"Moderator":"",d.banned?"Blocked from Global":"",ms.nerf?"Nerfed (secret)":"",num0(ms.god)>0?`God packs given: ${num0(ms.god)}`:""].filter(Boolean);
+  const chips=[ms.gm?"God mode":"",d.isMod?"Moderator":"",d.banned?"Blocked from Global":"",ms.nerf?"Nerfed (secret)":"",num0(ms.god)>0?`God packs given: ${num0(ms.god)}`:""].filter(Boolean);
   qrSheet(`<div class="qrcard drv">
     <div class="drv-head"><span class="avatar" style="--c:${p.best?TC[p.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${esc(nm[0].toUpperCase())}</span>
       <div><h2>${esc(nm)}</h2><small>Level ${L} · ${xp} XP${p.code?" · ID "+esc(fmtID(p.code)):""}</small></div></div>
@@ -4010,6 +4053,7 @@ async function openDriver(uid,nameHint){
     <div class="btnrow"><button class="btn sm" data-dx="lv1">+1 level</button><button class="btn sm" data-dx="lv5">+5 levels</button></div>
     <button class="btn sm god" data-dx="god">Give a God Pack</button>
     <p class="msg">A God Pack turns their next upload's best pack into gold: every card gets a special frame and the best card is Holographic.</p>
+    <label class="sw"><span><b>God mode</b><small>They can scan the same offers again and again, delete them and scan them again for XP every time, with no 24-hour lock and no daily limit. When you turn it off, their duplicates are deleted and the best card of each offer stays. They keep their levels.</small></span><input type="checkbox" data-dx="gm" ${ms.gm?"checked":""}><i></i></label>
     <div class="flabel">Punish</div>
     <label class="sw"><span><b>Secret nerf</b><small>No luck, no special frames, and very low rarity on all their cards. Their grade and Accept/Decline stay true. Turn off to undo.</small></span><input type="checkbox" data-dx="nerf" ${ms.nerf?"checked":""}><i></i></label>
     <div class="btnrow"><button class="btn ghost sm danger" data-dx="ban">${d.banned?"Unblock from Global":"Block from Global"}</button><button class="btn ghost sm" data-dx="posts">Delete all their posts</button></div>
@@ -4023,6 +4067,7 @@ async function openDriver(uid,nameHint){
   const box=$("qrSheet");
   box.querySelectorAll("[data-dx]").forEach(el=>{
     const k=el.dataset.dx;
+    if(k==="gm"){el.onchange=()=>run(()=>Cloud.setModState(uid,{gm:el.checked}),el.checked?"God mode on. It starts next time they open the app.":"God mode off. Their duplicates get cleaned up next time they open the app.",false);return}
     if(k==="nerf"){el.onchange=()=>run(()=>Cloud.setModState(uid,{nerf:el.checked}),el.checked?"Secret nerf on. It applies next time they open the app.":"Nerf off. Their cards go back to normal next time they open the app.",false);return}
     el.onclick=()=>{
       if(k==="lv1"||k==="lv5"){const add=lvlStart(L+(k==="lv1"?1:5))-xp;run(()=>Cloud.setModState(uid,{xpGift:num0(ms.xpGift)+Math.max(0,add)}),`${k==="lv1"?"+1 level":"+5 levels"} sent. They get it next time they open the app.`)}
@@ -4058,7 +4103,7 @@ function modHTML(){
       <div class="fadd"><input id="modCode" maxlength="16" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Their ID"><button class="btn sm" id="modAdd">Make mod</button></div>
       <div id="modList" class="flist"><p class="msg">Loading…</p></div></div>
     <div class="mgroup"><div class="flabel">Just for me</div>
-      <label class="sw"><span><b>No 24-hour lock</b><small>Screenshots I delete can be scanned again right away.</small></span><input type="checkbox" id="dvNoLock" ${SET.devNoLock?"checked":""}><i></i></label>
+      <label class="sw"><span><b>God mode</b><small>Scan the same offers again and again, delete and re-scan them for XP, no 24-hour lock, no daily limit. Turning it off deletes the duplicates and keeps the best card of each offer.</small></span><input type="checkbox" id="dvGod" ${SET.devGod?"checked":""}><i></i></label>
       <label class="sw"><span><b>No scan limits</b><small>Skip the daily limit and the Dex size cap.</small></span><input type="checkbox" id="dvNoLim" ${SET.devNoLimit?"checked":""}><i></i></label>
       <div class="btnrow"><button class="btn ghost sm" id="dvLvl">Level me up</button><button class="btn ghost sm" id="dvLuck">Give me a luck card</button></div>
       <div class="fadd"><span class="msg" style="flex:1;align-self:center">Event</span><select id="dvEv">${opt("auto","By date",SET.devEvent||"auto")}${EVENTS.map(e=>opt(e.id,e.name+" on",SET.devEvent)).join("")}${opt("none","Off",SET.devEvent)}</select></div></div>`:""}
@@ -4087,7 +4132,8 @@ async function wireMod(){
   on("drvGo",search);const q=$("drvQ");if(q)q.onkeydown=e=>{if(e.key==="Enter")search()};
   on("ntGo",()=>run(async()=>{await Cloud.setNotice($("ntTxt").value.trim());await Cloud.loadNotice();return $("ntTxt").value.trim()?"Announcement posted":"Announcement cleared"}));
   const tg=(id,k)=>{const el=$(id);if(el)el.onchange=e=>{SET[k]=e.target.checked;saveSet()}};
-  tg("dvNoLock","devNoLock");tg("dvNoLim","devNoLimit");
+  tg("dvNoLim","devNoLimit");
+  const gd=$("dvGod");if(gd)gd.onchange=e=>{SET.devGod=e.target.checked;saveSet();if(!SET.devGod){const n=dedupeCards();toast(n?`God mode off. ${n} duplicate${n>1?"s":""} deleted, best cards kept.`:"God mode off")}else toast("God mode on")};
   on("dvLvl",()=>{const L=levelOf(totalXP());prog().bank+=lvlStart(L+1)-totalXP();save();checkLevel();toast("Level "+(L+1));renderSettings()});
   on("dvLuck",()=>{const c=rollLuckCard(),p=prog();p.luck.push([1000+p.luck.length,c.id,c.p]);p.unseen=(+p.unseen||0)+1;save();renderGift();toast(`${LUCK_NAME[c.id]} luck card added. Open it from the Dex.`)});
   const evs=$("dvEv");if(evs)evs.onchange=e=>{SET.devEvent=e.target.value==="auto"?"":e.target.value;saveSet();applySkin();toast(eventNow()?eventNow().name+" event on":"No event")};
