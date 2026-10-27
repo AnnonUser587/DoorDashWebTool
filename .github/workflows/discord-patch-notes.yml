@@ -1,0 +1,24 @@
+# Posts a short summary to the Discord patch-notes channel when index.html is updated.
+# Put [no notes] in the commit message to skip it.
+name: Discord patch notes
+on:
+  push:
+    branches: [main]
+    paths: [index.html]
+  workflow_dispatch:
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node discord-bot/patchnotes.js
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
