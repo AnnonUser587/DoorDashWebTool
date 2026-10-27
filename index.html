@@ -993,6 +993,29 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .modbox #drvQ{text-transform:none;letter-spacing:normal;font:500 .95rem var(--f-body)}
 .autotiers{margin-top:-4px}.autotiers .ntag[aria-pressed="true"]{border-color:var(--c);color:var(--tx);background:color-mix(in srgb,var(--c) 18%,transparent)}
 .tg-dot.old{opacity:.45;cursor:default}
+/* keep the moderator box inside the screen: its grid column was growing to fit the widest line */
+.modbox{grid-template-columns:minmax(0,1fr)}
+.modbox>*,.mgroup>*{min-width:0}
+.modbox h3{flex-wrap:wrap}
+/* friend ID box: the ID and Copy stay on one line */
+.fcode{gap:10px}.fcode>span{min-width:0}
+.fcode b{white-space:nowrap;font-size:clamp(1rem,5.2vw,1.35rem);letter-spacing:.06em}
+.fcode .mini{white-space:nowrap;flex:none;padding-inline:14px}
+
+/* ===== v12: compact challenges (one daily at a time + weekly) ===== */
+.quests{padding:10px 12px;gap:6px}
+.quests .qhead b{font-size:.92rem}
+.q2{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;min-height:30px}
+.qtag{font:700 .58rem/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;padding:5px 6px;border-radius:6px;background:var(--track);color:var(--mut);border:1px solid var(--line)}
+.q2:nth-of-type(2) .qtag{color:var(--t-rare);border-color:color-mix(in srgb,var(--t-rare) 45%,var(--line))}
+.q2:last-child .qtag{color:var(--gold);border-color:color-mix(in srgb,var(--gold) 45%,var(--line))}
+.q2 .qt{font-size:.86rem;gap:4px}
+.q2 .qb{height:4px}
+.q2.done .qt{color:var(--mut)}
+.q2.done .qx{color:var(--accept)}
+.godhint{font-style:normal;color:#f3c55a;text-shadow:0 0 6px #f3c55a}
+.rchip.god{background:linear-gradient(90deg,#ffe9a3,#f3c55a);color:#2a1d05;border-color:#f3c55a}
+.qtag{min-width:56px;text-align:center;box-sizing:border-box}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -2837,7 +2860,7 @@ const packXP=cs=>{const m=new Map();for(const c of cs)if(c.pack)m.set(c.pack,(m.
 const cardXP=c=>c.noxp?0:trusted(c)?(XP_T[c.tier]||0)+(XP_F[c.finish]||0):XP_T.trash;
 const xpOf=cs=>cs.reduce((a,c)=>a+cardXP(c),0)+packXP(cs.filter(c=>trusted(c)&&!c.noxp))+questXP(cs);
 const xpRaw=()=>xpOf(store.cards);
-const totalXP=()=>xpRaw()+(+prog().bank||0);
+const totalXP=()=>xpRaw()+(+prog().bank||0)+weeklyXP();
 /* the old (v4) numbers, only to keep everyone's level when this version first opens */
 const OLD_XP_T={trash:2,common:4,uncommon:6,rare:10,superrare:16,epic:28,legendary:60,mythic:150},OLD_XP_F={holo:60,carbon:30,inverted:30};
 const oldLevel=cs=>{const xp=cs.reduce((a,c)=>a+(trusted(c)?(OLD_XP_T[c.tier]||0)+(OLD_XP_F[c.finish]||0):2),0)+new Set(cs.filter(trusted).map(c=>c.pack).filter(Boolean)).size*5+questXP(cs);
@@ -2861,8 +2884,40 @@ function checkLevel(){
   return n;
 }
 /* quests stay done once done (deleting a card doesn't undo them, and they can't be finished twice) */
-function markQuests(){const k=dayKey(new Date()),qs=questState(k,store.cards).filter(q=>q.done).map(q=>q.id);if(!qs.length)return;
-  const p=prog(),had=p.qd[k]||[];p.qd[k]=[...new Set([...had,...qs])]}
+function markQuests(){
+  const k=dayKey(new Date()),p=prog();if(!p.qt||typeof p.qt!=="object")p.qt={};
+  const qs=questState(k,store.cards);
+  qs.forEach((q,i)=>{if(q.done&&!(p.qd[k]||[]).includes(q.id)){p.qd[k]=[...(p.qd[k]||[]),q.id];(p.qt[k]=p.qt[k]||[])[i]=Date.now()}});
+  for(const d of Object.keys(p.qt))if(d<dayKey(Date.now()-14*864e5))delete p.qt[d];
+  markWeekly();
+}
+/* ---------- weekly challenge: harder, lots of XP, and a very small chance of a God Pack ---------- */
+const WEEKLY_POOL=[
+  {id:"w_scan40",t:"Scan 40 offers",need:40,xp:300,f:cs=>cs.length},
+  {id:"w_rare6",t:"Find 6 Rare or better",need:6,xp:300,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.rare).length},
+  {id:"w_acc12",t:"Find 12 offers worth accepting",need:12,xp:300,f:cs=>cs.filter(isAccept).length},
+  {id:"w_special",t:"Pull a special frame",need:1,xp:400,f:cs=>cs.filter(special).length},
+  {id:"w_epic",t:"Pull an Epic or better",need:1,xp:350,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.epic).length},
+  {id:"w_packs4",t:"Open 4 packs",need:4,xp:250,f:cs=>new Set(cs.map(c=>c.pack).filter(Boolean)).size},
+  {id:"w_stores10",t:"Scan 10 different stores",need:10,xp:250,f:cs=>new Set(cs.map(c=>skey(c.store))).size},
+  {id:"w_days5",t:"Scan on 5 different days",need:5,xp:350,f:cs=>new Set(cs.map(c=>addedKey(c))).size}
+];
+const WEEKLY_GOD=0.01;
+const weekKey=()=>dayKey(weekStart());
+function weeklyFor(wk){let h=7;for(const ch of wk)h=(h*33+ch.charCodeAt(0))>>>0;return WEEKLY_POOL[h%WEEKLY_POOL.length]}
+function weeklyState(){
+  const wk=weekKey(),q=weeklyFor(wk),P=store.prog||{},was=P.wd&&P.wd[wk];
+  if(was)return {...q,wk,have:q.need,done:true};
+  const ws=+weekStart(),cs=store.cards.filter(c=>trusted(c)&&isFresh(c)&&+new Date(c.added||c.ts)>=ws);
+  const have=Math.min(q.need,q.f(cs));return {...q,wk,have,done:have>=q.need};
+}
+function markWeekly(){
+  const w=weeklyState(),p=prog();if(!p.wd||typeof p.wd!=="object")p.wd={};
+  if(!w.done||p.wd[w.wk])return;
+  p.wd[w.wk]=w.id;
+  if(Math.random()<WEEKLY_GOD){p.gb=(+p.gb||0)+1;p.gbNew=1}
+}
+const weeklyXP=()=>{const wd=(store.prog&&store.prog.wd)||{};return Object.values(wd).reduce((a,id)=>a+((WEEKLY_POOL.find(q=>q.id===id)||{xp:0}).xp),0)};
 function migrateProgress(){
   const p=prog();if(p.v===3)return;
   /* v4 -> v5: keep the level everyone already reached, and give them their luck cards for it */
@@ -2939,26 +2994,41 @@ function questsFor(key){
   const pool=QUEST_POOL.slice(),out=[];
   /* always one "scan N" quest plus two others */
   const scans=pool.filter(q=>q.id.startsWith("scan")),rest=pool.filter(q=>!q.id.startsWith("scan"));
+  /* three daily challenges, one at a time: a quick one, a scan count, then another */
+  h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0]);
   out.push(scans[h%scans.length]);
-  for(let i=0;i<2;i++){h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0])}
+  h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0]);
   return out;
 }
+/* daily challenges unlock one after another: each one only counts offers scanned after the one before it was done */
 function questState(key,all){
-  const cs=all.filter(c=>addedKey(c)===key&&trusted(c)&&isFresh(c));
-  const kept=(store.prog&&store.prog.qd&&store.prog.qd[key])||[];
-  return questsFor(key).map(q=>{const was=kept.includes(q.id),have=was?q.need:Math.min(q.need,q.f(cs,all));return {...q,have,done:have>=q.need}});
+  const day=all.filter(c=>addedKey(c)===key&&trusted(c)&&isFresh(c));
+  const P=store.prog||{},kept=(P.qd&&P.qd[key])||[],times=(P.qt&&P.qt[key])||[];
+  let start=0,open=true;
+  return questsFor(key).map((q,i)=>{
+    if(kept.includes(q.id)){start=+times[i]||start;return {...q,have:q.need,done:true}}
+    if(!open)return {...q,have:0,done:false,locked:true};
+    const cs=start?day.filter(c=>+new Date(c.added||c.ts)>=start):day,have=Math.min(q.need,q.f(cs,all)),done=have>=q.need;
+    open=false;return {...q,have,done};
+  });
 }
 const questXP=all=>[...new Set([...all.map(addedKey),...Object.keys((store.prog&&store.prog.qd)||{})])].reduce((a,k)=>a+questState(k,all).filter(q=>q.done).reduce((s,q)=>s+q.xp,0),0);
 /* ---------- Daily goal (picked in Settings): counts today's trusted, recent offers ---------- */
 const GOALS={rare3:{t:"Get 3 Rare or better",need:3,f:c=>RANK[c.tier]>=RANK.rare},rare5:{t:"Get 5 Rare or better",need:5,f:c=>RANK[c.tier]>=RANK.rare},
   epic1:{t:"Pull an Epic or better",need:1,f:c=>RANK[c.tier]>=RANK.epic},accept5:{t:"Find 5 offers worth accepting",need:5,f:isAccept},scan8:{t:"Scan 8 offers",need:8,f:()=>true}};
-function goalState(){const g=GOALS[SET.goal||"rare3"];if(!g)return null;const k=dayKey(new Date());
+function goalState(){return null;const g=GOALS[SET.goal||"rare3"];if(!g)return null;const k=dayKey(new Date());
   const have=store.cards.filter(c=>addedKey(c)===k&&trusted(c)&&isFresh(c)&&g.f(c)).length;return {...g,have:Math.min(have,g.need),done:have>=g.need}}
 function renderGoal(){const el=$("goal"),g=goalState();el.hidden=!g;if(!g)return;
   el.innerHTML=`<span class="gring" style="--p:${g.have/g.need*100}"><b>${g.have}/${g.need}</b></span><span class="gt"><small>Today's goal</small><b>${g.t}</b></span>${g.done?`<span class="gdone">Done</span>`:""}`;
   el.classList.toggle("done",g.done)}
 function renderQuests(){
-  const qs=questState(dayKey(new Date()),store.cards),done=qs.filter(q=>q.done).length;
+  const qs=questState(dayKey(new Date()),store.cards),done=qs.filter(q=>q.done).length,w=weeklyState();
+  const cur=qs.find(q=>!q.done),n=qs.indexOf(cur)+1;
+  const row=(tag,q,extra)=>`<div class="q2${q.done?" done":""}"><span class="qtag">${tag}</span><span class="qt">${esc(q.t)}${q.need>1&&!q.done?`<span class="qb"><i style="width:${q.have/q.need*100}%"></i></span>`:""}</span><span class="qx">${q.need>1&&!q.done?q.have+"/"+q.need+" · ":""}${q.done?"Done":"+"+q.xp+" XP"}${extra||""}</span></div>`;
+  $("quests").innerHTML=`<div class="qhead"><b>Challenges</b><span>${done===qs.length?"Daily: all 3 done":"Daily "+n+" of 3"}</span></div>
+    ${cur?row("Daily",cur):`<div class="q2 done"><span class="qtag">Daily</span><span class="qt">All 3 done. New ones tomorrow.</span><span class="qx">+${qs.reduce((a,q)=>a+q.xp,0)} XP</span></div>`}
+    ${row("Weekly",w,w.done?"":` <i class="godhint" title="Tiny chance of a God Pack">✦</i>`)}`;
+  return;
   const ck='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   $("quests").innerHTML=`<div class="qhead"><b>Daily quests</b><span>${done===qs.length?"All done":done+" of "+qs.length+" done"}</span></div>
     ${qs.map(q=>`<div class="q${q.done?" done":""}"><span class="qc">${q.done?ck:""}</span><span class="qt">${q.t}${q.need>1?`<span class="qb"><i style="width:${q.have/q.need*100}%"></i></span>`:""}</span><span class="qx">${q.need>1&&!q.done?q.have+"/"+q.need+" · ":""}+${q.xp} XP</span></div>`).join("")}`;
@@ -2977,7 +3047,7 @@ function weekStats(){
     streak:streakNow(),best:best?{tier:best.tier,score:best.score,store:String(best.store).slice(0,40),finish:best.finish}:null};
 }
 /* what a scan earned: XP, quests finished, level ups, stores seen for the first time */
-const snap=()=>{const xp=totalXP(),g=goalState();return {xp,L:levelOf(xp),goal:!!(g&&g.done),q:new Set(questState(dayKey(new Date()),store.cards).filter(q=>q.done).map(q=>q.id))}};
+const snap=()=>{const xp=totalXP(),g=goalState();return {xp,L:levelOf(xp),goal:!!(g&&g.done),w:weeklyState().done,q:new Set(questState(dayKey(new Date()),store.cards).filter(q=>q.done).map(q=>q.id))}};
 function rewardHTML(before,newCards){
   const after=snap(),gained=after.xp-before.xp,qs=questState(dayKey(new Date()),store.cards).filter(q=>q.done&&!before.q.has(q.id));
   const newStores=newCards.filter(c=>isFirstOfStore(c,store.cards));
@@ -2985,7 +3055,9 @@ function rewardHTML(before,newCards){
   if(newCards.some(c=>c.luck>=6))chips.push(`<span class="rchip lk">Lucky pull</span>`);
   if(newCards.some(c=>c.noxp))chips.push(`<span class="rchip old">Deleted before · no XP this time</span>`);
   if(newStores.length)chips.push(`<span class="rchip ns">${newStores.length>1?newStores.length+" new stores":"New store"}</span>`);
-  for(const q of qs)chips.push(`<span class="rchip qd">Quest done · ${esc(q.t)}</span>`);
+  for(const q of qs)chips.push(`<span class="rchip qd">Challenge done · ${esc(q.t)}</span>`);
+  {const w=weeklyState();if(w.done&&!before.w)chips.push(`<span class="rchip gd2">Weekly challenge done · +${w.xp} XP</span>`)}
+  if(prog().gbNew){delete prog().gbNew;save();chips.push(`<span class="rchip god">✦ Lucky! Your next pack is a God Pack</span>`)}
   const g=goalState();if(g&&g.done&&!before.goal)chips.push(`<span class="rchip gd2">Daily goal done · ${esc(g.t)}</span>`);
   if(newCards.length===1){const c=newCards[0],n=visitsTo(c);
     if(n>1)chips.push(`<span class="rchip vis">${ordinal(n)} offer from this ${esc(c.store)}</span>`);
@@ -3339,7 +3411,7 @@ const Cloud={
   skey(){return "offerdex.syncedState."+(this.user?this.user.uid:"")},
   stateRef(){return this.me().collection("meta").doc("state")},
   stateOut(){const p=prog(),qd={};for(const k of Object.keys(p.qd).sort().slice(-400))qd[k]=p.qd[k].slice(0,3);
-    return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
+    return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,gb:+p.gb||0,wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
       del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0},
       hist:histList().slice(-1500)}},
   async pullState(){
@@ -3355,6 +3427,8 @@ const Cloud={
         const m=new Map(P.luck.map(x=>[x[0],x]));for(const x of luck)m.set(x[0],x);P.luck=[...m.values()].sort((a,b)=>a[0]-b[0]);
         P.unseen=Math.min(num0(P.unseen),P.luck.length);
         for(const [k,v] of Object.entries(qd))P.qd[k]=[...new Set([...(P.qd[k]||[]),...v])].slice(0,3);
+        P.gb=Math.max(+P.gb||0,Math.min(50,num0(R.gb)));if(!P.wd||typeof P.wd!=="object")P.wd={};
+        if(R.wd&&typeof R.wd==="object")for(const [k,v] of Object.entries(R.wd).slice(-60))if(/^\d{4}-\d\d-\d\d$/.test(k)&&WEEKLY_POOL.some(q=>q.id===v))P.wd[k]=v;
       }
     }
     if(Array.isArray(d.del)){const have=new Set(delList().map(x=>x[0]+"|"+x[2]));
@@ -4015,14 +4089,15 @@ function applyModState(d){
 }
 const nerfed=()=>!!(store.modState&&store.modState.nerf);
 function nerfCard(c){if(c.nrf||c._friend)return;c.nrf={s:c.score,t:c.tier,f:c.finish};c.score=Math.max(1,Math.min(c.score,Math.round(gradeOf(c)*0.3)));c.tier=C.tierFor(c.score).id;c.finish="standard";delete c.finish0;c.upd=Date.now()}
-const godLeft=()=>Math.max(0,((store.modState&&store.modState.god)||0)-((store.modDone&&store.modDone.god)||0));
+/* god packs waiting: given by the head moderator, plus any won from a weekly challenge */
+const godLeft=()=>Math.max(0,((store.modState&&store.modState.god)||0)+(+(store.prog&&store.prog.gb)||0)-((store.modDone&&store.modDone.god)||0));
 /* a God Pack: every card gets a special frame and the best one is Holographic; stickers too during an event */
 function makeGod(cards){
   if(!cards.length||!godLeft())return false;
   const fr=["gold","neon","carbon","inverted","holo"];
   cards.forEach((c,i)=>{c.finish=i===cards.length-1?"holo":fr[Math.floor(Math.random()*fr.length)];c.god=1;
     const ev=eventNow();if(ev&&ev.id==="halloween"){const f=STK_FACES[Math.min(STK_FACES.length-1,Math.floor(Math.random()*4)+(i===cards.length-1?2:0))];c.stk={e:ev.key,f:f.id,t:["holo","gold","neon","inverted"][Math.floor(Math.random()*4)]}}});
-  store.modDone.god=(store.modDone.god||0)+1;return true;
+  store.modDone=store.modDone||{xp:0,god:0};store.modDone.god=(store.modDone.god||0)+1;return true;
 }
 const modBlocked=(sha,ph,key)=>{const L=(store.modState&&store.modState.block)||[];if(!L.length)return false;const k16=(sha||"").slice(0,16),ek=key?encodeURIComponent(key):"";
   return L.some(x=>{const [a,b,k]=x.split("|");return (k16&&a&&a===k16)||(ph&&b&&b.length===ph.length&&hamming(b,ph)<=24)||(ek&&k===ek)})};
