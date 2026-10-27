@@ -1016,6 +1016,49 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .godhint{font-style:normal;color:#f3c55a;text-shadow:0 0 6px #f3c55a}
 .rchip.god{background:linear-gradient(90deg,#ffe9a3,#f3c55a);color:#2a1d05;border-color:#f3c55a}
 .qtag{min-width:56px;text-align:center;box-sizing:border-box}
+
+/* ===== v13: usernames, inbox ===== */
+.uname .ufield{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:14px;background:var(--track);padding:0 12px}
+.uname .ufield span{color:var(--mut);font:600 1.1rem var(--f-body)}
+.uname .ufield input{flex:1;min-width:0;border:0;background:none;color:var(--tx);font:600 1.1rem var(--f-body);padding:14px 0;outline:none}
+.uname .msg.err{color:var(--decline)}.uname .msg.ok{color:var(--accept)}
+.pname.unrow{display:flex;align-items:center;gap:10px;border:0}.pname.unrow span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pname.unrow .mini{font:600 .72rem var(--f-body);flex:none}
+.ntab{position:relative}
+.nbadge{position:absolute;top:2px;right:18%;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:99px;background:#ff3b5c;color:#fff;font:700 .66rem/18px var(--f-body);font-style:normal;text-align:center}
+.ibtabs button{font-size:.78rem!important;position:relative}
+.tdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff3b5c;margin-left:4px;vertical-align:1px}
+.ibn{color:#ff3b5c;margin-left:6px}
+.frow.ib.new{background:color-mix(in srgb,#ff3b5c 8%,transparent);border-radius:12px;padding-inline:6px}
+.frow.ib .fn small{word-break:break-all}
+.qswap{border:1px solid var(--line);background:var(--track);color:var(--tx);border-radius:8px;width:26px;height:22px;font:700 .8rem/1 var(--f-body);margin-left:4px;cursor:pointer;vertical-align:middle}
+.q2.hard .qtag{color:#ff8a3d!important;border-color:#ff8a3d77!important}
+.q2.sup .qtag{color:#f3c55a!important;border-color:#f3c55a!important;background:linear-gradient(90deg,#f3c55a22,#ff9ad522)}
+.qnote{margin:0;font-size:.74rem;color:var(--mut);line-height:1.3}
+.toast{max-width:calc(100vw - 32px);white-space:normal;text-align:center;line-height:1.3}
+.toast.act{pointer-events:auto;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 16px}
+.toast.act button{border:0;border-radius:99px;background:var(--bg);color:var(--tx);font:800 .85rem/1 var(--f-body);padding:8px 14px;cursor:pointer}
+.favbtn{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--mut);font-size:1.25rem;line-height:1;cursor:pointer;display:grid;place-items:center}
+.favbtn[aria-pressed="true"]{color:#f3c55a;border-color:#f3c55a77}
+.seg.seg4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg.seg4 button{white-space:nowrap;font-size:clamp(.7rem,3.3vw,.86rem);padding:0 2px}
+.toast.act span{white-space:nowrap}
+.nudge{border-color:color-mix(in srgb,#f5b83d 55%,var(--line));background:color-mix(in srgb,#f5b83d 9%,var(--panel))}
+.nudge .nd-row{display:flex;gap:8px;margin-top:6px}
+.ablist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.abrow{display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 14px;color:var(--tx);cursor:pointer;font:inherit}
+.abrow:last-child{border-bottom:0}
+.abrow>span:first-child{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.abrow b{font-size:.92rem}.abrow small{color:var(--mut);font-size:.78rem}
+.abgo{color:var(--mut);font-size:1.3rem;line-height:1}
+.qrcard.legal{text-align:left}
+.qrcard.legal h3{font-size:.95rem;margin:16px 0 6px}.qrcard.legal h3 small{color:var(--mut);font-weight:500;font-size:.75rem}
+.qrcard.legal ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.86rem;line-height:1.4;color:var(--tx)}
+/* challenge rows: words never split; the XP side wraps instead on small phones */
+.q2{grid-template-columns:auto minmax(0,1fr) auto}
+.q2 .qt{overflow-wrap:break-word;word-break:normal;hyphens:auto;min-width:5.5em}
+.q2 .qx{white-space:normal;text-align:right;max-width:9.5em;line-height:1.35}
+.q2 .qx .qswap{margin-left:2px}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -1034,7 +1077,9 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
     </div>
   </header>
   <section class="moved" id="moved" hidden></section>
+  <section class="notice" id="inboxNote" hidden></section>
   <section class="notice" id="notice" hidden></section>
+  <section class="notice nudge" id="nudge" hidden></section>
   <section class="evbar" id="event" hidden></section>
   <section class="gift" id="gift" hidden></section>
   <section class="quests" id="quests" aria-label="Daily quests"></section>
@@ -1052,7 +1097,7 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
   <section id="col" hidden>
     <div class="today" id="todayStrip"></div>
     <div class="chips" id="filters" role="toolbar" aria-label="Filter cards"></div>
-    <div class="seg seg3 groupby" id="groupBy" role="group" aria-label="Group cards by"></div>
+    <div class="seg seg4 groupby" id="groupBy" role="group" aria-label="Group cards by"></div>
     <div id="days"></div>
   </section>
 </div>
@@ -1627,6 +1672,7 @@ const idb=(()=>{let p=null;const open=()=>p||(p=new Promise((res,rej)=>{try{cons
 let idbOK=true;
 function save(){
   /* art stays out of localStorage when IndexedDB works */
+  store.sv=(+store.sv||0)+1;
   const slim={...store,cards:store.cards.map(c=>idbOK&&c.artInDb?{...c,art:""}:c)};
   try{localStorage.setItem(KEY,JSON.stringify(slim));if(typeof Cloud!=="undefined")Cloud.soon();return true}catch(e){console.error(e);return false}
 }
@@ -1655,7 +1701,9 @@ async function loadStore(){
     if(c.art&&idbOK){await putArt(c);moved=true}
   }
   store.scoreVer=C.SCORE_VERSION;
-  pruneDel();migrateProgress();autoClean();
+  pruneDel();migrateProgress();
+  {const p=prog();if(p.gb){p.gb10=(+p.gb10||0)+Math.max(0,+p.gb-((store.modDone&&store.modDone.god)||0)-((store.modState&&store.modState.god)||0));delete p.gb}}
+  autoClean();
   if(save()&&moved)try{localStorage.removeItem(OLD)}catch(e){}
 }
 
@@ -1701,7 +1749,7 @@ function applyTrust(c){
 const DEX_JUNK=/\$\d|single order|per hour|per mile|payout|\bclass\b/i;
 /* luck comes from a different part of the screenshot's fingerprint than the finish roll */
 const luckSeed=c=>c.sha?parseInt(c.sha.slice(8,16),16)/4294967296:(((+c.roll||0)*7.7713+0.1234)%1);
-function makeCard(o,ex){const c=makeCard0(o,ex);if(typeof nerfed==="function"&&nerfed())nerfCard(c);applyTrust(c);remember(c);return c}
+function makeCard(o,ex){const c=makeCard0(o,ex);if(typeof rngCal==="function"&&rngCal())calCard(c);applyTrust(c);remember(c);return c}
 function makeCard0(o,ex){
   const rc=ex.rc||0,g=C.scoreOffer({...o,extraMin:rc?C.RED_CARD_MIN:0}),roll=ex.roll??Math.random(),boost=(ex.boost||1)*luckMult();
   const luck=C.luckFor(luckSeed({sha:ex.sha,roll}),luckMult()),score=C.applyLuck(g.score,luck),r={...g,score,tier:C.tierFor(score)};
@@ -1712,7 +1760,7 @@ function makeCard0(o,ex){
     ocr:ex.ocr||undefined,verified:ex.ocr?matchesOCR(ex.ocr,o):(ex.manual?false:true),
     rc:rc||undefined,vb:ex.vb||myBar().bar,
     grade:g.score,luck,score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
-    art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:new Date().toISOString(),pack:ex.pack||""};
+    art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:today().toISOString(),pack:ex.pack||""};
 }
 /* the finish is decided once, when the card is pulled: fixing numbers later re-grades the card but never re-rolls it */
 function rescore(c,o){const r=C.scoreOffer({...o,extraMin:c.rc?C.RED_CARD_MIN:0});if(c.luck==null)c.luck=C.luckFor(luckSeed(c));const score=C.applyLuck(r.score,c.luck);
@@ -1767,9 +1815,11 @@ document.addEventListener("pointermove",e=>{const c=e.target.closest&&e.target.c
    Dates
    ========================================================= */
 const dayKey=d=>{d=new Date(d);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+/* "now" according to the real time (see syncClock); falls back to the phone's clock */
+const today=()=>new Date(realNow());
 const startOfDay=d=>{d=new Date(d);d.setHours(0,0,0,0);return d};
 function dayName(key){
-  const d=new Date(key+"T12:00:00"),t=startOfDay(new Date()),diff=Math.round((startOfDay(d)-t)/864e5);
+  const d=new Date(key+"T12:00:00"),t=startOfDay(today()),diff=Math.round((startOfDay(d)-t)/864e5);
   const long=d.toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"});
   return diff===0?["Today",long]:diff===-1?["Yesterday",long]:[d.toLocaleDateString([],{weekday:"long"}),d.toLocaleDateString([],{month:"short",day:"numeric",year:d.getFullYear()!==t.getFullYear()?"numeric":undefined})];
 }
@@ -1787,24 +1837,37 @@ function renderLadder(){
   $("ladder").innerHTML=`<div class="lhead"><span>Rarity</span><span>Special finish odds</span></div>`+
     TIERS.map(t=>`<div class="lrow" style="--c:${TC[t.id]}"><i></i><b>${t.name}<small>${t.min}–${t.max}</small></b><span>${pct(t.id)}%</span></div>`).join("");
 }
+/* Safari (not the Home Screen app) can clear a website's data after about a week unused: after a few scans,
+   suggest signing in or adding DasherDex to the Home Screen. Never shown in the Home Screen app or other browsers. */
+const isStandalone=()=>navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
+const isSafari=()=>{const u=navigator.userAgent;return /Safari\//.test(u)&&/Apple/.test(navigator.vendor||"")&&!/CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Android/.test(u)};
+function renderNudge(){
+  const el=$("nudge");if(!el)return;
+  const show=isSafari()&&!isStandalone()&&!(typeof Cloud!=="undefined"&&Cloud.user)&&store.cards.length>=3&&!SET.nudgeOff;
+  el.hidden=!show;if(!show)return;
+  el.innerHTML=`<span class="nt-ic">📲</span><div><b>Keep your cards safe</b><small>Safari can clear website data if you don't open DasherDex for about a week. ${typeof Cloud!=="undefined"&&Cloud.on?"Sign in with Google to back up your cards, or ":""}add DasherDex to your Home Screen: tap Share, then Add to Home Screen.</small>
+    <span class="nd-row">${typeof Cloud!=="undefined"&&Cloud.on?`<button class="mini" id="ndIn">Sign in</button>`:""}<button class="mini ghost" id="ndNo">Not now</button></span></div>`;
+  if($("ndIn"))$("ndIn").onclick=()=>Cloud.signIn();
+  $("ndNo").onclick=()=>{SET.nudgeOff=Date.now();saveSet();el.hidden=true};
+}
 function renderDex(){
   try{movedBanner()}catch(e){}
-  renderGift();renderEvent();renderNotice();
+  renderGift();renderEvent();renderNotice();try{renderInboxBadge()}catch(e){}try{renderNudge()}catch(e){}
   const cs=store.cards;
   $("empty").hidden=!!cs.length;$("col").hidden=!cs.length;$("countBox").hidden=!cs.length;
   if(!cs.length){renderLadder();return}
   $("countN").textContent=cs.length;
   const sk=streakNow();$("streakBox").hidden=!sk;$("streakN").textContent=sk;
   renderQuests();renderGoal();
-  $("groupBy").innerHTML=[["day","Days"],["shift","Shifts"],["loc","Locations"]].map(([v,l])=>`<button data-g="${v}" aria-pressed="${(SET.group||"day")===v}">${l}</button>`).join("");
-  const td=agg(cs.filter(c=>dayKey(c.ts)===dayKey(new Date())));
+  $("groupBy").innerHTML=[["day","Days"],["shift","Shifts"],["loc","Locations"],["fav","★ Favorites"]].map(([v,l])=>`<button data-g="${v}" aria-pressed="${(SET.group||"day")===v}">${l}</button>`).join("");
+  const td=agg(cs.filter(c=>dayKey(c.ts)===dayKey(today())));
   $("todayStrip").innerHTML=td.n?`<span>Today <b>${td.n}</b> offer${td.n>1?"s":""} · <b>$${td.pph.toFixed(0)}</b>/hr avg</span><span class="vdots"><span class="vd" style="--c:var(--accept)"><i></i>${td.good}</span><span class="vd" style="--c:var(--consider)"><i></i>${td.mid}</span><span class="vd" style="--c:var(--decline)"><i></i>${td.bad}</span></span>`
     :`<span>No offers scanned today yet.</span><span class="vdots"><span class="vd" style="--c:var(--mut)">${cs.length} total</span></span>`;
   const spec=cs.filter(special).length;
   const opts=[{id:"all",name:"All",n:cs.length},{id:"special",name:"Specials",n:spec,holo:1},...TIERS.map(t=>({id:t.id,name:t.name,n:cs.filter(c=>c.tier===t.id).length,c:TC[t.id]}))];
   if(filter!=="all"&&!opts.find(o=>o.id===filter&&o.n))filter="all";
   $("filters").innerHTML=opts.filter(o=>o.id==="all"||o.n).map(o=>`<button class="fchip" data-f="${o.id}" aria-pressed="${filter===o.id}" style="--c:${o.c||"var(--mut)"}">${o.id==="all"?"":o.holo?'<i class="holo"></i>':"<i></i>"}${o.name} <span style="opacity:.6">${o.n}</span></button>`).join("");
-  const shown=cs.filter(c=>filter==="all"||(filter==="special"?special(c):c.tier===filter));
+  const shown=cs.filter(c=>(filter==="all"||(filter==="special"?special(c):c.tier===filter))&&(SET.group!=="fav"||c.fav));
   /* group by day (default), by shift, or by store location */
   const mode=SET.group||"day",G=[];
   if(mode==="shift"){for(const s of C.shiftsOf(shown,120)){const d0=new Date(s.start),d1=new Date(s.end),[dn]=dayName(dayKey(d0));
@@ -1828,7 +1891,7 @@ function renderDex(){
       ${open?`<div class="grid">${list.map(cardHTML).join("")}</div>`:""}
     </section>`;
   }
-  $("days").innerHTML=html||`<div class="none">No cards here yet.</div>`;
+  $("days").innerHTML=html||(mode==="fav"?`<div class="none">No favorites yet. Open a card and tap ☆ to keep it here. Favorites are never auto-deleted.</div>`:`<div class="none">No cards here yet.</div>`);
   if(fresh.size){for(const id of fresh){const el=$("days").querySelector(`[data-id="${id}"]`);if(el)el.classList.add("new")}fresh.clear()}
 }
 $("groupBy").onclick=e=>{const b=e.target.closest("button");if(!b)return;SET.group=b.dataset.g;saveSet();collapsed.clear();renderDex()};
@@ -1907,7 +1970,7 @@ function openCard(c,friend){
   const when=new Date(c.ts),unv=c.verified===false,mb=own?myBar():null;
   const tags=[unv?"capped (hand-edited)":"",c.rc?"Red Card order":"",c.luck>=6?"lucky pull":""].filter(Boolean);
   $("detail").innerHTML=`
-   <div class="topbar"><button class="close" id="dBack" aria-label="Back" style="align-self:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="tt">${own?esc(c.store):esc(friend.name)+"'s card"}</span>${own&&Cloud.on?`<button class="postbtn" id="dPost">Post</button>`:""}<button class="sharebtn" id="dShare" aria-label="Share this card">${SHARE_ICON}</button></div>
+   <div class="topbar"><button class="close" id="dBack" aria-label="Back" style="align-self:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="tt">${own?esc(c.store):esc(friend.name)+"'s card"}</span>${own?`<button class="favbtn" id="dFav" aria-pressed="${!!c.fav}" aria-label="${c.fav?"Remove from favorites":"Add to favorites"}">${c.fav?"★":"☆"}</button>`:""}${own&&Cloud.on?`<button class="postbtn" id="dPost">Post</button>`:""}<button class="sharebtn" id="dShare" aria-label="Share this card">${SHARE_ICON}</button></div>
    ${cardHTML(c)}
    ${own&&c.check&&c.check.length&&!unv?`<div class="checkbar"><span><b>Double-check this one.</b> The scanner wasn't sure about ${c.check.map(k=>CHECK_TXT[k]).join(" and ")}. Compare it with your offer screen.</span>${canHandFix()?`<button class="mini" id="dCheck">Fix</button>`:""}</div>`:""}
    ${unv?`<div class="checkbar"><span><b>Edited by hand.</b> Capped at Uncommon.</span>${own&&canRestore(c)?`<button class="mini" id="dRestore">Restore</button>`:""}</div>`:""}
@@ -1941,6 +2004,9 @@ function openCard(c,friend){
   $("dShare").onclick=()=>shareCard(c,friend);
   if($("dPost"))$("dPost").onclick=()=>postSheet(c);
   if(!own)return;
+  $("dFav").onclick=e=>{const b=e.currentTarget;if(c.fav)delete c.fav;else c.fav=1;c.upd=Date.now();save();
+    b.textContent=c.fav?"★":"☆";b.setAttribute("aria-pressed",!!c.fav);b.setAttribute("aria-label",c.fav?"Remove from favorites":"Add to favorites");
+    toast(c.fav?"Added to Favorites. It won't be auto-deleted.":"Removed from Favorites")};
   wireLocation(c);
   if($("dCheck"))$("dCheck").onclick=()=>{const d=$("dFix");if(!d)return;d.open=true;d.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
   if($("dRestore"))$("dRestore").onclick=()=>{const o=c.ocr;
@@ -1950,7 +2016,7 @@ function openCard(c,friend){
   if($("eSave"))$("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
     rescore(c,o);c.check=false;save();checkLevel();toast(c.verified===false?"Saved. Hand-edited cards are capped at Uncommon.":"Re-graded: "+gradeOf(c)+" · "+vOf(c).label);openCard(c,null)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to delete";setTimeout(()=>{armed=false;if(e.target.isConnected)e.target.textContent="Delete card"},4000);return}
-    deleteCards([c.id]);toast("Card deleted");show(lastList==="vDetail"?"vDex":lastList);toTop()};
+    const undo=undoPoint([c]);deleteCards([c.id]);undoToast("Card deleted",undo);show(lastList==="vDetail"?"vDex":lastList);toTop()};
 }
 
 /* ---------- first-time scan intro: an example screenshot, an example scan, and how to upload ---------- */
@@ -2038,8 +2104,15 @@ async function cardImage(c){
   if(f){x.font=`700 26px ${M}`;const fl=FIN_SHORT[f],fw=x.measureText(fl).width+32;x.fillStyle=f==="holo"||f==="gold"?"#ffd84f":f==="neon"?"#7ff6ff":"#e9e9e9";rrect(x,R-fw-20,ay+20,fw,48,12);x.fill();x.fillStyle="#111";x.fillText(fl,R-fw-4,ay+54)}
   x.restore();
   /* strip */
-  x.fillStyle="#1b1e27";rrect(x,L,740,R-L,64,32);x.fill();x.fillStyle="#c9ccd6";x.font=`500 30px ${M}`;x.textAlign="center";
-  x.fillText(`${c.miles} mi • ${c.minutes} min • ${C.orderClass(c)}`,W/2,782);x.textAlign="left";
+  x.fillStyle="#1b1e27";rrect(x,L,740,R-L,64,32);x.fill();x.fillStyle="#c9ccd6";x.textAlign="center";
+  {/* a pumpkin sticker shows as a tag in this line (no sticker picture on shared images) */
+    const base=`${c.miles} mi • ${c.minutes} min • ${C.orderClass(c)}`,tag=c.stk&&typeof stkLabel==="function"?"🎃 "+stkLabel(c.stk):"";
+    let fs=30;const full=()=>base+(tag?" • ":"");x.font=`500 ${fs}px ${M}`;
+    while(fs>18&&x.measureText(full()+tag).width>R-L-40){fs-=2;x.font=`500 ${fs}px ${M}`}
+    if(!tag)x.fillText(base,W/2,782);
+    else{const w1=x.measureText(full()).width;x.font=`700 ${fs}px ${M}`;const w2=x.measureText(tag).width,x0=W/2-(w1+w2)/2;
+      x.textAlign="left";x.font=`500 ${fs}px ${M}`;x.fillStyle="#c9ccd6";x.fillText(full(),x0,782);x.font=`700 ${fs}px ${M}`;x.fillStyle="#ff9a3d";x.fillText(tag,x0+w1,782)}}
+  x.textAlign="left";
   /* payout bar */
   const pg=x.createLinearGradient(L,0,R,0);pg.addColorStop(0,"#e8c26a");pg.addColorStop(.45,"#e9d9b0");pg.addColorStop(1,"#c9ccd6");x.fillStyle=pg;rrect(x,L,836,R-L,130,22);x.fill();
   x.fillStyle="#15130e";x.font=`600 24px ${M}`;x.fillText("PAYOUT",L+30,878);x.font=`700 64px ${D}`;x.fillText(money(c.pay),L+30,945);
@@ -2057,10 +2130,13 @@ async function shareCard(c){
   const btn=$("dShare");if(btn)btn.disabled=true;
   try{
     const blob=await cardImage(c),name=`dasherdex-${String(c.store).toLowerCase().replace(/[^a-z0-9]+/g,"-").slice(0,30)}.png`,file=new File([blob],name,{type:"image/png"});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:"My DasherDex card"});return}
+    const sheet=()=>{const u=URL.createObjectURL(blob);
+      qrSheet(`<div class="qrcard"><h2>Your card</h2><img src="${u}" alt="Card picture" style="width:100%;border-radius:14px"><p class="msg">Press and hold the picture to save or share it.</p></div>`)};
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      /* iPhone sometimes refuses the share sheet if making the picture took a moment: show the picture instead */
+      try{await navigator.share({files:[file],title:"My DasherDex card"})}catch(e){if(!(e&&e.name==="AbortError"))sheet()}return}
     /* no share sheet (some browsers): show the picture so it can be pressed and saved */
-    const u=URL.createObjectURL(blob);
-    qrSheet(`<div class="qrcard"><h2>Your card</h2><img src="${u}" alt="Card picture" style="width:100%;border-radius:14px"><p class="msg">Press and hold the picture to save or share it.</p></div>`);
+    sheet();
   }catch(e){if(!(e&&e.name==="AbortError"))toast("Couldn't make the picture")}
   finally{if(btn)btn.disabled=false}
 }
@@ -2185,9 +2261,10 @@ function prepClock(bm,stretch){
 function artFrom(bm,payY){
   const top=Math.round(bm.height*0.12);let bot=payY?payY-Math.round(bm.height*0.045):Math.round(bm.height*0.52);
   if(bot-top<bm.height*0.18)bot=Math.round(bm.height*0.52);
-  const w=440,h=Math.round(w*(bot-top)/bm.width),c=document.createElement("canvas");c.width=w;c.height=h;
+  /* 400 px is plenty for the card and keeps the synced copy small */
+  const w=400,h=Math.round(w*(bot-top)/bm.width),c=document.createElement("canvas");c.width=w;c.height=h;
   const x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(bm,0,top,bm.width,bot-top,0,0,w,h);
-  const u=c.toDataURL("image/jpeg",0.68);c.width=c.height=0;return u;
+  const u=c.toDataURL("image/jpeg",0.64);c.width=c.height=0;return u;
 }
 function thumbFrom(bm){const c=document.createElement("canvas"),w=72,h=Math.round(72*bm.height/bm.width);c.width=w;c.height=h;c.getContext("2d").drawImage(bm,0,0,w,h);const u=c.toDataURL("image/jpeg",0.6);c.width=c.height=0;return u}
 const recog=async(w,canvas)=>{const r=(await w.recognize(canvas)).data;canvas.width=canvas.height=0;return r};
@@ -2344,7 +2421,7 @@ function verdictHTML(card){
 function grade(r,parsedOverride){
   if(parsedOverride){r.parsed={...r.parsed,...parsedOverride};r.check=null}
   const before=snap();
-  const card=cardFrom(r);addStickers([card]);makeGod([card]);store.cards.push(card);const saved=finishSave([card]);
+  const card=cardFrom(r);addStickers([card]);makeGod([card],"mod");applyBoost([card]);store.cards.push(card);const saved=finishSave([card]);checkSus([card]);
   const rewards=rewardHTML(before,[card]);
   $("shot").classList.add("gone");
   showSingle(card,rewards,saved,r.check);
@@ -2454,13 +2531,18 @@ async function scanPack(files){
     const cards=all.slice(at,at+k);at+=k;const tier=C.packFor(k),pid="p"+Date.now().toString(36)+packs.length;
     for(const c of cards)c.pack=k>=2?pid:"";
     /* each pack's last card gets that pack's bonus odds for a special frame (on top of your luck) */
-    const last=cards[cards.length-1];if(k>=2){last.boost=tier.boost;last.finish=C.rollFinish(last.tier,last.roll,tier.boost*luckMult())}
+    const last=cards[cards.length-1];if(k>=2){last.boost=tier.boost;last.finish=C.rollFinish(last.tier,last.roll,tier.boost*luckMult());
+      if(rngCal()){if(last.cb)last.cb.f=last.finish;last.finish="standard"}else if(last.verified===false&&special(last)){last.finish0=last.finish;last.finish="standard"}}
     packs.push({cards,tier});
   }
   addStickers(all,c=>{const pk=packs.find(x=>x.cards.length>=2&&x.cards[x.cards.length-1]===c);return pk?pk.tier.boost:1});
-  if(packs.length&&makeGod(packs[packs.length-1].cards))packs[packs.length-1].god=true;
+  {/* a weekly-challenge God Pack waits for a 10-card pack; one from the head moderator takes the best pack */
+    const tens=packs.filter(x=>x.cards.length===10),last=packs[packs.length-1];
+    if(tens.length&&makeGod(tens[tens.length-1].cards,"w10"))tens[tens.length-1].god=true;
+    else if(last&&makeGod(last.cards,"mod"))last.god=true;
+    applyBoost(all)}
   const before=snap();
-  store.cards.push(...all);finishSave(all);
+  store.cards.push(...all);finishSave(all);checkSus(all);
   const extras=results.filter(r=>r.status!=="ok");
   const P={packs,cards:all,extras,rewards:all.length?rewardHTML(before,all):""};
   if(!all.length){packEmpty(P);return}
@@ -2475,7 +2557,7 @@ function showPack(P,pi){
     ${P.packs.length>1?`<div class="pk-row">${P.packs.map((x,k)=>`<span class="pk-chip${k===pi?" now":k<pi?" done":""}" style="--c:${PK_COL[x.tier.id]}"><i></i>${x.tier.name.replace(" Pack","")} · ${x.cards.length}</span>`).join("")}</div>`:""}
     <div class="pack ready" id="pack" data-pk="${t.id}"${ev&&!pk.god?` data-ev="${ev.id}"`:""} role="button" tabindex="0" aria-label="Open ${esc(t.name)}"><div class="crimp t"></div><div class="lid"></div><div class="face">${pk.god?`<span class="pk-god">✦</span>`:ev&&ev.id==="halloween"?`<span class="pk-pump">${pumpkinSVG(t.id==="ruby"||t.id==="diamond"?"grin":"happy","")}</span>`:gemSVG(t.id)}<div class="pn">${esc(t.name)}</div><div class="pc">${pk.cards.length} card${pk.cards.length>1?"s":""}</div></div><div class="crimp b"></div></div>
     <button class="btn" id="openPack">Open ${esc(t.name)}</button>
-    ${pk.god?`<p class="boostnote"><b>God Pack!</b> Every card in here has a special frame.</p>`:pk.cards.length>=2?`<p class="boostnote">${lastPack&&P.packs.length>1?"Your best card is in here. ":""}The last card gets <b>×${t.boost.toFixed(2)}</b> special-frame odds${luckMult()>1?` (plus your luck ${fmtLuck()})`:""}</p>`:""}
+    ${pk.god?`<p class="boostnote"><b>God Pack!</b> Every card in here has a special frame.</p>`:pk.cards.length>=2?`<p class="boostnote">${lastPack&&P.packs.length>1?"Your best card is in here. ":""}The last card gets <b>×${t.boost.toFixed(2)}</b> special-frame odds${luckShown()>1?` (plus your luck ${fmtLuck()})`:""}</p>`:""}
     ${pi===0&&P.extras.some(r=>r.status!=="ok")?`<p class="tapnote">${P.extras.length} screenshot${P.extras.length>1?"s":""} skipped. You'll see why after the last card.</p>`:""}
     ${P.packs.length>1&&!lastPack?`<button class="linkbtn" id="pkSkip">Skip to the best card</button>`:""}
   </div>`;
@@ -2549,6 +2631,7 @@ function handleFiles(list){
   let files=[...list].filter(f=>f&&(f.type.startsWith("image/")||/\.(png|jpe?g|heic|webp)$/i.test(f.name)));
   if(!files.length)return;
   if(busy){toast("Finish the current scan first");return}
+  try{makeRoom(SET.scanMode==="fast"?1:files.length)}catch(e){}
   const room=roomLeft();if(room<1){limitSheet();return}
   /* Fast mode reads one screenshot at a time. Auto: one picture is a single scan, several open packs. */
   const max=SET.scanMode==="fast"?1:Math.min(uploadMax(),room);
@@ -2560,7 +2643,22 @@ $("file").onchange=e=>{const fs=[...e.target.files];e.target.value="";handleFile
 document.addEventListener("dragover",e=>e.preventDefault());
 document.addEventListener("drop",e=>{e.preventDefault();handleFiles(e.dataTransfer?.files||[])});
 document.addEventListener("paste",e=>{const fs=[...(e.clipboardData?.items||[])].filter(i=>i.type.startsWith("image/")).map(i=>i.getAsFile());if(fs.length)handleFiles(fs)});
-let tT;function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(tT);tT=setTimeout(()=>e.classList.remove("on"),2000)}
+let tT;function toast(t){const e=$("toast");e.classList.remove("act");e.textContent=t;e.classList.add("on");clearTimeout(tT);tT=setTimeout(()=>e.classList.remove("on"),2000)}
+/* a few seconds to take back a delete. The cloud waits until the time is up. */
+const UNDO_MS=6000;
+function undoPoint(cards){
+  const cp=x=>JSON.parse(JSON.stringify(x));
+  return {cards:cards.map(c=>({...cp(c),art:artOf(c)})),seen:cp(seenList()),del:cp(delList()),gone:cp(goneList()),bd:cp(prog().bd||{}),hist:histList().length,kp:cp(store.kp||[])};
+}
+function undoToast(msg,u){
+  const e=$("toast");e.innerHTML=`<span>${esc(msg)}</span><button type="button" id="tUndo">Undo</button>`;e.classList.add("on","act");
+  if(typeof Cloud!=="undefined")Cloud.hold=Date.now()+UNDO_MS;
+  clearTimeout(tT);tT=setTimeout(()=>{e.classList.remove("on","act");if(typeof Cloud!=="undefined"){Cloud.hold=0;Cloud.soon()}},UNDO_MS);
+  $("tUndo").onclick=async()=>{clearTimeout(tT);e.classList.remove("on","act");
+    store.seen=u.seen;store.del=u.del;store.gone=u.gone;prog().bd=u.bd;store.kp=u.kp;if(store.hist)store.hist.length=Math.min(store.hist.length,u.hist);
+    for(const c of u.cards)if(!store.cards.some(x=>x.id===c.id)){const art=c.art;delete c.artInDb;c.art=art;store.cards.push(c);if(art)await putArt(c)}
+    save();if(typeof Cloud!=="undefined"){Cloud.hold=0;Cloud.soon()}toast("Card restored");if(view==="vDex")renderDex()};
+}
 
 /* =========================================================
    Stats page
@@ -2714,8 +2812,8 @@ function renderSettings(){
   </div>
   <div class="sbox data"><h3>Your data <small>${store.cards.length} cards · ${kb(si.data+si.art)}</small></h3>
     <p class="msg">${store.cards.length} of ${capLimit()} card spots used. ${Cloud.user?"Synced to your Google account.":"Cards are saved in this browser on this phone only. Copy a backup as a spreadsheet (CSV) now and then."}</p>
-    <div class="btnrow"><button class="btn sm" id="csv">Copy as CSV</button>${store.cards.some(c=>c.tier==="trash")?`<button class="btn ghost sm" id="delTrash">Delete Trash cards (${store.cards.filter(c=>c.tier==="trash").length})</button>`:""}</div>
-    <label class="sw"><span><b>Auto-delete after ${AUTO_DAYS} days</b><small>Frees up space. Cards of the rarities you pick are deleted ${AUTO_DAYS} days after you scan them. You keep the XP, and their numbers stay in your stats and charts. Cards with a special frame or sticker are never auto-deleted.</small></span><input type="checkbox" id="setAuto" ${SET.autoDel?"checked":""}><i></i></label>
+    <div class="btnrow"><button class="btn sm" id="csv">Copy as CSV</button>${store.cards.some(c=>c.tier==="trash"&&!c.fav)?`<button class="btn ghost sm" id="delTrash">Delete Trash cards (${store.cards.filter(c=>c.tier==="trash"&&!c.fav).length})</button>`:""}</div>
+    <label class="sw"><span><b>Auto-delete after ${AUTO_DAYS} days</b><small>Frees up space. Cards of the rarities you pick are deleted ${AUTO_DAYS} days after you scan them. You keep the XP, and their numbers stay in your stats and charts. When your Dex is full, the least valuable ones go first to make room. Favorites (★) and cards with a special frame or sticker are never auto-deleted, and your posts stay up.</small></span><input type="checkbox" id="setAuto" ${SET.autoDel?"checked":""}><i></i></label>
     ${SET.autoDel?`<div class="ntags autotiers" role="group" aria-label="Rarities to auto-delete">${TIERS.slice().reverse().map(t=>`<button class="ntag" data-auto="${t.id}" aria-pressed="${(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]).includes(t.id)}" style="--c:${TC[t.id]}">${t.name}</button>`).join("")}</div>`:""}
     <details class="reset" id="resetBox"><summary class="danger">Reset all progress</summary>
       <p class="msg">Deletes every card, your level, XP, luck, quests, achievements and streak${Cloud.user?", plus your posts, here and in your cloud copy":""}. Your name, friends, location notes and settings stay. Your old screenshots can be scanned again after 24 hours. This can't be undone.</p>
@@ -2726,12 +2824,13 @@ function renderSettings(){
   </div>
   <p class="disclaimer"><b>Just for fun.</b> Grades, verdicts, rarities and stats are rough estimates from your screenshots, not financial advice. DasherDex is an independent fan project and isn't affiliated with or endorsed by DoorDash or Uber, and the scanner can misread things, so always check the offer in your app before you accept. Made with love for drivers <span class="heart">♥</span></p>
   <p class="about">DasherDex · grading v${C.SCORE_VERSION}</p>`;
+  $("settingsBody").querySelector(".disclaimer").insertAdjacentHTML("beforebegin",langHTML()+aboutHTML());
   $("settingsBody").querySelectorAll(".seg button").forEach(btn=>btn.onclick=()=>{SET[btn.dataset.k]=btn.dataset.v;saveSet();applyTheme();applyScanMode();renderSettings()});
   $("setMotion").onchange=e=>{SET.motion=e.target.checked;saveSet();applyTheme()};
   $("setClock").onchange=e=>{SET.clock=e.target.checked;saveSet()};
   $("setRc").onchange=e=>{SET.redCard=e.target.checked;saveSet()};
   $("setHow").onclick=()=>introSheet();
-  wireData();wireAccount();wireMod();
+  wireData();wireAccount();wireMod();wireAbout();
   if(keepDev){const d=document.querySelector("#settingsBody .devbox");if(d){d.open=true;scrollTo(0,y0)}}
   if(keepOpen){$("resetBox").open=true;$("resetTxt").value=keepTxt;$("wipe").disabled=keepTxt.trim().toUpperCase()!=="RESET"}
 }
@@ -2743,8 +2842,9 @@ function wireData(){
     try{await navigator.clipboard.writeText(csv);toast("Copied "+store.cards.length+" rows")}
     catch(e){const t=$("csvOut");t.hidden=false;t.value=csv;t.focus();t.select();toast("Select all and copy")}
   };
-  if($("delTrash")){let armed=false;$("delTrash").onclick=e=>{const ids=store.cards.filter(c=>c.tier==="trash").map(c=>c.id);
+  if($("delTrash")){let armed=false;$("delTrash").onclick=e=>{const ids=store.cards.filter(c=>c.tier==="trash"&&!c.fav).map(c=>c.id);
     if(!armed){armed=true;e.target.textContent=`Tap again to delete ${ids.length}`;return}
+    if(store.cards.some(c=>c.tier==="trash"&&c.fav))toast("Favorites were kept");
     deleteCards(ids);toast(`Deleted ${ids.length} Trash card${ids.length>1?"s":""}`);renderSettings()}}
   $("setAuto").onchange=e=>{SET.autoDel=e.target.checked;if(!Array.isArray(SET.autoTiers))SET.autoTiers=["trash","common"];saveSet();if(SET.autoDel)autoClean();renderSettings()};
   $("settingsBody").querySelectorAll("[data-auto]").forEach(b=>b.onclick=()=>{const t=b.dataset.auto,L=new Set(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]);
@@ -2773,8 +2873,8 @@ const signedIn=()=>typeof Cloud!=="undefined"&&!!Cloud.user;
 const uploadMax=()=>signedIn()?30:10;
 const dayLimit=()=>signedIn()?50:25;
 const capLimit=()=>signedIn()?300:100;
-const usedToday=()=>store.use&&store.use.d===dayKey(new Date())?(+store.use.n||0):0;
-function addUse(n){const d=dayKey(new Date());if(!store.use||store.use.d!==d)store.use={d,n:0};store.use.n+=n}
+const usedToday=()=>store.use&&store.use.d===dayKey(today())?(+store.use.n||0):0;
+function addUse(n){const d=dayKey(today());if(!store.use||store.use.d!==d)store.use={d,n:0};store.use.n+=n}
 const roomLeft=()=>SET.devNoLimit&&typeof Cloud!=="undefined"&&Cloud.isHead?999:Math.max(0,Math.min(isGod()?999:dayLimit()-usedToday(),capLimit()-store.cards.length));
 /* God mode (given by the head moderator, or the head moderator's own switch): the same offers can be scanned,
    deleted and scanned again for XP every time, with no 24-hour lock and no daily limit. The card cap still applies. */
@@ -2813,14 +2913,28 @@ const allOffers=()=>histList().length?store.cards.concat(histList().map(histCard
 const AUTO_DAYS=30;
 function autoClean(){
   if(!SET.autoDel)return 0;const tiers=new Set(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]),cut=Date.now()-AUTO_DAYS*864e5;
-  const ids=store.cards.filter(c=>tiers.has(c.tier)&&!special(c)&&!c.stk&&+new Date(c.added||c.ts)<cut).map(c=>c.id);
+  const ids=autoPool(tiers).filter(c=>+new Date(c.added||c.ts)<cut).map(c=>c.id);
   if(!ids.length)return 0;deleteCards(ids,{quiet:true,hist:true});toast(`Auto-deleted ${ids.length} card${ids.length>1?"s":""} older than ${AUTO_DAYS} days. Your stats keep them.`);return ids.length;
 }
+/* cards auto-delete may take, least valuable first: never favorites, special frames, stickers, or today's cards */
+const cardValue=c=>(XP_T[c.tier]||0)+(XP_F[c.finish]||0)+c.score/100;
+function autoPool(tiers){
+  const day=Date.now()-864e5;
+  return store.cards.filter(c=>tiers.has(c.tier)&&!c.fav&&!special(c)&&!c.stk&&+new Date(c.added||c.ts)<day)
+    .sort((a,b)=>cardValue(a)-cardValue(b)||new Date(a.added||a.ts)-new Date(b.added||b.ts));
+}
+/* Dex full and auto-delete on: clear just enough of the least valuable cards for this upload */
+function makeRoom(want){
+  if(!SET.autoDel)return 0;const need=Math.min(want,30)-(capLimit()-store.cards.length);if(need<=0)return 0;
+  const ids=autoPool(new Set(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"])).slice(0,need).map(c=>c.id);
+  if(!ids.length)return 0;deleteCards(ids,{quiet:true,hist:true});
+  toast(`Dex full: auto-deleted your ${ids.length} least valuable card${ids.length>1?"s":""} to make room. Your stats keep them.`);return ids.length;
+}
 const delList=()=>Array.isArray(store.del)?store.del:(store.del=[]);
-function pruneDel(){const t=Date.now()-LOCK_MS;store.del=delList().filter(x=>Array.isArray(x)&&+x[3]>t).slice(-400);return store.del}
+function pruneDel(){const t=realNow()-LOCK_MS;store.del=delList().filter(x=>Array.isArray(x)&&+x[3]>t).slice(-400);return store.del}
 function lockLeft(sha,ph,key){
   if(isGod())return 0;
-  const now=Date.now(),k16=(sha||"").slice(0,16);
+  const now=realNow(),k16=(sha||"").slice(0,16);
   for(const [s,p,k,t] of pruneDel()){
     if((k16&&s===k16)||(ph&&p&&p.length===ph.length&&hamming(p,ph)<=24)||(key&&k===key))return Math.max(1,+t+LOCK_MS-now)}
   return 0;
@@ -2833,8 +2947,10 @@ function deleteCards(ids,opt){
   const before=xpRaw(),gone=store.cards.filter(c=>ids.has(c.id)),quiet=opt.quiet||isGod();
   for(const c of gone){
     if(opt.hist)keepHist(c);
-    if(!quiet){delList().push([(c.sha||"").slice(0,16),c.ph||"",C.offerKey(c),Date.now()]);
-      const g=goneList();if(c.sha)g.push(c.sha.slice(0,16));g.push("k:"+C.offerKey(c))}
+    if(!quiet){delList().push([(c.sha||"").slice(0,16),c.ph||"",C.offerKey(c),realNow()])}
+    if(!quiet||opt.hist){const g=goneList();if(c.sha)g.push(c.sha.slice(0,16));g.push("k:"+C.offerKey(c))}
+    /* auto-delete keeps the card's feed posts */
+    if(opt.hist&&!c.dev){store.kp=(Array.isArray(store.kp)?store.kp:[]).concat(c.id).slice(-500)}
     store.seen=seenList().filter(([s,p])=>!((c.sha&&s===c.sha.slice(0,16))||(c.ph&&p===c.ph)));
     ART.delete(c.id);idb.del(c.id).catch(()=>{});
   }
@@ -2842,7 +2958,7 @@ function deleteCards(ids,opt){
   pruneDel();
   store.cards=store.cards.filter(c=>!ids.has(c.id));
   /* XP already earned stays earned */
-  prog().bank+=Math.max(0,before-xpRaw());
+  bankAdd(Math.max(0,before-xpRaw()));
   save();
   /* signed in: the next sync deletes them from the cloud and takes them off your posts */
   return gone.length;
@@ -2859,8 +2975,16 @@ const levelOf=xp=>{let L=1;while(L<400&&lvlStart(L+1)<=xp)L++;return L};
 const packXP=cs=>{const m=new Map();for(const c of cs)if(c.pack)m.set(c.pack,(m.get(c.pack)||0)+1);let x=0;for(const n of m.values())if(n>=2)x+=2*Math.min(10,n)+3;return x};
 const cardXP=c=>c.noxp?0:trusted(c)?(XP_T[c.tier]||0)+(XP_F[c.finish]||0):XP_T.trash;
 const xpOf=cs=>cs.reduce((a,c)=>a+cardXP(c),0)+packXP(cs.filter(c=>trusted(c)&&!c.noxp))+questXP(cs);
-const xpRaw=()=>xpOf(store.cards);
-const totalXP=()=>xpRaw()+(+prog().bank||0)+weeklyXP();
+/* XP from cards is added up again only when something it depends on changed (old iPhones stay quick) */
+let xpMemo={k:"",v:0};
+const xpKey=()=>{const P=store.prog||{};let k=dayKey(today())+"|"+(SET.scanMode||"")+"|"+JSON.stringify([P.qd,P.qt,P.qv,P.sw])+"|";
+  for(const c of store.cards)k+=c.id+c.tier+c.finish+c.score+c.added+c.ts+c.pack+(c.noxp?1:0)+(c.verified===false?0:1)+c.pay+c.miles+c.minutes+c.stops+c.store+(c.cb?1:0)+";";return k};
+const xpRaw=()=>{const k=xpKey();if(k!==xpMemo.k)xpMemo={k,v:xpOf(store.cards)};return xpMemo.v};
+/* banked XP: a shared base plus one running total per device, so deleting on two phones never loses XP when they sync */
+const DEVID=(()=>{try{let d=localStorage.getItem("offerdex.dev");if(!d||!/^[a-z0-9]{8}$/.test(d)){d=Math.random().toString(36).slice(2,10).padEnd(8,"0");localStorage.setItem("offerdex.dev",d)}return d}catch(e){return "local000"}})();
+function bankAdd(n){n=Math.round(+n||0);if(!n)return;const p=prog();if(!p.bd||typeof p.bd!=="object")p.bd={};p.bd[DEVID]=(+p.bd[DEVID]||0)+n}
+const bankTotal=()=>{const p=prog();return (+p.bank||0)+Object.values(p.bd||{}).reduce((a,v)=>a+(+v||0),0)};
+const totalXP=()=>xpRaw()+bankTotal()+weeklyXP();
 /* the old (v4) numbers, only to keep everyone's level when this version first opens */
 const OLD_XP_T={trash:2,common:4,uncommon:6,rare:10,superrare:16,epic:28,legendary:60,mythic:150},OLD_XP_F={holo:60,carbon:30,inverted:30};
 const oldLevel=cs=>{const xp=cs.reduce((a,c)=>a+(trusted(c)?(OLD_XP_T[c.tier]||0)+(OLD_XP_F[c.finish]||0):2),0)+new Set(cs.filter(trusted).map(c=>c.pack).filter(Boolean)).size*5+questXP(cs);
@@ -2874,8 +2998,9 @@ const LUCK_CARDS=[{id:"common",p:1,w:55},{id:"uncommon",p:2,w:25},{id:"rare",p:3
 const LUCK_MAX=2.5;
 function rollLuckCard(){let r=Math.random()*100;for(const c of LUCK_CARDS){if((r-=c.w)<0)return c}return LUCK_CARDS[0]}
 const luckPct=()=>prog().luck.reduce((a,x)=>a+(+x[2]||0),0);
-const luckMult=()=>typeof nerfed==="function"&&nerfed()?1:Math.min(LUCK_MAX,1+luckPct()/100);
-const fmtLuck=m=>"×"+(m||luckMult()).toFixed(2);
+const luckShown=()=>Math.min(LUCK_MAX,1+luckPct()/100);
+const luckMult=()=>typeof rngCal==="function"&&rngCal()?1:luckShown();
+const fmtLuck=m=>"×"+(m||luckShown()).toFixed(2);
 /* hand out a luck card for every level reached for the first time. Luck is saved right away; the pack is just the show. */
 function checkLevel(){
   const p=prog(),L=levelOf(totalXP());let n=0;
@@ -2885,11 +3010,12 @@ function checkLevel(){
 }
 /* quests stay done once done (deleting a card doesn't undo them, and they can't be finished twice) */
 function markQuests(){
-  const k=dayKey(new Date()),p=prog();if(!p.qt||typeof p.qt!=="object")p.qt={};
+  const k=dayKey(today()),p=prog();if(!p.qt||typeof p.qt!=="object")p.qt={};
   const qs=questState(k,store.cards);
-  qs.forEach((q,i)=>{if(q.done&&!(p.qd[k]||[]).includes(q.id)){p.qd[k]=[...(p.qd[k]||[]),q.id];(p.qt[k]=p.qt[k]||[])[i]=Date.now()}});
-  for(const d of Object.keys(p.qt))if(d<dayKey(Date.now()-14*864e5))delete p.qt[d];
-  markWeekly();
+  if(!p.qv||typeof p.qv!=="object")p.qv={};if(!p.qv[k])p.qv[k]=questVer(k);
+  qs.forEach((q,i)=>{if(q.done&&!(p.qd[k]||[]).includes(q.id)){p.qd[k]=[...(p.qd[k]||[]),q.id];(p.qt[k]=p.qt[k]||[])[i]=realNow()}});
+  for(const d of Object.keys(p.qt))if(d<dayKey(realNow()-14*864e5))delete p.qt[d];
+  markWeekly();try{markAch()}catch(e){}
 }
 /* ---------- weekly challenge: harder, lots of XP, and a very small chance of a God Pack ---------- */
 const WEEKLY_POOL=[
@@ -2898,32 +3024,58 @@ const WEEKLY_POOL=[
   {id:"w_acc12",t:"Find 12 offers worth accepting",need:12,xp:300,f:cs=>cs.filter(isAccept).length},
   {id:"w_special",t:"Pull a special frame",need:1,xp:400,f:cs=>cs.filter(special).length},
   {id:"w_epic",t:"Pull an Epic or better",need:1,xp:350,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.epic).length},
-  {id:"w_packs4",t:"Open 4 packs",need:4,xp:250,f:cs=>new Set(cs.map(c=>c.pack).filter(Boolean)).size},
+  {id:"w_packs4",t:"Open 4 packs",need:4,xp:250,pack:true,f:cs=>new Set(cs.map(c=>c.pack).filter(Boolean)).size},
   {id:"w_stores10",t:"Scan 10 different stores",need:10,xp:250,f:cs=>new Set(cs.map(c=>skey(c.store))).size},
-  {id:"w_days5",t:"Scan on 5 different days",need:5,xp:350,f:cs=>new Set(cs.map(c=>addedKey(c))).size}
+  {id:"w_days5",t:"Scan on 5 different days",need:5,xp:350,f:cs=>new Set(cs.map(c=>addedKey(c))).size},
+  {id:"w_miles150",t:"Scan 150 miles of offers",need:150,xp:250,f:cs=>Math.floor(cs.reduce((a,c)=>a+(+c.miles||0),0))},
+  {id:"w_pph30x3",t:"Find 3 offers over $30/hr",need:3,xp:350,f:cs=>cs.filter(c=>c.pph>=30).length}
 ];
-const WEEKLY_GOD=0.01;
+/* hard weeks (about 3 in 10): more work, much more XP */
+const WEEKLY_HARD=[
+  {id:"wh_scan80",t:"Scan 80 offers",need:80,xp:700,hard:1,f:cs=>cs.length},
+  {id:"wh_rare10",t:"Find 10 Rare or better",need:10,xp:700,hard:1,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.rare).length},
+  {id:"wh_special2",t:"Pull 2 special frames",need:2,xp:900,hard:1,f:cs=>cs.filter(special).length},
+  {id:"wh_days7",t:"Scan every day this week",need:7,xp:900,hard:1,f:cs=>new Set(cs.map(c=>addedKey(c))).size},
+  {id:"wh_acc25",t:"Find 25 offers worth accepting",need:25,xp:700,hard:1,f:cs=>cs.filter(isAccept).length},
+  {id:"wh_legend",t:"Pull a Legendary or better",need:1,xp:900,hard:1,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.legendary).length}
+];
+/* super rare weeks (about 1 in 20): huge XP and a guaranteed special frame on the best card of your next upload */
+const WEEKLY_SUPER=[
+  {id:"ws_mythic",t:"Pull a Mythic",need:1,xp:2000,sup:1,f:cs=>cs.filter(c=>c.tier==="mythic").length},
+  {id:"ws_scan150",t:"Scan 150 offers",need:150,xp:1500,sup:1,f:cs=>cs.length},
+  {id:"ws_epic5",t:"Pull 5 Epic or better",need:5,xp:1800,sup:1,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.epic).length},
+  {id:"ws_holo",t:"Pull a Holographic or Gold Foil card",need:1,xp:1800,sup:1,f:cs=>cs.filter(c=>c.finish==="holo"||c.finish==="gold").length}
+];
+const ALL_WEEKLY=[...WEEKLY_POOL,...WEEKLY_HARD,...WEEKLY_SUPER];
+const WEEKLY_GOD=0.005;   /* finishing any weekly: a 1-in-200 chance your next 10-card pack is a God Pack */
 const weekKey=()=>dayKey(weekStart());
-function weeklyFor(wk){let h=7;for(const ch of wk)h=(h*33+ch.charCodeAt(0))>>>0;return WEEKLY_POOL[h%WEEKLY_POOL.length]}
+function weeklyFor(wk){
+  const P=store.prog||{};if(P.wd&&P.wd[wk]){const q=ALL_WEEKLY.find(x=>x.id===P.wd[wk]);if(q)return q}
+  let h=7;for(const ch of wk)h=(h*33+ch.charCodeAt(0))>>>0;
+  const r=((h*2654435761)>>>0)/4294967296,fast=SET.scanMode==="fast";
+  const pool=(r<0.05?WEEKLY_SUPER:r<0.35?WEEKLY_HARD:WEEKLY_POOL).filter(q=>!(fast&&q.pack));
+  return pool[h%pool.length];
+}
 function weeklyState(){
   const wk=weekKey(),q=weeklyFor(wk),P=store.prog||{},was=P.wd&&P.wd[wk];
   if(was)return {...q,wk,have:q.need,done:true};
-  const ws=+weekStart(),cs=store.cards.filter(c=>trusted(c)&&isFresh(c)&&+new Date(c.added||c.ts)>=ws);
+  const ws=+weekStart(),cs=store.cards.filter(c=>trusted(c)&&isFresh(c)&&!c.noxp&&+new Date(c.added||c.ts)>=ws);
   const have=Math.min(q.need,q.f(cs));return {...q,wk,have,done:have>=q.need};
 }
 function markWeekly(){
   const w=weeklyState(),p=prog();if(!p.wd||typeof p.wd!=="object")p.wd={};
   if(!w.done||p.wd[w.wk])return;
   p.wd[w.wk]=w.id;
-  if(Math.random()<WEEKLY_GOD){p.gb=(+p.gb||0)+1;p.gbNew=1}
+  if(w.sup){p.boost=(+p.boost||0)+1;p.boostNew=1}
+  if(Math.random()<WEEKLY_GOD){p.gb10=(+p.gb10||0)+1;p.gbNew=1}
 }
-const weeklyXP=()=>{const wd=(store.prog&&store.prog.wd)||{};return Object.values(wd).reduce((a,id)=>a+((WEEKLY_POOL.find(q=>q.id===id)||{xp:0}).xp),0)};
+const weeklyXP=()=>{const wd=(store.prog&&store.prog.wd)||{};return Object.values(wd).reduce((a,id)=>a+((ALL_WEEKLY.find(q=>q.id===id)||{xp:0}).xp),0)};
 function migrateProgress(){
   const p=prog();if(p.v===3)return;
   /* v4 -> v5: keep the level everyone already reached, and give them their luck cards for it */
   const Lold=oldLevel(store.cards);
   for(const k of new Set(store.cards.map(addedKey))){const qs=questState(k,store.cards).filter(q=>q.done).map(q=>q.id);if(qs.length)p.qd[k]=qs}
-  const raw=xpRaw();if(levelOf(raw)<Lold)p.bank=Math.max(+p.bank||0,lvlStart(Lold)-raw);
+  const raw=xpRaw();if(levelOf(raw)<Lold)p.bank=Math.max(+p.bank||0,lvlStart(Lold)-raw-bankTotal()+(+p.bank||0));
   p.v=3;checkLevel();
 }
 
@@ -2967,7 +3119,13 @@ function achievements(){
     ["Trash Collector","Collect 10 Trash cards",cnt("trash"),10,"#9a8a74"],
     ["Good Eye","Find 10 offers worth accepting",cs.filter(isAccept).length,10,"#3ddc84"],
     ["Grinder","Collect 100 cards",n,100,"#5f8dff"]
-  ].map(([name,desc,have,need,col])=>({name,desc,have:Math.min(have,need),need,col,done:have>=need}));
+  ].map(([name,desc,have,need,col])=>{const kept=!!(store.prog&&store.prog.ach&&store.prog.ach[name]);return {name,desc,have:kept?need:Math.min(have,need),need,col,done:kept||have>=need}});
+}
+/* achievements stay earned: deleting cards (by hand or auto-delete) never takes one away, same as XP */
+function markAch(){
+  const p=prog();if(!p.ach||typeof p.ach!=="object")p.ach={};let n=0;
+  for(const a of achievements())if(a.done&&!p.ach[a.name]){p.ach[a.name]=1;n++}
+  return n;
 }
 /* ---------- Daily quests: three per day, picked from the date, rewarded in XP ----------
    Progress counts cards scanned that day (by scan time), so a pack of older screenshots still counts. */
@@ -2986,10 +3144,32 @@ const QUEST_POOL=[
   {id:"special",t:"Pull a special finish",need:1,xp:80,f:cs=>cs.filter(special).length},
   {id:"newstore",t:"Find a store new to your Dex",need:1,xp:25,f:(cs,all)=>cs.filter(c=>isFirstOfStore(c,all)).length}
 ];
+/* v2 daily pool: more variety. pack:true ones need 2+ screenshots at once, so Fast mode never gets them */
+const hourOf=c=>new Date(c.ts).getHours();
+const QUEST_POOL2=QUEST_POOL.filter(q=>q.id!=="newstore").concat([
+  {id:"ppm2",t:"Find an offer over $2/mi",need:1,xp:25,f:cs=>cs.filter(c=>c.ppm>=2).length},
+  {id:"short",t:"Find a good offer under 5 miles",need:1,xp:25,f:cs=>cs.filter(c=>c.miles<5&&isAccept(c)).length},
+  {id:"unc2",t:"Get 2 Uncommon or better",need:2,xp:20,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.uncommon).length},
+  {id:"pay15",t:"Find a $15+ offer",need:1,xp:35,f:cs=>cs.filter(c=>c.pay>=15).length},
+  {id:"pph30",t:"Find an offer over $30/hr",need:1,xp:40,f:cs=>cs.filter(c=>c.pph>=30).length},
+  {id:"single8",t:"Find a single order over $8",need:1,xp:20,f:cs=>cs.filter(c=>(c.stops||2)<=2&&c.pay>=8).length},
+  {id:"epic",t:"Pull an Epic or better",need:1,xp:70,f:cs=>cs.filter(c=>RANK[c.tier]>=RANK.epic).length},
+  {id:"lunch",t:"Scan 2 lunch offers (11 am–2 pm)",need:2,xp:25,f:cs=>cs.filter(c=>hourOf(c)>=11&&hourOf(c)<14).length},
+  {id:"dinner",t:"Scan 2 dinner offers (5–9 pm)",need:2,xp:25,f:cs=>cs.filter(c=>hourOf(c)>=17&&hourOf(c)<21).length},
+  {id:"miles20",t:"Scan 20 miles of offers",need:20,xp:20,f:cs=>Math.floor(cs.reduce((a,c)=>a+(+c.miles||0),0))},
+  {id:"decline2",t:"Spot 2 offers to decline",need:2,xp:15,f:cs=>cs.filter(c=>vOf(c).id==="decline").length},
+  {id:"stores5",t:"Scan 5 different stores",need:5,xp:35,f:cs=>new Set(cs.map(c=>skey(c.store))).size},
+  {id:"pack3",t:"Open a pack of 3 or more",need:1,xp:30,pack:true,f:cs=>{const m=new Map();for(const c of cs)if(c.pack)m.set(c.pack,(m.get(c.pack)||0)+1);return [...m.values()].filter(n=>n>=3).length}}
+]).map(q=>q.id==="pack"?{...q,pack:true}:q);
+const ALL_QUESTS=[...QUEST_POOL,...QUEST_POOL2.filter(q=>!QUEST_POOL.some(o=>o.id===q.id))];
 const skey=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]/g,"");
 const addedKey=c=>dayKey(c.added||c.ts);
 function isFirstOfStore(c,all){const k=skey(c.store),t=+new Date(c.added||c.ts);return !all.some(o=>o!==c&&skey(o.store)===k&&+new Date(o.added||o.ts)<t)}
+/* which version of the daily list a day uses: days that already had challenges done keep the old list, so XP never changes */
+const QV2_FROM="2026-10-27";
+function questVer(key){const P=store.prog||{};if(P.qv&&P.qv[key])return P.qv[key];return key<QV2_FROM||(P.qd&&P.qd[key]&&P.qd[key].length)?1:2}
 function questsFor(key){
+  if(questVer(key)===2)return questsFor2(key);
   let h=0;for(const ch of key)h=(h*31+ch.charCodeAt(0))>>>0;
   const pool=QUEST_POOL.slice(),out=[];
   /* always one "scan N" quest plus two others */
@@ -3000,9 +3180,30 @@ function questsFor(key){
   h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0]);
   return out;
 }
+function questsFor2(key){
+  let h=0;for(const ch of key)h=(h*31+ch.charCodeAt(0))>>>0;
+  const fast=SET.scanMode==="fast",pool=QUEST_POOL2.filter(q=>!(fast&&q.pack));
+  const scans=pool.filter(q=>/^scan\d/.test(q.id)),rest=pool.filter(q=>!/^scan\d/.test(q.id)),out=[];
+  h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0]);
+  h=(h*1103515245+12345)>>>0;out.push(scans[h%scans.length]);
+  h=(h*1103515245+12345)>>>0;out.push(rest.splice(h%rest.length,1)[0]);
+  /* one swap a day: the swapped spot gets a different challenge */
+  const sw=store.prog&&store.prog.sw&&store.prog.sw[key];
+  if(sw&&out[sw.i]){const alt=ALL_QUESTS.find(q=>q.id===sw.id);if(alt)out[sw.i]=alt}
+  return out;
+}
+function swapQuest(){
+  const k=dayKey(today()),p=prog();if(!p.sw||typeof p.sw!=="object")p.sw={};if(p.sw[k])return false;
+  const qs=questState(k,store.cards),i=qs.findIndex(q=>!q.done);if(i<0)return false;
+  const fast=SET.scanMode==="fast",used=new Set(qs.map(q=>q.id));
+  const pool=QUEST_POOL2.filter(q=>!used.has(q.id)&&!(fast&&q.pack)&&(/^scan\d/.test(qs[i].id)?/^scan\d/.test(q.id):!/^scan\d/.test(q.id)));
+  const alt=pool[Math.floor(Math.random()*pool.length)];if(!alt)return false;
+  p.sw[k]={i,id:alt.id};for(const d of Object.keys(p.sw))if(d<dayKey(realNow()-14*864e5))delete p.sw[d];
+  save();return true;
+}
 /* daily challenges unlock one after another: each one only counts offers scanned after the one before it was done */
 function questState(key,all){
-  const day=all.filter(c=>addedKey(c)===key&&trusted(c)&&isFresh(c));
+  const day=all.filter(c=>addedKey(c)===key&&trusted(c)&&isFresh(c)&&!c.noxp);
   const P=store.prog||{},kept=(P.qd&&P.qd[key])||[],times=(P.qt&&P.qt[key])||[];
   let start=0,open=true;
   return questsFor(key).map((q,i)=>{
@@ -3016,30 +3217,33 @@ const questXP=all=>[...new Set([...all.map(addedKey),...Object.keys((store.prog&
 /* ---------- Daily goal (picked in Settings): counts today's trusted, recent offers ---------- */
 const GOALS={rare3:{t:"Get 3 Rare or better",need:3,f:c=>RANK[c.tier]>=RANK.rare},rare5:{t:"Get 5 Rare or better",need:5,f:c=>RANK[c.tier]>=RANK.rare},
   epic1:{t:"Pull an Epic or better",need:1,f:c=>RANK[c.tier]>=RANK.epic},accept5:{t:"Find 5 offers worth accepting",need:5,f:isAccept},scan8:{t:"Scan 8 offers",need:8,f:()=>true}};
-function goalState(){return null;const g=GOALS[SET.goal||"rare3"];if(!g)return null;const k=dayKey(new Date());
+function goalState(){return null;const g=GOALS[SET.goal||"rare3"];if(!g)return null;const k=dayKey(today());
   const have=store.cards.filter(c=>addedKey(c)===k&&trusted(c)&&isFresh(c)&&g.f(c)).length;return {...g,have:Math.min(have,g.need),done:have>=g.need}}
 function renderGoal(){const el=$("goal"),g=goalState();el.hidden=!g;if(!g)return;
   el.innerHTML=`<span class="gring" style="--p:${g.have/g.need*100}"><b>${g.have}/${g.need}</b></span><span class="gt"><small>Today's goal</small><b>${g.t}</b></span>${g.done?`<span class="gdone">Done</span>`:""}`;
   el.classList.toggle("done",g.done)}
 function renderQuests(){
-  const qs=questState(dayKey(new Date()),store.cards),done=qs.filter(q=>q.done).length,w=weeklyState();
+  const qs=questState(dayKey(today()),store.cards),done=qs.filter(q=>q.done).length,w=weeklyState();
   const cur=qs.find(q=>!q.done),n=qs.indexOf(cur)+1;
-  const row=(tag,q,extra)=>`<div class="q2${q.done?" done":""}"><span class="qtag">${tag}</span><span class="qt">${esc(q.t)}${q.need>1&&!q.done?`<span class="qb"><i style="width:${q.have/q.need*100}%"></i></span>`:""}</span><span class="qx">${q.need>1&&!q.done?q.have+"/"+q.need+" · ":""}${q.done?"Done":"+"+q.xp+" XP"}${extra||""}</span></div>`;
+  const canSwap=cur&&questVer(dayKey(today()))===2&&!(store.prog&&store.prog.sw&&store.prog.sw[dayKey(today())]);
+  const row=(tag,q,extra)=>`<div class="q2${q.done?" done":""}${q.hard?" hard":""}${q.sup?" sup":""}"><span class="qtag">${tag}</span><span class="qt">${esc(q.t)}${q.need>1&&!q.done?`<span class="qb"><i style="width:${q.have/q.need*100}%"></i></span>`:""}</span><span class="qx">${q.need>1&&!q.done?q.have+"/"+q.need+" · ":""}${q.done?"Done":"+"+q.xp+" XP"}${extra||""}</span></div>`;
   $("quests").innerHTML=`<div class="qhead"><b>Challenges</b><span>${done===qs.length?"Daily: all 3 done":"Daily "+n+" of 3"}</span></div>
-    ${cur?row("Daily",cur):`<div class="q2 done"><span class="qtag">Daily</span><span class="qt">All 3 done. New ones tomorrow.</span><span class="qx">+${qs.reduce((a,q)=>a+q.xp,0)} XP</span></div>`}
-    ${row("Weekly",w,w.done?"":` <i class="godhint" title="Tiny chance of a God Pack">✦</i>`)}`;
+    ${cur?row("Daily",cur,canSwap?` <button class="qswap" id="qSwap" aria-label="Swap this challenge (once a day)">↻</button>`:""):`<div class="q2 done"><span class="qtag">Daily</span><span class="qt">All 3 done. New ones tomorrow.</span><span class="qx">+${qs.reduce((a,q)=>a+q.xp,0)} XP</span></div>`}
+    ${row(w.sup?"★ Rare":w.hard?"Hard":"Weekly",w,w.done?"":`${w.sup?` <i class="godhint" title="Guaranteed special frame on your next best card">✦✦</i>`:` <i class="godhint" title="Tiny chance of a God Pack">✦</i>`}`)}
+    ${w.sup&&!w.done?`<p class="qnote">Super rare weekly: finish it for a guaranteed special frame on the best card of your next upload.</p>`:""}`;
+  const sb=$("qSwap");if(sb)sb.onclick=e=>{e.stopPropagation();if(swapQuest()){toast("New challenge. You can swap once a day.");renderQuests()}};
   return;
   const ck='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   $("quests").innerHTML=`<div class="qhead"><b>Daily quests</b><span>${done===qs.length?"All done":done+" of "+qs.length+" done"}</span></div>
     ${qs.map(q=>`<div class="q${q.done?" done":""}"><span class="qc">${q.done?ck:""}</span><span class="qt">${q.t}${q.need>1?`<span class="qb"><i style="width:${q.have/q.need*100}%"></i></span>`:""}</span><span class="qx">${q.need>1&&!q.done?q.have+"/"+q.need+" · ":""}+${q.xp} XP</span></div>`).join("")}`;
 }
 function streakNow(){
-  const days=new Set(store.cards.filter(c=>trusted(c)&&isFresh(c)).map(c=>dayKey(c.ts)));let n=0;const d=startOfDay(new Date());
+  const days=new Set(store.cards.filter(c=>trusted(c)&&isFresh(c)).map(c=>dayKey(c.ts)));let n=0;const d=startOfDay(today());
   if(!days.has(dayKey(d)))d.setDate(d.getDate()-1);
   while(days.has(dayKey(d))){n++;d.setDate(d.getDate()-1)}return n;
 }
 /* ---------- this week (Monday to Sunday), shared with friends for the weekly awards. No money in it. ---------- */
-const weekStart=d=>{d=startOfDay(d||new Date());d.setDate(d.getDate()-((d.getDay()+6)%7));return d};
+const weekStart=d=>{d=startOfDay(d||today());d.setDate(d.getDate()-((d.getDay()+6)%7));return d};
 function weekStats(){
   const ws=+weekStart(),cs=store.cards.filter(c=>trusted(c)&&isFresh(c)&&+new Date(c.ts)>=ws);
   const best=cs.slice().sort((x,y)=>y.score-x.score||(special(y)?1:0)-(special(x)?1:0))[0];
@@ -3047,9 +3251,9 @@ function weekStats(){
     streak:streakNow(),best:best?{tier:best.tier,score:best.score,store:String(best.store).slice(0,40),finish:best.finish}:null};
 }
 /* what a scan earned: XP, quests finished, level ups, stores seen for the first time */
-const snap=()=>{const xp=totalXP(),g=goalState();return {xp,L:levelOf(xp),goal:!!(g&&g.done),w:weeklyState().done,q:new Set(questState(dayKey(new Date()),store.cards).filter(q=>q.done).map(q=>q.id))}};
+const snap=()=>{const xp=totalXP(),g=goalState();return {xp,L:levelOf(xp),goal:!!(g&&g.done),w:weeklyState().done,q:new Set(questState(dayKey(today()),store.cards).filter(q=>q.done).map(q=>q.id))}};
 function rewardHTML(before,newCards){
-  const after=snap(),gained=after.xp-before.xp,qs=questState(dayKey(new Date()),store.cards).filter(q=>q.done&&!before.q.has(q.id));
+  const after=snap(),gained=after.xp-before.xp,qs=questState(dayKey(today()),store.cards).filter(q=>q.done&&!before.q.has(q.id));
   const newStores=newCards.filter(c=>isFirstOfStore(c,store.cards));
   const chips=[`<span class="rchip xp">+${gained} XP</span>`];
   if(newCards.some(c=>c.luck>=6))chips.push(`<span class="rchip lk">Lucky pull</span>`);
@@ -3057,7 +3261,8 @@ function rewardHTML(before,newCards){
   if(newStores.length)chips.push(`<span class="rchip ns">${newStores.length>1?newStores.length+" new stores":"New store"}</span>`);
   for(const q of qs)chips.push(`<span class="rchip qd">Challenge done · ${esc(q.t)}</span>`);
   {const w=weeklyState();if(w.done&&!before.w)chips.push(`<span class="rchip gd2">Weekly challenge done · +${w.xp} XP</span>`)}
-  if(prog().gbNew){delete prog().gbNew;save();chips.push(`<span class="rchip god">✦ Lucky! Your next pack is a God Pack</span>`)}
+  if(prog().gbNew){delete prog().gbNew;save();chips.push(`<span class="rchip god">✦ Lucky! Your next 10-card pack is a God Pack</span>`)}
+  if(prog().boostNew){delete prog().boostNew;save();chips.push(`<span class="rchip god">✦✦ Your next upload's best card gets a special frame</span>`)}
   const g=goalState();if(g&&g.done&&!before.goal)chips.push(`<span class="rchip gd2">Daily goal done · ${esc(g.t)}</span>`);
   if(newCards.length===1){const c=newCards[0],n=visitsTo(c);
     if(n>1)chips.push(`<span class="rchip vis">${ordinal(n)} offer from this ${esc(c.store)}</span>`);
@@ -3080,7 +3285,7 @@ function renderProfile(){
   <div class="phero">
     <div class="avatar" style="--c:${best?TC[best.tier]:"var(--mut)"}">${esc(name.trim()[0]||"D").toUpperCase()}</div>
     <div class="pmeta">
-      <input id="pName" class="pname" value="${esc(name)}" maxlength="24" autocomplete="off" aria-label="Your name">
+      ${Cloud.user&&Cloud.username()?`<div class="pname unrow"><span>@${esc(Cloud.username())}</span><button class="mini ghost" id="pUname">Change</button></div>`:`<input id="pName" class="pname" value="${esc(name)}" maxlength="24" autocomplete="off" aria-label="Your name">`}
       <div class="plvl">Level ${L} · ${titleOf(L)}</div>
       <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="${to-from}" aria-valuenow="${xp-from}"><i style="width:${(xp-from)/(to-from)*100}%"></i></div>
       <div class="xpl"><span>${xp-from} / ${to-from} XP</span><span>${xp} total</span></div>
@@ -3101,8 +3306,9 @@ function renderProfile(){
     <div class="achs">${ach.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
   </div>
   <p class="about">XP per card: Trash 3 · Common 6 · Uncommon 10 · Rare 18 · Super Rare 30 · Epic 55 · Legendary 120 · Mythic 300 · Holo or Gold +150 · Neon +100 · Carbon or Inverted +60 · packs +7 to +23 · daily quests 15–80. Hand-edited cards earn 3. Every level gives you a luck card.</p>`;
-  $("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile();renderProfBtns();if(Cloud.user)Cloud.pushProfile().catch(err=>Cloud.fail(err))};
-  $("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
+  if($("pUname"))$("pUname").onclick=()=>usernameSheet(false).then(()=>renderProfile());
+  if($("pName"))$("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile();renderProfBtns();if(Cloud.user)Cloud.pushProfile().catch(err=>Cloud.fail(err))};
+  if($("pName"))$("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
   const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
   wireFriends();
 }
@@ -3123,7 +3329,7 @@ function wireGiftBtn(root){(root||document).querySelectorAll("[data-gift]").forE
 let luckTok=0;
 function openLuck(preview){
   const p=prog(),n=preview?preview.length:Math.min(+p.unseen||0,p.luck.length);if(!n){renderGift();return}
-  const list=preview||p.luck.slice(p.luck.length-n),base=preview?luckMult():Math.min(LUCK_MAX,1+(luckPct()-list.reduce((a,x)=>a+(+x[2]||0),0))/100);
+  const list=preview||p.luck.slice(p.luck.length-n),base=preview?luckShown():Math.min(LUCK_MAX,1+(luckPct()-list.reduce((a,x)=>a+(+x[2]||0),0))/100);
   let i=0,cur=base;const tok=++luckTok;
   /* the sheet can be closed mid-animation: stop quietly (the luck is already saved) */
   const alive=()=>tok===luckTok&&!!$("lkCard")&&!$("qrSheet").hidden;
@@ -3167,7 +3373,7 @@ function applyScanMode(){const f=$("file");if(f)f.multiple=SET.scanMode!=="fast"
    ========================================================= */
 const FB_CFG=(window.OFFERDEX_FIREBASE&&window.OFFERDEX_FIREBASE.apiKey)?window.OFFERDEX_FIREBASE:null;
 const FBV="10.14.1";
-const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp","dev","stk","nrf","god"];
+const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp","dev","stk","nrf","cb","god","boosted","fav"];
 const CODE_ABC="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 /* driver IDs: 12 characters shown as XXXX-XXXX-XXXX (about 10^17 possible, so nobody can guess one) */
 const ID_LEN=12;
@@ -3185,7 +3391,7 @@ function cleanCard(d,id){
   if(c.noxp!==undefined){if(c.noxp)c.noxp=1;else delete c.noxp}
   if(c.dev!==undefined){if(c.dev)c.dev=1;else delete c.dev}
   if(c.god!==undefined){if(c.god)c.god=1;else delete c.god}
-  if(c.nrf!==undefined){const n=c.nrf;c.nrf=n&&typeof n==="object"&&TIERS.some(t=>t.id===n.t)?{s:Math.max(1,Math.min(100,num0(n.s))),t:n.t,f:["standard",...C.FINISH_KEYS].includes(n.f)?n.f:"standard"}:undefined;if(!c.nrf)delete c.nrf}
+  for(const k of ["cb","nrf"])if(c[k]!==undefined){const n=c[k];c[k]=n&&typeof n==="object"&&TIERS.some(t=>t.id===n.t)?{s:Math.max(1,Math.min(100,num0(n.s))),t:n.t,f:["standard",...C.FINISH_KEYS].includes(n.f)?n.f:"standard"}:undefined;if(!c[k])delete c[k]}
   if(c.stk!==undefined){const k=c.stk;c.stk=k&&typeof k==="object"&&/^[a-z]+-\d{4}$/.test(String(k.e))&&STK_FACES.some(f=>f.id===k.f)?{e:String(k.e),f:String(k.f),t:STK_TRIMS[k.t]?String(k.t):""}:undefined;if(!c.stk)delete c.stk}
   c.stops=c.stops||2;c.no=c.no||0;
   if(!TIERS.some(t=>t.id===c.tier))c.tier=C.tierFor(c.score||1).id;
@@ -3199,7 +3405,9 @@ function cleanCard(d,id){
   if(!C.FINISH_KEYS.includes(c.finish0))delete c.finish0;
   /* a card that says it's verified still has to obey the cap rules */
   if(c.verified===false&&c.score>C.UNVERIFIED_CAP){c.score=C.UNVERIFIED_CAP;c.tier=C.tierFor(c.score).id;c.finish="standard"}
-  c.check=Array.isArray(c.check)?c.check.filter(k=>["pay","trip","odd"].includes(k)):false;
+  if(Array.isArray(c.check))c.check=c.check.filter(k=>["pay","trip","odd"].includes(k));else delete c.check;
+  if(c.fav!==undefined){if(c.fav)c.fav=1;else delete c.fav}
+  if(c.boosted!==undefined){if(c.boosted)c.boosted=1;else delete c.boosted}
   delete c.took;
   c.ts=isNaN(new Date(c.ts))?new Date().toISOString():new Date(c.ts).toISOString();
   c.added=isNaN(new Date(c.added))?c.ts:new Date(c.added).toISOString();
@@ -3217,7 +3425,10 @@ function cleanLoc(d){
 }
 const pubOf=c=>{const o={};for(const k of PUB_FIELDS)if(c[k]!==undefined&&c[k]!==null)o[k]=c[k];return o};
 const locOf=c=>{const o={};const a=artOf(c);if(a&&SET.maps!==false&&a.length<400000)o.art=a;if(SET.addr&&c.addr)o.addr=c.addr;if(SET.addr&&c.city)o.city=c.city;if(c.sha)o.sha=c.sha;if(c.ph)o.ph=c.ph;return o};
-const sigOf=c=>{const l=locOf(c);return JSON.stringify(pubOf(c))+"|"+(l.art?l.art.length:0)+"|"+(l.addr||"")};
+const pubSig=c=>JSON.stringify(pubOf(cleanCard(pubOf(c),c.id)));
+const sigOf=c=>{const l=locOf(c);return pubSig(c)+"|"+(l.art?l.art.length:0)+"|"+(l.addr||"")};
+/* this phone's saves are numbered; if the saved copy is older than what was synced (a failed save), never delete cloud cards */
+const svKey=()=>"offerdex.sv."+(Cloud.user?Cloud.user.uid:"");
 
 const Cloud={
   on:!!FB_CFG,ready:false,user:null,auth:null,db:null,busy:false,timer:0,last:0,err:"",
@@ -3247,7 +3458,11 @@ const Cloud={
       this.auth.onAuthStateChanged(async u=>{
         this.user=u;this.ready=true;this.profile=null;this.friends=[];this.requests=[];rerenderAccount();
         if(!u){this.isHead=this.isMod=false;applySkin();let pend=null;try{pend=localStorage.getItem("offerdex.pendingAdd")}catch(e){}if(pend)gotFriendCode(pend)}
-        if(u){this.checkMod().catch(()=>{});try{await this.fullSync();await this.loadFriends()}catch(e){this.fail(e)}takePendingAdd()}
+        if(u){this.checkMod().catch(()=>{});try{await this.fullSync();await this.loadFriends()}catch(e){this.fail(e)}
+          /* every account needs a username; existing accounts pick one the first time they open this version */
+          if(this.user&&this.profile&&!this.profile.username)try{await usernameSheet(true)}catch(e){}
+          if(this.isHead)this.loadInbox().catch(()=>{});
+          takePendingAdd()}
       });
     }catch(e){this.on=false;this.err=friendly(e);console.warn(e);rerenderAccount()}
   },
@@ -3263,7 +3478,8 @@ const Cloud={
   },
   async signOut(){await this.auth.signOut();toast("Signed out. Your cards stay on this phone.")},
   fail(e){console.error(e);this.err=friendly(e);this.busy=false;rerenderAccount()},
-  soon(){if(!this.user)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.push().catch(e=>this.fail(e)),2500)},
+  hold:0,
+  soon(){if(!this.user)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.push().catch(e=>this.fail(e)),Math.max(2500,(this.hold||0)-Date.now()+500))},
   forget(id){/* the next sync notices the card is gone and deletes it from the cloud */},
   me(){return this.db.collection("users").doc(this.user.uid)},
   /* ---------- profile + friend code ---------- */
@@ -3310,7 +3526,8 @@ const Cloud={
     try{localStorage.setItem("offerdex.owner",this.user.uid)}catch(e){}
     const uid=this.user.uid,cardsCol=this.me().collection("cards"),locCol=this.me().collection("cardLoc");
     const remote=new Map();(await cardsCol.get()).forEach(d=>remote.set(d.id,d.data()));
-    const synced=this.synced(),local=new Map(store.cards.map(c=>[c.id,c]));
+    let synced=this.synced();const local=new Map(store.cards.map(c=>[c.id,c]));
+    {let sv=0;try{sv=+localStorage.getItem(svKey())||0}catch(e){}if(sv>(+store.sv||0)){console.warn("Local copy is older than the last sync: keeping cloud cards");synced={}}}
     const down=[],delLocal=[],delRemote=[];
     for(const [id,d] of remote){
       const l=local.get(id);
@@ -3329,7 +3546,9 @@ const Cloud={
     if(delLocal.length&&!remote.size&&delLocal.length===store.cards.length)store.seen=[];
     if(delLocal.length){store.cards=store.cards.filter(c=>!delLocal.includes(c.id));for(const id of delLocal){ART.delete(id);idb.del(id).catch(()=>{})}}
     store.next=Math.max(store.next||1,...store.cards.map(c=>(c.no||0)+1));
-    const s2={};for(const [id] of remote)if(!delRemote.includes(id))s2[id]=sigOf(cleanCard(remote.get(id),id));
+    /* what the cloud already has: same card data, and (if it was synced from here before) the same map */
+    const s2={};for(const [id] of remote)if(!delRemote.includes(id)){const r=cleanCard(remote.get(id),id),l=local.get(id);
+      if(l&&pubSig(l)===pubSig(r)){const old=synced[id];s2[id]=old&&old.startsWith(pubSig(r)+"|")?old:sigOf(l)}else s2[id]=sigOf(r)}
     this.setSynced(s2);
     try{await this.pullNotes()}catch(e){console.warn("Notes not synced (publish the latest firestore.rules)",e)}
     try{await this.pullState()}catch(e){console.warn("Progress not synced (publish the latest firestore.rules)",e)}
@@ -3350,19 +3569,21 @@ const Cloud={
       for(const id of Object.keys(synced))if(!now[id])ops.push(["del",id]);
       for(const id of extraDeletes||[])if(!ops.some(o=>o[0]==="del"&&o[1]===id))ops.push(["del",id]);
       const cardsCol=this.me().collection("cards"),locCol=this.me().collection("cardLoc");
-      for(let i=0;i<ops.length;i+=200){
-        const b=this.db.batch();
-        for(const [op,x] of ops.slice(i,i+200)){
-          if(op==="set"){b.set(cardsCol.doc(x.id),pubOf(x));b.set(locCol.doc(x.id),locOf(x))}
-          else{b.delete(cardsCol.doc(x));b.delete(locCol.doc(x))}
-        }
-        await b.commit();
+      /* batches stay well under Firestore's 10 MB per request: maps are big */
+      let b=this.db.batch(),n=0,bytes=0;
+      for(const [op,x] of ops){
+        if(op==="set"){const l=locOf(x);b.set(cardsCol.doc(x.id),pubOf(x));b.set(locCol.doc(x.id),l);bytes+=3000+(l.art?l.art.length:0)}
+        else{b.delete(cardsCol.doc(x));b.delete(locCol.doc(x));bytes+=200}
+        if(++n>=200||bytes>3e6){await b.commit();b=this.db.batch();n=0;bytes=0}
       }
-      this.setSynced(now);
+      if(n)await b.commit();
+      this.setSynced(now);try{localStorage.setItem(svKey(),String(+store.sv||0))}catch(e){}
       try{await this.pushNotes()}catch(e){console.warn("Notes not synced (publish the latest firestore.rules)",e)}
       try{await this.pushState()}catch(e){console.warn("Progress not synced (publish the latest firestore.rules)",e)}
       /* a deleted card is taken off your posts too */
-      const gone=ops.filter(o=>o[0]==="del").map(o=>o[1]);if(gone.length)this.dropPosts(gone).catch(e=>console.warn(e));
+      /* auto-deleted cards keep their posts */
+      const kp=new Set(store.kp||[]),gone=ops.filter(o=>o[0]==="del"&&!kp.has(o[1])).map(o=>o[1]);if(gone.length)this.dropPosts(gone).catch(e=>console.warn(e));
+      if(kp.size){const left=(store.kp||[]).filter(id=>store.cards.some(c=>c.id===id));if(left.length!==store.kp.length){store.kp=left;save()}}
       if(ops.length||!this.last)await this.pushProfile();
       this.last=Date.now();this.err="";
     }finally{this.busy=false;rerenderAccount()}
@@ -3402,6 +3623,7 @@ const Cloud={
         for(let i=0;i<docs.length;i+=400){const b=this.db.batch();docs.slice(i,i+400).forEach(r=>b.delete(r));await b.commit()}
       }
       if(this.profile&&this.profile.code)await this.db.collection("codes").doc(this.profile.code).delete().catch(()=>{});
+      if(this.profile&&this.profile.username)await this.db.collection("usernames").doc(String(this.profile.username).toLowerCase()).delete().catch(()=>{});
       await me.delete();this.setSynced({});this.profile=null;this.friends=[];this.requests=[];
       this.busy=false;await this.auth.signOut();toast("Cloud copy deleted. Your cards are still on this phone.");
     }catch(e){this.fail(e)}
@@ -3411,9 +3633,20 @@ const Cloud={
   skey(){return "offerdex.syncedState."+(this.user?this.user.uid:"")},
   stateRef(){return this.me().collection("meta").doc("state")},
   stateOut(){const p=prog(),qd={};for(const k of Object.keys(p.qd).sort().slice(-400))qd[k]=p.qd[k].slice(0,3);
-    return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,gb:+p.gb||0,wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
+    return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,bd:Object.fromEntries(Object.entries(p.bd||{}).slice(-20).map(([k,v])=>[k,Math.round(+v||0)])),md:{xp:+((store.modDone||{}).xp)||0,god:+((store.modDone||{}).god)||0},
+      ach:Object.keys(p.ach||{}).slice(0,60),qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
       del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0},
-      hist:histList().slice(-1500)}},
+      ...(this.histOK()?{}:{hist:histList().slice(-1500)})}},
+  /* auto-deleted cards' numbers live in their own document (meta/hist), written only when they change */
+  histRef(){return this.me().collection("meta").doc("hist")},
+  hkey(){return "offerdex.syncedHist."+(this.user?this.user.uid:"")},
+  histOK(){try{return localStorage.getItem(this.hkey()+".ok")==="1"}catch(e){return false}},
+  mergeHist(list,R){
+    if(!Array.isArray(list))return;const have=new Set(histList().map(h=>h.i));
+    if(num0(R)>=num0(prog().rs))for(const h of list.slice(-1500))if(h&&typeof h==="object"&&!have.has(String(h.i))&&TIERS.some(t=>t.id===h.t)&&!isNaN(new Date(h.ts)))
+      histList().push({i:String(h.i).slice(0,40),ts:new Date(h.ts).toISOString(),s:String(h.s||"").slice(0,40),pl:String(h.pl||"").slice(0,20),p:num0(h.p),m:num0(h.m),mi:num0(h.mi),st:num0(h.st)||2,g:num0(h.g),sc:num0(h.sc),t:h.t,vb:num0(h.vb)||51,rc:num0(h.rc),a:String(h.a||"").slice(0,80)});
+    if(store.hist.length>3000)store.hist=store.hist.slice(-3000);
+  },
   async pullState(){
     if(!this.user)return;const snap=await this.stateRef().get();if(!snap.exists)return;
     const d=snap.data()||{},R=d.prog&&typeof d.prog==="object"?d.prog:null,P=prog();
@@ -3421,29 +3654,43 @@ const Cloud={
       const rs=num0(R.rs),luck=(Array.isArray(R.luck)?R.luck:[]).slice(0,400).map(x=>String(x).split("|")).map(([L,r,p])=>[Math.round(num0(L)),LUCK_NAME[r]?r:"common",[1,2,3,5,8,15].includes(+p)?+p:1]).filter(x=>x[0]>=2&&x[0]<=2000);
       const qd={};if(R.qd&&typeof R.qd==="object")for(const [k,v] of Object.entries(R.qd).slice(0,400))if(/^\d{4}-\d\d-\d\d$/.test(k))qd[k]=String(v).split(",").filter(Boolean).slice(0,3);
       const bank=Math.max(0,Math.min(1e8,num0(R.bank))),lvlMax=Math.max(1,Math.min(400,Math.round(num0(R.lvlMax))||1));
-      if(rs>num0(P.rs)){store.prog={v:3,rs,bank,lvlMax,luck,unseen:0,qd};store.resetAt=Math.max(num0(store.resetAt),rs)}
-      else if(rs===num0(P.rs)){
+      /* a reset on another device: start over here too (cards were already removed by the sync) */
+      if(rs>num0(P.rs)){store.prog={v:3,rs,bank,lvlMax,luck,unseen:0,qd,wd:{},bd:{},qv:{}};store.resetAt=Math.max(num0(store.resetAt),rs);store.hist=[];store.gone=[];store.kp=[]}
+      const P2=prog();if(rs===num0(P2.rs))this.mergeExtra(P2,R);
+      if(rs===num0(P.rs)){
         P.bank=Math.max(num0(P.bank),bank);P.lvlMax=Math.max(num0(P.lvlMax)||1,lvlMax);
         const m=new Map(P.luck.map(x=>[x[0],x]));for(const x of luck)m.set(x[0],x);P.luck=[...m.values()].sort((a,b)=>a[0]-b[0]);
         P.unseen=Math.min(num0(P.unseen),P.luck.length);
         for(const [k,v] of Object.entries(qd))P.qd[k]=[...new Set([...(P.qd[k]||[]),...v])].slice(0,3);
-        P.gb=Math.max(+P.gb||0,Math.min(50,num0(R.gb)));if(!P.wd||typeof P.wd!=="object")P.wd={};
-        if(R.wd&&typeof R.wd==="object")for(const [k,v] of Object.entries(R.wd).slice(-60))if(/^\d{4}-\d\d-\d\d$/.test(k)&&WEEKLY_POOL.some(q=>q.id===v))P.wd[k]=v;
+        P.gb10=Math.max(+P.gb10||0,Math.min(20,num0(R.gb10)));P.boost=Math.max(+P.boost||0,Math.min(20,num0(R.boost)));if(!P.wd||typeof P.wd!=="object")P.wd={};
+        if(R.wd&&typeof R.wd==="object")for(const [k,v] of Object.entries(R.wd).slice(-60))if(/^\d{4}-\d\d-\d\d$/.test(k)&&ALL_WEEKLY.some(q=>q.id===v))P.wd[k]=v;
+        if(!P.qv||typeof P.qv!=="object")P.qv={};if(R.qv&&typeof R.qv==="object")for(const [k,v] of Object.entries(R.qv).slice(-60))if(/^\d{4}-\d\d-\d\d$/.test(k)&&[1,2].includes(+v)&&!P.qv[k])P.qv[k]=+v;
       }
     }
     if(Array.isArray(d.del)){const have=new Set(delList().map(x=>x[0]+"|"+x[2]));
       for(const x of d.del.slice(0,400)){const [a,b,k0,t]=String(x).split("|");let k="";try{k=decodeURIComponent(k0||"")}catch(e){}if(!/^[0-9a-f]{0,16}$/.test(a||"")||!/^[0-9a-f]{0,64}$/.test(b||""))continue;
         if(!have.has(a+"|"+k))delList().push([a,b,String(k||"").slice(0,60),num0(t)])}pruneDel()}
     /* numbers of auto-deleted cards, so charts match on every device */
-    if(Array.isArray(d.hist)){const have=new Set(histList().map(h=>h.i)),R=num0(d.prog&&d.prog.rs);
-      if(R>=num0(prog().rs))for(const h of d.hist.slice(-1500))if(h&&typeof h==="object"&&!have.has(String(h.i))&&TIERS.some(t=>t.id===h.t)&&!isNaN(new Date(h.ts)))
-        histList().push({i:String(h.i).slice(0,40),ts:new Date(h.ts).toISOString(),s:String(h.s||"").slice(0,40),pl:String(h.pl||"").slice(0,20),p:num0(h.p),m:num0(h.m),mi:num0(h.mi),st:num0(h.st)||2,g:num0(h.g),sc:num0(h.sc),t:h.t,vb:num0(h.vb)||51,rc:num0(h.rc),a:String(h.a||"").slice(0,80)});
-      if(store.hist.length>3000)store.hist=store.hist.slice(-3000)}
-    if(d.use&&d.use.d===dayKey(new Date())){addUse(0);store.use.n=Math.max(+store.use.n||0,Math.min(500,num0(d.use.n)))}
+    this.mergeHist(d.hist,d.prog&&d.prog.rs);
+    try{const hs=await this.histRef().get();if(hs.exists){const h=hs.data()||{};this.mergeHist(h.hist,h.rs)}}catch(e){}
+    if(d.use&&d.use.d===dayKey(today())){addUse(0);store.use.n=Math.max(+store.use.n||0,Math.min(500,num0(d.use.n)))}
     save();renderGift();
   },
+  /* merge the newer progress fields (all only ever grow) */
+  mergeExtra(P,R){
+    if(!P.bd||typeof P.bd!=="object")P.bd={};
+    if(R.bd&&typeof R.bd==="object")for(const [k,v] of Object.entries(R.bd).slice(0,40))if(/^[a-z0-9]{8}$/.test(k))P.bd[k]=Math.max(+P.bd[k]||0,Math.max(0,Math.min(1e8,Math.round(num0(v)))));
+    if(R.md&&typeof R.md==="object"){const d=store.modDone||(store.modDone={xp:0,god:0});d.xp=Math.max(+d.xp||0,Math.max(0,num0(R.md.xp)));d.god=Math.max(+d.god||0,Math.max(0,num0(R.md.god)))}
+    if(!P.ach||typeof P.ach!=="object")P.ach={};if(Array.isArray(R.ach))for(const a of R.ach.slice(0,60))if(typeof a==="string"&&a.length<40)P.ach[a]=1;
+    if(!P.qt||typeof P.qt!=="object")P.qt={};if(R.qt&&typeof R.qt==="object")for(const [k,v] of Object.entries(R.qt).slice(-14))if(/^\d{4}-\d\d-\d\d$/.test(k)&&Array.isArray(v)){const a=P.qt[k]||(P.qt[k]=[]);v.slice(0,3).forEach((t,i)=>{t=num0(t);if(t>0&&!(a[i]>0))a[i]=t})}
+    if(!P.sw||typeof P.sw!=="object")P.sw={};if(R.sw&&typeof R.sw==="object")for(const [k,v] of Object.entries(R.sw).slice(-14))if(/^\d{4}-\d\d-\d\d$/.test(k)&&v&&typeof v==="object"&&[0,1,2].includes(+v.i)&&ALL_QUESTS.some(q=>q.id===v.id)&&!P.sw[k])P.sw[k]={i:+v.i,id:String(v.id)};
+  },
   async pushState(){
-    if(!this.user)return;const o=this.stateOut(),sig=JSON.stringify(o);
+    if(!this.user)return;
+    {const H=histList().slice(-1500),hs=H.length+":"+(H.length?H[H.length-1].i:"")+":"+(+prog().rs||0);let lh="";try{lh=localStorage.getItem(this.hkey())||""}catch(e){}
+      if(hs!==lh&&(H.length||lh)){try{await this.histRef().set({hist:H,rs:+prog().rs||0,upd:Date.now()});localStorage.setItem(this.hkey(),hs);localStorage.setItem(this.hkey()+".ok","1")}
+        catch(e){try{localStorage.removeItem(this.hkey()+".ok")}catch(_){}}}}
+    const o=this.stateOut(),sig=JSON.stringify(o);
     let last="";try{last=localStorage.getItem(this.skey())||""}catch(e){}
     if(sig===last)return;
     await this.stateRef().set({...o,upd:Date.now()});
@@ -3519,7 +3766,7 @@ const Cloud={
     return {p,cards,locs};
   }
 };
-const myName=()=>(SET.name||(Cloud.user&&Cloud.user.displayName)||"Driver").trim().slice(0,24)||"Driver";
+const myName=()=>((Cloud.profile&&Cloud.profile.username)||SET.name||(Cloud.user&&Cloud.user.displayName)||"Driver").trim().slice(0,24)||"Driver";
 function friendly(e){
   const c=(e&&e.code)||"",m=(e&&e.message)||String(e);
   if(/invalid-api-key|api-key-not-valid|API key not valid/i.test(c+m))return "The apiKey in index.html isn't valid. Copy it again from Firebase (Project settings > General > Your apps > Config) and paste it exactly.";
@@ -3726,6 +3973,8 @@ async function gotFriendCode(code){
 /* opened from a friend's QR or link: remember the code, clean the address bar */
 (()=>{try{const u=new URL(location.href),a=u.searchParams.get("add");if(!a)return;
   const code=codeFrom(a);if(code)localStorage.setItem("offerdex.pendingAdd",code);
+  /* an old 8-character ID link or QR: say so instead of doing nothing */
+  else setTimeout(()=>qrSheet(`<div class="qrcard"><h2>Old ID link</h2><p class="msg">That link or QR code is from an older version of DasherDex, before IDs got longer. Ask your friend for their new ID or QR code. It's on their Profile.</p></div>`),900);
   u.searchParams.delete("add");history.replaceState(null,"",u.pathname+(u.search||"")+u.hash)}catch(e){}})();
 function takePendingAdd(){
   let code=null;try{code=localStorage.getItem("offerdex.pendingAdd")}catch(e){}
@@ -3790,7 +4039,7 @@ Object.assign(Cloud,{
     caption=String(caption||"").trim().slice(0,CAPTION_MAX);
     if(aud==="global"){
       if(caption&&!GLOBAL_CAPTIONS.includes(caption))throw new Error("Pick one of the captions for Global.");
-      const today=dayKey(new Date()),log=(SET.gposts||[]).filter(x=>x[0]===today);
+      const tk=dayKey(today()),log=(SET.gposts||[]).filter(x=>x[0]===tk);
       if(log.length>=GLOBAL_PER_DAY&&!this.isHead)throw new Error(`You can post ${GLOBAL_PER_DAY} cards to Global a day. Try again tomorrow.`);
       let banned=false;try{banned=(await this.db.collection("bans").doc(this.user.uid).get()).exists}catch(e){}
       if(banned)throw new Error("A moderator has blocked you from posting to Global. You can still post to Friends.");
@@ -3799,7 +4048,7 @@ Object.assign(Cloud,{
     const ref=aud==="global"?this.db.collection("posts").doc(this.user.uid+"_"+c.id):this.me().collection("posts").doc(c.id);
     if((await ref.get().catch(()=>({exists:false}))).exists)throw new Error(aud==="global"?"You already posted this card to Global.":"You already posted this card to Friends.");
     await ref.set(doc);
-    if(aud==="global"){SET.gposts=[...(SET.gposts||[]).filter(x=>x[0]===dayKey(new Date())),[dayKey(new Date()),c.id]];saveSet()}
+    if(aud==="global"){SET.gposts=[...(SET.gposts||[]).filter(x=>x[0]===dayKey(today())),[dayKey(today()),c.id]];saveSet()}
     feedCache[aud]=null;
   },
   async feedFriends(){
@@ -3878,7 +4127,7 @@ async function renderFeed(force){
     (posts.length?`<div class="posts">${posts.map(p=>`<article class="post" data-pid="${esc(p.id)}">
       <header><span class="avatar sm" style="--c:${TC[p.card.tier]||"var(--t-rare)"}">${esc((p.name[0]||"D").toUpperCase())}</span>
         <span class="pn"${Cloud.isHead&&p.uid!==me?` data-who="${esc(p.uid)}" data-nm="${esc(p.name)}" role="button"`:""}><b>${p.uid===me?"You":esc(p.name)}</b><small>Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
-        ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`${Cloud.isMod?`<button class="mini modbtn" data-mod="${esc(p.id)}">Mod</button>`:""}<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide this post">Hide</button>`:""}</header>
+        ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`${Cloud.isMod?`<button class="mini modbtn" data-mod="${esc(p.id)}">Mod</button>`:""}<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide or report this post">•••</button>`:""}</header>
       ${p.caption?`<p class="pcap">${esc(p.caption)}</p>`:""}
       <div class="pcard" data-open="${esc(p.id)}">${cardHTML({...p.card,_friend:true,_art:""})}</div>
     </article>`).join("")}</div>`
@@ -3893,7 +4142,8 @@ async function renderFeed(force){
   box.querySelectorAll("[data-who]").forEach(el=>el.onclick=()=>openDriver(el.dataset.who,el.dataset.nm));
   box.querySelectorAll("[data-mod]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.mod);if(p)modSheet(p)});
   box.querySelectorAll("[data-hide]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.hide);
-    qrSheet(`<div class="qrcard"><h2>Hide this post?</h2><p class="msg">Hidden posts only disappear for you.</p></div><div class="btnrow"><button class="btn ghost" id="hOne">Hide this post</button><button class="btn ghost" id="hAll">Hide everything from ${esc(p.name)}</button></div>`);
+    qrSheet(`<div class="qrcard"><h2>This post</h2><p class="msg">Hidden posts only disappear for you.</p></div><div class="btnrow"><button class="btn ghost" id="hOne">Hide this post</button><button class="btn ghost" id="hAll">Hide everything from ${esc(p.name)}</button></div><button class="btn ghost danger" id="hRep">Report this post</button>`);
+    $("hRep").onclick=()=>reportSheet(p);
     $("hOne").onclick=()=>{SET.hidePosts=[...hiddenSet("hidePosts"),p.id].slice(-500);saveSet();closeQR();renderFeed()};
     $("hAll").onclick=()=>{SET.hideUsers=[...hiddenSet("hideUsers"),p.uid].slice(-200);saveSet();closeQR();renderFeed()}});
   padForBar();
@@ -3906,7 +4156,7 @@ async function renderFeed(force){
 const EVENTS=[{id:"halloween",name:"Halloween",from:[10,24],to:[10,31],skin:"halloween",icon:"🎃"}];
 function eventNow(){
   const ov=SET.devEvent;if(ov==="none")return null;
-  const d=new Date(),y=d.getFullYear();
+  const d=today(),y=d.getFullYear();
   for(const e of EVENTS){const a=new Date(y,e.from[0]-1,e.from[1]),b=new Date(y,e.to[0]-1,e.to[1]+1);
     if(ov===e.id||(d>=a&&d<b)){const end=d<b?b:new Date(y,e.to[0]-1,e.to[1]+1);return {...e,year:y,key:e.id+"-"+y,end:+end,left:Math.max(1,Math.ceil((end-d)/864e5))}}}
   return null;
@@ -3962,8 +4212,10 @@ function addStickers(cards,boostFor){for(const c of cards){const s=rollSticker(b
 function renderEvent(){
   const el=$("event");if(!el)return;const ev=eventNow();el.hidden=!ev;if(!ev)return;
   const d=new Date(ev.end-1).toLocaleDateString([],{month:"short",day:"numeric"});
-  el.innerHTML=`<span class="ev-ic">${pumpkinSVG("happy","")}</span><div><b>${ev.name} event · ${ev.left} day${ev.left>1?"s":""} left</b><small>Haunted packs are here. Any card can drop a pumpkin sticker, only until ${d}. Rare faces and trims are out there.</small></div>`;
+  el.innerHTML=`<span class="ev-ic">${pumpkinSVG("happy","")}</span><div><b>${ev.name} event · ${evEnds(ev)}</b><small>Haunted packs are here. Any card can drop a pumpkin sticker, only until ${d}. Rare faces and trims are out there.</small></div>`;
 }
+/* "Ends Oct 31", or "Last day!" on the final day: clearer than counting days */
+const evEnds=ev=>{const last=new Date(ev.end-1);return dayKey(last)===dayKey(today())?"Last day!":"Ends "+last.toLocaleDateString([],{month:"short",day:"numeric"})};
 function stickerBookHTML(){
   const mine=store.cards.filter(c=>c.stk&&/^halloween-/.test(c.stk.e)),ev=eventNow();
   if(!mine.length&&!(ev&&ev.id==="halloween"))return "";
@@ -3971,7 +4223,7 @@ function stickerBookHTML(){
   const trims=mine.filter(c=>c.stk.t).length;
   return `<div class="sbox"><h3>Pumpkin stickers <small>${have.size} of ${STK_FACES.length} faces${trims?` · ${trims} trimmed`:""}</small></h3>
     <div class="stkbook">${STK_FACES.map(f=>`<div class="stkslot${have.has(f.id)?" on":""}" style="--c:${TC[f.r]}">${pumpkinSVG(f.id,"")}<b>${have.has(f.id)?esc(f.name):"???"}</b><small>${have.has(f.id)?`×${have.get(f.id)}`:TIERS.find(t=>t.id===f.r).name}</small></div>`).join("")}</div>
-    <p class="msg">${ev&&ev.id==="halloween"?`Only during Halloween week. ${ev.left} day${ev.left>1?"s":""} left this year.`:"Back next Halloween."}</p></div>`;
+    <p class="msg">${ev&&ev.id==="halloween"?`Only during Halloween week. ${evEnds(ev)}.`:"Back next Halloween."}</p></div>`;
 }
 
 /* =========================================================
@@ -4031,7 +4283,7 @@ function modSheet(p){
    head moderator can write and only that driver's app reads. Their app applies it the next time it syncs.
      xpGift  total XP handed out (the app adds whatever it hasn't added yet)
      god     number of god packs given (the next upload's best pack is a God Pack)
-     nerf    secret: luck off, no special frames, rarity scores very low. Never touches the grade or Accept/Decline.
+     cal     luck calibration (see the driver panel). Never touches the grade or Accept/Decline.
      block   offers removed by a moderator; that driver can never scan them again
    ========================================================= */
 Object.assign(Cloud,{
@@ -4044,12 +4296,13 @@ Object.assign(Cloud,{
   },
   async driver(uid){
     const u=this.db.collection("users").doc(uid);
-    const [p,ms,mod,ban]=await Promise.all([u.get(),this.modRef(uid).get().catch(()=>null),this.db.collection("mods").doc(uid).get().catch(()=>null),this.db.collection("bans").doc(uid).get().catch(()=>null)]);
+    const [p,ms,mod,ban,su]=await Promise.all([u.get(),this.modRef(uid).get().catch(()=>null),this.db.collection("mods").doc(uid).get().catch(()=>null),this.db.collection("bans").doc(uid).get().catch(()=>null),this.db.collection("signups").doc(uid).get().catch(()=>null)]);
     const cards=[];(await u.collection("cards").get()).forEach(d=>cards.push(cleanCard(d.data(),d.id)));
-    return {uid,p:p.exists?p.data():{},ms:ms&&ms.exists?ms.data():{},isMod:!!(mod&&mod.exists),banned:!!(ban&&ban.exists),cards};
+    return {uid,su:su&&su.exists?su.data():{},p:p.exists?p.data():{},ms:ms&&ms.exists?ms.data():{},isMod:!!(mod&&mod.exists),banned:!!(ban&&ban.exists),cards};
   },
   async setModState(uid,patch){const ref=this.modRef(uid),s=await ref.get();const cur=s.exists?s.data():{};
-    await ref.set({xpGift:0,god:0,nerf:false,gm:false,block:[],...cur,...patch,upd:Date.now()})},
+    const out={xpGift:0,god:0,cal:false,gm:false,block:[],...cur,...patch,upd:Date.now()};if("nerf" in out){if(!("cal" in patch))out.cal=out.nerf===true;delete out.nerf}
+    await ref.set(out)},
   async killCard(uid,c){
     /* delete the card, its map and its posts, and block that offer for this driver */
     const u=this.db.collection("users").doc(uid);let loc={};try{const l=await u.collection("cardLoc").doc(c.id).get();if(l.exists)loc=cleanLoc(l.data())}catch(e){}
@@ -4074,30 +4327,38 @@ Object.assign(Cloud,{
   }
 });
 function applyModState(d){
-  const ms={xpGift:Math.max(0,Math.round(num0(d.xpGift))),god:Math.max(0,Math.round(num0(d.god))),nerf:d.nerf===true,gm:d.gm===true,
+  const ms={xpGift:Math.max(0,Math.round(num0(d.xpGift))),god:Math.max(0,Math.round(num0(d.god))),cal:d.cal===true||d.nerf===true,gm:d.gm===true,
     block:(Array.isArray(d.block)?d.block:[]).slice(-500).map(String)};
   const done=store.modDone||(store.modDone={xp:0,god:0});
-  if(ms.xpGift>done.xp){prog().bank+=ms.xpGift-done.xp;done.xp=ms.xpGift}
-  /* nerf: rarity, luck and frames only; the grade and the verdict stay true */
-  const was=!!(store.modState&&store.modState.nerf),wasGod=!!(store.modState&&store.modState.gm);
+  if(ms.xpGift>done.xp){bankAdd(ms.xpGift-done.xp);done.xp=ms.xpGift}
+  const was=rngCal(),wasGod=!!(store.modState&&store.modState.gm);
   store.modState=ms;
   /* God mode just ended: keep the best card of each offer, delete the copies (XP stays) */
   if(wasGod&&!ms.gm){const n=dedupeCards();if(n)toast(`${n} duplicate card${n>1?"s":""} cleaned up`)}
-  if(ms.nerf)for(const c of store.cards)nerfCard(c);
-  else if(was)for(const c of store.cards)if(c.nrf){Object.assign(c,{score:c.nrf.s,tier:c.nrf.t,finish:c.nrf.f});delete c.nrf;c.upd=Date.now()}
+  if(ms.cal)for(const c of store.cards)calCard(c);
+  else if(was)for(const c of store.cards){const o=c.cb||c.nrf;if(o){Object.assign(c,{score:o.s,tier:o.t,finish:o.f});delete c.cb;delete c.nrf;c.upd=Date.now()}}
   save();checkLevel();
 }
-const nerfed=()=>!!(store.modState&&store.modState.nerf);
-function nerfCard(c){if(c.nrf||c._friend)return;c.nrf={s:c.score,t:c.tier,f:c.finish};c.score=Math.max(1,Math.min(c.score,Math.round(gradeOf(c)*0.3)));c.tier=C.tierFor(c.score).id;c.finish="standard";delete c.finish0;c.upd=Date.now()}
-/* god packs waiting: given by the head moderator, plus any won from a weekly challenge */
-const godLeft=()=>Math.max(0,((store.modState&&store.modState.god)||0)+(+(store.prog&&store.prog.gb)||0)-((store.modDone&&store.modDone.god)||0));
+const rngCal=()=>!!(store.modState&&(store.modState.cal||store.modState.nerf));
+function calCard(c){if(c.cb||c.nrf||c._friend)return;c.cb={s:c.score,t:c.tier,f:c.finish};c.score=Math.max(1,Math.min(c.score,Math.round(gradeOf(c)*0.3)));c.tier=C.tierFor(c.score).id;c.finish="standard";delete c.finish0;c.upd=Date.now()}
+/* god packs waiting from the head moderator (weekly-challenge ones are counted separately in prog.gb10) */
+const godLeft=()=>Math.max(0,((store.modState&&store.modState.god)||0)-((store.modDone&&store.modDone.god)||0));
 /* a God Pack: every card gets a special frame and the best one is Holographic; stickers too during an event */
-function makeGod(cards){
-  if(!cards.length||!godLeft())return false;
+function makeGod(cards,kind){
+  kind=kind||"mod";
+  if(!cards.length||(kind==="mod"?!godLeft():!(+prog().gb10>0)||rngCal()))return false;
   const fr=["gold","neon","carbon","inverted","holo"];
   cards.forEach((c,i)=>{c.finish=i===cards.length-1?"holo":fr[Math.floor(Math.random()*fr.length)];c.god=1;
     const ev=eventNow();if(ev&&ev.id==="halloween"){const f=STK_FACES[Math.min(STK_FACES.length-1,Math.floor(Math.random()*4)+(i===cards.length-1?2:0))];c.stk={e:ev.key,f:f.id,t:["holo","gold","neon","inverted"][Math.floor(Math.random()*4)]}}});
-  store.modDone=store.modDone||{xp:0,god:0};store.modDone.god=(store.modDone.god||0)+1;return true;
+  if(kind==="mod"){store.modDone=store.modDone||{xp:0,god:0};store.modDone.god=(store.modDone.god||0)+1}
+  else prog().gb10=Math.max(0,(+prog().gb10||0)-1);
+  return true;
+}
+/* super rare weekly reward: the best card of the next upload gets a guaranteed special frame */
+function applyBoost(cards){
+  const p=prog();if(!(+p.boost>0)||!cards.length||rngCal())return false;
+  const best=cards.slice().sort((a,b)=>a.score-b.score||a.pph-b.pph)[cards.length-1];
+  best.finish=Math.random()<0.5?"holo":"gold";delete best.finish0;best.boosted=1;p.boost=Math.max(0,p.boost-1);return true;
 }
 const modBlocked=(sha,ph,key)=>{const L=(store.modState&&store.modState.block)||[];if(!L.length)return false;const k16=(sha||"").slice(0,16),ek=key?encodeURIComponent(key):"";
   return L.some(x=>{const [a,b,k]=x.split("|");return (k16&&a&&a===k16)||(ph&&b&&b.length===ph.length&&hamming(b,ph)<=24)||(ek&&k===ek)})};
@@ -4113,10 +4374,10 @@ async function openDriver(uid,nameHint){
   let d;try{d=await Cloud.driver(uid)}catch(e){qrSheet(`<div class="qrcard"><h2>Couldn't load</h2><p class="msg">${esc(friendly(e))}</p></div>`);return}
   const p=d.p,ms=d.ms,nm=String(p.name||nameHint||"Driver").slice(0,24),L=num0(p.level)||1,xp=num0(p.xp);
   const cards=d.cards.sort((a,b)=>RANK[b.tier]-RANK[a.tier]||b.score-a.score);
-  const chips=[ms.gm?"God mode":"",d.isMod?"Moderator":"",d.banned?"Blocked from Global":"",ms.nerf?"Nerfed (secret)":"",num0(ms.god)>0?`God packs given: ${num0(ms.god)}`:""].filter(Boolean);
+  const chips=[ms.gm?"God mode":"",d.isMod?"Moderator":"",d.banned?"Blocked from Global":"",ms.cal?"Luck calibrated (secret)":"",num0(ms.god)>0?`God packs given: ${num0(ms.god)}`:""].filter(Boolean);
   qrSheet(`<div class="qrcard drv">
     <div class="drv-head"><span class="avatar" style="--c:${p.best?TC[p.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${esc(nm[0].toUpperCase())}</span>
-      <div><h2>${esc(nm)}</h2><small>Level ${L} · ${xp} XP${p.code?" · ID "+esc(fmtID(p.code)):""}</small></div></div>
+      <div><h2>${p.username?"@"+esc(p.username):esc(nm)}</h2><small>Level ${L} · ${xp} XP${p.code?" · ID "+esc(fmtID(p.code)):""}${d.su&&d.su.email?"<br>"+esc(d.su.email):""}</small></div></div>
     ${chips.length?`<div class="drv-chips">${chips.map(c=>`<span>${esc(c)}</span>`).join("")}</div>`:""}
     <div class="kpis drv-k">
       <div class="kpi"><b>${num0(p.cards)}</b><span>Cards</span><small>${num0(p.specials)} special</small></div>
@@ -4130,7 +4391,7 @@ async function openDriver(uid,nameHint){
     <p class="msg">A God Pack turns their next upload's best pack into gold: every card gets a special frame and the best card is Holographic.</p>
     <label class="sw"><span><b>God mode</b><small>They can scan the same offers again and again, delete them and scan them again for XP every time, with no 24-hour lock and no daily limit. When you turn it off, their duplicates are deleted and the best card of each offer stays. They keep their levels.</small></span><input type="checkbox" data-dx="gm" ${ms.gm?"checked":""}><i></i></label>
     <div class="flabel">Punish</div>
-    <label class="sw"><span><b>Secret nerf</b><small>No luck, no special frames, and very low rarity on all their cards. Their grade and Accept/Decline stay true. Turn off to undo.</small></span><input type="checkbox" data-dx="nerf" ${ms.nerf?"checked":""}><i></i></label>
+    <label class="sw"><span><b>Calibrate luck</b><small>Secret. Their luck stops counting, no special frames, and very low rarity on all their cards. They still see their normal luck number. Their grade and Accept/Decline stay true. Turn off to undo.</small></span><input type="checkbox" data-dx="cal" ${ms.cal?"checked":""}><i></i></label>
     <div class="btnrow"><button class="btn ghost sm danger" data-dx="ban">${d.banned?"Unblock from Global":"Block from Global"}</button><button class="btn ghost sm" data-dx="posts">Delete all their posts</button></div>
     <div class="flabel">Moderator</div>
     <button class="btn ghost sm" data-dx="mod">${d.isMod?"Remove as moderator":"Make moderator"}</button>
@@ -4143,7 +4404,7 @@ async function openDriver(uid,nameHint){
   box.querySelectorAll("[data-dx]").forEach(el=>{
     const k=el.dataset.dx;
     if(k==="gm"){el.onchange=()=>run(()=>Cloud.setModState(uid,{gm:el.checked}),el.checked?"God mode on. It starts next time they open the app.":"God mode off. Their duplicates get cleaned up next time they open the app.",false);return}
-    if(k==="nerf"){el.onchange=()=>run(()=>Cloud.setModState(uid,{nerf:el.checked}),el.checked?"Secret nerf on. It applies next time they open the app.":"Nerf off. Their cards go back to normal next time they open the app.",false);return}
+    if(k==="cal"){el.onchange=()=>run(()=>Cloud.setModState(uid,{cal:el.checked}),el.checked?"Calibration on. It applies next time they open the app.":"Calibration off. Their cards go back to normal next time they open the app.",false);return}
     el.onclick=()=>{
       if(k==="lv1"||k==="lv5"){const add=lvlStart(L+(k==="lv1"?1:5))-xp;run(()=>Cloud.setModState(uid,{xpGift:num0(ms.xpGift)+Math.max(0,add)}),`${k==="lv1"?"+1 level":"+5 levels"} sent. They get it next time they open the app.`)}
       if(k==="god")run(()=>Cloud.setModState(uid,{god:num0(ms.god)+1}),"God Pack given. Their next upload gets it.");
@@ -4158,14 +4419,15 @@ async function openDriver(uid,nameHint){
 /* ---------- Settings › Moderator tools ---------- */
 /* the last driver search survives the page redrawing when a sync finishes */
 let drvLast={q:"",list:null};
-const drvRowsHTML=list=>list.length?list.map(x=>`<button class="frow fopen" data-drv="${esc(x.uid)}" data-nm="${esc(x.name)}"><span class="avatar sm" style="--c:var(--t-rare)">${esc((x.name[0]||"D").toUpperCase())}</span><span class="fn"><b>${esc(x.name)}</b><small>ID ${esc(fmtID(x.code))}</small></span></button>`).join(""):`<p class="msg">No drivers found.</p>`;
+const drvRowsHTML=list=>list.length?list.map(x=>`<button class="frow fopen" data-drv="${esc(x.uid)}" data-nm="${esc(x.name)}"><span class="avatar sm" style="--c:var(--t-rare)">${esc((x.name[0]||"D").toUpperCase())}</span><span class="fn"><b>${esc(x.name)}</b><small>${x.code?"ID "+esc(fmtID(x.code)):"username"}</small></span></button>`).join(""):`<p class="msg">No drivers found.</p>`;
 function modHTML(){
   if(!Cloud.isMod)return "";
   const head=Cloud.isHead,opt=(v,l,cur)=>`<option value="${v}"${cur===v?" selected":""}>${l}</option>`;
   return `<div class="sbox modbox"><h3>Moderator tools <small class="modbadge">${head?"Head moderator":"Moderator"}</small></h3>
+    ${inboxHTML()}
     ${head?`<div class="mgroup"><div class="flabel">Find a driver</div>
-      <p class="msg">Search by name or ID, then tap a driver to see their stats and cards, reward them or punish them. You can also tap a name on any Global post.</p>
-      <div class="fadd"><input id="drvQ" autocomplete="off" spellcheck="false" placeholder="Name or ID" value="${esc(drvLast.q)}"><button class="btn sm" id="drvGo">Search</button></div>
+      <p class="msg">Search by username (first letters) or full ID, then tap a driver to see their stats and cards, reward them or punish them. You can also tap a name on any Global post.</p>
+      <div class="fadd"><input id="drvQ" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Username or ID" value="${esc(drvLast.q)}"><button class="btn sm" id="drvGo">Search</button></div>
       <div id="drvRes" class="flist">${drvLast.list?drvRowsHTML(drvLast.list):""}</div></div>`:""}
     <div class="mgroup"><div class="flabel">Global feed</div>
       <p class="msg">Tap <b>Mod</b> on any Global post to remove it or block the driver from posting.</p>
@@ -4199,19 +4461,564 @@ async function wireMod(){
   };
   Cloud.loadModLists().then(lists).catch(()=>{});
   if(!Cloud.isHead)return;
+  wireInbox();
   on("modAdd",()=>run(async()=>{const m=await Cloud.addMod($("modCode").value);$("modCode").value="";lists();return m}));
   const wireRes=()=>{const r=$("drvRes");if(r)r.querySelectorAll("[data-drv]").forEach(b=>b.onclick=()=>openDriver(b.dataset.drv,b.dataset.nm))};wireRes();
   const search=async()=>{const q=$("drvQ").value;$("drvRes").innerHTML=`<p class="msg">Searching…</p>`;
-    try{const list=await Cloud.findDrivers(q);drvLast={q,list};const r=$("drvRes");if(r){r.innerHTML=drvRowsHTML(list);wireRes()}}
+    try{const list=await Cloud.searchDrivers(q);drvLast={q,list};const r=$("drvRes");if(r){r.innerHTML=drvRowsHTML(list);wireRes()}}
     catch(e){const r=$("drvRes");if(r)r.innerHTML=`<p class="msg err">${esc(friendly(e))}</p>`}};
   on("drvGo",search);const q=$("drvQ");if(q)q.onkeydown=e=>{if(e.key==="Enter")search()};
   on("ntGo",()=>run(async()=>{await Cloud.setNotice($("ntTxt").value.trim());await Cloud.loadNotice();return $("ntTxt").value.trim()?"Announcement posted":"Announcement cleared"}));
   const tg=(id,k)=>{const el=$(id);if(el)el.onchange=e=>{SET[k]=e.target.checked;saveSet()}};
   tg("dvNoLim","devNoLimit");
   const gd=$("dvGod");if(gd)gd.onchange=e=>{SET.devGod=e.target.checked;saveSet();if(!SET.devGod){const n=dedupeCards();toast(n?`God mode off. ${n} duplicate${n>1?"s":""} deleted, best cards kept.`:"God mode off")}else toast("God mode on")};
-  on("dvLvl",()=>{const L=levelOf(totalXP());prog().bank+=lvlStart(L+1)-totalXP();save();checkLevel();toast("Level "+(L+1));renderSettings()});
+  on("dvLvl",()=>{const L=levelOf(totalXP());bankAdd(lvlStart(L+1)-totalXP());save();checkLevel();toast("Level "+(L+1));renderSettings()});
   on("dvLuck",()=>{const c=rollLuckCard(),p=prog();p.luck.push([1000+p.luck.length,c.id,c.p]);p.unseen=(+p.unseen||0)+1;save();renderGift();toast(`${LUCK_NAME[c.id]} luck card added. Open it from the Dex.`)});
   const evs=$("dvEv");if(evs)evs.onchange=e=>{SET.devEvent=e.target.value==="auto"?"":e.target.value;saveSet();applySkin();toast(eventNow()?eventNow().name+" event on":"No event")};
+}
+
+/* =========================================================
+   Usernames: every Google account picks one unique username. It's tied to the account (usernames/{name}),
+   shown everywhere instead of the Google name, and the head moderator sees each new sign-up.
+   ========================================================= */
+const UNAME_RE=/^[A-Za-z0-9_][A-Za-z0-9_.]{2,19}$/;
+const UNAME_BAD=/(fuck|shit|bitch|cunt|nigg|fag|dick|pussy|whore|slut|rape|nazi|hitler|admin|moderator|support|dasherdex|doordash|ubereats)/i;
+function unameErr(n){
+  if(!n)return "Pick a username.";
+  if(n.length<3)return "At least 3 characters.";
+  if(n.length>20)return "20 characters at most.";
+  if(!UNAME_RE.test(n))return "Letters, numbers, _ and . only (no spaces).";
+  if(UNAME_BAD.test(n))return "That username isn't allowed. Try another one.";
+  return "";
+}
+Object.assign(Cloud,{
+  username(){return (this.profile&&this.profile.username)||""},
+  async claimUsername(name){
+    name=String(name||"").trim();const err=unameErr(name);if(err)throw new Error(err);
+    const key=name.toLowerCase(),col=this.db.collection("usernames"),old=this.username();
+    const s=await col.doc(key).get();
+    if(s.exists&&s.data().uid!==this.user.uid)throw new Error("That username is taken. Try another one.");
+    if(!s.exists){try{await col.doc(key).set({uid:this.user.uid,name,at:Date.now()})}
+      catch(e){if(/permission/i.test(e.code||e.message||""))throw new Error("That username is taken. Try another one.");throw e}}
+    if(old&&old.toLowerCase()!==key)await col.doc(old.toLowerCase()).delete().catch(()=>{});
+    await this.me().set({username:name,name},{merge:true});
+    this.profile={...this.profile,username:name,name};SET.name=name;saveSet();
+    /* the head moderator's inbox: one note per new account */
+    if(!old)await this.db.collection("signups").doc(this.user.uid).set({username:name,email:String(this.user.email||"").slice(0,120),name:String(this.user.displayName||"").slice(0,40),at:Date.now()}).catch(()=>{});
+    await this.pushProfile().catch(()=>{});renderProfBtns();rerenderAccount();
+    return name;
+  }
+});
+/* the username sheet. required: no close button until a username is picked */
+function usernameSheet(required){
+  return new Promise(resolve=>{
+    const cur=Cloud.username();
+    qrSheet(`<div class="qrcard uname">
+      <h2>${required?"Pick your username":"Change your username"}</h2>
+      <p class="msg">${required?"It's how friends and other drivers see you. It stays tied to your Google account.":"Your old username is freed up for someone else."}</p>
+      <div class="ufield"><span>@</span><input id="unIn" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="username" value="${esc(cur||"")}"></div>
+      <p class="msg" id="unMsg">3–20 characters: letters, numbers, _ and .</p>
+    </div><button class="btn" id="unGo">${required?"Save username":"Change username"}</button>`);
+    const close=$("qrClose");if(required&&close)close.hidden=true;
+    const inp=$("unIn"),msg=$("unMsg"),go=$("unGo");let t=0,last="";
+    const check=()=>{const v=inp.value.trim(),e=unameErr(v);msg.classList.remove("err","ok");
+      if(e){msg.textContent=e;if(v)msg.classList.add("err");return}
+      if(cur&&v.toLowerCase()===cur.toLowerCase()){msg.textContent="That's your username now.";return}
+      clearTimeout(t);last=v;msg.textContent="Checking…";
+      t=setTimeout(async()=>{try{const s=await Cloud.db.collection("usernames").doc(v.toLowerCase()).get();if(last!==v)return;
+        if(s.exists&&s.data().uid!==Cloud.user.uid){msg.textContent="Taken. Try another one.";msg.classList.add("err")}else{msg.textContent="Available!";msg.classList.add("ok")}}catch(e){msg.textContent=""}},350)};
+    inp.oninput=check;inp.onkeydown=e=>{if(e.key==="Enter")go.click()};setTimeout(()=>inp.focus(),60);
+    go.onclick=async()=>{go.disabled=true;try{const n=await Cloud.claimUsername(inp.value);closeQR();toast("You're @"+n);resolve(n)}
+      catch(e){go.disabled=false;msg.textContent=e.message&&!e.code?e.message:friendly(e);msg.classList.add("err")}};
+  });
+}
+
+/* =========================================================
+   Head moderator inbox: new sign-ups, reported posts and suspicious offers. Only the head moderator can read it.
+   ========================================================= */
+const REPORT_WHY=["Fake or edited offer","Spam","Rude name or caption","Something else"];
+Object.assign(Cloud,{inbox:{signups:[],reports:[],flags:[]},inboxAt:0,
+  async loadInbox(){
+    if(!this.isHead)return;
+    const get=async(col,n)=>{const out=[];try{(await this.db.collection(col).orderBy("at","desc").limit(n).get()).forEach(d=>out.push({id:d.id,...d.data()}))}catch(e){}return out};
+    const [signups,reports,flags]=await Promise.all([get("signups",60),get("reports",60),get("flags",60)]);
+    const me=this.user.uid;
+    this.inbox={signups:signups.filter(x=>x.id!==me),reports,flags:flags.filter(x=>!String(x.id).startsWith(me+"_"))};this.inboxAt=Date.now();renderInboxBadge();
+  },
+  async report(p,why){
+    if(!this.user)throw new Error("Sign in to report posts.");
+    await this.db.collection("reports").doc(this.user.uid+"_"+p.id.replace(/[^A-Za-z0-9_]/g,"").slice(0,80)).set({
+      post:p.id,aud:p.aud,uid:p.uid,name:String(p.name||"").slice(0,24),by:this.user.uid,byName:myName(),why:REPORT_WHY.includes(why)?why:REPORT_WHY[3],at:Date.now()});
+  },
+  /* a card that looks too good to be true is still added; the head moderator just gets a heads-up */
+  async flag(c,why){
+    if(!this.user)return;
+    await this.db.collection("flags").doc(this.user.uid+"_"+c.id).set({uid:this.user.uid,name:myName(),why:String(why).slice(0,120),
+      card:{store:String(c.store).slice(0,40),pay:+c.pay,minutes:+c.minutes,miles:+c.miles,score:+c.score,tier:c.tier},at:Date.now()}).catch(()=>{});
+  },
+  async clearInbox(col,id){await this.db.collection(col).doc(id).delete();this.inbox[col]=this.inbox[col].filter(x=>x.id!==id);renderInboxBadge()},
+  /* cheap driver search: usernames by first letters, or one exact ID */
+  async searchDrivers(q){
+    q=String(q||"").trim().replace(/^@/,"");if(!q)return [];
+    const out=[],id=q.toUpperCase().replace(/[^A-Z0-9]/g,"");
+    if(id.length===ID_LEN){try{const s=await this.db.collection("codes").doc(id).get();if(s.exists)out.push({uid:s.data().uid,name:String(s.data().name||"Driver"),code:id})}catch(e){}}
+    const k=q.toLowerCase();
+    try{const FP=firebase.firestore.FieldPath;(await this.db.collection("usernames").orderBy(FP.documentId()).startAt(k).endAt(k+"").limit(20).get())
+      .forEach(d=>{const v=d.data();if(!out.some(x=>x.uid===v.uid))out.push({uid:v.uid,name:String(v.name||d.id),code:""})})}catch(e){console.warn(e)}
+    return out;
+  }
+});
+const inboxNew=()=>{const seen=+SET.inboxSeen||0,I=Cloud.inbox;return [...I.signups,...I.reports,...I.flags].filter(x=>+x.at>seen).length};
+function renderInboxBadge(){
+  const n=Cloud.isHead?inboxNew():0;
+  const tab=document.querySelector('.ntab[data-v="vSettings"]');
+  if(tab){let b=tab.querySelector(".nbadge");if(n&&!b){b=document.createElement("i");b.className="nbadge";tab.appendChild(b)}if(b){b.hidden=!n;b.textContent=n>9?"9+":n}}
+  const el=$("inboxNote");if(el){el.hidden=!n;if(n)el.innerHTML=`<span class="nt-ic">📥</span><div><b>${n} new in your mod inbox</b><small>New drivers, reports or suspicious offers.</small></div><button class="btn sm" id="inboxGo">Open</button>`;
+    const g=$("inboxGo");if(g)g.onclick=()=>{show("vSettings");toTop();setTimeout(()=>{const x=$("modInbox");if(x)x.scrollIntoView({block:"start",behavior:RM?"auto":"smooth"})},150)}}
+}
+function inboxHTML(){
+  if(!Cloud.isHead)return "";
+  const I=Cloud.inbox,seen=+SET.inboxSeen||0,tab=SET.inboxTab||"signups",dot=a=>a.some(x=>+x.at>seen)?`<i class="tdot"></i>`:"";
+  const when=t=>timeAgo(+t||0);
+  const rows={
+    signups:I.signups.map(s=>`<div class="frow ib${+s.at>seen?" new":""}"><span class="avatar sm" style="--c:var(--t-uncommon)">${esc((s.username||"?")[0].toUpperCase())}</span><span class="fn"><b>@${esc(s.username||"")}</b><small>${esc(s.email||"")} · ${when(s.at)}</small></span><button class="mini ghost" data-ibdrv="${esc(s.id)}" data-nm="${esc(s.username||"")}">Open</button></div>`),
+    reports:I.reports.map(r=>`<div class="frow ib${+r.at>seen?" new":""}"><span class="avatar sm" style="--c:var(--decline)">!</span><span class="fn"><b>${esc(r.name||"Driver")} · ${esc(r.why||"")}</b><small>by ${esc(r.byName||"")} · ${r.aud==="global"?"Global post":"post"} · ${when(r.at)}</small></span><button class="mini ghost" data-ibdrv="${esc(r.uid)}" data-nm="${esc(r.name||"")}">Open</button><button class="mini ghost" data-ibdel="reports|${esc(r.id)}" aria-label="Dismiss">✕</button></div>`),
+    flags:I.flags.map(f=>`<div class="frow ib${+f.at>seen?" new":""}"><span class="avatar sm" style="--c:var(--consider)">?</span><span class="fn"><b>${esc(f.name||"Driver")} · ${esc(f.card&&f.card.store||"")} $${num0(f.card&&f.card.pay).toFixed(2)}</b><small>${esc(f.why||"")} · ${when(f.at)}</small></span><button class="mini ghost" data-ibdrv="${esc(f.uid)}" data-nm="${esc(f.name||"")}">Open</button><button class="mini ghost" data-ibdel="flags|${esc(f.id)}" aria-label="Dismiss">✕</button></div>`)
+  };
+  const empty={signups:"No sign-ups yet.",reports:"No reports. Nice.",flags:"Nothing suspicious."};
+  return `<div class="mgroup" id="modInbox"><div class="flabel">Inbox ${inboxNew()?`<span class="ibn">${inboxNew()} new</span>`:""}</div>
+    <div class="seg seg3 ibtabs" role="tablist"><button data-ibt="signups" aria-pressed="${tab==="signups"}">New users ${dot(I.signups)}</button><button data-ibt="reports" aria-pressed="${tab==="reports"}">Reports ${dot(I.reports)}</button><button data-ibt="flags" aria-pressed="${tab==="flags"}">Suspicious ${dot(I.flags)}</button></div>
+    <div class="flist ibl">${rows[tab].length?rows[tab].join(""):`<p class="msg">${empty[tab]}</p>`}</div>
+    <div class="btnrow"><button class="btn ghost sm" id="ibRef">Refresh</button>${inboxNew()?`<button class="btn ghost sm" id="ibSeen">Mark all seen</button>`:""}</div></div>`;
+}
+function wireInbox(){
+  const box=$("modInbox");if(!box)return;
+  box.querySelectorAll("[data-ibt]").forEach(b=>b.onclick=()=>{SET.inboxTab=b.dataset.ibt;saveSet();renderSettings()});
+  box.querySelectorAll("[data-ibdrv]").forEach(b=>b.onclick=()=>openDriver(b.dataset.ibdrv,b.dataset.nm));
+  box.querySelectorAll("[data-ibdel]").forEach(b=>b.onclick=async()=>{const [col,id]=b.dataset.ibdel.split("|");try{await Cloud.clearInbox(col,id);renderSettings()}catch(e){toast(friendly(e))}});
+  const r=$("ibRef");if(r)r.onclick=async()=>{await Cloud.loadInbox();renderSettings();toast("Inbox up to date")};
+  const s=$("ibSeen");if(s)s.onclick=()=>{SET.inboxSeen=Date.now();saveSet();renderInboxBadge();renderSettings()};
+}
+/* report a Global post */
+function reportSheet(p){
+  qrSheet(`<div class="qrcard"><h2>Report this post?</h2><p class="msg">The DasherDex team will take a look. ${esc(p.name)} won't know who reported it.</p>
+    <div class="ntags">${REPORT_WHY.map(w=>`<button class="ntag" data-rw="${esc(w)}">${esc(w)}</button>`).join("")}</div></div>`);
+  document.querySelectorAll("#qrSheet [data-rw]").forEach(b=>b.onclick=async()=>{try{await Cloud.report(p,b.dataset.rw);closeQR();toast("Thanks. Report sent.")}catch(e){toast(e.message&&!e.code?e.message:friendly(e))}});
+}
+
+/* =========================================================
+   Too good to be true? Real offers still become cards; the head moderator gets a note to check.
+   ========================================================= */
+function susWhy(c,recent){
+  const why=[];
+  if(c.pph>90)why.push(`$${c.pph.toFixed(0)}/hr`);
+  if(c.ppm>8)why.push(`$${c.ppm.toFixed(2)}/mi`);
+  if(c.pay>=150)why.push(`$${(+c.pay).toFixed(2)} payout`);
+  if(c.pay>=60&&c.miles<=5)why.push(`$${(+c.pay).toFixed(0)} for ${c.miles} mi`);
+  const big=(recent||[]).filter(x=>gradeOf(x)>=88).length;
+  if(gradeOf(c)>=88&&big>=4)why.push(`${big} Legendary-grade offers in 24 hours`);
+  return why.join(" · ");
+}
+function checkSus(cards){
+  if(!signedIn()||!cards.length)return;
+  const day=Date.now()-864e5,recent=store.cards.filter(x=>+new Date(x.added||x.ts)>=day);
+  for(const c of cards){const w=susWhy(c,recent);if(w)Cloud.flag(c,w)}
+}
+
+/* =========================================================
+   The real time. The phone's clock can be changed, so once in a while we ask the website's server what time it is
+   (it's in every response, so it's free) and use the difference. Changing time zones is fine: only the clock is checked.
+   ========================================================= */
+var clockSkew=(()=>{try{return +localStorage.getItem("offerdex.skew")||0}catch(e){return 0}})();
+function realNow(){return Date.now()+(clockSkew||0)}
+async function syncClock(){
+  if(!/^https?:/.test(location.protocol))return;
+  try{const t0=Date.now(),r=await fetch(location.pathname+"?clock="+t0,{method:"HEAD",cache:"no-store"}),t1=Date.now(),d=r.headers.get("date");
+    if(!d)return;const server=+new Date(d)+500,local=(t0+t1)/2,skew=server-local;
+    /* small differences are just network delay */
+    clockSkew=Math.abs(skew)>90e3?Math.round(skew):0;try{localStorage.setItem("offerdex.skew",String(clockSkew))}catch(e){}
+  }catch(e){}
+}
+/* =========================================================
+   About: version, what's new, privacy policy and terms (Settings)
+   ========================================================= */
+const APP_VER="1.5";
+const WHATS_NEW=[
+  ["1.5","October 2026",[
+    "Pick a username. It's tied to your Google account and nobody else can take it.",
+    "Español: DasherDex now speaks Spanish. It follows your phone's language, or pick it in Settings.",
+    "More daily challenges, and you can swap one challenge a day with ↻.",
+    "Weekly challenges now come in Normal, Hard (more XP) and super rare ★ weeks that guarantee a special frame on the best card of your next upload.",
+    "Finishing any weekly challenge gives a tiny chance that your next 10-card pack is a God Pack.",
+    "Favorites: tap ☆ on a card. Favorites get their own tab and are never auto-deleted.",
+    "Auto-delete is smarter: when your Dex is full it clears the least valuable cards first, and your posts stay up.",
+    "Deleted a card by mistake? Tap Undo.",
+    "Achievements stay earned, even after deleting cards.",
+    "Report a Global post from its ••• menu.",
+    "Events show their end date, shared card pictures show your pumpkin sticker as a tag, and DasherDex opens even with no signal."]],
+  ["1.4","October 2026",["Halloween event with pumpkin stickers and Haunted packs.","Daily and weekly challenges.","Driver IDs are longer and safer."]]
+];
+function langHTML(){
+  const cur=SET.lang||"auto";const b=(v,l)=>`<button data-lang="${v}" aria-pressed="${cur===v}">${l}</button>`;
+  return `<div class="sbox"><h3>Language · Idioma</h3>
+    <div class="seg seg3" role="group" aria-label="Language">${b("auto","Phone")}${b("en","English")}${b("es","Español")}</div>
+    <p class="msg">Phone: follows your iPhone's language.</p></div>`;
+}
+function aboutHTML(){
+  const nw=SET.seenVer!==APP_VER;
+  return `<div class="sbox about-box"><h3>About</h3>
+    <div class="ablist">
+      <button class="abrow" id="abNew"><span><b>What's new</b><small>Version ${APP_VER}</small></span>${nw?`<i class="tdot" aria-label="New"></i>`:""}<span class="abgo">›</span></button>
+      <button class="abrow" id="abPriv"><span><b>Privacy policy</b><small>What's saved, who sees it, how to delete it</small></span><span class="abgo">›</span></button>
+      <button class="abrow" id="abTerms"><span><b>Terms of use</b><small>The rules for using DasherDex</small></span><span class="abgo">›</span></button>
+    </div>
+    <p class="about">DasherDex v${APP_VER}</p></div>`;
+}
+function wireAbout(){
+  document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{SET.lang=b.dataset.lang;saveSet();applyLang();renderSettings()});
+  const on=(id,f)=>{const el=$(id);if(el)el.onclick=f};
+  on("abNew",()=>{SET.seenVer=APP_VER;saveSet();whatsNewSheet();renderSettings()});
+  on("abPriv",privacySheet);on("abTerms",termsSheet);
+}
+function whatsNewSheet(){
+  qrSheet(`<div class="qrcard legal"><h2>What's new</h2>${WHATS_NEW.map(([v,d,list])=>`<h3>Version ${v} <small>${d}</small></h3><ul>${list.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`).join("")}</div>`);
+}
+function privacySheet(){
+  qrSheet(`<div class="qrcard legal"><h2>Privacy policy</h2>
+    <p class="msg">Last updated October 2026. DasherDex is a small fan project. This is what it keeps and why, in plain words.</p>
+    <h3>What's saved on your phone</h3>
+    <ul><li>The numbers read from your offer screenshots: pay, time, miles, stops, store and time of the offer.</li>
+    <li>A small picture of each offer's route map (you can turn maps off in Settings › Privacy).</li>
+    <li>Pickup addresses, only if you turn that on.</li>
+    <li>Your settings, notes, level and progress.</li></ul>
+    <p class="msg">Your full screenshots are read on your phone and never uploaded.</p>
+    <h3>If you sign in with Google</h3>
+    <ul><li>Your cards, maps, notes and progress are copied to your private cloud copy (Google Firebase) so they sync between devices.</li>
+    <li>We keep your Google name and email, your username and your driver ID. Your email is never shown to other drivers.</li></ul>
+    <h3>Who can see what</h3>
+    <ul><li><b>Friends</b> you accept see your username, level, stats and cards, if Share my cards is on. Only close friends see maps and addresses, if you allow it.</li>
+    <li><b>Global posts</b> are seen by every signed-in driver. They never include maps or addresses.</li>
+    <li><b>The DasherDex team</b> (moderators) can see account details, cards and reports to keep the app fair and safe: for example, to remove fake cards or posts.</li>
+    <li>Nobody else. DasherDex doesn't sell your data, doesn't show ads and doesn't use trackers.</li></ul>
+    <h3>Deleting your data</h3>
+    <ul><li>Delete any card from its page. Settings › Your data › Reset deletes all progress.</li>
+    <li>Settings › Account › Delete my cloud data removes your cloud copy, friends and posts.</li>
+    <li>Signed out, everything lives only in this browser. Clearing Safari's website data deletes it.</li></ul>
+    <p class="msg">DasherDex is for drivers 13 and older. Questions? Ask the DasherDex team.</p></div>`);
+}
+function termsSheet(){
+  qrSheet(`<div class="qrcard legal"><h2>Terms of use</h2>
+    <p class="msg">Last updated October 2026. By using DasherDex you agree to these simple rules.</p>
+    <h3>Just for fun</h3>
+    <ul><li>Grades, verdicts, rarities and stats are estimates from your screenshots, not financial advice. Always check the offer in your delivery app before you accept.</li>
+    <li>DasherDex is an independent fan project. It isn't affiliated with or endorsed by DoorDash or Uber.</li>
+    <li>DasherDex is free and comes as is. Features can change, and data can be lost, so don't rely on it as your only record.</li></ul>
+    <h3>Play fair</h3>
+    <ul><li>Only scan real offers you got. No edited, fake or AI-made screenshots.</li>
+    <li>Don't try to cheat levels, cards or limits, or mess with the app or other drivers' accounts.</li>
+    <li>Be kind. No hateful, mean or private stuff in your username or posts.</li></ul>
+    <h3>Moderation</h3>
+    <ul><li>The DasherDex team can remove cards or posts, block drivers from Global, change rewards, or close accounts that break these rules.</li>
+    <li>You can report any Global post from its ••• menu.</li></ul>
+    <p class="msg">We may update these terms. Big changes will show up in What's new.</p></div>`);
+}
+/* =========================================================
+   Español. Casual, the way drivers talk ("tú", "oferta", "pedido", "sobre").
+   English stays the source; this swaps text as it appears on screen.
+   Numbers in the English text are matched as {n} and put back in the same order.
+   ========================================================= */
+const ES={
+/* nav + common */
+"Dex":"Dex","Feed":"Feed","Scan":"Escanear","Stats":"Stats","Settings":"Ajustes","Profile":"Perfil","Back":"Atrás","Close":"Cerrar","Done":"Listo","Open":"Abrir","Change":"Cambiar","Copy":"Copiar","Share":"Compartir","Post":"Publicar","Delete":"Borrar","Undo":"Deshacer","Fix":"Corregir","Search":"Buscar","Refresh":"Actualizar","Loading…":"Cargando…","Checking…":"Revisando…","New":"Nuevo","Off":"No","Add":"Agregar","Main":"Principal","Event":"Evento","You":"Tú","Today":"Hoy","Yesterday":"Ayer","This week":"Esta semana","Best":"Mejor","All":"Todas","Auto":"Auto","Fast":"Rápido","Phone":"Teléfono","English":"English","Español":"Español","Language · Idioma":"Idioma · Language","Language":"Idioma",
+"Phone: follows your iPhone's language.":"Teléfono: usa el idioma de tu iPhone.",
+"Share this card":"Compartir esta tarjeta","Scan offers":"Escanear ofertas","Scan result":"Resultado","Filter cards":"Filtrar tarjetas","Group cards by":"Agrupar tarjetas por","Time range":"Periodo","Scan mode":"Modo de escaneo","Your name":"Tu nombre","Tags, up to 3":"Etiquetas, hasta 3","Daily goal":"Meta del día","Daily quests":"Retos del día","CSV backup":"Respaldo CSV","Rarities to auto-delete":"Rarezas para borrar solas",
+/* verdicts */
+"Accept":"Aceptar","Consider":"Pensarlo","Decline":"Rechazar",
+"This one pays. Take it.":"Esta sí paga. Agárrala.","Only if you're slow or it's on your way.":"Solo si está flojo o te queda de paso.","Not worth the gas. Skip it.":"No vale la gasolina. Pásala.",
+"Per hour":"Por hora","Per mile":"Por milla","Grade":"Calificación","Pay":"Pago","Time":"Tiempo","Miles":"Millas","Store":"Tienda","Stores":"Tiendas","Trip":"Viaje","Offers":"Ofertas","Offered":"Ofrecido","Cards":"Tarjetas","Card":"Tarjeta","Luck":"Suerte","Rarity":"Rareza","Tier":"Rareza","Recommended":"Recomendadas","Verdicts":"Veredictos",
+/* rarities */
+"Trash":"Basura","Common":"Común","Uncommon":"Poco común","Rare":"Raro","Super Rare":"Súper raro","Epic":"Épico","Legendary":"Legendario","Mythic":"Mítico","S.Rare":"S.Raro","Uncom.":"P.común","Legend":"Legend.","Specials":"Especiales",
+"TRASH":"BASURA","COMMON":"COMÚN","UNCOMMON":"POCO COMÚN","RARE":"RARO","SUPER RARE":"SÚPER RARO","EPIC":"ÉPICO","LEGENDARY":"LEGENDARIO","MYTHIC":"MÍTICO",
+"A good, solid offer.":"Una oferta buena y sólida.","Barely worth the gas.":"Apenas vale la gasolina.","Decline and keep driving.":"Recházala y sigue manejando.","Fine if it's on your way.":"Va si te queda de paso.","God-tier. Take it before someone else does.":"Nivel dios. Agárrala antes que otro.","Great money for the miles.":"Buen dinero para las millas.","One in a thousand. Screenshot this.":"Una entre mil. Tómale captura.","Strong pay, easy yes.":"Buen pago, un sí fácil.",
+/* frames + card */
+"HOLO":"HOLO","GOLD":"ORO","NEON":"NEÓN","CARBON":"CARBONO","INVERTED":"INVERTIDO","Holographic":"Holográfico","Gold Foil":"Lámina de oro","Neon":"Neón","Carbon Fiber":"Fibra de carbono","Inverted":"Invertido","Holo":"Holo",
+"Single order":"Pedido individual","SINGLE ORDER":"PEDIDO INDIVIDUAL","OFFERED":"OFRECIDO","STOPS":"PARADAS","DISTANCE":"DISTANCIA","CLASS":"TIPO","CHECK":"REVISAR","EXAMPLE":"EJEMPLO","LUCK":"SUERTE","PAYOUT":"PAGO","PER HOUR":"POR HORA","PER MILE":"POR MILLA","VERDICT":"VEREDICTO","TIME":"TIEMPO",
+"Add to favorites":"Agregar a favoritos","Remove from favorites":"Quitar de favoritos","Added to Favorites. It won't be auto-deleted.":"Agregada a Favoritos. No se borrará sola.","Removed from Favorites":"Quitada de Favoritos",
+"★ Favorites":"★ Favoritos","Days":"Días","Shifts":"Turnos","Locations":"Lugares","Address not saved":"Dirección no guardada",
+"No favorites yet. Open a card and tap ☆ to keep it here. Favorites are never auto-deleted.":"Todavía no tienes favoritos. Abre una tarjeta y toca ☆ para guardarla aquí. Los favoritos nunca se borran solos.",
+"No cards here yet.":"Todavía no hay tarjetas aquí.",
+"Double-check this one.":"Revisa bien esta.","Edited by hand.":"Editada a mano.","Capped at Uncommon.":"Limitada a Poco común.","Restore":"Restaurar",
+"Fix a misread number or the time":"Corregir un número mal leído o la hora","Misread a number? Fix it here":"¿Se leyó mal un número? Corrígelo aquí",
+"Match the numbers on your screenshot. Numbers that don't match what the scanner read cap the card at Uncommon.":"Pon los números de tu captura. Si no coinciden con lo que leyó el escáner, la tarjeta queda en Poco común.",
+"Save and re-grade":"Guardar y recalificar","Pay ($)":"Pago ($)","Time (min)":"Tiempo (min)","Total stops":"Paradas totales","Offer time":"Hora de la oferta","Restaurant or store":"Restaurante o tienda",
+"Delete card":"Borrar tarjeta","Tap again to delete":"Toca otra vez para borrar","Card deleted":"Tarjeta borrada","Card restored":"Tarjeta restaurada",
+"Frees a spot in your Dex and removes it from your posts. You keep the XP. The same offer can't be scanned again for {n} hours.":"Libera un espacio en tu Dex y la quita de tus publicaciones. Te quedas con el XP. La misma oferta no se puede escanear otra vez por {n} horas.",
+"Frees a spot in your Dex. You keep the XP. The same offer can't be scanned again for {n} hours.":"Libera un espacio en tu Dex. Te quedas con el XP. La misma oferta no se puede escanear otra vez por {n} horas.",
+"Pay / hour":"Pago / hora","Pay / mile":"Pago / milla","Weighted":"Ponderado","Penalties":"Penalizaciones",
+"Offers from this pickup":"Ofertas de este lugar","This location":"Este lugar","Your note":"Tu nota","e.g. Pickup counter is in the back":"ej. El mostrador está al fondo",
+"Tap a dot to open that offer. Based on this exact address.":"Toca un punto para abrir esa oferta. Según esta dirección exacta.","Tap a dot to open that offer. Based on the store name, not the location.":"Toca un punto para abrir esa oferta. Según el nombre de la tienda, no el lugar.",
+"Only you can see them.":"Solo tú las puedes ver.","Your best one here.":"Tu mejor aquí.",
+"The scanner wasn't sure about the payout. Compare it with your offer screen.":"El escáner no estaba seguro del pago. Compáralo con tu pantalla de la oferta.",
+"Press and hold the picture to save or share it.":"Mantén presionada la imagen para guardarla o compartirla.","Your card":"Tu tarjeta","Couldn't make the picture":"No se pudo hacer la imagen",
+/* Dex */
+"Your Dex is empty":"Tu Dex está vacío","Screenshot a DoorDash or Uber Eats offer and scan it. You'll get an instant Accept, Consider or Decline, and the offer becomes a card.":"Tómale captura a una oferta de DoorDash o Uber Eats y escanéala. Al instante te dice Aceptar, Pensarlo o Rechazar, y la oferta se vuelve tarjeta.",
+"Pick several screenshots at once to open packs. Bigger packs are better packs, up to the Red Ruby Pack of {n}. The best offer comes last, with the best odds of a special frame.":"Escoge varias capturas a la vez para abrir sobres. Entre más grande el sobre, mejor, hasta el Sobre de Rubí Rojo de {n}. La mejor oferta sale al final, con más chance de marco especial.",
+"No offers scanned today yet.":"Todavía no escaneas ofertas hoy.","in your Dex":"en tu Dex","Scan streak:":"Racha:","in a row.":"seguidos.",
+"Challenges":"Retos","Daily":"Diario","Weekly":"Semanal","Hard":"Difícil","★ Rare":"★ Raro",
+"Daily: all {n} done":"Diario: los {n} listos","Daily {n} of {n}":"Diario {n} de {n}","All {n} done. New ones tomorrow.":"Los {n} listos. Mañana hay nuevos.",
+"Swap this challenge (once a day)":"Cambiar este reto (una vez al día)","New challenge. You can swap once a day.":"Reto nuevo. Puedes cambiar uno al día.",
+"Tiny chance of a God Pack":"Chance mínima de un God Pack","Guaranteed special frame on your next best card":"Marco especial garantizado en tu siguiente mejor tarjeta",
+"Super rare weekly: finish it for a guaranteed special frame on the best card of your next upload.":"Semanal súper raro: complétalo y la mejor tarjeta de tu siguiente subida trae marco especial garantizado.",
+"A luck card to open":"Una carta de suerte por abrir","{n} luck cards to open":"{n} cartas de suerte por abrir","From leveling up. Each one raises your luck for good.":"Por subir de nivel. Cada una sube tu suerte para siempre.",
+"Open the luck pack":"Abrir el sobre de suerte","Open your luck card":"Abrir tu carta de suerte","Luck pack":"Sobre de suerte","Finish collection":"Terminar","Level {n} reward · {n} of {n}":"Premio de nivel {n} · {n} de {n}",
+"Halloween":"Halloween","Haunted packs are here. Any card can drop a pumpkin sticker, only until Oct {n}. Rare faces and trims are out there.":"Llegaron los sobres embrujados. Cualquier tarjeta puede soltar una calcomanía de calabaza, solo hasta el {n} de oct. Hay caras y bordes raros por ahí.",
+"Last day!":"¡Último día!","From the DasherDex team":"Del equipo de DasherDex",
+"Keep your cards safe":"Cuida tus tarjetas","Not now":"Ahora no","Sign in":"Iniciar sesión",
+/* scanning */
+"How scanning works":"Cómo funciona el escaneo","Screenshot the offer":"Tómale captura a la oferta","when it pops up: press the side button and volume up together. Keep the whole screen in it.":"cuando te salga: aprieta el botón lateral y subir volumen al mismo tiempo. Que salga toda la pantalla.",
+"Tap Scan":"Toca Escanear","and pick the screenshot from your photos. Pick several at once to open packs.":"y escoge la captura de tus fotos. Escoge varias para abrir sobres.","Get your verdict":"Recibe tu veredicto",", Accept, Consider or Decline, and the offer becomes a card.":": Aceptar, Pensarlo o Rechazar, y la oferta se vuelve tarjeta.",
+"Try the example scan":"Probar el ejemplo","Run the example again":"Repetir el ejemplo","Scanning the example…":"Escaneando el ejemplo…","Reading the example…":"Leyendo el ejemplo…","Pick my screenshots":"Escoger mis capturas","Example DoorDash offer screenshot":"Captura de ejemplo de una oferta de DoorDash",
+"Getting ready":"Preparando","Checking your Dex":"Revisando tu Dex","Reading the offer":"Leyendo la oferta","Reading the screenshot":"Leyendo la captura",
+"Keep this screen open while your screenshots are read. About {n}–{n} seconds each.":"Deja esta pantalla abierta mientras se leen tus capturas. Como {n}–{n} segundos cada una.",
+"Scan next":"Escanear otra","Scan more":"Escanear más","Try another":"Probar otra","Scan a different one":"Escanear otra distinta","Next card":"Siguiente tarjeta","Back to pack":"Volver al sobre",
+"Tap the pack to open it.":"Toca el sobre para abrirlo.","Skip to the best card":"Saltar a la mejor tarjeta","Skip to this pack's last card":"Saltar a la última de este sobre","The last card gets":"La última tarjeta tiene","special-frame odds":"chance de marco especial",
+"Your best card is in here.":"Tu mejor tarjeta está aquí.","God Pack!":"¡God Pack!","Every card in here has a special frame.":"Todas las tarjetas aquí traen marco especial.",
+"Best pull":"Mejor tirada","★ Best pull ★":"★ Mejor tirada ★","Lucky pull":"Tirada con suerte","🎃 Sticker":"🎃 Calcomanía","Red Card":"Red Card","Check":"Revisar","Edited":"Editada",
+"New store":"Tienda nueva","Deleted before · no XP this time":"Ya la habías borrado · sin XP esta vez",
+"✦ Lucky! Your next 10-card pack is a God Pack":"✦ ¡Suerte! Tu siguiente sobre de 10 es un God Pack","✦✦ Your next upload's best card gets a special frame":"✦✦ La mejor tarjeta de tu siguiente subida trae marco especial",
+"Already in your Dex":"Ya está en tu Dex","Already scanned":"Ya la escaneaste","It's a different offer, add it anyway":"Es otra oferta, agrégala igual",
+"You've already scanned this screenshot.":"Ya escaneaste esta captura.","You scanned this screenshot before. Each screenshot can only become one card.":"Ya escaneaste esta captura. Cada captura solo puede ser una tarjeta.",
+"Same pay, time, miles and store as a card you already have.":"Mismo pago, tiempo, millas y tienda que una tarjeta que ya tienes.",
+"A moderator removed this offer from your Dex, so it can't be added again.":"Un moderador quitó esta oferta de tu Dex, así que no se puede volver a agregar.",
+"This isn't a full phone screenshot. Screenshot the offer screen itself, without cropping.":"Esta no es una captura completa. Tómale captura a la pantalla de la oferta, sin recortar.",
+"This picture is too tall. Use one screenshot per offer, not several stitched together.":"Esta imagen es muy larga. Usa una captura por oferta, no varias pegadas.",
+"That's a screenshot of DasherDex, not a delivery offer.":"Esa es una captura de DasherDex, no una oferta.","This picture has more than one offer in it. Scan one offer per screenshot.":"Esta imagen tiene más de una oferta. Escanea una oferta por captura.",
+"This doesn't look like a DoorDash or Uber Eats offer screen.":"Esto no parece una pantalla de oferta de DoorDash o Uber Eats.","Over today's limit or your Dex is full.":"Pasaste el límite de hoy o tu Dex está lleno.",
+"Couldn't read this image":"No se pudo leer esta imagen","Not a card":"No es tarjeta","Locked for now":"Bloqueada por ahora","Fill in what the scanner missed":"Llena lo que el escáner no leyó","Fix the numbers":"Corregir los números","Grade this offer":"Calificar esta oferta","Text the scanner read":"Texto que leyó el escáner",
+"Needs your numbers":"Faltan tus números","Not offers":"No son ofertas","Not added":"No agregadas","Skipped":"Saltada","Fill in":"Llenar","Screenshot":"Captura","Nothing new in this pack":"Nada nuevo en este sobre","Every screenshot was already in your Dex or couldn't be read.":"Todas las capturas ya estaban en tu Dex o no se pudieron leer.",
+"This browser isn't saving cards (private mode or storage full), so this one won't stay in your Dex.":"Este navegador no está guardando tarjetas (modo privado o sin espacio), así que esta no se va a quedar en tu Dex.",
+"Pay, time and miles must be above zero":"Pago, tiempo y millas tienen que ser más de cero","Finish the current scan first":"Termina el escaneo de ahora primero","Fast mode reads one screenshot at a time.":"El modo Rápido lee una captura a la vez.",
+"That's all for today":"Es todo por hoy","Your Dex is full":"Tu Dex está lleno","Go to Settings":"Ir a Ajustes","Open Settings":"Abrir Ajustes",
+"The scanner didn't load. Check your connection and reload the page.":"El escáner no cargó. Revisa tu conexión y vuelve a cargar la página.",
+"Dex full: auto-deleted your {n} least valuable card to make room. Your stats keep them.":"Dex lleno: se borró sola tu tarjeta menos valiosa para hacer espacio. Tus stats la guardan.",
+"Dex full: auto-deleted your {n} least valuable cards to make room. Your stats keep them.":"Dex lleno: se borraron solas tus {n} tarjetas menos valiosas para hacer espacio. Tus stats las guardan.",
+"Auto-deleted {n} card older than {n} days. Your stats keep them.":"Se borró sola {n} tarjeta de más de {n} días. Tus stats la guardan.","Auto-deleted {n} cards older than {n} days. Your stats keep them.":"Se borraron solas {n} tarjetas de más de {n} días. Tus stats las guardan.",
+/* quests */
+"Scan {n} offers":"Escanea {n} ofertas","Find a Rare or better":"Encuentra un Raro o mejor","Find a Super Rare or better":"Encuentra un Súper raro o mejor","Find {n} offers worth accepting":"Encuentra {n} ofertas que valga aceptar","Open a pack":"Abre un sobre","Scan {n} different stores":"Escanea {n} tiendas distintas",
+"Find an offer over {n}/hr":"Encuentra una oferta de más de {n}/h","Find a {n}+ offer":"Encuentra una oferta de {n}+","Find {n} offers worth at least a Consider":"Encuentra {n} ofertas de al menos Pensarlo","Pull a special finish":"Saca un acabado especial","Find a store new to your Dex":"Encuentra una tienda nueva en tu Dex",
+"Find an offer over {n}/mi":"Encuentra una oferta de más de {n}/mi","Find a good offer under {n} miles":"Encuentra una buena oferta de menos de {n} millas","Get {n} Uncommon or better":"Consigue {n} Poco común o mejor","Find a single order over {n}":"Encuentra un pedido individual de más de {n}","Pull an Epic or better":"Saca un Épico o mejor",
+"Scan {n} lunch offers ({n} am–{n} pm)":"Escanea {n} ofertas de comida ({n} am–{n} pm)","Scan {n} dinner offers ({n}–{n} pm)":"Escanea {n} ofertas de cena ({n}–{n} pm)","Scan {n} miles of offers":"Escanea {n} millas de ofertas","Spot {n} offers to decline":"Detecta {n} ofertas para rechazar","Open a pack of {n} or more":"Abre un sobre de {n} o más",
+"Find {n} Rare or better":"Encuentra {n} Raros o mejor","Pull a special frame":"Saca un marco especial","Open {n} packs":"Abre {n} sobres","Scan on {n} different days":"Escanea en {n} días distintos","Find {n} offers over {n}/hr":"Encuentra {n} ofertas de más de {n}/h",
+"Pull {n} special frames":"Saca {n} marcos especiales","Scan every day this week":"Escanea todos los días esta semana","Pull a Legendary or better":"Saca un Legendario o mejor","Pull a Mythic":"Saca un Mítico","Pull {n} Epic or better":"Saca {n} Épicos o mejor","Pull a Holographic or Gold Foil card":"Saca una tarjeta Holográfica o de Lámina de oro",
+"Get {n} Rare or better":"Consigue {n} Raros o mejor","Pull an Epic or better.":"Saca un Épico o mejor.",
+/* achievements */
+"Achievements":"Logros","First Card":"Primera tarjeta","Scan your first offer":"Escanea tu primera oferta","Pack Opener":"Abresobres","Open a pack of {n} or more ":"Abre un sobre de {n} o más","Red Ruby":"Rubí Rojo","Open a Red Ruby pack ({n} cards)":"Abre un Sobre de Rubí Rojo ({n} tarjetas)","Shiny":"Brillante","Pull any special finish":"Saca cualquier acabado especial","Holo Hunter":"Cazaholos","Pull a Holographic card":"Saca una tarjeta Holográfica","Gold Rush":"Fiebre del oro","Pull a Gold Foil card":"Saca una tarjeta de Lámina de oro",
+"Get a Super Rare or better":"Consigue un Súper raro o mejor","Epic Pull":"Tirada Épica","Get an Epic or better":"Consigue un Épico o mejor","Get a Legendary or better":"Consigue un Legendario o mejor","Get a Mythic card":"Consigue una tarjeta Mítica","Perfect {n}":"{n} perfecto","Score a perfect {n}":"Saca un {n} perfecto","Full Spectrum":"Todo el espectro","Own every rarity":"Ten todas las rarezas",
+"Big Payday":"Día de paga","Scan a {n}+ offer":"Escanea una oferta de {n}+","On a Roll":"En racha","Scan {n} days in a row":"Escanea {n} días seguidos","Road Warrior":"Guerrero del camino","Trash Collector":"Recolector de basura","Collect {n} Trash cards":"Junta {n} tarjetas Basura","Good Eye":"Buen ojo","Grinder":"Chambeador","Collect {n} cards":"Junta {n} tarjetas",
+/* profile */
+"Driving since":"Manejando desde","Level up to earn luck cards":"Sube de nivel para ganar cartas de suerte","{n} luck card · boosts frames and lucky pulls":"{n} carta de suerte · sube marcos y tiradas con suerte","{n} luck cards · boosts frames and lucky pulls":"{n} cartas de suerte · suben marcos y tiradas con suerte",
+"Most seen store":"Tienda que más ves","{n} mi scanned":"{n} mi escaneadas","{n} of {n} worth accepting":"{n} de {n} valen la pena","Best pull":"Mejor tirada","tap to open":"toca para abrir","Scan your first offer to start leveling up.":"Escanea tu primera oferta para empezar a subir de nivel.",
+"Rookie":"Novato","Regular":"Regular","Road Pro":"Pro del camino","Route Boss":"Jefe de ruta","Dex Master":"Maestro del Dex","Living Legend":"Leyenda viva","Mythic Driver":"Repartidor mítico",
+"Pumpkin stickers":"Calcomanías de calabaza","Happy Jack":"Jack feliz","Spooky":"Tenebroso","Grinning":"Sonriente","Ghost Pumpkin":"Calabaza fantasma","Golden Jack":"Jack dorado","Cursed Lantern":"Linterna maldita","Back next Halloween.":"Regresa el próximo Halloween.","Sticker":"Calcomanía",
+"XP per card: Trash {n} · Common {n} · Uncommon {n} · Rare {n} · Super Rare {n} · Epic {n} · Legendary {n} · Mythic {n} · Holo or Gold +{n} · Neon +{n} · Carbon or Inverted +{n} · packs +{n} to +{n} · daily quests {n}–{n}. Hand-edited cards earn {n}. Every level gives you a luck card.":"XP por tarjeta: Basura {n} · Común {n} · Poco común {n} · Raro {n} · Súper raro {n} · Épico {n} · Legendario {n} · Mítico {n} · Holo u Oro +{n} · Neón +{n} · Carbono o Invertido +{n} · sobres +{n} a +{n} · retos diarios {n}–{n}. Las editadas a mano dan {n}. Cada nivel te da una carta de suerte.",
+"Friends":"Amigos","Add friends":"Agregar amigos","No friends added yet":"Todavía no agregas amigos","Your ID":"Tu ID","Their ID":"Su ID","Friend's ID":"ID de tu amigo","Show my QR":"Mostrar mi QR","Scan a QR":"Escanear un QR","ID copied":"ID copiado","Link copied":"Link copiado",
+"Share your ID with a friend, or type theirs above.":"Pásale tu ID a un amigo, o escribe el suyo arriba.","This week with friends":"Esta semana con amigos","weeks start Monday":"la semana empieza el lunes",
+"Once a friend scans this week, you'll get a few friendly awards here. They reset every Monday.":"Cuando un amigo escanee esta semana, aquí salen unos premios amistosos. Se reinician cada lunes.",
+"IDs are {n} letters and numbers, like ABCD-EFGH-JK{n}.":"Los ID tienen {n} letras y números, como ABCD-EFGH-JK{n}.","No driver has that ID. Check it and try again.":"Nadie tiene ese ID. Revísalo e intenta otra vez.","That's your own ID.":"Ese es tu propio ID.",
+"ID not found":"ID no encontrado","Old ID link":"Link de ID viejo","That link or QR code is from an older version of DasherDex, before IDs got longer. Ask your friend for their new ID or QR code. It's on their Profile.":"Ese link o QR es de una versión vieja de DasherDex, de antes de que los ID fueran más largos. Pídele a tu amigo su ID o QR nuevo. Está en su Perfil.",
+"Change username":"Cambiar usuario","Pick your username":"Escoge tu usuario","Change your username":"Cambia tu usuario","Save username":"Guardar usuario","username":"usuario","Available!":"¡Disponible!",
+"It's how friends and other drivers see you. It stays tied to your Google account.":"Así te ven tus amigos y otros repartidores. Queda ligado a tu cuenta de Google.","Your old username is freed up for someone else.":"Tu usuario anterior queda libre para alguien más.",
+"Letters, numbers, _ and . only (no spaces).":"Solo letras, números, _ y . (sin espacios).","That username is taken. Try another one.":"Ese usuario ya está ocupado. Prueba otro.","{n}–{n} characters: letters, numbers, _ and .":"{n}–{n} caracteres: letras, números, _ y .",
+/* feed */
+"Friends feed":"Feed de amigos","Global feed":"Feed global","Global":"Global","You and your friends":"Tú y tus amigos","Everyone on DasherDex":"Todos en DasherDex",
+"Add a friend with their code or QR, and their posts show up here.":"Agrega a un amigo con su código o QR, y sus publicaciones salen aquí.","No posts yet. Be the first: open a card and tap Post.":"Todavía no hay publicaciones. Sé el primero: abre una tarjeta y toca Publicar.",
+"The feed needs cloud sync, which isn't set up for this copy of DasherDex.":"El feed necesita sincronizar en la nube, y no está activado en esta copia de DasherDex.",
+"Post this card":"Publicar esta tarjeta","Post to Friends":"Publicar a Amigos","Post to Global":"Publicar en Global","Caption":"Texto","Say something (optional)":"Di algo (opcional)","Only your friends see it. The route map and address are never included.":"Solo tus amigos la ven. Nunca se incluye el mapa ni la dirección.",
+"Look at this pull!":"¡Mira esta tirada!","Worth it?":"¿Vale la pena?","Easy money":"Dinero fácil","Not worth the gas":"No vale la gasolina","Lucky day":"Día de suerte","Rare find":"Hallazgo raro","Holo!":"¡Holo!","First Mythic!":"¡Mi primer Mítico!",
+"Hide this post":"Ocultar esta publicación","Hide or report this post":"Ocultar o reportar esta publicación","Hidden posts only disappear for you.":"Las publicaciones ocultas solo desaparecen para ti.","Report this post":"Reportar esta publicación","Report this post?":"¿Reportar esta publicación?","Thanks. Report sent.":"Gracias. Reporte enviado.",
+"Fake or edited offer":"Oferta falsa o editada","Spam":"Spam","Rude name or caption":"Nombre o texto grosero","Something else":"Otra cosa","This post":"Esta publicación","Post deleted":"Publicación borrada",
+"Hand-edited cards can't be posted.":"Las tarjetas editadas a mano no se pueden publicar.","Test cards can't be posted.":"Las tarjetas de prueba no se pueden publicar.","Sign in to post.":"Inicia sesión para publicar.","Sign in to report posts.":"Inicia sesión para reportar.",
+"You already posted this card to Global.":"Ya publicaste esta tarjeta en Global.","You already posted this card to Friends.":"Ya publicaste esta tarjeta a Amigos.","Pick one of the captions for Global.":"Escoge uno de los textos para Global.",
+"A moderator has blocked you from posting to Global. You can still post to Friends.":"Un moderador te bloqueó de publicar en Global. Todavía puedes publicar a Amigos.","You can post {n} cards to Global a day. Try again tomorrow.":"Puedes publicar {n} tarjetas al día en Global. Intenta mañana.",
+/* stats */
+"Avg grade":"Calif. prom.","Avg per hour":"Prom. por hora","Avg per mile":"Prom. por milla","Accept on average":"Aceptar en promedio","Best time to drive":"Mejor hora para manejar","Best score":"Mejor puntaje","Daily pay per hour":"Pago por hora diario","Days in a row with a scan":"Días seguidos escaneando","Worst stores":"Peores tiendas","Worth taking":"Vale la pena","by average score":"por puntaje promedio","avg $/hr":"prom. $/h","avg score":"puntaje prom.","Rarity pulls":"Rarezas","Special finish odds":"Chance de acabado especial","Week of":"Semana del",
+"Scan a few offers and your daily and weekly numbers show up here.":"Escanea unas ofertas y aquí salen tus números del día y la semana.","Early":"Temprano","Morning":"Mañana","Lunch":"Comida","Afternoon":"Tarde","Dinner":"Cena","Late":"Noche","Overnight":"Madrugada",
+"{n} accept, {n} consider, {n} decline":"{n} aceptar, {n} pensarlo, {n} rechazar","last {n} days":"últimos {n} días","{n}/hr goal":"meta {n}/h",
+/* settings */
+"Appearance":"Apariencia","Dark":"Oscuro","Light":"Claro","Match phone":"Como el teléfono","Theme":"Tema","My theme":"Mi tema","Card animations":"Animaciones","Holo shimmer, card flips and the pack tear. Turn off to save battery.":"Brillo holo, volteo de tarjetas y abrir sobres. Apágalo para ahorrar batería.",
+"Auto (events)":"Auto (eventos)","Classic":"Clásico","Frost":"Escarcha","Neon Night":"Noche neón","Royal Gold":"Oro real",
+"Privacy":"Privacidad","Read pickup addresses":"Leer direcciones de recogida","Saves the restaurant's street address and city with each card. Off: addresses are skipped when scanning.":"Guarda la dirección y ciudad del restaurante en cada tarjeta. Apagado: se saltan las direcciones al escanear.",
+"Keep route maps on cards":"Guardar mapas de ruta en las tarjetas","The card picture is the route map from your screenshot, which shows where you were. Off: new cards get a plain picture.":"La imagen de la tarjeta es el mapa de tu captura, que muestra dónde estabas. Apagado: las tarjetas nuevas llevan una imagen simple.",
+"Share my cards with friends":"Compartir mis tarjetas con amigos","Friends see your level, stats and cards. Never your maps or addresses.":"Tus amigos ven tu nivel, stats y tarjetas. Nunca tus mapas ni direcciones.","Close friends see maps and addresses":"Amigos cercanos ven mapas y direcciones","Only friends you've starred as close friends. Turn off to keep these to yourself.":"Solo los amigos que marcaste como cercanos. Apágalo para guardártelos.",
+"Scanning":"Escaneo","Fast:":"Rápido:","one screenshot at a time, straight to the verdict.":"una captura a la vez, directo al veredicto.","Auto:":"Auto:",
+"one screenshot is a quick scan. Pick several to open packs: up to {n} at once ({n} when signed in), {n} cards per pack. Bigger packs are better packs.":"una captura es un escaneo rápido. Escoge varias para abrir sobres: hasta {n} a la vez ({n} con sesión iniciada), {n} tarjetas por sobre. Entre más grande el sobre, mejor.",
+"one screenshot is a quick scan. Pick several to open packs: up to {n} at once, {n} cards per pack. Bigger packs are better packs.":"una captura es un escaneo rápido. Escoge varias para abrir sobres: hasta {n} a la vez, {n} tarjetas por sobre. Entre más grande el sobre, mejor.",
+"Red Card / Order & Pay":"Red Card / Ordena y paga","When the screenshot says Red Card, count {n} extra minutes to order and wait. On by default.":"Cuando la captura dice Red Card, cuenta {n} minutos extra para ordenar y esperar. Prendido por defecto.",
+"Read the time from the screenshot":"Leer la hora de la captura","Uses the clock in your status bar to put each card on the right day. Off: uses the time you scan.":"Usa el reloj de tu barra de estado para poner cada tarjeta en el día correcto. Apagado: usa la hora en que escaneas.",
+"Limits: {n} scans a day and {n} cards in your Dex. Duplicates are skipped automatically.":"Límites: {n} escaneos al día y {n} tarjetas en tu Dex. Los duplicados se saltan solos.","Limits: {n} scans a day and {n} cards in your Dex. Signed in: {n} a day and {n} cards. Duplicates are skipped automatically.":"Límites: {n} escaneos al día y {n} tarjetas en tu Dex. Con sesión: {n} al día y {n} tarjetas. Los duplicados se saltan solos.",
+"Show the scanning guide":"Ver la guía de escaneo","Add DasherDex to your Home Screen":"Agrega DasherDex a tu pantalla de inicio","It opens full screen like an app, with its own icon.":"Se abre en pantalla completa como app, con su propio ícono.",
+"Open this page in":"Abre esta página en","Safari":"Safari","Tap the":"Toca el botón","button":"","at the bottom.":"abajo.","Scroll down and tap":"Baja y toca","Add to Home Screen":"Agregar a inicio",", then":", luego",
+"The Home Screen app keeps its own copy of your cards. Cards scanned in Safari won't appear there.":"La app de inicio guarda su propia copia de tus tarjetas. Las que escanees en Safari no salen ahí.","The Home Screen app keeps its own copy of your cards. Sign in there with the same Google account and your Dex syncs over.":"La app de inicio guarda su propia copia de tus tarjetas. Inicia sesión ahí con la misma cuenta de Google y tu Dex se sincroniza.",
+"How cards are graded":"Cómo se califican las tarjetas",
+"Each offer gets a grade from its pay per hour ({n}) and pay per mile ({n}). Accept, Consider and Decline come from the grade. Once you've scanned {n}+ offers, the Accept line moves a little (up to {n} points) toward what's normal in your area, using only your recent grades. Rarity is the grade plus a little luck.":"Cada oferta se califica por su pago por hora ({n}) y pago por milla ({n}). Aceptar, Pensarlo y Rechazar salen de la calificación. Cuando llevas {n}+ ofertas, la línea de Aceptar se mueve un poco (hasta {n} puntos) hacia lo normal en tu zona, usando solo tus calificaciones recientes. La rareza es la calificación más un poco de suerte.",
+"Grade {n}+: about {n}/hr, {n}/mi and a {n}+ payout on one order":"Calificación {n}+: como {n}/h, {n}/mi y un pago de {n}+ en un pedido","{n}/hr, {n}/mi, single order, {n} mi or less, {n}+ pay":"{n}/h, {n}/mi, pedido individual, {n} mi o menos, pago de {n}+","{n}/hr, {n}/mi, {n} mi or less, {n}+ pay":"{n}/h, {n}/mi, {n} mi o menos, pago de {n}+","The top of the Rare range: around {n}/hr and {n}/mi":"Lo más alto de Raro: como {n}/h y {n}/mi","{n}/hr and {n}/mi":"{n}/h y {n}/mi","Close to Rare, but short on $/hr or $/mi":"Casi Raro, pero le falta $/h o $/mi","Clears {n}/hr and {n}/mi, not much more":"Pasa de {n}/h y {n}/mi, no mucho más","Under {n}/hr, under {n}/mi, or {n}+ mi":"Menos de {n}/h, menos de {n}/mi, o {n}+ mi",
+"Luck moves rarity up to {n} points either way, and about {n} of scans are lucky pulls. Luck never lifts a Trash offer out of Trash or creates a Mythic. {n} needs a grade of {n}+.":"La suerte mueve la rareza hasta {n} puntos para arriba o abajo, y como el {n} de los escaneos son tiradas con suerte. La suerte nunca saca una oferta de Basura ni crea un Mítico. El {n} necesita calificación de {n}+.",
+"Cards whose numbers were typed or changed by hand are capped at Uncommon with no special finish, and screenshots that aren't one DoorDash or Uber Eats offer are refused.":"Las tarjetas con números escritos o cambiados a mano quedan en Poco común sin acabado especial, y las capturas que no son una oferta de DoorDash o Uber Eats se rechazan.",
+"Your data":"Tus datos","Copy as CSV":"Copiar como CSV","Select all and copy":"Selecciona todo y copia","Delete Trash cards ({n})":"Borrar tarjetas Basura ({n})","Favorites were kept":"Los favoritos se quedaron",
+"{n} of {n} card spots used. Synced to your Google account.":"{n} de {n} espacios usados. Sincronizado con tu cuenta de Google.","{n} of {n} card spots used. Cards are saved in this browser on this phone only. Copy a backup as a spreadsheet (CSV) now and then.":"{n} de {n} espacios usados. Las tarjetas se guardan solo en este navegador de este teléfono. Copia un respaldo en hoja de cálculo (CSV) de vez en cuando.",
+"Auto-delete after {n} days":"Borrar solas después de {n} días",
+"Frees up space. Cards of the rarities you pick are deleted {n} days after you scan them. You keep the XP, and their numbers stay in your stats and charts. When your Dex is full, the least valuable ones go first to make room. Favorites (★) and cards with a special frame or sticker are never auto-deleted, and your posts stay up.":"Libera espacio. Las tarjetas de las rarezas que escojas se borran {n} días después de escanearlas. Te quedas con el XP y sus números siguen en tus stats y gráficas. Cuando tu Dex se llena, se van primero las menos valiosas. Los favoritos (★) y las tarjetas con marco especial o calcomanía nunca se borran solas, y tus publicaciones se quedan.",
+"Reset all progress":"Reiniciar todo el progreso","Reset everything":"Reiniciar todo","TYPE RESET TO CONFIRM":"ESCRIBE RESET PARA CONFIRMAR","Progress reset. Level 1, fresh quests.":"Progreso reiniciado. Nivel 1, retos nuevos.",
+"Deletes every card, your level, XP, luck, quests, achievements and streak. Your name, friends, location notes and settings stay. Your old screenshots can be scanned again after {n} hours. This can't be undone.":"Borra todas las tarjetas, tu nivel, XP, suerte, retos, logros y racha. Tu nombre, amigos, notas de lugares y ajustes se quedan. Tus capturas viejas se pueden volver a escanear en {n} horas. No se puede deshacer.",
+"Deletes every card, your level, XP, luck, quests, achievements and streak, plus your posts, here and in your cloud copy. Your name, friends, location notes and settings stay. Your old screenshots can be scanned again after {n} hours. This can't be undone.":"Borra todas las tarjetas, tu nivel, XP, suerte, retos, logros y racha, más tus publicaciones, aquí y en tu copia en la nube. Tu nombre, amigos, notas de lugares y ajustes se quedan. Tus capturas viejas se pueden volver a escanear en {n} horas. No se puede deshacer.",
+"Just for fun.":"Solo por diversión.","Made with love for drivers":"Hecho con cariño para repartidores",
+"Account":"Cuenta","Sign out":"Cerrar sesión","Switch account":"Cambiar de cuenta","Sync now":"Sincronizar","Synced":"Sincronizado","synced just now":"sincronizado hace un momento","Saved on this device":"Guardado en este dispositivo","Delete my cloud data":"Borrar mis datos en la nube","Sign in with Google":"Iniciar sesión con Google",
+"Signed out. Your cards stay on this phone.":"Sesión cerrada. Tus tarjetas se quedan en este teléfono.","Cloud copy deleted. Your cards are still on this phone.":"Copia en la nube borrada. Tus tarjetas siguen en este teléfono.",
+"Cloud sync isn't set up for this copy of DasherDex, so your cards are saved on this phone only. The site owner can turn on Google sign-in by following SETUP.md.":"La sincronización no está activada en esta copia de DasherDex, así que tus tarjetas se guardan solo en este teléfono.",
+/* about */
+"About":"Acerca de","What's new":"Novedades","Privacy policy":"Política de privacidad","Terms of use":"Términos de uso","What's saved, who sees it, how to delete it":"Qué se guarda, quién lo ve, cómo borrarlo","The rules for using DasherDex":"Las reglas para usar DasherDex",
+"Just for fun":"Solo por diversión","Play fair":"Juega limpio","Moderation":"Moderación","If you sign in with Google":"Si inicias sesión con Google","Who can see what":"Quién ve qué","Deleting your data":"Borrar tus datos","What's saved on your phone":"Qué se guarda en tu teléfono",
+"Last updated October {n}. DasherDex is a small fan project. This is what it keeps and why, in plain words.":"Actualizado en octubre de {n}. DasherDex es un proyecto pequeño hecho por fans. Esto es lo que guarda y por qué, en palabras simples.",
+"Last updated October {n}. By using DasherDex you agree to these simple rules.":"Actualizado en octubre de {n}. Al usar DasherDex aceptas estas reglas simples.",
+"The numbers read from your offer screenshots: pay, time, miles, stops, store and time of the offer.":"Los números que se leen de tus capturas: pago, tiempo, millas, paradas, tienda y hora de la oferta.",
+"A small picture of each offer's route map (you can turn maps off in Settings › Privacy).":"Una imagen chica del mapa de ruta de cada oferta (puedes apagar los mapas en Ajustes › Privacidad).","Pickup addresses, only if you turn that on.":"Direcciones de recogida, solo si lo prendes.","Your settings, notes, level and progress.":"Tus ajustes, notas, nivel y progreso.",
+"Your full screenshots are read on your phone and never uploaded.":"Tus capturas completas se leen en tu teléfono y nunca se suben.",
+"Your cards, maps, notes and progress are copied to your private cloud copy (Google Firebase) so they sync between devices.":"Tus tarjetas, mapas, notas y progreso se copian a tu copia privada en la nube (Google Firebase) para sincronizar entre dispositivos.",
+"We keep your Google name and email, your username and your driver ID. Your email is never shown to other drivers.":"Guardamos tu nombre y correo de Google, tu usuario y tu ID. Tu correo nunca se muestra a otros repartidores.",
+"Friends":"Amigos","you accept see your username, level, stats and cards, if Share my cards is on. Only close friends see maps and addresses, if you allow it.":"que aceptes ven tu usuario, nivel, stats y tarjetas, si Compartir mis tarjetas está prendido. Solo los amigos cercanos ven mapas y direcciones, si lo permites.",
+"Global posts":"Publicaciones globales","are seen by every signed-in driver. They never include maps or addresses.":"las ve cualquier repartidor con sesión. Nunca incluyen mapas ni direcciones.","The DasherDex team":"El equipo de DasherDex",
+"(moderators) can see account details, cards and reports to keep the app fair and safe: for example, to remove fake cards or posts.":"(moderadores) pueden ver datos de la cuenta, tarjetas y reportes para que la app sea justa y segura: por ejemplo, para quitar tarjetas o publicaciones falsas.",
+"Nobody else. DasherDex doesn't sell your data, doesn't show ads and doesn't use trackers.":"Nadie más. DasherDex no vende tus datos, no tiene anuncios y no usa rastreadores.",
+"Delete any card from its page. Settings › Your data › Reset deletes all progress.":"Borra cualquier tarjeta desde su página. Ajustes › Tus datos › Reiniciar borra todo el progreso.","Settings › Account › Delete my cloud data removes your cloud copy, friends and posts.":"Ajustes › Cuenta › Borrar mis datos en la nube quita tu copia en la nube, amigos y publicaciones.",
+"Signed out, everything lives only in this browser. Clearing Safari's website data deletes it.":"Sin sesión, todo vive solo en este navegador. Si borras los datos de sitios de Safari, se borra.","DasherDex is for drivers {n} and older. Questions? Ask the DasherDex team.":"DasherDex es para repartidores de {n} años o más. ¿Dudas? Pregúntale al equipo de DasherDex.",
+"Grades, verdicts, rarities and stats are estimates from your screenshots, not financial advice. Always check the offer in your delivery app before you accept.":"Las calificaciones, veredictos, rarezas y stats son estimados de tus capturas, no consejo financiero. Siempre revisa la oferta en tu app antes de aceptar.",
+"DasherDex is an independent fan project. It isn't affiliated with or endorsed by DoorDash or Uber.":"DasherDex es un proyecto independiente de fans. No está afiliado ni respaldado por DoorDash ni Uber.",
+"DasherDex is free and comes as is. Features can change, and data can be lost, so don't rely on it as your only record.":"DasherDex es gratis y viene tal cual. Las funciones pueden cambiar y los datos se pueden perder, así que no lo uses como tu único registro.",
+"Only scan real offers you got. No edited, fake or AI-made screenshots.":"Escanea solo ofertas reales que te llegaron. Nada de capturas editadas, falsas o hechas con IA.","Don't try to cheat levels, cards or limits, or mess with the app or other drivers' accounts.":"No hagas trampa con niveles, tarjetas o límites, ni te metas con la app o las cuentas de otros.","Be kind. No hateful, mean or private stuff in your username or posts.":"Sé buena onda. Nada de odio, groserías o cosas privadas en tu usuario o publicaciones.",
+"The DasherDex team can remove cards or posts, block drivers from Global, change rewards, or close accounts that break these rules.":"El equipo de DasherDex puede quitar tarjetas o publicaciones, bloquear repartidores de Global, cambiar premios o cerrar cuentas que rompan estas reglas.",
+"You can report any Global post from its ••• menu.":"Puedes reportar cualquier publicación de Global desde su menú •••.","We may update these terms. Big changes will show up in What's new.":"Podemos actualizar estos términos. Los cambios grandes salen en Novedades.",
+"Pick a username. It's tied to your Google account and nobody else can take it.":"Escoge un usuario. Queda ligado a tu cuenta de Google y nadie más lo puede usar.","Español: DasherDex now speaks Spanish. It follows your phone's language, or pick it in Settings.":"Español: DasherDex ya habla español. Usa el idioma de tu teléfono, o escógelo en Ajustes.",
+"More daily challenges, and you can swap one challenge a day with ↻.":"Más retos diarios, y puedes cambiar uno al día con ↻.","Weekly challenges now come in Normal, Hard (more XP) and super rare ★ weeks that guarantee a special frame on the best card of your next upload.":"Los retos semanales ahora vienen en Normal, Difícil (más XP) y semanas ★ súper raras que garantizan marco especial en la mejor tarjeta de tu siguiente subida.",
+"Finishing any weekly challenge gives a tiny chance that your next {n}-card pack is a God Pack.":"Completar cualquier reto semanal te da una chance mínima de que tu siguiente sobre de {n} sea un God Pack.","Favorites: tap ☆ on a card. Favorites get their own tab and are never auto-deleted.":"Favoritos: toca ☆ en una tarjeta. Los favoritos tienen su propia pestaña y nunca se borran solos.",
+"Auto-delete is smarter: when your Dex is full it clears the least valuable cards first, and your posts stay up.":"El borrado automático es más listo: cuando tu Dex se llena, borra primero las menos valiosas, y tus publicaciones se quedan.","Deleted a card by mistake? Tap Undo.":"¿Borraste una tarjeta por error? Toca Deshacer.","Achievements stay earned, even after deleting cards.":"Los logros se quedan ganados, aunque borres tarjetas.","Report a Global post from its ••• menu.":"Reporta una publicación de Global desde su menú •••.",
+"Events show their end date, shared card pictures show your pumpkin sticker as a tag, and DasherDex opens even with no signal.":"Los eventos muestran su fecha final, las imágenes compartidas muestran tu calcomanía de calabaza como etiqueta, y DasherDex abre aunque no tengas señal.",
+"Halloween event with pumpkin stickers and Haunted packs.":"Evento de Halloween con calcomanías de calabaza y sobres embrujados.","Daily and weekly challenges.":"Retos diarios y semanales.","Driver IDs are longer and safer.":"Los ID son más largos y seguros.",
+"Grades, verdicts, rarities and stats are rough estimates from your screenshots, not financial advice. DasherDex is an independent fan project and isn't affiliated with or endorsed by DoorDash or Uber, and the scanner can misread things, so always check the offer in your app before you accept. Made with love for drivers":"Las calificaciones, veredictos, rarezas y stats son estimados de tus capturas, no consejo financiero. DasherDex es un proyecto independiente de fans y no está afiliado ni respaldado por DoorDash ni Uber, y el escáner se puede equivocar, así que siempre revisa la oferta en tu app antes de aceptar. Hecho con cariño para repartidores",
+"Special frame odds: Trash {n} · Common {n} · Uncommon {n} · Rare {n} · Super Rare {n} · Epic {n} · Legendary {n} · Mythic {n}. Holographic and Gold Foil are the rarest, then Neon, Carbon Fiber and Inverted. The last card of each pack gets a bonus, from ×{n} for a Stone Pack up to ×{n} for a Red Ruby Pack. Your luck (×{n}, from luck cards you earn by leveling up) multiplies all of it.":"Chance de marco especial: Basura {n} · Común {n} · Poco común {n} · Raro {n} · Súper raro {n} · Épico {n} · Legendario {n} · Mítico {n}. Holográfico y Lámina de oro son los más raros, luego Neón, Fibra de carbono e Invertido. La última tarjeta de cada sobre tiene bono, desde ×{n} en un Sobre de Piedra hasta ×{n} en un Sobre de Rubí Rojo. Tu suerte (×{n}, de las cartas de suerte que ganas al subir de nivel) multiplica todo.",
+"special-frame odds (plus your luck ×{n})":"de chance de marco especial (más tu suerte ×{n})","Who sees it":"Quién lo ve","Tap":"Toca","{n} cards · {n} KB":"{n} tarjetas · {n} KB","{n} total":"{n} en total","offer ·":"oferta ·","offers ·":"ofertas ·","· {n}/mi · best {n}":"· {n}/mi · mejor {n}",
+};
+/* numbers are matched as {n} */
+const ES_NUM=/\$?\d[\d,]*(?:\.\d+)?%?/g;
+const ES_T={
+"+{n} XP":"+{n} XP","October {n}":"octubre {n}","{n} / {n} XP":"{n} / {n} XP","{n} total":"{n} total","{n} offer":"{n} oferta","{n} offers":"{n} ofertas","{n} card":"{n} tarjeta","{n} cards":"{n} tarjetas","{n} cards total":"{n} tarjetas en total","{n} special":"{n} especiales","{n} mi total":"{n} mi en total","{n} min of driving":"{n} min manejando","{n} new":"{n} nuevas","{n} day":"{n} día","{n} days":"{n} días","{n}/{n} today":"{n}/{n} hoy","{n} of {n}":"{n} de {n}","of {n}":"de {n}","{n} offered":"{n} ofrecido",
+"{n}/hr":"{n}/h","/hr avg":"/h prom.","$/hr":"$/h","$/mi":"$/mi","/HR":"/H","{n}/hr · {n}/mi":"{n}/h · {n}/mi","{n} offer · {n}/hr":"{n} oferta · {n}/h","{n} MI":"{n} MI","{n} mi":"{n} mi","{n} min":"{n} min","{n} of {n} faces":"{n} de {n} caras","{n} of {n} scored {n}+":"{n} de {n} sacaron {n}+","{n} of {n} · all time":"{n} de {n} · de siempre",
+"Card {n} of {n}":"Tarjeta {n} de {n}","Grade {n} · Accept":"Calificación {n} · Aceptar","Grade {n} · Consider":"Calificación {n} · Pensarlo","Grade {n} · Decline":"Calificación {n} · Rechazar","Luck ×{n}":"Suerte ×{n}","Level {n}":"Nivel {n}","Version {n}":"Versión {n}","DasherDex v{n}":"DasherDex v{n}","DasherDex · grading v{n}":"DasherDex · calificación v{n}",
+"{n}/hr is excellent":"{n}/h es excelente","{n}/mi is excellent":"{n}/mi es excelente","{n}/mi is thin":"{n}/mi está flojo","{n}/hr clears {n}":"{n}/h pasa de {n}","{n}/mi clears {n}":"{n}/mi pasa de {n}","Under {n}/hr ({n})":"Menos de {n}/h ({n})","Under {n}/mi ({n})":"Menos de {n}/mi ({n})","Under {n} total (−{n})":"Menos de {n} en total (−{n})","{n} mi trip (−{n})":"Viaje de {n} mi (−{n})","{n} stops (−{n})":"{n} paradas (−{n})","Extreme distance ({n} mi)":"Distancia extrema ({n} mi)","Legendary needs a {n}+ payout":"Legendario necesita pago de {n}+","Red Card order: +{n} min to order and wait":"Pedido Red Card: +{n} min para ordenar y esperar",
+"{n} screenshots skipped. You'll see why after the last card.":"{n} capturas saltadas. Después de la última tarjeta verás por qué.","{n} screenshot skipped. You'll see why after the last card.":"{n} captura saltada. Después de la última tarjeta verás por qué.",
+"You've scanned {n} offers today, the daily limit of {n}. It resets at midnight.":"Hoy escaneaste {n} ofertas, el límite diario de {n}. Se reinicia a medianoche.","You can scan {n} at once ({n} when signed in). Reading the first {n}.":"Puedes escanear {n} a la vez ({n} con sesión). Leyendo las primeras {n}.","You can scan {n} at once. Reading the first {n}.":"Puedes escanear {n} a la vez. Leyendo las primeras {n}.",
+"You have {n} of {n} cards. Delete a few to make room: open a card and tap Delete, or clear out your Trash cards in Settings.":"Tienes {n} de {n} tarjetas. Borra unas para hacer espacio: abre una tarjeta y toca Borrar, o limpia tus tarjetas Basura en Ajustes.",
+"Deleted {n} Trash card":"{n} tarjeta Basura borrada","Deleted {n} Trash cards":"{n} tarjetas Basura borradas","Copied {n} rows":"{n} filas copiadas","Synced: {n} card from your other devices":"Sincronizado: {n} tarjeta de tus otros dispositivos","Synced: {n} cards from your other devices":"Sincronizado: {n} tarjetas de tus otros dispositivos",
+"Weekly challenge done · +{n} XP":"Reto semanal completado · +{n} XP","{n} new stores":"{n} tiendas nuevas","{n} luck cards to open":"{n} cartas de suerte por abrir",
+};
+/* text with names or dates in it */
+const ES_RX=[
+ [/^Open (.+)$/,(m,a)=>"Abrir "+esPack(a)],
+ [/^(Haunted )?(.+) Pack$/,(m,h,a)=>esPack(m,1)],
+ [/^(.+) · Card (\d+) of (\d+)$/,(m,a,b,c)=>esPack(a)+" · Tarjeta "+b+" de "+c],
+ [/^(.+) · (\d+)$/,(m,a,b)=>{const p=esPack(a+" Pack",1);return p!==a+" Pack"?p.replace(/^Sobre de /,"")+" · "+b:null}],
+ [/^(.+) event · (Ends .+|Last day!)$/,(m,a,b)=>"Evento de "+trES(a)+" · "+(b==="Last day!"?"¡Último día!":"Termina el "+b.slice(5))],
+ [/^Only during (.+) week\. (Ends .+|Last day!)\.$/,(m,a,b)=>"Solo en la semana de "+trES(a)+". "+(b==="Last day!"?"¡Último día!":"Termina el "+b.slice(5))+"."],
+ [/^Challenge done · (.+)$/,(m,a)=>"Reto completado · "+trES(a)],
+ [/^Daily goal done · (.+)$/,(m,a)=>"Meta del día completada · "+trES(a)],
+ [/^(.+) luck card added\. Open it from the Dex\.$/,(m,a)=>"Carta de suerte "+trES(a)+" agregada. Ábrela desde el Dex."],
+ [/^✦ (.+) (pull|frame)( · pack bonus)? ✦$/,(m,a,b,c)=>"✦ "+(b==="pull"?"Tirada ":"Marco ")+trES(a)+(c?" · bono de sobre":"")+" ✦"],
+ [/^🎃 (.+) sticker$/,(m,a)=>"🎃 Calcomanía "+trES(a)],
+ [/^(.+) sticker$/,(m,a)=>{const t=trES(a);return t!==a?"Calcomanía "+t:null}],
+ [/^(.+) pull$/,(m,a)=>{const t=trES(a);return t!==a?"Tirada "+t:null}],
+ [/^(.+)!$/,(m,a)=>{const t=trES(a);return t!==a?"¡"+t+"!":null}],
+ [/^Level (\d+) · (.+)$/,(m,a,b)=>"Nivel "+a+" · "+trES(b)],
+ [/^Driving since (.+)$/,(m,a)=>"Manejando desde el "+a],
+ [/^(.+) · (\d+) offers? · \$(\d+)\/hr avg · best (\d+)$/,(m,a,b,c,d)=>trES(a)+" · "+b+" oferta"+(b==="1"?"":"s")+" · $"+c+"/h prom. · mejor "+d],
+ [/^(\d+) offers? · \$(\d+)\/hr avg · best (\d+)$/,(m,b,c,d)=>b+" oferta"+(b==="1"?"":"s")+" · $"+c+"/h prom. · mejor "+d],
+ [/^Today (\d+) offers? · \$(\d+)\/hr avg$/,(m,a,b)=>"Hoy "+a+" oferta"+(a==="1"?"":"s")+" · $"+b+"/h prom."],
+ [/^Shift at (.+)$/,(m,a)=>"Turno a las "+a],[/^Shift (.+)$/,(m,a)=>"Turno "+a],
+ [/^(.+) at (\d{1,2}:\d\d.*) · (.+)$/,(m,a,b,c)=>a+" a las "+b+" · "+c],
+ [/^(.+): no offers$/,(m,a)=>esDate(a)+": sin ofertas"],[/^(.+): \$?([\d.]+) per hour$/,(m,a,b)=>esDate(a)+": $"+b+" por hora"],
+ [/^Haunted packs are here\. Any card can drop a pumpkin sticker, only until (.+)\. Rare faces and trims are out there\.$/,(m,a)=>"Llegaron los sobres embrujados. Cualquier tarjeta puede soltar una calcomanía de calabaza, solo hasta el "+a+". Hay caras y bordes raros por ahí."],
+ [/^(.+) · (\d+) offers? ·$/,(m,a,b)=>a+" · "+b+" oferta"+(b==="1"?"":"s")+" ·"],
+ [/^Pickup: (.+)$/,(m,a)=>"Recogida: "+a],
+ [/^You're @(.+)$/,(m,a)=>"Eres @"+a],[/^Your ID: (.+)$/,(m,a)=>"Tu ID: "+a],
+ [/^You've already added (.+)$/,(m,a)=>"Ya agregaste a "+a],
+ [/^Re-graded: (\d+) · (.+)$/,(m,a,b)=>"Recalificada: "+a+" · "+trES(b)],
+ [/^(.+) · (\d+) added · \+(\d+) XP$/,(m,a,b,c)=>trES(a)+" · "+b+" agregada · +"+c+" XP"],
+ [/^You deleted this offer recently\. (Try again|You can scan it again) in (.+)\.$/,(m,a,b)=>"Borraste esta oferta hace poco. Puedes volver a escanearla en "+b+"."],
+ [/^(\d+) pickups? · (\d+) drops?$/,(m,a,b)=>a+" recogida"+(a==="1"?"":"s")+" · "+b+" entrega"+(b==="1"?"":"s")],
+ [/^(.+) duplicate cards? cleaned up$/,(m,a)=>a+" duplicada(s) limpiada(s)"],
+ [/^Couldn't read (.+)$/,(m,a)=>"No se pudo leer: "+a.replace(/\bpay\b/,"pago").replace(/\btime\b/,"tiempo").replace(/\bmiles\b/,"millas")],
+ [/^(\d+) already in your Dex, skipped: (.+)\.$/,(m,a,b)=>a+" ya estaban en tu Dex, saltadas: "+b+"."],
+ [/^The scanner wasn't sure about (.+)\. Compare it with your offer screen\.$/,(m,a)=>"El escáner no estaba seguro de "+({"the payout":"el pago","the time and miles":"el tiempo y las millas","numbers that look unusual":"unos números raros"}[a]||a)+". Compáralo con tu pantalla de la oferta."],
+ [/^That's an example, so it isn't added to your Dex\. (.+)$/,(m,a)=>"Es un ejemplo, así que no se agrega a tu Dex."],
+ [/^Sign in with Google to (hold up to 300 cards|scan up to 50 a day)\.$/,(m,a)=>"Inicia sesión con Google para "+(a[0]==="h"?"guardar hasta 300 tarjetas":"escanear hasta 50 al día")+"."],
+];
+const PACK_ES={Single:"Individual",Stone:"Piedra",Bronze:"Bronce",Silver:"Plata",Jade:"Jade",Sapphire:"Zafiro",Amethyst:"Amatista",Gold:"Oro",Diamond:"Diamante","Red Ruby":"Rubí Rojo",God:"God"};
+function esPack(s,raw){
+  if(s==="God Pack")return "God Pack";if(s==="Single")return "Individual";
+  const m=/^(Haunted )?(.+?)( Pack)?$/.exec(s);if(!m||!PACK_ES[m[2]])return raw?s:trES(s);
+  return (m[3]||m[1]?"Sobre de "+PACK_ES[m[2]]:PACK_ES[m[2]])+(m[1]?" Embrujado":"");
+}
+function esDate(s){const d=new Date(s);return isNaN(d)?s:d.toLocaleDateString("es",{weekday:"short",month:"short",day:"numeric"})}
+const ES_MEMO=new Map();let esDepth=0;
+function trES(core){
+  if(ES[core]!==undefined)return ES[core];
+  const hit=ES_MEMO.get(core);if(hit!==undefined)return hit;
+  if(esDepth>3)return core;
+  esDepth++;let out;try{out=trES0(core)}finally{esDepth--}if(ES_MEMO.size>6000)ES_MEMO.clear();ES_MEMO.set(core,out);return out;
+}
+function trES0(core){
+  const nums=[];const key=core.replace(ES_NUM,x=>{nums.push(x);return "{n}"});
+  let t=ES[key]!==undefined?ES[key]:ES_T[key];
+  if(t!==undefined&&nums.length){let i=0;return t.replace(/\{n\}/g,()=>nums[i++]??"")}
+  if(t!==undefined)return t;
+  for(const [rx,f] of ES_RX){const m=rx.exec(core);if(m){const r=f(...m);if(r!=null&&r!==core)return r}}
+  return core;
+}
+/* ---------- which language, and swapping text on screen ---------- */
+const langNow=()=>{const s=SET.lang||"auto";if(s==="es"||s==="en")return s;return /^es\b/i.test(navigator.language||"")?"es":"en"};
+const SKIP_TAGS=/^(SCRIPT|STYLE|TEXTAREA|INPUT|SELECT|OPTION|CODE|PRE|NOSCRIPT)$/;
+const ORIG=new WeakMap();
+function trNode(n){
+  const p=n.parentNode;if(!p||SKIP_TAGS.test(p.nodeName)||(p.closest&&p.closest("[data-notr]")))return;
+  const s=n.data;if(!s||!/[A-Za-z]/.test(s))return;
+  const m=/^(\s*)([\s\S]*?)(\s*)$/.exec(s);const out=trES(m[2]);
+  if(out!==m[2]){ORIG.set(n,s);n.data=m[1]+out+m[3]}
+}
+function trAttrs(el){for(const a of ["placeholder","aria-label","title","alt"]){const v=el.getAttribute&&el.getAttribute(a);if(v&&/[A-Za-z]/.test(v)){const o=trES(v.trim());if(o!==v.trim())el.setAttribute(a,o)}}}
+function trTree(root){
+  if(!root)return;if(root.nodeType===3){trNode(root);return}if(root.nodeType!==1||SKIP_TAGS.test(root.nodeName))return;
+  if(root.closest&&root.closest("[data-notr]"))return;
+  trAttrs(root);
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT|NodeFilter.SHOW_ELEMENT);let n;
+  while((n=w.nextNode())){if(n.nodeType===3)trNode(n);else trAttrs(n)}
+}
+let langObs=null;
+/* dates and times follow the chosen language too */
+const _ld=Date.prototype.toLocaleDateString,_lt=Date.prototype.toLocaleTimeString,_ls=Date.prototype.toLocaleString;
+const pickLoc=l=>{const x=(SET.lang==="es"||SET.lang==="en")&&(l===undefined||(Array.isArray(l)&&!l.length));return x?(SET.lang==="es"?"es-US":"en-US"):l};
+Date.prototype.toLocaleDateString=function(l,o){return _ld.call(this,pickLoc(l),o)};
+Date.prototype.toLocaleTimeString=function(l,o){return _lt.call(this,pickLoc(l),o)};
+Date.prototype.toLocaleString=function(l,o){return _ls.call(this,pickLoc(l),o)};
+function applyLang(){
+  const es=langNow()==="es";document.documentElement.lang=es?"es":"en";
+  if(es&&!langObs){
+    langObs=new MutationObserver(ms=>{for(const m of ms){if(m.type==="characterData")trNode(m.target);else if(m.type==="attributes")trAttrs(m.target);else for(const k of m.addedNodes)trTree(k)}});
+    langObs.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:["placeholder","aria-label","title"]});
+    trTree(document.body);
+  }else if(!es&&langObs){
+    langObs.disconnect();langObs=null;
+    /* put English back on what's showing, then redraw */
+    const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let n;while((n=w.nextNode())){const o=ORIG.get(n);if(o!==undefined)n.data=o}
+    try{show(view)}catch(e){}
+  }
 }
 
 
@@ -4242,7 +5049,11 @@ function movedBanner(){
 /* =========================================================
    Boot
    ========================================================= */
-applyScanMode();applySkin();
+applyScanMode();applySkin();syncClock();try{applyLang()}catch(e){console.warn(e)}
+try{if(navigator.storage&&navigator.storage.persist&&(isSafari()||isStandalone()))navigator.storage.persist().catch(()=>{})}catch(e){}
+/* offline: the app opens and scans with no signal (sw.js next to index.html; skipped if it isn't there) */
+if("serviceWorker" in navigator&&location.protocol==="https:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){syncClock();if(typeof Cloud!=="undefined"&&Cloud.isHead&&Date.now()-Cloud.inboxAt>120000)Cloud.loadInbox().catch(()=>{})}});
 loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")}).then(()=>Cloud.init()).then(()=>{try{movedBanner()}catch(e){}});
 /* warm up the reader in the background so the first scan is faster */
 /* start loading the reader the moment Scan is touched, while the photo picker is still open */
