@@ -1059,6 +1059,11 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .q2 .qt{overflow-wrap:break-word;word-break:normal;hyphens:auto;min-width:5.5em}
 .q2 .qx{white-space:normal;text-align:right;max-width:9.5em;line-height:1.35}
 .q2 .qx .qswap{margin-left:2px}
+.dcbtn{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;background:linear-gradient(135deg,#5865f2,#7983f5);border-radius:14px;padding:12px 14px;margin-top:2px}
+.dcbtn svg{flex:none;width:28px;height:28px}
+.dcbtn>span:nth-of-type(1){flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dcbtn b{font-size:.92rem}.dcbtn small{font-size:.76rem;opacity:.85}
+.dcbtn .abgo{color:#fff;opacity:.8}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -3822,7 +3827,7 @@ function wireAccount(){
 /* ---------- Profile: friends ---------- */
 function friendsHTML(){
   if(!Cloud.on)return "";
-  if(!Cloud.user)return `<div class="sbox"><h3>Friends</h3><p class="msg">Sign in with Google to get your ID, add friends and compare Dexes.</p><button class="btn ghost sm" id="toSettings">Go to Settings</button></div>`;
+  if(!Cloud.user)return `<div class="sbox"><h3>Friends</h3><p class="msg">Sign in with Google to get your ID, add friends and compare Dexes.</p><button class="btn ghost sm" id="toSettings">Go to Settings</button>${discordBtn("fDc")}</div>`;
   const code=Cloud.profile&&Cloud.profile.code;
   const fr=Cloud.friends.filter(f=>f.accepted),pend=Cloud.friends.filter(f=>!f.accepted);
   const star=on=>`<svg viewBox="0 0 24 24" fill="${on?"currentColor":"none"}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 15.4 6.8 18.2l1-5.8L3.5 8.2l5.9-.9z"/></svg>`;
@@ -3834,6 +3839,7 @@ function friendsHTML(){
     ${fr.length?`<div class="flist">${fr.map(f=>`<div class="frow"><button class="fopen" data-open="${esc(f.id)}"><span class="avatar sm" style="--c:${f.close?"var(--t-legendary)":"var(--t-rare)"}">${esc(((f.p&&f.p.name)||f.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc((f.p&&f.p.name)||f.name)}</b><small>${f.p?`Level ${num0(f.p.level)} · ${num0(f.p.cards)} cards`:"Profile hidden"}</small></span></button><button class="mini star${f.close?" on":""}" data-close="${esc(f.id)}" aria-pressed="${!!f.close}" aria-label="Close friend">${star(f.close)}</button></div>`).join("")}</div>
       <p class="msg">Star a friend to make them a close friend: they can also see your route maps and pickup addresses.</p>`:`<p class="msg">Share your ID with a friend, or type theirs above.</p>`}
     ${pend.length?`<div class="flist"><div class="flabel">Waiting for them to accept</div>${pend.map(f=>`<div class="frow"><span class="avatar sm" style="--c:var(--mut)">${esc((f.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(f.name)}</b><small>request sent</small></span><button class="mini ghost" data-cancel="${esc(f.id)}">Cancel</button></div>`).join("")}</div>`:""}
+    ${discordBtn("fDc")}
   </div>`;
 }
 function wireFriends(){
@@ -4318,8 +4324,10 @@ Object.assign(Cloud,{
     for(const r of refs)await r.delete().catch(()=>{});feedCache.global=null;feedCache.friends=null;return refs.length;
   },
   /* announcement shown at the top of everyone's Dex */
-  async setNotice(msg){await this.db.collection("config").doc("app").set({msg:String(msg||"").slice(0,140),at:Date.now(),by:this.user.uid})},
-  async loadNotice(){try{const s=await this.db.collection("config").doc("app").get();this.notice=s.exists?s.data():null}catch(e){this.notice=null}renderNotice()},
+  async setNotice(msg){await this.db.collection("config").doc("app").set({msg:String(msg||"").slice(0,140),at:Date.now(),by:this.user.uid},{merge:true})},
+  /* the Discord invite shown in Friends and Settings, changed here without re-uploading the app */
+  async setDiscord(link){await this.db.collection("config").doc("app").set({discord:String(link||"").slice(0,100),by:this.user.uid},{merge:true})},
+  async loadNotice(){try{const s=await this.db.collection("config").doc("app").get();this.notice=s.exists?s.data():null}catch(e){this.notice=null}renderNotice();try{if(view==="vSettings")renderSettings();if(view==="vProfile")renderProfile()}catch(e){}},
   /* this driver's own app: pick up what a moderator changed */
   async pullModState(){
     if(!this.user)return;let d=null;try{const s=await this.modRef(this.user.uid).get();d=s.exists?s.data():null}catch(e){return}
@@ -4435,6 +4443,9 @@ function modHTML(){
     ${head?`<div class="mgroup"><div class="flabel">Announcement</div>
       <p class="msg">Shows at the top of everyone's Dex. Leave empty and post to clear it.</p>
       <textarea id="ntTxt" maxlength="140" rows="2" placeholder="e.g. Halloween event ends Friday!">${esc((Cloud.notice&&Cloud.notice.msg)||"")}</textarea>
+      <div class="flabel">Discord invite link</div>
+      <p class="msg">Shown to everyone in Friends and Settings. Paste a link like https://discord.gg/abc123, or leave empty to hide it.</p>
+      <div class="fadd"><input id="dcLink" maxlength="100" autocomplete="off" spellcheck="false" placeholder="https://discord.gg/…" value="${esc((Cloud.notice&&Cloud.notice.discord)||"")}"><button class="btn sm" id="dcGo">Save</button></div>
       <button class="btn sm" id="ntGo">Post announcement</button></div>
     <div class="mgroup"><div class="flabel">Moderators</div>
       <div class="fadd"><input id="modCode" maxlength="16" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Their ID"><button class="btn sm" id="modAdd">Make mod</button></div>
@@ -4468,6 +4479,7 @@ async function wireMod(){
     try{const list=await Cloud.searchDrivers(q);drvLast={q,list};const r=$("drvRes");if(r){r.innerHTML=drvRowsHTML(list);wireRes()}}
     catch(e){const r=$("drvRes");if(r)r.innerHTML=`<p class="msg err">${esc(friendly(e))}</p>`}};
   on("drvGo",search);const q=$("drvQ");if(q)q.onkeydown=e=>{if(e.key==="Enter")search()};
+  on("dcGo",()=>run(async()=>{const v=$("dcLink").value.trim();if(v&&!discordOK(v))throw new Error("That isn't a Discord invite link. It should start with https://discord.gg/");await Cloud.setDiscord(v);await Cloud.loadNotice();return v?"Discord link saved":"Discord link hidden"}));
   on("ntGo",()=>run(async()=>{await Cloud.setNotice($("ntTxt").value.trim());await Cloud.loadNotice();return $("ntTxt").value.trim()?"Announcement posted":"Announcement cleared"}));
   const tg=(id,k)=>{const el=$(id);if(el)el.onchange=e=>{SET[k]=e.target.checked;saveSet()}};
   tg("dvNoLim","devNoLimit");
@@ -4642,8 +4654,18 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="1.5";
+const APP_VER="1.6";
+/* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
+const DISCORD_DEFAULT="";
+const discordOK=u=>/^https:\/\/(discord\.gg|discord\.com\/invite)\/[A-Za-z0-9-]{2,40}\/?$/.test(String(u||""));
+const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.notice.discord)||DISCORD_DEFAULT;return discordOK(u)?u:""};
+const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
+const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["1.6","October 2026",[
+    "Join the DasherDex Discord from Friends or Settings.",
+    "The Discord server now has levels: chat once a day to earn XP and level roles.",
+    "Patch notes now post to Discord automatically."]],
   ["1.5","October 2026",[
     "Pick a username. It's tied to your Google account and nobody else can take it.",
     "Español: DasherDex now speaks Spanish. It follows your phone's language, or pick it in Settings.",
@@ -4667,6 +4689,7 @@ function langHTML(){
 function aboutHTML(){
   const nw=SET.seenVer!==APP_VER;
   return `<div class="sbox about-box"><h3>About</h3>
+    ${discordBtn("abDc")}
     <div class="ablist">
       <button class="abrow" id="abNew"><span><b>What's new</b><small>Version ${APP_VER}</small></span>${nw?`<i class="tdot" aria-label="New"></i>`:""}<span class="abgo">›</span></button>
       <button class="abrow" id="abPriv"><span><b>Privacy policy</b><small>What's saved, who sees it, how to delete it</small></span><span class="abgo">›</span></button>
@@ -4698,7 +4721,7 @@ function privacySheet(){
     <h3>Who can see what</h3>
     <ul><li><b>Friends</b> you accept see your username, level, stats and cards, if Share my cards is on. Only close friends see maps and addresses, if you allow it.</li>
     <li><b>Global posts</b> are seen by every signed-in driver. They never include maps or addresses.</li>
-    <li><b>The DasherDex team</b> (moderators) can see account details, cards and reports to keep the app fair and safe: for example, to remove fake cards or posts.</li>
+    <li><b>The DasherDex team</b> (moderators) can see account details (in the app and in a private moderators-only Discord channel), cards and reports to keep the app fair and safe: for example, to remove fake cards or posts.</li>
     <li>Nobody else. DasherDex doesn't sell your data, doesn't show ads and doesn't use trackers.</li></ul>
     <h3>Deleting your data</h3>
     <ul><li>Delete any card from its page. Settings › Your data › Reset deletes all progress.</li>
@@ -4887,7 +4910,7 @@ const ES={
 "We keep your Google name and email, your username and your driver ID. Your email is never shown to other drivers.":"Guardamos tu nombre y correo de Google, tu usuario y tu ID. Tu correo nunca se muestra a otros repartidores.",
 "Friends":"Amigos","you accept see your username, level, stats and cards, if Share my cards is on. Only close friends see maps and addresses, if you allow it.":"que aceptes ven tu usuario, nivel, stats y tarjetas, si Compartir mis tarjetas está prendido. Solo los amigos cercanos ven mapas y direcciones, si lo permites.",
 "Global posts":"Publicaciones globales","are seen by every signed-in driver. They never include maps or addresses.":"las ve cualquier repartidor con sesión. Nunca incluyen mapas ni direcciones.","The DasherDex team":"El equipo de DasherDex",
-"(moderators) can see account details, cards and reports to keep the app fair and safe: for example, to remove fake cards or posts.":"(moderadores) pueden ver datos de la cuenta, tarjetas y reportes para que la app sea justa y segura: por ejemplo, para quitar tarjetas o publicaciones falsas.",
+"(moderators) can see account details (in the app and in a private moderators-only Discord channel), cards and reports to keep the app fair and safe: for example, to remove fake cards or posts.":"(moderadores) pueden ver datos de la cuenta (en la app y en un canal privado de Discord solo para moderadores), tarjetas y reportes para que la app sea justa y segura: por ejemplo, para quitar tarjetas o publicaciones falsas.",
 "Nobody else. DasherDex doesn't sell your data, doesn't show ads and doesn't use trackers.":"Nadie más. DasherDex no vende tus datos, no tiene anuncios y no usa rastreadores.",
 "Delete any card from its page. Settings › Your data › Reset deletes all progress.":"Borra cualquier tarjeta desde su página. Ajustes › Tus datos › Reiniciar borra todo el progreso.","Settings › Account › Delete my cloud data removes your cloud copy, friends and posts.":"Ajustes › Cuenta › Borrar mis datos en la nube quita tu copia en la nube, amigos y publicaciones.",
 "Signed out, everything lives only in this browser. Clearing Safari's website data deletes it.":"Sin sesión, todo vive solo en este navegador. Si borras los datos de sitios de Safari, se borra.","DasherDex is for drivers {n} and older. Questions? Ask the DasherDex team.":"DasherDex es para repartidores de {n} años o más. ¿Dudas? Pregúntale al equipo de DasherDex.",
@@ -4902,6 +4925,8 @@ const ES={
 "Finishing any weekly challenge gives a tiny chance that your next {n}-card pack is a God Pack.":"Completar cualquier reto semanal te da una chance mínima de que tu siguiente sobre de {n} sea un God Pack.","Favorites: tap ☆ on a card. Favorites get their own tab and are never auto-deleted.":"Favoritos: toca ☆ en una tarjeta. Los favoritos tienen su propia pestaña y nunca se borran solos.",
 "Auto-delete is smarter: when your Dex is full it clears the least valuable cards first, and your posts stay up.":"El borrado automático es más listo: cuando tu Dex se llena, borra primero las menos valiosas, y tus publicaciones se quedan.","Deleted a card by mistake? Tap Undo.":"¿Borraste una tarjeta por error? Toca Deshacer.","Achievements stay earned, even after deleting cards.":"Los logros se quedan ganados, aunque borres tarjetas.","Report a Global post from its ••• menu.":"Reporta una publicación de Global desde su menú •••.",
 "Events show their end date, shared card pictures show your pumpkin sticker as a tag, and DasherDex opens even with no signal.":"Los eventos muestran su fecha final, las imágenes compartidas muestran tu calcomanía de calabaza como etiqueta, y DasherDex abre aunque no tengas señal.",
+"Join the DasherDex Discord":"Únete al Discord de DasherDex","Patch notes, best pulls and other drivers":"Novedades, mejores tiradas y otros repartidores",
+"Join the DasherDex Discord from Friends or Settings.":"Únete al Discord de DasherDex desde Amigos o Ajustes.","The Discord server now has levels: chat once a day to earn XP and level roles.":"El servidor de Discord ahora tiene niveles: escribe una vez al día para ganar XP y roles de nivel.","Patch notes now post to Discord automatically.":"Las novedades ahora se publican solas en Discord.",
 "Halloween event with pumpkin stickers and Haunted packs.":"Evento de Halloween con calcomanías de calabaza y sobres embrujados.","Daily and weekly challenges.":"Retos diarios y semanales.","Driver IDs are longer and safer.":"Los ID son más largos y seguros.",
 "Grades, verdicts, rarities and stats are rough estimates from your screenshots, not financial advice. DasherDex is an independent fan project and isn't affiliated with or endorsed by DoorDash or Uber, and the scanner can misread things, so always check the offer in your app before you accept. Made with love for drivers":"Las calificaciones, veredictos, rarezas y stats son estimados de tus capturas, no consejo financiero. DasherDex es un proyecto independiente de fans y no está afiliado ni respaldado por DoorDash ni Uber, y el escáner se puede equivocar, así que siempre revisa la oferta en tu app antes de aceptar. Hecho con cariño para repartidores",
 "Special frame odds: Trash {n} · Common {n} · Uncommon {n} · Rare {n} · Super Rare {n} · Epic {n} · Legendary {n} · Mythic {n}. Holographic and Gold Foil are the rarest, then Neon, Carbon Fiber and Inverted. The last card of each pack gets a bonus, from ×{n} for a Stone Pack up to ×{n} for a Red Ruby Pack. Your luck (×{n}, from luck cards you earn by leveling up) multiplies all of it.":"Chance de marco especial: Basura {n} · Común {n} · Poco común {n} · Raro {n} · Súper raro {n} · Épico {n} · Legendario {n} · Mítico {n}. Holográfico y Lámina de oro son los más raros, luego Neón, Fibra de carbono e Invertido. La última tarjeta de cada sobre tiene bono, desde ×{n} en un Sobre de Piedra hasta ×{n} en un Sobre de Rubí Rojo. Tu suerte (×{n}, de las cartas de suerte que ganas al subir de nivel) multiplica todo.",
