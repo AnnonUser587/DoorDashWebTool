@@ -1146,6 +1146,52 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .cback.frame-gold{background:linear-gradient(135deg,#7a5413,#f7d774,#b8862b,#ffe9a3)}
 .cback.frame-neon{border-color:#00e5ff;box-shadow:0 0 40px #00e5ff,0 0 80px -10px #ff3df2}
 .rv.teasing .packend{opacity:.25;transition:opacity .3s}
+/* ===== Desktop: only for computers with a mouse and a wide window. iPhones (touch) never match this. ===== */
+@media (min-width:1000px) and (hover:hover) and (pointer:fine){
+  body{padding-left:232px}
+  .wrap{max-width:1180px;padding-left:32px;padding-right:32px;padding-bottom:48px}
+  /* the pinned top bars start after the side bar and line up with the page */
+  .appbar,.topbar{left:232px;padding-left:max(32px,calc((100vw - 232px) / 2 - 558px))!important;padding-right:max(32px,calc((100vw - 232px) / 2 - 558px))!important}
+  /* the bottom bar becomes a side bar */
+  .nav{left:0;top:0;bottom:0;right:auto;width:232px;padding:20px 14px;background:var(--bg2);border-right:1px solid var(--line);display:flex}
+  .nav .row{display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%;max-width:none;margin:0;padding:0;background:none;border:0;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .nav .row::before{content:"DasherDex";display:block;font:700 1.4rem var(--f-display);padding:4px 12px 18px;color:var(--tx)}
+  .ntab{flex-direction:row;justify-content:flex-start;gap:14px;min-height:46px;padding:0 14px;font-size:.95rem;border-radius:14px}
+  .ntab:hover{background:var(--raise);color:var(--tx)}
+  .nav .row::before{order:-2}
+  .cdays{max-width:560px}
+  .nscan{order:-1;flex-direction:row;width:100%;height:52px;margin:0 0 14px;gap:10px;font-size:1rem;border-radius:16px}
+  .nscan:hover{filter:brightness(.92)}
+  .toast{bottom:28px;left:calc(50% + 116px)}
+  /* more room for cards and stats */
+  .grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+  .sumgrid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .achs{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .bag .bagitems{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+  .posts{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;align-items:start}
+  .stkbook{grid-template-columns:repeat(6,minmax(0,1fr))}
+  /* Dex top: challenges and rewards side by side */
+  #vDex .quests,#vDex .gamebar{max-width:none}
+  /* a card's page: the card on the left, the details on the right */
+  .detail{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:18px 28px;align-items:start}
+  .detail>*{grid-column:2}
+  .detail>.topbar{grid-column:1/-1}
+  .detail>.card{grid-column:1;grid-row:1/span 30;position:sticky;top:90px;width:100%}
+  .detail>.phero,.detail>.kpis,.detail>#frGrid,.detail>.grid,.detail>.msg,.detail>#frRemove,.detail>#frAch{grid-column:1/-1}
+  /* pop-ups are centered dialogs */
+  .sheet{display:grid;place-items:start center;padding-top:48px}
+  .sheet .col{width:min(560px,100%)}
+  .sheet .col.wide{width:min(760px,100%);max-width:760px}
+  .card,.fchip,.btn,.mini,.bagit,.abrow,.gmeter,.gpass{transition:transform .15s,filter .15s}
+  .grid .card:hover{transform:translateY(-3px)}
+  .btn:hover{filter:brightness(1.06)}
+  .hint{display:block}
+}
+/* drag and drop: the screen tells you to let go */
+.dropzone{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none}
+.dropzone div{border:3px dashed var(--t-rare);border-radius:28px;padding:48px 64px;text-align:center;font:700 1.4rem var(--f-display);color:var(--tx)}
+.dropzone small{display:block;font:500 .85rem var(--f-body);color:var(--mut);margin-top:8px}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -2749,6 +2795,17 @@ function handleFiles(list){
   if(files.length===1)scanOne(files[0]);else scanPack(files);
 }
 $("file").onchange=e=>{const fs=[...e.target.files];e.target.value="";handleFiles(fs)};
+/* computers: drop screenshots anywhere, or paste one (Ctrl+V / Cmd+V). Esc closes pop-ups. */
+(()=>{let dz=null,depth=0;const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes("Files");
+  const showDz=on=>{if(on&&!dz){dz=document.createElement("div");dz.className="dropzone";dz.innerHTML=`<div>Drop screenshots to scan<small>One for a quick scan, several to open packs</small></div>`;document.body.appendChild(dz)}if(!on&&dz){dz.remove();dz=null}};
+  addEventListener("dragenter",e=>{if(!hasFiles(e))return;e.preventDefault();depth++;showDz(true)});
+  addEventListener("dragover",e=>{if(hasFiles(e))e.preventDefault()});
+  addEventListener("dragleave",e=>{if(!hasFiles(e))return;depth=Math.max(0,depth-1);if(!depth)showDz(false)});
+  addEventListener("drop",e=>{if(!hasFiles(e))return;e.preventDefault();depth=0;showDz(false);const fs=[...e.dataTransfer.files];if(fs.length)handleFiles(fs)});
+  addEventListener("paste",e=>{const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
+    const fs=[...((e.clipboardData&&e.clipboardData.files)||[])].filter(f=>f.type.startsWith("image/"));if(fs.length){e.preventDefault();handleFiles(fs)}});
+  addEventListener("keydown",e=>{if(e.key!=="Escape")return;const q=$("qrSheet");if(q&&!q.hidden&&!$("qrClose").hidden){closeQR();return}if(!$("sheet").hidden&&!busy)closeSheet()});
+})();
 document.addEventListener("dragover",e=>e.preventDefault());
 document.addEventListener("drop",e=>{e.preventDefault();handleFiles(e.dataTransfer?.files||[])});
 document.addEventListener("paste",e=>{const fs=[...(e.clipboardData?.items||[])].filter(i=>i.type.startsWith("image/")).map(i=>i.getAsFile());if(fs.length)handleFiles(fs)});
@@ -4900,6 +4957,7 @@ const WHATS_NEW=[
     "Luck now shows as a bonus (+0% to +150%), and good cards glow before they flip.",
     "Thanksgiving, Christmas and New Year events with their own stickers.",
     "Faster syncing that saves data, plus safety fixes.",
+    "DasherDex works great on computers now: a side menu, bigger card grids, and you can drag screenshots onto the page or paste them.",
     "My promise: DasherDex stays free to play. Packs, luck and chests will never cost real money, and your data is never sold. If DasherDex ever grows enough to need help with storage costs, it might offer extra card space, never gambling with real money."]],
   ["1.6","October 2026",[
     "Join the DasherDex Discord from Friends or Settings.",
@@ -5601,7 +5659,7 @@ const ES={
 "Double XP during peak hours: Friday to Sunday, 6 to 9 PM.":"XP doble en horas pico: de viernes a domingo, de 6 a 9 PM.","Prestige at level 50, scrap and crafting, collections, and XP for achievements.":"Prestigio en el nivel 50, chatarra y crafteo, colecciones y XP por logros.",
 "Friends and community challenges: everyone who helps gets the reward.":"Retos de amigos y de la comunidad: todos los que ayudan reciben el premio.","Tap a driver on the feed to see their level, achievements and cards.":"Toca a un repartidor en el feed para ver su nivel, logros y tarjetas.",
 "Luck now shows as a bonus (+0% to +150%), and good cards glow before they flip.":"La suerte ahora se ve como bono (+0% a +150%), y las buenas tarjetas brillan antes de voltearse.","Thanksgiving, Christmas and New Year events with their own stickers.":"Eventos de Acción de Gracias, Navidad y Año Nuevo con sus propias calcomanías.",
-"Faster syncing that saves data, plus safety fixes.":"Sincronización más rápida que ahorra datos, y arreglos de seguridad.",
+"Faster syncing that saves data, plus safety fixes.":"Sincronización más rápida que ahorra datos, y arreglos de seguridad.","DasherDex works great on computers now: a side menu, bigger card grids, and you can drag screenshots onto the page or paste them.":"DasherDex ya funciona bien en computadora: menú lateral, más tarjetas a la vista, y puedes arrastrar capturas a la página o pegarlas.","Drop screenshots to scan":"Suelta las capturas para escanear","One for a quick scan, several to open packs":"Una para escaneo rápido, varias para abrir sobres",
 "My promise: DasherDex stays free to play. Packs, luck and chests will never cost real money, and your data is never sold. If DasherDex ever grows enough to need help with storage costs, it might offer extra card space, never gambling with real money.":"Mi promesa: DasherDex sigue siendo gratis. Los sobres, la suerte y los cofres nunca van a costar dinero real, y tus datos nunca se venden. Si DasherDex crece tanto que necesite ayuda con los costos de almacenamiento, podría ofrecer más espacio para tarjetas, pero nunca apuestas con dinero real.",
 "Halloween event with pumpkin stickers and Haunted packs.":"Evento de Halloween con calcomanías de calabaza y sobres embrujados.","Daily and weekly challenges.":"Retos diarios y semanales.","Driver IDs are longer and safer.":"Los ID son más largos y seguros.",
 "Grades, verdicts, rarities and stats are rough estimates from your screenshots, not financial advice. DasherDex is an independent fan project and isn't affiliated with or endorsed by DoorDash or Uber, and the scanner can misread things, so always check the offer in your app before you accept. Made with love for drivers":"Las calificaciones, veredictos, rarezas y stats son estimados de tus capturas, no consejo financiero. DasherDex es un proyecto independiente de fans y no está afiliado ni respaldado por DoorDash ni Uber, y el escáner se puede equivocar, así que siempre revisa la oferta en tu app antes de aceptar. Hecho con cariño para repartidores",

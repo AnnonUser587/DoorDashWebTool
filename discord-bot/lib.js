@@ -49,16 +49,17 @@ function serviceAccount() {
   try { sa = JSON.parse(raw); } catch (e) { throw new Error("FIREBASE_SERVICE_ACCOUNT secret is missing or isn't the JSON key file."); }
   return sa;
 }
-async function gToken() {
-  if (saTok && saTok.exp > Date.now() + 60000) return saTok.t;
+async function gToken(scope) {
+  scope = scope || "https://www.googleapis.com/auth/datastore";
+  if (saTok && saTok.scope === scope && saTok.exp > Date.now() + 60000) return saTok.t;
   if (process.env.FIRESTORE_TEST_TOKEN) return process.env.FIRESTORE_TEST_TOKEN;
   const s = serviceAccount(), now = Math.floor(Date.now() / 1000);
   const b64 = o => Buffer.from(JSON.stringify(o)).toString("base64url");
-  const head = b64({ alg: "RS256", typ: "JWT" }), claim = b64({ iss: s.client_email, scope: "https://www.googleapis.com/auth/datastore", aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600 });
+  const head = b64({ alg: "RS256", typ: "JWT" }), claim = b64({ iss: s.client_email, scope, aud: "https://oauth2.googleapis.com/token", iat: now, exp: now + 3600 });
   const sig = crypto.createSign("RSA-SHA256").update(head + "." + claim).sign(s.private_key).toString("base64url");
   const r = await fetch("https://oauth2.googleapis.com/token", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=" + head + "." + claim + "." + sig });
   const j = await r.json(); if (!j.access_token) throw new Error("Google sign-in for the bot failed: " + JSON.stringify(j).slice(0, 200));
-  saTok = { t: j.access_token, exp: Date.now() + 3500 * 1000 }; return saTok.t;
+  saTok = { t: j.access_token, scope, exp: Date.now() + 3500 * 1000 }; return saTok.t;
 }
 function fsBase() { return (process.env.FIRESTORE_URL || "https://firestore.googleapis.com/v1") + `/projects/${process.env.FIREBASE_PROJECT || serviceAccount().project_id}/databases/(default)/documents`; }
 async function fs(method, path, body) {
@@ -78,4 +79,4 @@ const prevDay = k => { const d = new Date(k + "T12:00:00Z"); d.setUTCDate(d.getU
 const snowflakeAt = ms => ((BigInt(ms) - 1420070400000n) << 22n).toString();
 const fmtID = c => String(c || "").replace(/(.{4})(?=.)/g, "$1-");
 
-module.exports = { discord, need, checkGuild, keyOf, nounOf, channels, findChan, fs, fieldsOf, dayKey, prevDay, snowflakeAt, fmtID, GUILD, sleep };
+module.exports = { gToken, serviceAccount, discord, need, checkGuild, keyOf, nounOf, channels, findChan, fs, fieldsOf, dayKey, prevDay, snowflakeAt, fmtID, GUILD, sleep };
