@@ -963,6 +963,34 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .pagehead .phr>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (max-width:400px){.pagehead .phr>span:first-child{display:none}.top .hright{gap:8px}.top .hright .count{display:none}}
 .pagehead .pfbtn span,.pfbtn span{font:700 1.05rem/1 var(--f-display);color:var(--tx)}
+
+/* ===== v12: moderator menu, driver panel, God Pack, announcement ===== */
+.mgroup{display:grid;gap:8px;padding-top:12px;margin-top:4px;border-top:1px solid var(--line)}
+.mgroup:first-of-type{border-top:0;padding-top:0}
+.modbox .flabel.sub{margin-top:4px}
+.modbox textarea{width:100%;box-sizing:border-box;border-radius:12px;border:1px solid var(--line);background:var(--track);color:var(--tx);padding:10px 12px;font:500 .9rem var(--f-body);resize:vertical}
+.modbox .fopen{width:100%;text-align:left;background:none;border:0;color:inherit;padding:6px 0;cursor:pointer}
+.drv{text-align:left;display:grid;gap:10px}
+.drv-head{display:flex;align-items:center;gap:12px}.drv-head h2{margin:0}.drv-head small{color:var(--mut);font-size:.8rem}
+.drv-head .avatar{width:54px;height:54px;font-size:1.3rem;margin:0}
+.drv-chips{display:flex;flex-wrap:wrap;gap:6px}
+.drv-chips span{font:600 .66rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:6px 8px;border-radius:99px;border:1px solid var(--t-epic);color:var(--t-epic)}
+.drv-k{margin:0}
+.drv .btn.god{background:linear-gradient(90deg,#ffe9a3,#f3c55a,#fff6d4);color:#2a1d05}
+.drv-cards{display:grid;gap:6px;max-height:340px;overflow-y:auto}
+.drv-c{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:var(--track);border:1px solid var(--line)}
+.drv-c>i{width:8px;height:30px;border-radius:4px;background:var(--c);flex-shrink:0}
+.drv-c>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.drv-c b{font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.drv-c small{color:var(--mut);font-size:.72rem}
+.post .pn[data-who]{cursor:pointer}.post .pn[data-who] b{text-decoration:underline dotted;text-underline-offset:3px}
+.pack[data-pk="god"]{--p3:#fff6d4;--pg:#f3c55a;background:conic-gradient(from 200deg,#fff6d4,#f3c55a,#ff9ad5,#9ad8ff,#fff6d4);box-shadow:0 0 0 2px #fff6d4,0 0 60px -4px #f3c55a,0 24px 50px -20px #000}
+.pack[data-pk="god"] .pn{color:#2a1d05}.pack[data-pk="god"] .pc{color:#6b4a0c}
+.pk-god{font-size:64px;line-height:1;color:#fff;text-shadow:0 0 18px #f3c55a,0 0 4px #fff;animation:gem 1.8s ease-in-out infinite}
+.notice{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 12px;border-radius:14px;border:1px solid color-mix(in srgb,var(--t-rare) 50%,var(--line));background:color-mix(in srgb,var(--t-rare) 10%,var(--panel))}
+.notice>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.notice b{font-size:.86rem}.notice small{color:var(--tx);font-size:.85rem;line-height:1.35}
+.nt-ic{font-size:1.4rem}
+.modbox .fadd .btn{width:auto;flex:none;white-space:nowrap;padding-inline:16px}
+.modbox .fadd input{min-width:0;flex:1}
+.modbox #drvQ{text-transform:none;letter-spacing:normal;font:500 .95rem var(--f-body)}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -981,6 +1009,7 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
     </div>
   </header>
   <section class="moved" id="moved" hidden></section>
+  <section class="notice" id="notice" hidden></section>
   <section class="evbar" id="event" hidden></section>
   <section class="gift" id="gift" hidden></section>
   <section class="quests" id="quests" aria-label="Daily quests"></section>
@@ -1647,7 +1676,7 @@ function applyTrust(c){
 const DEX_JUNK=/\$\d|single order|per hour|per mile|payout|\bclass\b/i;
 /* luck comes from a different part of the screenshot's fingerprint than the finish roll */
 const luckSeed=c=>c.sha?parseInt(c.sha.slice(8,16),16)/4294967296:(((+c.roll||0)*7.7713+0.1234)%1);
-function makeCard(o,ex){const c=makeCard0(o,ex);applyTrust(c);remember(c);return c}
+function makeCard(o,ex){const c=makeCard0(o,ex);if(typeof nerfed==="function"&&nerfed())nerfCard(c);applyTrust(c);remember(c);return c}
 function makeCard0(o,ex){
   const rc=ex.rc||0,g=C.scoreOffer({...o,extraMin:rc?C.RED_CARD_MIN:0}),roll=ex.roll??Math.random(),boost=(ex.boost||1)*luckMult();
   const luck=C.luckFor(luckSeed({sha:ex.sha,roll}),luckMult()),score=C.applyLuck(g.score,luck),r={...g,score,tier:C.tierFor(score)};
@@ -1735,7 +1764,7 @@ function renderLadder(){
 }
 function renderDex(){
   try{movedBanner()}catch(e){}
-  renderGift();renderEvent();
+  renderGift();renderEvent();renderNotice();
   const cs=store.cards;
   $("empty").hidden=!!cs.length;$("col").hidden=!cs.length;$("countBox").hidden=!cs.length;
   if(!cs.length){renderLadder();return}
@@ -2155,6 +2184,7 @@ async function readImage(file,pool,onStep){
     if(!out.base)out.base=file.lastModified||Date.now();
     const d=sameImage(out.sha,out.ph,pool);
     if(d){out.status="dup";out.dupOf=d;out.why="You've already scanned this screenshot.";out.img=true;return out}
+    if(modBlocked(out.sha,out.ph,null)){out.status="locked";out.why="A moderator removed this offer from your Dex, so it can't be added again.";return out}
     {const lk=lockLeft(out.sha,out.ph,null);if(lk){out.status="locked";out.why=`You deleted this offer recently. You can scan it again in ${fmtLeft(lk)}.`;return out}}
     if(seenHit(out.sha,out.ph)){out.status="dup";out.why="You scanned this screenshot before. Each screenshot can only become one card.";out.img=true;return out}
     let phase=0;
@@ -2221,6 +2251,7 @@ async function readImage(file,pool,onStep){
     out.roll=out.sha?parseInt(out.sha.slice(0,8),16)/4294967296:Math.random();
     if(!(p.pay>0&&p.minutes>0&&p.miles>0)){out.status="fix";return out}
     const o={...p,ts:out.ts};
+    if(modBlocked(null,null,C.offerKey(o))){out.status="locked";out.why="A moderator removed this offer from your Dex, so it can't be added again.";return out}
     {const lk=lockLeft(null,null,C.offerKey(o));if(lk){out.status="locked";out.why=`You deleted this offer recently. You can scan it again in ${fmtLeft(lk)}.`;return out}}
     const d2=sameOffer(o,pool);
     if(d2){out.status="dup";out.dupOf=d2;out.why="Same pay, time, miles and store as a card you already have.";return out}
@@ -2288,7 +2319,7 @@ function verdictHTML(card){
 function grade(r,parsedOverride){
   if(parsedOverride){r.parsed={...r.parsed,...parsedOverride};r.check=null}
   const before=snap();
-  const card=cardFrom(r);addStickers([card]);store.cards.push(card);const saved=finishSave([card]);
+  const card=cardFrom(r);addStickers([card]);makeGod([card]);store.cards.push(card);const saved=finishSave([card]);
   const rewards=rewardHTML(before,[card]);
   $("shot").classList.add("gone");
   showSingle(card,rewards,saved,r.check);
@@ -2402,6 +2433,7 @@ async function scanPack(files){
     packs.push({cards,tier});
   }
   addStickers(all,c=>{const pk=packs.find(x=>x.cards.length>=2&&x.cards[x.cards.length-1]===c);return pk?pk.tier.boost:1});
+  if(packs.length&&makeGod(packs[packs.length-1].cards))packs[packs.length-1].god=true;
   const before=snap();
   store.cards.push(...all);finishSave(all);
   const extras=results.filter(r=>r.status!=="ok");
@@ -2413,12 +2445,12 @@ async function scanPack(files){
 function showPack(P,pi){
   const pk=P.packs[pi],t0=pk.tier,lastPack=pi===P.packs.length-1,ev=eventNow();
   /* during an event every pack is reskinned; the cards and odds are exactly the same */
-  const t=ev?{...t0,name:(ev.id==="halloween"?"Haunted ":ev.name+" ")+t0.name}:t0;
+  const t=pk.god?{...t0,id:"god",name:"God Pack"}:ev?{...t0,name:(ev.id==="halloween"?"Haunted ":ev.name+" ")+t0.name}:t0;
   $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
     ${P.packs.length>1?`<div class="pk-row">${P.packs.map((x,k)=>`<span class="pk-chip${k===pi?" now":k<pi?" done":""}" style="--c:${PK_COL[x.tier.id]}"><i></i>${x.tier.name.replace(" Pack","")} · ${x.cards.length}</span>`).join("")}</div>`:""}
-    <div class="pack ready" id="pack" data-pk="${t.id}"${ev?` data-ev="${ev.id}"`:""} role="button" tabindex="0" aria-label="Open ${esc(t.name)}"><div class="crimp t"></div><div class="lid"></div><div class="face">${ev&&ev.id==="halloween"?`<span class="pk-pump">${pumpkinSVG(t.id==="ruby"||t.id==="diamond"?"grin":"happy","")}</span>`:gemSVG(t.id)}<div class="pn">${esc(t.name)}</div><div class="pc">${pk.cards.length} card${pk.cards.length>1?"s":""}</div></div><div class="crimp b"></div></div>
+    <div class="pack ready" id="pack" data-pk="${t.id}"${ev&&!pk.god?` data-ev="${ev.id}"`:""} role="button" tabindex="0" aria-label="Open ${esc(t.name)}"><div class="crimp t"></div><div class="lid"></div><div class="face">${pk.god?`<span class="pk-god">✦</span>`:ev&&ev.id==="halloween"?`<span class="pk-pump">${pumpkinSVG(t.id==="ruby"||t.id==="diamond"?"grin":"happy","")}</span>`:gemSVG(t.id)}<div class="pn">${esc(t.name)}</div><div class="pc">${pk.cards.length} card${pk.cards.length>1?"s":""}</div></div><div class="crimp b"></div></div>
     <button class="btn" id="openPack">Open ${esc(t.name)}</button>
-    ${pk.cards.length>=2?`<p class="boostnote">${lastPack&&P.packs.length>1?"Your best card is in here. ":""}The last card gets <b>×${t.boost.toFixed(2)}</b> special-frame odds${luckMult()>1?` (plus your luck ${fmtLuck()})`:""}</p>`:""}
+    ${pk.god?`<p class="boostnote"><b>God Pack!</b> Every card in here has a special frame.</p>`:pk.cards.length>=2?`<p class="boostnote">${lastPack&&P.packs.length>1?"Your best card is in here. ":""}The last card gets <b>×${t.boost.toFixed(2)}</b> special-frame odds${luckMult()>1?` (plus your luck ${fmtLuck()})`:""}</p>`:""}
     ${pi===0&&P.extras.some(r=>r.status!=="ok")?`<p class="tapnote">${P.extras.length} screenshot${P.extras.length>1?"s":""} skipped. You'll see why after the last card.</p>`:""}
     ${P.packs.length>1&&!lastPack?`<button class="linkbtn" id="pkSkip">Skip to the best card</button>`:""}
   </div>`;
@@ -2693,7 +2725,7 @@ function wireData(){
     /* a full reset also forgets which screenshots were scanned, so old offers can be scanned again */
     /* every card's screenshot is locked for 24 hours, like a single delete; usage today still counts */
     const now=Date.now(),del=pruneDel().concat(store.cards.map(c=>[(c.sha||"").slice(0,16),c.ph||"",C.offerKey(c),now])).slice(-400);
-    store={cards:[],next:1,scoreVer:C.SCORE_VERSION,seen:[],notes:store.notes||{},resetAt:now,del,use:store.use,
+    store={cards:[],next:1,scoreVer:C.SCORE_VERSION,seen:[],notes:store.notes||{},resetAt:now,del,use:store.use,modState:store.modState,modDone:store.modDone,
       prog:{v:3,rs:now,bank:0,lvlMax:1,luck:[],unseen:0,qd:{}}};ART.clear();try{await idb.clear()}catch(err){}
     save();renderGift();if(Cloud.user){try{await Cloud.dropAllPosts();await Cloud.push();await Cloud.pushProfile()}catch(err){Cloud.fail(err)}}
     toast("Progress reset. Level 1, fresh quests.");renderSettings()};
@@ -2731,6 +2763,7 @@ const LOCK_MS=24*3600e3;
 const delList=()=>Array.isArray(store.del)?store.del:(store.del=[]);
 function pruneDel(){const t=Date.now()-LOCK_MS;store.del=delList().filter(x=>Array.isArray(x)&&+x[3]>t).slice(-400);return store.del}
 function lockLeft(sha,ph,key){
+  if(SET.devNoLock&&typeof Cloud!=="undefined"&&Cloud.isHead)return 0;
   const now=Date.now(),k16=(sha||"").slice(0,16);
   for(const [s,p,k,t] of pruneDel()){
     if((k16&&s===k16)||(ph&&p&&p.length===ph.length&&hamming(p,ph)<=24)||(key&&k===key))return Math.max(1,+t+LOCK_MS-now)}
@@ -2784,7 +2817,7 @@ const LUCK_CARDS=[{id:"common",p:1,w:55},{id:"uncommon",p:2,w:25},{id:"rare",p:3
 const LUCK_MAX=2.5;
 function rollLuckCard(){let r=Math.random()*100;for(const c of LUCK_CARDS){if((r-=c.w)<0)return c}return LUCK_CARDS[0]}
 const luckPct=()=>prog().luck.reduce((a,x)=>a+(+x[2]||0),0);
-const luckMult=()=>Math.min(LUCK_MAX,1+luckPct()/100);
+const luckMult=()=>typeof nerfed==="function"&&nerfed()?1:Math.min(LUCK_MAX,1+luckPct()/100);
 const fmtLuck=m=>"×"+(m||luckMult()).toFixed(2);
 /* hand out a luck card for every level reached for the first time. Luck is saved right away; the pack is just the show. */
 function checkLevel(){
@@ -3028,8 +3061,11 @@ function applyScanMode(){const f=$("file");if(f)f.multiple=SET.scanMode!=="fast"
    ========================================================= */
 const FB_CFG=(window.OFFERDEX_FIREBASE&&window.OFFERDEX_FIREBASE.apiKey)?window.OFFERDEX_FIREBASE:null;
 const FBV="10.14.1";
-const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp","dev","stk"];
+const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp","dev","stk","nrf","god"];
 const CODE_ABC="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+/* driver IDs: 12 characters shown as XXXX-XXXX-XXXX (about 10^17 possible, so nobody can guess one) */
+const ID_LEN=12;
+const fmtID=c=>String(c||"").replace(/(.{4})(?=.)/g,"$1-");
 const loadJS=src=>new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=()=>rej(new Error("Couldn't load "+src));document.head.appendChild(s)});
 const ART_RE=/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
 const num0=v=>Number.isFinite(+v)?+v:0;
@@ -3042,6 +3078,8 @@ function cleanCard(d,id){
   if(c.vb!==undefined){c.vb=Math.max(45,Math.min(57,Math.round(num0(c.vb))||51))}
   if(c.noxp!==undefined){if(c.noxp)c.noxp=1;else delete c.noxp}
   if(c.dev!==undefined){if(c.dev)c.dev=1;else delete c.dev}
+  if(c.god!==undefined){if(c.god)c.god=1;else delete c.god}
+  if(c.nrf!==undefined){const n=c.nrf;c.nrf=n&&typeof n==="object"&&TIERS.some(t=>t.id===n.t)?{s:Math.max(1,Math.min(100,num0(n.s))),t:n.t,f:["standard",...C.FINISH_KEYS].includes(n.f)?n.f:"standard"}:undefined;if(!c.nrf)delete c.nrf}
   if(c.stk!==undefined){const k=c.stk;c.stk=k&&typeof k==="object"&&/^[a-z]+-\d{4}$/.test(String(k.e))&&STK_FACES.some(f=>f.id===k.f)?{e:String(k.e),f:String(k.f),t:STK_TRIMS[k.t]?String(k.t):""}:undefined;if(!c.stk)delete c.stk}
   c.stops=c.stops||2;c.no=c.no||0;
   if(!TIERS.some(t=>t.id===c.tier))c.tier=C.tierFor(c.score||1).id;
@@ -3098,6 +3136,7 @@ const Cloud={
           firebase.appCheck().activate(new firebase.appCheck.ReCaptchaV3Provider(ack),true)}catch(e){console.warn("App Check",e)}
       }
       this.auth=firebase.auth();this.db=firebase.firestore();
+      this.loadNotice().catch(()=>{});
       this.auth.getRedirectResult().catch(e=>{this.err=friendly(e);rerenderAccount()});
       this.auth.onAuthStateChanged(async u=>{
         this.user=u;this.ready=true;this.profile=null;this.friends=[];this.requests=[];rerenderAccount();
@@ -3124,9 +3163,11 @@ const Cloud={
   /* ---------- profile + friend code ---------- */
   async ensureProfile(){
     const ref=this.me(),snap=await ref.get();let p=snap.exists?snap.data():{};
+    /* older 8-character friend codes are swapped for a new 12-character ID; friends you already have stay */
+    if(p.code&&p.code.length!==ID_LEN){const old=p.code;p.code="";await this.db.collection("codes").doc(old).delete().catch(()=>{})}
     if(!p.code){
       for(let i=0;i<6&&!p.code;i++){
-        const code=Array.from(crypto.getRandomValues(new Uint8Array(8)),x=>CODE_ABC[x%CODE_ABC.length]).join("");
+        const code=Array.from(crypto.getRandomValues(new Uint8Array(ID_LEN)),x=>CODE_ABC[x%CODE_ABC.length]).join("");
         const cref=this.db.collection("codes").doc(code);
         if((await cref.get()).exists)continue;
         await cref.set({uid:this.user.uid,name:myName()});p.code=code;
@@ -3186,6 +3227,7 @@ const Cloud={
     this.setSynced(s2);
     try{await this.pullNotes()}catch(e){console.warn("Notes not synced (publish the latest firestore.rules)",e)}
     try{await this.pullState()}catch(e){console.warn("Progress not synced (publish the latest firestore.rules)",e)}
+    try{await this.pullModState()}catch(e){}
     this.busy=false;
     try{checkLevel()}catch(e){}
     await this.push(delRemote);
@@ -3328,11 +3370,11 @@ const Cloud={
   },
   async addByCode(code){
     code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"");
-    if(code.length!==8)throw new Error("Friend codes are 8 letters and numbers.");
+    if(code.length!==ID_LEN)throw new Error("IDs are 12 letters and numbers, like ABCD-EFGH-JK23.");
     const s=await this.db.collection("codes").doc(code).get();
-    if(!s.exists)throw new Error("No driver has that code. Check it and try again.");
+    if(!s.exists)throw new Error("No driver has that ID. Check it and try again.");
     const {uid:fid,name}=s.data();
-    if(fid===this.user.uid)throw new Error("That's your own code.");
+    if(fid===this.user.uid)throw new Error("That's your own ID.");
     if(this.friends.some(f=>f.id===fid))throw new Error("You've already added "+name+".");
     /* if they already asked you, adding them back accepts */
     if(this.requests.some(r=>r.id===fid))return this.accept(fid,name);
@@ -3418,17 +3460,17 @@ function wireAccount(){
 /* ---------- Profile: friends ---------- */
 function friendsHTML(){
   if(!Cloud.on)return "";
-  if(!Cloud.user)return `<div class="sbox"><h3>Friends</h3><p class="msg">Sign in with Google to add friends and compare Dexes.</p><button class="btn ghost sm" id="toSettings">Go to Settings</button></div>`;
+  if(!Cloud.user)return `<div class="sbox"><h3>Friends</h3><p class="msg">Sign in with Google to get your ID, add friends and compare Dexes.</p><button class="btn ghost sm" id="toSettings">Go to Settings</button></div>`;
   const code=Cloud.profile&&Cloud.profile.code;
   const fr=Cloud.friends.filter(f=>f.accepted),pend=Cloud.friends.filter(f=>!f.accepted);
   const star=on=>`<svg viewBox="0 0 24 24" fill="${on?"currentColor":"none"}" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2l2.6 5.3 5.9.9-4.3 4.2 1 5.8L12 15.4 6.8 18.2l1-5.8L3.5 8.2l5.9-.9z"/></svg>`;
   return `<div class="sbox"><h3>Friends <small>${fr.length}</small></h3>
-    <div class="fcode"><span><small>Your friend code</small><b>${code?esc(code.slice(0,4)+" "+code.slice(4)):"…"}</b></span><button class="mini" id="cCopy" ${code?"":"disabled"}>Copy</button></div>
+    <div class="fcode"><span><small>Your ID</small><b>${code?esc(fmtID(code)):"…"}</b></span><button class="mini" id="cCopy" ${code?"":"disabled"}>Copy</button></div>
     <div class="qrrow"><button class="btn sm" id="qrShow" ${code?"":"disabled"}>${QR_ICON}Show my QR</button><button class="btn ghost sm" id="qrScan">${CAM_ICON}Scan a QR</button></div>
-    <div class="fadd"><input id="fCode" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Friend's code" aria-label="Friend's code"><button class="btn sm" id="fAdd">Add</button></div>
+    <div class="fadd"><input id="fCode" maxlength="16" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Friend's ID" aria-label="Friend's ID"><button class="btn sm" id="fAdd">Add</button></div>
     ${Cloud.requests.length?`<div class="flist"><div class="flabel">Requests</div>${Cloud.requests.map(r=>`<div class="frow"><span class="avatar sm" style="--c:var(--t-common)">${esc((r.name[0]||"D").toUpperCase())}</span><span class="fn"><b>${esc(r.name)}</b><small>wants to be friends</small></span><button class="mini" data-acc="${esc(r.id)}">Accept</button><button class="mini ghost" data-dec="${esc(r.id)}" aria-label="Decline">✕</button></div>`).join("")}</div>`:""}
     ${fr.length?`<div class="flist">${fr.map(f=>`<div class="frow"><button class="fopen" data-open="${esc(f.id)}"><span class="avatar sm" style="--c:${f.close?"var(--t-legendary)":"var(--t-rare)"}">${esc(((f.p&&f.p.name)||f.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc((f.p&&f.p.name)||f.name)}</b><small>${f.p?`Level ${num0(f.p.level)} · ${num0(f.p.cards)} cards`:"Profile hidden"}</small></span></button><button class="mini star${f.close?" on":""}" data-close="${esc(f.id)}" aria-pressed="${!!f.close}" aria-label="Close friend">${star(f.close)}</button></div>`).join("")}</div>
-      <p class="msg">Star a friend to make them a close friend: they can also see your route maps and pickup addresses.</p>`:`<p class="msg">Share your code with a friend, or type theirs above.</p>`}
+      <p class="msg">Star a friend to make them a close friend: they can also see your route maps and pickup addresses.</p>`:`<p class="msg">Share your ID with a friend, or type theirs above.</p>`}
     ${pend.length?`<div class="flist"><div class="flabel">Waiting for them to accept</div>${pend.map(f=>`<div class="frow"><span class="avatar sm" style="--c:var(--mut)">${esc((f.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(f.name)}</b><small>request sent</small></span><button class="mini ghost" data-cancel="${esc(f.id)}">Cancel</button></div>`).join("")}</div>`:""}
   </div>`;
 }
@@ -3438,7 +3480,7 @@ function wireFriends(){
   on("toSettings",()=>{show("vSettings");toTop()});
   on("qrShow",()=>showMyQR());
   on("qrScan",()=>scanFriendQR());
-  on("cCopy",async()=>{const c=Cloud.profile&&Cloud.profile.code;if(!c)return;try{await navigator.clipboard.writeText(c);toast("Code copied")}catch(e){toast("Your code: "+c)}});
+  on("cCopy",async()=>{const c=Cloud.profile&&Cloud.profile.code;if(!c)return;try{await navigator.clipboard.writeText(c);toast("ID copied")}catch(e){toast("Your ID: "+fmtID(c))}});
   const run=async(f,okMsg)=>{try{const m=await f();toast(m||okMsg||"Done")}catch(e){toast(e.message&&!e.code?e.message:friendly(e))}};
   on("fAdd",()=>run(()=>Cloud.addByCode($("fCode").value)));
   const inp=$("fCode");if(inp)inp.onkeydown=e=>{if(e.key==="Enter")$("fAdd").click()};
@@ -3496,7 +3538,7 @@ let qrLib=null,jsqrLib=null;
 const needQR=()=>qrLib||(qrLib=loadJS("https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js").catch(e=>{qrLib=null;throw e}));
 const needJsQR=()=>jsqrLib||(jsqrLib=loadJS("https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js").catch(e=>{jsqrLib=null;throw e}));
 const codeFrom=s=>{s=String(s||"").trim();try{const u=new URL(s);const a=u.searchParams.get("add");if(a)s=a}catch(e){}
-  const c=s.toUpperCase().replace(/[^A-Z0-9]/g,"");return c.length===8?c:null};
+  const c=s.toUpperCase().replace(/[^A-Z0-9]/g,"");return c.length===ID_LEN?c:null};
 
 function qrSheet(inner){
   let el=$("qrSheet");
@@ -3511,11 +3553,11 @@ async function showMyQR(){
   const code=Cloud.profile&&Cloud.profile.code;if(!code)return;
   const link=addLink(code);
   qrSheet(`<div class="qrcard"><h2>Add me on DasherDex</h2><div class="qrbox" id="qrBox"><p class="msg">Loading…</p></div>
-    <b class="qrcode">${esc(code.slice(0,4)+" "+code.slice(4))}</b><p class="msg">Have a friend point their iPhone camera at this, or tap Scan a QR in their DasherDex.</p></div>
+    <b class="qrcode">${esc(fmtID(code))}</b><p class="msg">Have a friend point their iPhone camera at this, or tap Scan a QR in their DasherDex.</p></div>
     <div class="btnrow"><button class="btn" id="qrShare">Share link</button><button class="btn ghost" id="qrCopy">Copy link</button></div>`);
   try{await needQR();const q=qrcode(0,"M");q.addData(link);q.make();$("qrBox").innerHTML=q.createSvgTag({cellSize:6,margin:2,scalable:true})}
   catch(e){$("qrBox").innerHTML=`<p class="msg">The QR code couldn't load. Share the link instead.</p>`}
-  $("qrShare").onclick=async()=>{try{if(navigator.share){await navigator.share({title:"Add me on DasherDex",text:`Add me on DasherDex: ${code}`,url:link});return}}catch(e){if(e&&e.name==="AbortError")return}
+  $("qrShare").onclick=async()=>{try{if(navigator.share){await navigator.share({title:"Add me on DasherDex",text:`Add me on DasherDex. My ID: ${fmtID(code)}`,url:link});return}}catch(e){if(e&&e.name==="AbortError")return}
     try{await navigator.clipboard.writeText(link);toast("Link copied")}catch(e){toast(link)}};
   $("qrCopy").onclick=async()=>{try{await navigator.clipboard.writeText(link);toast("Link copied")}catch(e){toast(link)}};
 }
@@ -3555,7 +3597,7 @@ async function gotFriendCode(code){
     qrSheet(`<div class="qrcard"><h2>Sign in to add friends</h2><p class="msg">Sign in with Google in Settings, and we'll pick up this friend request right after.</p></div><button class="btn" id="qrGo">Go to Settings</button>`);
     $("qrGo").onclick=()=>{closeQR();show("vSettings");toTop()};return}
   let name="this driver";
-  try{const s=await Cloud.db.collection("codes").doc(code).get();if(!s.exists){qrSheet(`<div class="qrcard"><h2>Code not found</h2><p class="msg">No driver has the code ${esc(code)}. Ask them to show their QR again.</p></div>`);return}
+  try{const s=await Cloud.db.collection("codes").doc(code).get();if(!s.exists){qrSheet(`<div class="qrcard"><h2>ID not found</h2><p class="msg">No driver has the ID ${esc(fmtID(code))}. Ask them to show their QR again.</p></div>`);return}
     const d=s.data();if(d.uid===Cloud.user.uid){qrSheet(`<div class="qrcard"><h2>That's you</h2><p class="msg">That's your own QR code.</p></div>`);return}
     name=String(d.name||"Driver").slice(0,24);
     if(Cloud.friends.some(f=>f.id===d.uid&&f.accepted)){qrSheet(`<div class="qrcard"><h2>Already friends</h2><p class="msg">You and ${esc(name)} are already friends.</p></div>`);return}}
@@ -3720,7 +3762,7 @@ async function renderFeed(force){
   box.innerHTML=(aud==="friends"?friendRowHTML():"")+`<div class="feedtop"><button class="linkbtn" id="feedRefresh">Refresh</button></div>`+
     (posts.length?`<div class="posts">${posts.map(p=>`<article class="post" data-pid="${esc(p.id)}">
       <header><span class="avatar sm" style="--c:${TC[p.card.tier]||"var(--t-rare)"}">${esc((p.name[0]||"D").toUpperCase())}</span>
-        <span class="pn"><b>${p.uid===me?"You":esc(p.name)}</b><small>Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
+        <span class="pn"${Cloud.isHead&&p.uid!==me?` data-who="${esc(p.uid)}" data-nm="${esc(p.name)}" role="button"`:""}><b>${p.uid===me?"You":esc(p.name)}</b><small>Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
         ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`${Cloud.isMod?`<button class="mini modbtn" data-mod="${esc(p.id)}">Mod</button>`:""}<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide this post">Hide</button>`:""}</header>
       ${p.caption?`<p class="pcap">${esc(p.caption)}</p>`:""}
       <div class="pcard" data-open="${esc(p.id)}">${cardHTML({...p.card,_friend:true,_art:""})}</div>
@@ -3733,6 +3775,7 @@ async function renderFeed(force){
     openCard({...p.card,_friend:true,_art:""},{name:p.uid===me?"You":p.name,back:()=>{show("vFeed");requestAnimationFrame(()=>scrollTo(0,y))}})});
   box.querySelectorAll("[data-del]").forEach(el=>{let armed=false;el.onclick=async()=>{if(!armed){armed=true;el.textContent="Tap again";return}
     const p=posts.find(x=>x.id===el.dataset.del);try{await Cloud.deletePost(p);toast("Post deleted");renderFeed(true)}catch(e){toast(friendly(e))}}});
+  box.querySelectorAll("[data-who]").forEach(el=>el.onclick=()=>openDriver(el.dataset.who,el.dataset.nm));
   box.querySelectorAll("[data-mod]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.mod);if(p)modSheet(p)});
   box.querySelectorAll("[data-hide]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.hide);
     qrSheet(`<div class="qrcard"><h2>Hide this post?</h2><p class="msg">Hidden posts only disappear for you.</p></div><div class="btnrow"><button class="btn ghost" id="hOne">Hide this post</button><button class="btn ghost" id="hAll">Hide everything from ${esc(p.name)}</button></div>`);
@@ -3831,7 +3874,7 @@ function applySkin(){
    Moderators can remove any Global post and block drivers from posting to Global.
    The security rules check all of this on Google's servers, so a modified app can't fake it.
    ========================================================= */
-const HEAD_EMAIL="ninjaboy8787@gmail.com";
+const HEAD_EMAIL="jackemoseley@gmail.com";
 Object.assign(Cloud,{isHead:false,isMod:false,modList:[],banList:[],
   async checkMod(){
     const u=this.user;
@@ -3847,7 +3890,7 @@ Object.assign(Cloud,{isHead:false,isMod:false,modList:[],banList:[],
   },
   async addMod(code){
     if(!this.isHead)throw new Error("Only the head moderator can do that.");
-    code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(code.length!==8)throw new Error("Friend codes are 8 letters and numbers.");
+    code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(code.length!==ID_LEN)throw new Error("IDs are 12 letters and numbers.");
     const s=await this.db.collection("codes").doc(code).get();if(!s.exists)throw new Error("No driver has that code.");
     const {uid,name}=s.data();if(uid===this.user.uid)throw new Error("You're already the head moderator.");
     await this.db.collection("mods").doc(uid).set({name:String(name||"Driver").slice(0,24),by:this.user.uid,at:Date.now()});
@@ -3868,37 +3911,159 @@ function modSheet(p){
   $("mRemove").onclick=()=>run(false);$("mBan").onclick=()=>run(true);
 }
 
-/* ---------- Settings › Moderator tools (and dev tools for the head moderator) ---------- */
+/* =========================================================
+   Head moderator powers over one driver. Everything goes through users/{uid}/mod/state, a document only the
+   head moderator can write and only that driver's app reads. Their app applies it the next time it syncs.
+     xpGift  total XP handed out (the app adds whatever it hasn't added yet)
+     god     number of god packs given (the next upload's best pack is a God Pack)
+     nerf    secret: luck off, no special frames, rarity scores very low. Never touches the grade or Accept/Decline.
+     block   offers removed by a moderator; that driver can never scan them again
+   ========================================================= */
+Object.assign(Cloud,{
+  modRef(uid){return this.db.collection("users").doc(uid).collection("mod").doc("state")},
+  async findDrivers(q){
+    q=String(q||"").trim().toLowerCase();if(!q)return [];
+    if(!this.codeCache||Date.now()-this.codeAt>60000){const all=[];(await this.db.collection("codes").get()).forEach(d=>all.push({code:d.id,uid:d.data().uid,name:String(d.data().name||"Driver")}));this.codeCache=all;this.codeAt=Date.now()}
+    const cq=q.toUpperCase().replace(/[^A-Z0-9]/g,"");
+    return this.codeCache.filter(x=>x.name.toLowerCase().includes(q)||(cq.length>=3&&x.code.includes(cq))).slice(0,30);
+  },
+  async driver(uid){
+    const u=this.db.collection("users").doc(uid);
+    const [p,ms,mod,ban]=await Promise.all([u.get(),this.modRef(uid).get().catch(()=>null),this.db.collection("mods").doc(uid).get().catch(()=>null),this.db.collection("bans").doc(uid).get().catch(()=>null)]);
+    const cards=[];(await u.collection("cards").get()).forEach(d=>cards.push(cleanCard(d.data(),d.id)));
+    return {uid,p:p.exists?p.data():{},ms:ms&&ms.exists?ms.data():{},isMod:!!(mod&&mod.exists),banned:!!(ban&&ban.exists),cards};
+  },
+  async setModState(uid,patch){const ref=this.modRef(uid),s=await ref.get();const cur=s.exists?s.data():{};
+    await ref.set({xpGift:0,god:0,nerf:false,block:[],...cur,...patch,upd:Date.now()})},
+  async killCard(uid,c){
+    /* delete the card, its map and its posts, and block that offer for this driver */
+    const u=this.db.collection("users").doc(uid);let loc={};try{const l=await u.collection("cardLoc").doc(c.id).get();if(l.exists)loc=cleanLoc(l.data())}catch(e){}
+    const fp=[(loc.sha||"").slice(0,16),loc.ph||"",encodeURIComponent(C.offerKey(c))].join("|");
+    const s=await this.modRef(uid).get(),cur=s.exists?s.data():{},block=[...(cur.block||[]).filter(x=>x!==fp),fp].slice(-500);
+    await this.setModState(uid,{block});
+    await u.collection("cards").doc(c.id).delete();await u.collection("cardLoc").doc(c.id).delete().catch(()=>{});
+    await u.collection("posts").doc(c.id).delete().catch(()=>{});await this.db.collection("posts").doc(uid+"_"+c.id).delete().catch(()=>{});
+  },
+  async killPosts(uid){
+    const refs=[];try{(await this.db.collection("posts").where("uid","==",uid).get()).forEach(d=>refs.push(d.ref))}catch(e){}
+    try{(await this.db.collection("users").doc(uid).collection("posts").get()).forEach(d=>refs.push(d.ref))}catch(e){}
+    for(const r of refs)await r.delete().catch(()=>{});feedCache.global=null;feedCache.friends=null;return refs.length;
+  },
+  /* announcement shown at the top of everyone's Dex */
+  async setNotice(msg){await this.db.collection("config").doc("app").set({msg:String(msg||"").slice(0,140),at:Date.now(),by:this.user.uid})},
+  async loadNotice(){try{const s=await this.db.collection("config").doc("app").get();this.notice=s.exists?s.data():null}catch(e){this.notice=null}renderNotice()},
+  /* this driver's own app: pick up what a moderator changed */
+  async pullModState(){
+    if(!this.user)return;let d=null;try{const s=await this.modRef(this.user.uid).get();d=s.exists?s.data():null}catch(e){return}
+    applyModState(d||{});
+  }
+});
+function applyModState(d){
+  const ms={xpGift:Math.max(0,Math.round(num0(d.xpGift))),god:Math.max(0,Math.round(num0(d.god))),nerf:d.nerf===true,
+    block:(Array.isArray(d.block)?d.block:[]).slice(-500).map(String)};
+  const done=store.modDone||(store.modDone={xp:0,god:0});
+  if(ms.xpGift>done.xp){prog().bank+=ms.xpGift-done.xp;done.xp=ms.xpGift}
+  /* nerf: rarity, luck and frames only; the grade and the verdict stay true */
+  const was=!!(store.modState&&store.modState.nerf);
+  store.modState=ms;
+  if(ms.nerf)for(const c of store.cards)nerfCard(c);
+  else if(was)for(const c of store.cards)if(c.nrf){Object.assign(c,{score:c.nrf.s,tier:c.nrf.t,finish:c.nrf.f});delete c.nrf;c.upd=Date.now()}
+  save();checkLevel();
+}
+const nerfed=()=>!!(store.modState&&store.modState.nerf);
+function nerfCard(c){if(c.nrf||c._friend)return;c.nrf={s:c.score,t:c.tier,f:c.finish};c.score=Math.max(1,Math.min(c.score,Math.round(gradeOf(c)*0.3)));c.tier=C.tierFor(c.score).id;c.finish="standard";delete c.finish0;c.upd=Date.now()}
+const godLeft=()=>Math.max(0,((store.modState&&store.modState.god)||0)-((store.modDone&&store.modDone.god)||0));
+/* a God Pack: every card gets a special frame and the best one is Holographic; stickers too during an event */
+function makeGod(cards){
+  if(!cards.length||!godLeft())return false;
+  const fr=["gold","neon","carbon","inverted","holo"];
+  cards.forEach((c,i)=>{c.finish=i===cards.length-1?"holo":fr[Math.floor(Math.random()*fr.length)];c.god=1;
+    const ev=eventNow();if(ev&&ev.id==="halloween"){const f=STK_FACES[Math.min(STK_FACES.length-1,Math.floor(Math.random()*4)+(i===cards.length-1?2:0))];c.stk={e:ev.key,f:f.id,t:["holo","gold","neon","inverted"][Math.floor(Math.random()*4)]}}});
+  store.modDone.god=(store.modDone.god||0)+1;return true;
+}
+const modBlocked=(sha,ph,key)=>{const L=(store.modState&&store.modState.block)||[];if(!L.length)return false;const k16=(sha||"").slice(0,16),ek=key?encodeURIComponent(key):"";
+  return L.some(x=>{const [a,b,k]=x.split("|");return (k16&&a&&a===k16)||(ph&&b&&b.length===ph.length&&hamming(b,ph)<=24)||(ek&&k===ek)})};
+function renderNotice(){
+  const el=$("notice");if(!el)return;const n=Cloud.notice;el.hidden=!(n&&n.msg);if(el.hidden)return;
+  el.innerHTML=`<span class="nt-ic">📣</span><div><b>From the DasherDex team</b><small>${esc(n.msg)}</small></div>`;
+}
+
+/* ---------- the driver panel (head moderator) ---------- */
+async function openDriver(uid,nameHint){
+  if(!Cloud.isHead)return;
+  qrSheet(`<div class="qrcard drv"><h2>${esc(nameHint||"Driver")}</h2><p class="msg">Loading…</p></div>`);
+  let d;try{d=await Cloud.driver(uid)}catch(e){qrSheet(`<div class="qrcard"><h2>Couldn't load</h2><p class="msg">${esc(friendly(e))}</p></div>`);return}
+  const p=d.p,ms=d.ms,nm=String(p.name||nameHint||"Driver").slice(0,24),L=num0(p.level)||1,xp=num0(p.xp);
+  const cards=d.cards.sort((a,b)=>RANK[b.tier]-RANK[a.tier]||b.score-a.score);
+  const chips=[d.isMod?"Moderator":"",d.banned?"Blocked from Global":"",ms.nerf?"Nerfed (secret)":"",num0(ms.god)>0?`God packs given: ${num0(ms.god)}`:""].filter(Boolean);
+  qrSheet(`<div class="qrcard drv">
+    <div class="drv-head"><span class="avatar" style="--c:${p.best?TC[p.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${esc(nm[0].toUpperCase())}</span>
+      <div><h2>${esc(nm)}</h2><small>Level ${L} · ${xp} XP${p.code?" · ID "+esc(fmtID(p.code)):""}</small></div></div>
+    ${chips.length?`<div class="drv-chips">${chips.map(c=>`<span>${esc(c)}</span>`).join("")}</div>`:""}
+    <div class="kpis drv-k">
+      <div class="kpi"><b>${num0(p.cards)}</b><span>Cards</span><small>${num0(p.specials)} special</small></div>
+      <div class="kpi"><b>$${num0(p.pph).toFixed(2)}</b><span>Avg per hour</span><small>$${num0(p.ppm).toFixed(2)}/mi</small></div>
+      <div class="kpi"><b>${num0(p.streak)}</b><span>Day streak</span><small>${p.since?"since "+new Date(p.since).toLocaleDateString([],{month:"short",day:"numeric"}):""}</small></div>
+      <div class="kpi"><b>${p.updated?timeAgo(num0(p.updated)):"–"}</b><span>Last seen</span><small>${p.share===false?"cards private":"shares cards"}</small></div>
+    </div>
+    <div class="flabel">Reward</div>
+    <div class="btnrow"><button class="btn sm" data-dx="lv1">+1 level</button><button class="btn sm" data-dx="lv5">+5 levels</button></div>
+    <button class="btn sm god" data-dx="god">Give a God Pack</button>
+    <p class="msg">A God Pack turns their next upload's best pack into gold: every card gets a special frame and the best card is Holographic.</p>
+    <div class="flabel">Punish</div>
+    <label class="sw"><span><b>Secret nerf</b><small>No luck, no special frames, and very low rarity on all their cards. Their grade and Accept/Decline stay true. Turn off to undo.</small></span><input type="checkbox" data-dx="nerf" ${ms.nerf?"checked":""}><i></i></label>
+    <div class="btnrow"><button class="btn ghost sm danger" data-dx="ban">${d.banned?"Unblock from Global":"Block from Global"}</button><button class="btn ghost sm" data-dx="posts">Delete all their posts</button></div>
+    <div class="flabel">Moderator</div>
+    <button class="btn ghost sm" data-dx="mod">${d.isMod?"Remove as moderator":"Make moderator"}</button>
+    <div class="flabel">Their cards <small>${cards.length}</small></div>
+    <p class="msg">Delete removes the card and its posts, and that offer can never be scanned again on their account.</p>
+    <div class="drv-cards">${cards.length?cards.map(c=>`<div class="drv-c" style="--c:${TC[c.tier]}"><i></i><span><b>${esc(c.store)}</b><small>${TIERS.find(t=>t.id===c.tier).name} ${c.score} · ${money(c.pay)} · ${new Date(c.ts).toLocaleDateString([],{month:"short",day:"numeric"})}${special(c)?" · "+FINISHES[c.finish]:""}</small></span><button class="mini ghost danger" data-kill="${esc(c.id)}">Delete</button></div>`).join(""):`<p class="msg">No synced cards.</p>`}</div>
+  </div>`);
+  const run=async(f,msg,reopen=true)=>{try{const m=await f();toast(m||msg);if(reopen)openDriver(uid,nm)}catch(e){toast(e.message&&!e.code?e.message:friendly(e))}};
+  const box=$("qrSheet");
+  box.querySelectorAll("[data-dx]").forEach(el=>{
+    const k=el.dataset.dx;
+    if(k==="nerf"){el.onchange=()=>run(()=>Cloud.setModState(uid,{nerf:el.checked}),el.checked?"Secret nerf on. It applies next time they open the app.":"Nerf off. Their cards go back to normal next time they open the app.",false);return}
+    el.onclick=()=>{
+      if(k==="lv1"||k==="lv5"){const add=lvlStart(L+(k==="lv1"?1:5))-xp;run(()=>Cloud.setModState(uid,{xpGift:num0(ms.xpGift)+Math.max(0,add)}),`${k==="lv1"?"+1 level":"+5 levels"} sent. They get it next time they open the app.`)}
+      if(k==="god")run(()=>Cloud.setModState(uid,{god:num0(ms.god)+1}),"God Pack given. Their next upload gets it.");
+      if(k==="ban")run(()=>d.banned?Cloud.unban(uid):Cloud.ban(uid,nm),d.banned?"Unblocked":"Blocked from Global");
+      if(k==="posts")run(async()=>`Deleted ${await Cloud.killPosts(uid)} posts`,"Done");
+      if(k==="mod")run(()=>d.isMod?Cloud.removeMod(uid):Cloud.db.collection("mods").doc(uid).set({name:nm,by:Cloud.user.uid,at:Date.now()}),d.isMod?"Moderator removed":nm+" is now a moderator");
+    }});
+  box.querySelectorAll("[data-kill]").forEach(el=>{let armed=false;el.onclick=()=>{if(!armed){armed=true;el.textContent="Sure?";return}
+    const c=cards.find(x=>x.id===el.dataset.kill);run(()=>Cloud.killCard(uid,c),"Card deleted and blocked")}});
+}
+
+/* ---------- Settings › Moderator tools ---------- */
+/* the last driver search survives the page redrawing when a sync finishes */
+let drvLast={q:"",list:null};
+const drvRowsHTML=list=>list.length?list.map(x=>`<button class="frow fopen" data-drv="${esc(x.uid)}" data-nm="${esc(x.name)}"><span class="avatar sm" style="--c:var(--t-rare)">${esc((x.name[0]||"D").toUpperCase())}</span><span class="fn"><b>${esc(x.name)}</b><small>ID ${esc(fmtID(x.code))}</small></span></button>`).join(""):`<p class="msg">No drivers found.</p>`;
 function modHTML(){
   if(!Cloud.isMod)return "";
-  const head=Cloud.isHead,ev=eventNow(),opt=(v,l,cur)=>`<option value="${v}"${cur===v?" selected":""}>${l}</option>`;
+  const head=Cloud.isHead,opt=(v,l,cur)=>`<option value="${v}"${cur===v?" selected":""}>${l}</option>`;
   return `<div class="sbox modbox"><h3>Moderator tools <small class="modbadge">${head?"Head moderator":"Moderator"}</small></h3>
-    <p class="msg">On the Global feed, tap <b>Mod</b> on any post to remove it or block the driver from posting to Global.</p>
-    <div class="flabel">Blocked from Global</div><div id="banList" class="flist"><p class="msg">Loading…</p></div>
-    ${head?`<div class="flabel">Moderators</div>
-      <div class="fadd"><input id="modCode" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Their friend code"><button class="btn sm" id="modAdd">Make mod</button></div>
-      <div id="modList" class="flist"><p class="msg">Loading…</p></div>`:""}
-    <div class="flabel">Theme</div>
-    <div class="skinpick">${Object.entries(SKINS).map(([k,l])=>`<button data-skin="${k}" aria-pressed="${(SET.skin||"auto")===k}"><i class="sk-${k}"></i>${l}</button>`).join("")}</div>
-    ${head?`<details class="devbox"><summary>Dev tools &amp; cheats</summary>
-      <p class="msg">Cheats only change your own Dex. Test cards are marked DEV and can't be posted.</p>
-      <div class="flabel">XP and luck</div>
-      <div class="btnrow wrap3"><button class="btn sm" id="dvXp">+500 XP</button><button class="btn sm" id="dvLvl">Level up</button><button class="btn ghost sm" id="dvLuckOpen">Preview luck pack</button></div>
-      <div class="fadd"><select id="dvLuckR">${LUCK_CARDS.map(c=>`<option value="${c.id}">${LUCK_NAME[c.id]} luck card (+${c.p}%)</option>`).join("")}</select><button class="btn sm" id="dvLuck">Give</button></div>
-      <div class="flabel">Test card</div>
-      <div class="fadd"><select id="dvTier">${TIERS.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}</select><select id="dvFin"><option value="standard">No frame</option>${C.FINISH_KEYS.map(k=>`<option value="${k}">${FINISHES[k]}</option>`).join("")}</select></div>
-      <div class="fadd"><select id="dvStk"><option value="">No sticker</option>${STK_FACES.map(f=>`<option value="${f.id}">${f.name} sticker</option>`).join("")}</select><select id="dvTrim"><option value="">No trim</option>${Object.entries(STK_TRIMS).map(([k,l])=>`<option value="${k}">${l} trim</option>`).join("")}</select></div>
-      <button class="btn sm" id="dvCard">Add test card</button>
-      <div class="flabel">Packs</div>
-      <div class="fadd"><select id="dvN">${[1,2,3,5,7,10,13,23,30].map(n=>`<option value="${n}"${n===23?" selected":""}>${n} cards</option>`).join("")}</select><button class="btn sm" id="dvPack">Preview packs</button></div>
-      <div class="flabel">Limits</div>
-      <label class="sw"><span><b>No limits for me</b><small>Skip the daily scan limit and the Dex size cap on this account.</small></span><input type="checkbox" id="dvNoLim" ${SET.devNoLimit?"checked":""}><i></i></label>
-      <div class="btnrow"><button class="btn ghost sm" id="dvUse">Reset today's scans</button><button class="btn ghost sm" id="dvLock">Clear 24-hour locks</button></div>
-      <div class="flabel">Events</div>
-      <select id="dvEv">${opt("auto","Auto (by date)",SET.devEvent||"auto")}${EVENTS.map(e=>opt(e.id,e.name+" on",SET.devEvent)).join("")}${opt("none","No events",SET.devEvent)}</select>
-      <div class="flabel">Info</div>
-      <pre class="devinfo">${esc([`uid ${Cloud.user.uid}`,`email ${Cloud.user.email||""}`,`event ${ev?ev.key+" ("+ev.left+"d left)":"none"}`,`level ${levelOf(totalXP())} · xp ${totalXP()} · bank ${prog().bank}`,`luck ${fmtLuck()} · cards ${prog().luck.length} · unseen ${prog().unseen}`,`cards ${store.cards.length}/${capLimit()} · scans today ${usedToday()}/${dayLimit()}`,`locks ${pruneDel().length} · synced ${ago(Cloud.last)}`].join("\n"))}</pre>
-    </details>`:""}
+    ${head?`<div class="mgroup"><div class="flabel">Find a driver</div>
+      <p class="msg">Search by name or ID, then tap a driver to see their stats and cards, reward them or punish them. You can also tap a name on any Global post.</p>
+      <div class="fadd"><input id="drvQ" autocomplete="off" spellcheck="false" placeholder="Name or ID" value="${esc(drvLast.q)}"><button class="btn sm" id="drvGo">Search</button></div>
+      <div id="drvRes" class="flist">${drvLast.list?drvRowsHTML(drvLast.list):""}</div></div>`:""}
+    <div class="mgroup"><div class="flabel">Global feed</div>
+      <p class="msg">Tap <b>Mod</b> on any Global post to remove it or block the driver from posting.</p>
+      <div id="banList" class="flist"><p class="msg">Loading…</p></div></div>
+    ${head?`<div class="mgroup"><div class="flabel">Announcement</div>
+      <p class="msg">Shows at the top of everyone's Dex. Leave empty and post to clear it.</p>
+      <textarea id="ntTxt" maxlength="140" rows="2" placeholder="e.g. Halloween event ends Friday!">${esc((Cloud.notice&&Cloud.notice.msg)||"")}</textarea>
+      <button class="btn sm" id="ntGo">Post announcement</button></div>
+    <div class="mgroup"><div class="flabel">Moderators</div>
+      <div class="fadd"><input id="modCode" maxlength="16" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Their ID"><button class="btn sm" id="modAdd">Make mod</button></div>
+      <div id="modList" class="flist"><p class="msg">Loading…</p></div></div>
+    <div class="mgroup"><div class="flabel">Just for me</div>
+      <label class="sw"><span><b>No 24-hour lock</b><small>Screenshots I delete can be scanned again right away.</small></span><input type="checkbox" id="dvNoLock" ${SET.devNoLock?"checked":""}><i></i></label>
+      <label class="sw"><span><b>No scan limits</b><small>Skip the daily limit and the Dex size cap.</small></span><input type="checkbox" id="dvNoLim" ${SET.devNoLimit?"checked":""}><i></i></label>
+      <div class="btnrow"><button class="btn ghost sm" id="dvLvl">Level me up</button><button class="btn ghost sm" id="dvLuck">Give me a luck card</button></div>
+      <div class="fadd"><span class="msg" style="flex:1;align-self:center">Event</span><select id="dvEv">${opt("auto","By date",SET.devEvent||"auto")}${EVENTS.map(e=>opt(e.id,e.name+" on",SET.devEvent)).join("")}${opt("none","Off",SET.devEvent)}</select></div></div>`:""}
+    <div class="mgroup"><div class="flabel">My theme</div>
+      <div class="skinpick">${Object.entries(SKINS).map(([k,l])=>`<button data-skin="${k}" aria-pressed="${(SET.skin||"auto")===k}"><i class="sk-${k}"></i>${l}</button>`).join("")}</div></div>
   </div>`;
 }
 async function wireMod(){
@@ -3907,45 +4072,25 @@ async function wireMod(){
   const run=async(f,ok)=>{try{const m=await f();toast(m||ok||"Done");return true}catch(e){toast(e.message&&!e.code?e.message:friendly(e));return false}};
   document.querySelectorAll("#settingsBody [data-skin]").forEach(b=>b.onclick=()=>{SET.skin=b.dataset.skin;saveSet();applySkin();renderSettings()});
   const lists=()=>{
-    const bl=$("banList");if(bl)bl.innerHTML=Cloud.banList.length?Cloud.banList.map(b=>`<div class="frow"><span class="avatar sm" style="--c:var(--decline)">${esc((b.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(b.name||"Driver")}</b><small>blocked ${new Date(b.at||0).toLocaleDateString()}</small></span><button class="mini ghost" data-unban="${esc(b.id)}">Unblock</button></div>`).join(""):`<p class="msg">Nobody is blocked.</p>`;
-    const ml=$("modList");if(ml)ml.innerHTML=Cloud.modList.length?Cloud.modList.map(m=>`<div class="frow"><span class="avatar sm" style="--c:var(--t-epic)">${esc((m.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(m.name||"Driver")}</b><small>moderator</small></span><button class="mini ghost" data-unmod="${esc(m.id)}">Remove</button></div>`).join(""):`<p class="msg">No other moderators yet. Add one with their friend code.</p>`;
+    const bl=$("banList");if(bl)bl.innerHTML=Cloud.banList.length?`<div class="flabel sub">Blocked</div>`+Cloud.banList.map(b=>`<div class="frow"><span class="avatar sm" style="--c:var(--decline)">${esc((b.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(b.name||"Driver")}</b><small>blocked ${new Date(b.at||0).toLocaleDateString()}</small></span><button class="mini ghost" data-unban="${esc(b.id)}">Unblock</button></div>`).join(""):`<p class="msg">Nobody is blocked.</p>`;
+    const ml=$("modList");if(ml)ml.innerHTML=Cloud.modList.length?Cloud.modList.map(m=>`<div class="frow"><span class="avatar sm" style="--c:var(--t-epic)">${esc((m.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(m.name||"Driver")}</b><small>moderator</small></span><button class="mini ghost" data-unmod="${esc(m.id)}">Remove</button></div>`).join(""):`<p class="msg">No other moderators yet.</p>`;
     document.querySelectorAll("#settingsBody [data-unban]").forEach(b=>b.onclick=()=>run(async()=>{await Cloud.unban(b.dataset.unban);lists();return "Unblocked"}));
     document.querySelectorAll("#settingsBody [data-unmod]").forEach(b=>b.onclick=()=>run(async()=>{await Cloud.removeMod(b.dataset.unmod);lists();return "Moderator removed"}));
   };
-  on("modAdd",()=>run(async()=>{const m=await Cloud.addMod($("modCode").value);$("modCode").value="";lists();return m}));
-  if(!Cloud.isHead){Cloud.loadModLists().then(lists).catch(()=>{});return}
-  /* dev tools and cheats */
-  const redo=msg=>{save();checkLevel();toast(msg);renderSettings()};
-  on("dvXp",()=>{prog().bank+=500;redo("+500 XP")});
-  on("dvLvl",()=>{const L=levelOf(totalXP());prog().bank+=lvlStart(L+1)-totalXP();redo("Level "+(L+1))});
-  on("dvLuck",()=>{const c=LUCK_CARDS.find(x=>x.id===$("dvLuckR").value)||LUCK_CARDS[0],p=prog();p.luck.push([1000+p.luck.length,c.id,c.p]);p.unseen=(+p.unseen||0)+1;save();renderGift();toast(`${LUCK_NAME[c.id]} luck card added. Open it from the Dex.`)});
-  on("dvLuckOpen",()=>{const c=rollLuckCard();openLuck([[levelOf(totalXP())+1,c.id,c.p]])});
-  on("dvCard",()=>{
-    const tier=$("dvTier").value,T=TIERS.find(t=>t.id===tier),score=Math.round((T.min+T.max)/2),nx=store.next;
-    const c=makeCard0({pay:10,minutes:20,miles:4,stops:2,store:"Test Card",platform:"DoorDash"},{roll:Math.random()});
-    Object.assign(c,{score,grade:score,tier,finish:$("dvFin").value,dev:1,store:"Test "+T.name});
-    if($("dvStk").value)c.stk={e:(eventNow()||{key:"halloween-"+new Date().getFullYear()}).key,f:$("dvStk").value,t:$("dvTrim").value};
-    store.cards.push(c);save();checkLevel();toast("Test card added");fresh.add(c.id);
-  });
-  on("dvPack",()=>previewPacks(+$("dvN").value||10));
-  const nl=$("dvNoLim");if(nl)nl.onchange=e=>{SET.devNoLimit=e.target.checked;saveSet()};
-  on("dvUse",()=>{store.use={d:dayKey(new Date()),n:0};redo("Today's scans reset")});
-  on("dvLock",()=>{store.del=[];redo("24-hour locks cleared")});
-  const evs=$("dvEv");if(evs)evs.onchange=e=>{SET.devEvent=e.target.value==="auto"?"":e.target.value;saveSet();applySkin();renderSettings();toast(eventNow()?eventNow().name+" event on":"No event")};
   Cloud.loadModLists().then(lists).catch(()=>{});
-}
-/* open packs with made-up offers, nothing is saved */
-function previewPacks(n){
-  const keep=store.next,cards=[];
-  for(let i=0;i<n;i++){const pay=+(3+Math.random()*16).toFixed(2),min=10+Math.floor(Math.random()*30),mi=+(1+Math.random()*12).toFixed(1);
-    cards.push(makeCard0({pay,minutes:min,miles:mi,stops:2,store:"Preview "+(i+1),platform:"DoorDash"},{roll:Math.random()}))}
-  store.next=keep;cards.sort((a,b)=>a.score-b.score);cards.forEach((c,i)=>{c.no=i+1;c.dev=1});
-  const packs=[];let at=0;
-  for(const k of C.packSizes(n)){const cs=cards.slice(at,at+k);at+=k;const tier=C.packFor(k),last=cs[cs.length-1];
-    if(k>=2){last.boost=tier.boost;last.finish=C.rollFinish(last.tier,last.roll,tier.boost*luckMult())}packs.push({cards:cs,tier})}
-  addStickers(cards,c=>{const p=packs.find(x=>x.cards[x.cards.length-1]===c);return p?p.tier.boost:1});
-  openSheet();$("sheetCol").classList.add("wide");
-  showPack({packs,cards,extras:[],rewards:`<p class="msg" style="text-align:center">Preview only. Nothing was saved.</p>`},0);
+  if(!Cloud.isHead)return;
+  on("modAdd",()=>run(async()=>{const m=await Cloud.addMod($("modCode").value);$("modCode").value="";lists();return m}));
+  const wireRes=()=>{const r=$("drvRes");if(r)r.querySelectorAll("[data-drv]").forEach(b=>b.onclick=()=>openDriver(b.dataset.drv,b.dataset.nm))};wireRes();
+  const search=async()=>{const q=$("drvQ").value;$("drvRes").innerHTML=`<p class="msg">Searching…</p>`;
+    try{const list=await Cloud.findDrivers(q);drvLast={q,list};const r=$("drvRes");if(r){r.innerHTML=drvRowsHTML(list);wireRes()}}
+    catch(e){const r=$("drvRes");if(r)r.innerHTML=`<p class="msg err">${esc(friendly(e))}</p>`}};
+  on("drvGo",search);const q=$("drvQ");if(q)q.onkeydown=e=>{if(e.key==="Enter")search()};
+  on("ntGo",()=>run(async()=>{await Cloud.setNotice($("ntTxt").value.trim());await Cloud.loadNotice();return $("ntTxt").value.trim()?"Announcement posted":"Announcement cleared"}));
+  const tg=(id,k)=>{const el=$(id);if(el)el.onchange=e=>{SET[k]=e.target.checked;saveSet()}};
+  tg("dvNoLock","devNoLock");tg("dvNoLim","devNoLimit");
+  on("dvLvl",()=>{const L=levelOf(totalXP());prog().bank+=lvlStart(L+1)-totalXP();save();checkLevel();toast("Level "+(L+1));renderSettings()});
+  on("dvLuck",()=>{const c=rollLuckCard(),p=prog();p.luck.push([1000+p.luck.length,c.id,c.p]);p.unseen=(+p.unseen||0)+1;save();renderGift();toast(`${LUCK_NAME[c.id]} luck card added. Open it from the Dex.`)});
+  const evs=$("dvEv");if(evs)evs.onchange=e=>{SET.devEvent=e.target.value==="auto"?"":e.target.value;saveSet();applySkin();toast(eventNow()?eventNow().name+" event on":"No event")};
 }
 
 
