@@ -886,6 +886,83 @@ input.glow{box-shadow:0 0 0 3px color-mix(in srgb,var(--t-rare) 60%,transparent)
 .tg-tag{fill:var(--tx)}.tg-tagt{font:700 10px var(--f-mono);fill:var(--bg)}
 /* never let a page be shorter than the screen: on iPhone a short page (an empty feed) left the tab bar floating mid-screen */
 .wrap{min-height:100vh;min-height:100lvh;box-sizing:border-box}
+
+/* ===== v11: pumpkin stickers ===== */
+.art .stk{position:absolute;right:2.5cqw;bottom:2cqw;width:21cqw;height:21cqw;transform:rotate(-12deg);z-index:2;filter:drop-shadow(0 1cqw 1.4cqw #000a);pointer-events:none}
+.art .stk svg{width:100%;height:100%;display:block}
+.art .stk[data-t="neon"] svg{filter:drop-shadow(0 0 1.6cqw #00e5ff) drop-shadow(0 0 .8cqw #ff3df2)}
+.art .stk[data-t="inverted"] svg{filter:invert(1) hue-rotate(180deg)}
+.art .stk[data-t="gold"] svg{filter:drop-shadow(0 0 1.4cqw #f3c55a)}
+.stk-holo{animation:stkHolo 3s linear infinite}
+@keyframes stkHolo{0%,100%{opacity:.35}50%{opacity:.7}}
+.pull.stkpull{color:#ff9a2e}
+.vpill[data-v="stk"]{--v:#ff9a2e;color:#ff9a2e;border-color:#ff9a2e66;background:#ff9a2e1a}
+.stkbook{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stkslot{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:14px;background:var(--track);border:1px solid var(--line);text-align:center}
+.stkslot svg{width:52px;height:52px;filter:grayscale(1) brightness(.35);opacity:.6}
+.stkslot.on{border-color:color-mix(in srgb,var(--c) 55%,var(--line))}
+.stkslot.on svg{filter:drop-shadow(0 2px 4px #0008);opacity:1}
+.stkslot b{font-size:.78rem;line-height:1.15}.stkslot small{font:600 .62rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+.stkslot:not(.on) b{color:var(--dim)}
+
+/* ===== v11: event banner and haunted packs ===== */
+.evbar{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 12px;border-radius:14px;border:1px solid #ff8a1f66;
+  background:linear-gradient(120deg,#ff8a1f22,#6a2bb022 60%,var(--panel))}
+.evbar>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.evbar b{font-size:.92rem;color:#ffb057}.evbar small{color:var(--mut);font-size:.78rem;line-height:1.35}
+.ev-ic{width:40px;height:40px;flex-shrink:0;animation:gem 2.6s ease-in-out infinite}.ev-ic svg{width:40px;height:40px}
+.pack[data-ev="halloween"]{background:radial-gradient(120% 80% at 50% 0%,color-mix(in srgb,var(--p3) 35%,transparent),transparent 60%),linear-gradient(160deg,#2a1240 0%,#140a1f 50%,#3a1a05 100%);
+  box-shadow:0 0 0 1.5px color-mix(in srgb,var(--p3) 70%,#ff8a1f),0 0 44px -8px #ff8a1f,0 24px 50px -20px #000}
+.pack[data-ev="halloween"]::before{background:repeating-linear-gradient(115deg,#ff8a1f18 0,#6a2bb018 6%,transparent 12%);display:block}
+.pack[data-ev="halloween"] .crimp{background:repeating-linear-gradient(90deg,#ff8a1f55 0 5px,transparent 5px 10px)}
+.pack .pk-pump{width:70px;height:70px;filter:drop-shadow(0 0 14px #ff8a1f);animation:gem 2.2s ease-in-out infinite}.pack .pk-pump svg{width:70px;height:70px}
+
+/* ===== v11: themes (skins). Tier colors never change. ===== */
+html[data-od="dark"][data-skin="halloween"]{--bg:#0c0712;--bg2:#140b1c;--panel:#170e21;--line:#2d1f3d;--track:#21152e;--raise:#2b1c3b;--raise-line:#43305a;--sunken:#0a0510;--navbg:#170e21f0;--navline:#3a2850;--gold:#ffa94d}
+html[data-od="light"][data-skin="halloween"]{--bg:#fbf1e6;--panel:#fffaf4;--line:#ecd9c4;--track:#f3e4d2}
+html[data-skin="halloween"] body{background:radial-gradient(90% 40% at 50% -10%,#ff8a1f1f,transparent 70%) fixed,var(--bg)}
+html[data-skin="halloween"] .ntab[aria-current="page"]{color:#ffb057}
+html[data-od="dark"][data-skin="frost"]{--bg:#081018;--bg2:#0d1822;--panel:#0f1c28;--line:#1f3344;--track:#16283a;--raise:#1b3045;--raise-line:#2c4a63;--navbg:#0f1c28f0;--navline:#284257}
+html[data-skin="frost"] body{background:radial-gradient(90% 40% at 50% -10%,#7fe8ff1a,transparent 70%) fixed,var(--bg)}
+html[data-skin="frost"] .ntab[aria-current="page"]{color:#9eeaff}
+html[data-od="dark"][data-skin="neon"]{--bg:#07060d;--bg2:#0e0b18;--panel:#110d1d;--line:#2a1f45;--track:#1a1430;--raise:#231a3d;--raise-line:#3a2c66;--navbg:#110d1df0;--navline:#3a2c66}
+html[data-skin="neon"] body{background:radial-gradient(70% 35% at 0% 0%,#ff3df21a,transparent 70%) fixed,radial-gradient(70% 35% at 100% 0%,#00e5ff1a,transparent 70%) fixed,var(--bg)}
+html[data-skin="neon"] .ntab[aria-current="page"]{color:#7ff6ff;text-shadow:0 0 8px #00e5ff}
+html[data-od="dark"][data-skin="royal"]{--bg:#0d0b07;--bg2:#15120b;--panel:#18140c;--line:#33291a;--track:#221c11;--raise:#2c2416;--raise-line:#4a3c22;--navbg:#18140cf0;--navline:#4a3c22}
+html[data-skin="royal"] body{background:radial-gradient(90% 40% at 50% -10%,#f3c55a1a,transparent 70%) fixed,var(--bg)}
+html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
+
+/* ===== v11: moderator tools ===== */
+.modbox{border-color:color-mix(in srgb,var(--t-epic) 50%,var(--line))}
+.modbadge{color:var(--t-epic)!important}
+.modbox select{width:100%;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--track);color:var(--tx);font:500 .9rem var(--f-body)}
+.modbox .fadd{display:flex;gap:8px}.modbox .fadd select{flex:1}
+.modbox .btnrow.wrap3{flex-wrap:wrap}
+.skinpick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.skinpick button{display:flex;align-items:center;gap:8px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--track);color:var(--tx);font:600 .82rem var(--f-body);text-align:left}
+.skinpick button[aria-pressed="true"]{border-color:var(--tx)}
+.skinpick i{width:18px;height:18px;border-radius:6px;flex-shrink:0;background:linear-gradient(135deg,#5f8dff,#0b0c10)}
+.skinpick .sk-auto{background:conic-gradient(#ff8a1f,#7fe8ff,#ff3df2,#f3c55a,#ff8a1f)}
+.skinpick .sk-classic{background:linear-gradient(135deg,#5f8dff,#0b0c10)}
+.skinpick .sk-halloween{background:linear-gradient(135deg,#ff8a1f,#2a1240)}
+.skinpick .sk-frost{background:linear-gradient(135deg,#9eeaff,#081018)}
+.skinpick .sk-neon{background:linear-gradient(135deg,#ff3df2,#00e5ff)}
+.skinpick .sk-royal{background:linear-gradient(135deg,#f3c55a,#0d0b07)}
+.devbox{margin-top:6px;border-top:1px solid var(--line);padding-top:10px;display:grid;gap:8px}
+.devbox summary{font-weight:700;cursor:pointer;color:var(--t-epic)}
+.devbox[open]{display:grid;gap:8px}
+.devinfo{font:500 .7rem/1.5 var(--f-mono);background:var(--sunken);border:1px solid var(--line);border-radius:10px;padding:10px;white-space:pre-wrap;word-break:break-all;color:var(--mut);margin:0}
+.mini.modbtn{color:var(--t-epic);border-color:color-mix(in srgb,var(--t-epic) 50%,var(--line))}
+
+/* ===== v11: profile button in the top right of every tab ===== */
+.pfbtn{--c:var(--t-rare);width:40px;height:40px;border-radius:12px;flex:none;display:grid;place-items:center;cursor:pointer;padding:0;
+  border:1.5px solid var(--c);background:linear-gradient(150deg,color-mix(in srgb,var(--c) 35%,var(--panel)),var(--panel));color:var(--tx);
+  font:700 1.05rem/1 var(--f-display);box-shadow:0 0 14px -6px var(--c)}
+.pfbtn:active{transform:scale(.94)}
+.pagehead .phr{display:flex;align-items:center;gap:10px;min-width:0}
+.pagehead .phr>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:400px){.pagehead .phr>span:first-child{display:none}.top .hright{gap:8px}.top .hright .count{display:none}}
+.pagehead .pfbtn span,.pfbtn span{font:700 1.05rem/1 var(--f-display);color:var(--tx)}
 </style>
 
 <input type="file" id="file" accept="image/*" multiple>
@@ -900,9 +977,11 @@ input.glow{box-shadow:0 0 0 3px color-mix(in srgb,var(--t-rare) 60%,transparent)
     <div class="hright">
       <div class="streak" id="streakBox" hidden title="Days in a row with a scan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.2-.6 5-2 6.6C8.5 10.3 7 12 7 14.6 7 18 9.3 21 12.5 21S18 18.4 18 15.2c0-2.4-1.2-4-2.3-5.3-.3 1.4-1 2.4-2.1 2.9.6-3.6-.3-7.6-1.6-10.8z"/></svg><b id="streakN">0</b></div>
       <div class="count" id="countBox" hidden><b id="countN">0</b>in your Dex</div>
+      <button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button>
     </div>
   </header>
   <section class="moved" id="moved" hidden></section>
+  <section class="evbar" id="event" hidden></section>
   <section class="gift" id="gift" hidden></section>
   <section class="quests" id="quests" aria-label="Daily quests"></section>
   <section class="goal" id="goal" aria-label="Daily goal" hidden></section>
@@ -927,7 +1006,7 @@ input.glow{box-shadow:0 0 0 3px color-mix(in srgb,var(--t-rare) 60%,transparent)
 <!-- ===== STATS ===== -->
 <div class="wrap" id="vStats" hidden>
   <div class="appbar">
-    <div class="pagehead"><h1>Stats</h1><span id="statSpan"></span></div>
+    <div class="pagehead"><h1>Stats</h1><span class="phr"><span id="statSpan"></span><button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button></span></div>
     <div class="seg" id="range" role="group" aria-label="Time range">
       <button data-r="today" aria-pressed="false">Today</button><button data-r="7" aria-pressed="true">7 days</button><button data-r="30" aria-pressed="false">30 days</button><button data-r="all" aria-pressed="false">All</button>
     </div>
@@ -937,19 +1016,19 @@ input.glow{box-shadow:0 0 0 3px color-mix(in srgb,var(--t-rare) 60%,transparent)
 
 <!-- ===== PROFILE ===== -->
 <div class="wrap" id="vProfile" hidden>
-  <div class="appbar"><div class="pagehead"><h1>Profile</h1><span class="phr"><span id="profSince"></span><button class="gearbtn" id="toSet" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></div></div>
+  <div class="appbar"><div class="pagehead"><span class="phl"><button class="close" id="profBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h1>Profile</h1></span><span id="profSince"></span></div></div>
   <div id="profileBody"></div>
 </div>
 
 <!-- ===== SETTINGS ===== -->
 <div class="wrap" id="vSettings" hidden>
-  <div class="appbar"><div class="pagehead"><span class="phl"><button class="close" id="setBack" aria-label="Back to Profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h1>Settings</h1></span><span>Saved on this device</span></div></div>
+  <div class="appbar"><div class="pagehead"><h1>Settings</h1><span class="phr"><span>Saved on this device</span><button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button></span></div></div>
   <div id="settingsBody"></div>
 </div>
 
 <!-- ===== FEED ===== -->
 <div class="wrap" id="vFeed" hidden>
-  <div class="appbar"><div class="pagehead"><h1>Feed</h1><span id="feedSub"></span></div>
+  <div class="appbar"><div class="pagehead"><h1>Feed</h1><span class="phr"><span id="feedSub"></span><button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button></span></div>
     <div class="seg seg2" id="feedTabs" role="tablist" aria-label="Feed"><button data-a="friends" aria-pressed="true">Friends</button><button data-a="global" aria-pressed="false">Global</button></div></div>
   <div id="feedBody"></div>
 </div>
@@ -966,7 +1045,7 @@ input.glow{box-shadow:0 0 0 3px color-mix(in srgb,var(--t-rare) 60%,transparent)
   <button class="ntab" data-v="vFeed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Feed</button>
   <label class="nscan" for="file" role="button" aria-label="Scan offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg><span>Scan</span></label>
   <button class="ntab" data-v="vStats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Stats</button>
-  <button class="ntab" data-v="vProfile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Profile</button>
+  <button class="ntab" data-v="vSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
 </div></nav>
 
 <!-- ===== scan result / pack sheet ===== -->
@@ -1613,7 +1692,7 @@ function cardHTML(c){
   <div class="in">
     <div class="c-top"><span class="pill"><span class="orb"></span>${t.name}<b>${c.score}</b></span><span class="rate">$${c.pph.toFixed(0)}<small>/HR</small></span></div>
     <h3 class="c-name">${esc(c.store)}${more?`<small class="more">+${more}</small>`:""}</h3>
-    <div class="art">${art?`<img src="${art}" alt="" decoding="async">`:`<div class="fallback">$${(+c.pay).toFixed(0)}</div>`}<span class="no">#${String(c.no).padStart(2,"0")}</span>${f?`<span class="fin">${FIN_SHORT[f]}</span>`:""}${c._example?`<span class="chk2 ex">EXAMPLE</span>`:c.verified===false?`<span class="chk2 edited">EDITED</span>`:c.check&&c.check.length?`<span class="chk2">CHECK</span>`:""}</div>
+    <div class="art">${art?`<img src="${art}" alt="" decoding="async">`:`<div class="fallback">$${(+c.pay).toFixed(0)}</div>`}<span class="no">#${String(c.no).padStart(2,"0")}</span>${f?`<span class="fin">${FIN_SHORT[f]}</span>`:""}${c.stk?stickerHTML(c.stk):""}${c._example?`<span class="chk2 ex">EXAMPLE</span>`:c.dev?`<span class="chk2 edited">DEV</span>`:c.verified===false?`<span class="chk2 edited">EDITED</span>`:c.check&&c.check.length?`<span class="chk2">CHECK</span>`:""}</div>
     <div class="strip">${c.miles} mi<i>•</i>${c.minutes} min<i>•</i>${clock(c.ts)}</div>
     <div class="box">
       <div class="val"><div><span>PAYOUT</span><b>${money(c.pay)}</b></div><div class="r"><span>CLASS</span><b>${order.toUpperCase()}</b></div></div>
@@ -1656,7 +1735,7 @@ function renderLadder(){
 }
 function renderDex(){
   try{movedBanner()}catch(e){}
-  renderGift();
+  renderGift();renderEvent();
   const cs=store.cards;
   $("empty").hidden=!!cs.length;$("col").hidden=!cs.length;$("countBox").hidden=!cs.length;
   if(!cs.length){renderLadder();return}
@@ -1709,7 +1788,13 @@ $("days").onkeydown=e=>{if(e.key==="Enter"){const c=e.target.closest(".card");if
 /* =========================================================
    Navigation
    ========================================================= */
-let view="vDex",lastList="vDex";
+let view="vDex",lastList="vDex",lastTab="vDex";
+/* the round profile button in the top right corner of every tab */
+function renderProfBtns(){
+  const n=(typeof myName==="function"?myName():"Driver").trim(),best=store.cards.slice().sort((x,y)=>y.score-x.score)[0];
+  document.querySelectorAll("[data-prof]").forEach(b=>{b.style.setProperty("--c",best?TC[best.tier]:"var(--t-rare)");b.firstElementChild.textContent=(n[0]||"D").toUpperCase()});
+}
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-prof]");if(b){show("vProfile");toTop()}});
 const VIEWS=["vDex","vFeed","vStats","vProfile","vSettings","vDetail","vFriend"];
 /* push the page down by the pinned top bar's height, so its first line is never underneath it */
 function padForBar(){
@@ -1723,9 +1808,11 @@ addEventListener("resize",()=>padForBar());
 function show(v){
   view=v;for(const id of VIEWS)$(id).hidden=id!==v;
   $("nav").hidden=v==="vDetail"||v==="vFriend";
-  const tab=v==="vSettings"?"vProfile":v;
+  const tab=v;
   document.querySelectorAll(".ntab").forEach(t=>{if(t.dataset.v===tab)t.setAttribute("aria-current","page");else t.removeAttribute("aria-current")});
   if(v!=="vDetail"&&v!=="vFriend")lastList=v;
+  if(v!=="vDetail"&&v!=="vFriend"&&v!=="vProfile")lastTab=v;
+  renderProfBtns();
   if(v==="vDex")renderDex();
   if(v==="vStats")renderStats();
   if(v==="vProfile"){renderProfile();if(Cloud.user&&Date.now()-(Cloud.fAt||0)>20000){Cloud.fAt=Date.now();Cloud.loadFriends().catch(e=>Cloud.fail(e))}}
@@ -1737,8 +1824,7 @@ function show(v){
 /* always open a page at its top, so its header is never hidden under the status bar */
 const toTop=()=>{const go=()=>{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0};go();requestAnimationFrame(go);setTimeout(go,60)};
 $("howBtn").onclick=()=>introSheet();
-$("toSet").onclick=()=>{show("vSettings");toTop()};
-$("setBack").onclick=()=>{show("vProfile");toTop()};
+$("profBack").onclick=()=>{show(lastTab||"vDex");toTop()};
 document.querySelectorAll(".ntab").forEach(t=>t.onclick=()=>{if(view===t.dataset.v){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}show(t.dataset.v);toTop()});
 
 /* =========================================================
@@ -1769,7 +1855,7 @@ function openCard(c,friend){
   $("detail").innerHTML=`
    <div class="topbar"><button class="close" id="dBack" aria-label="Back" style="align-self:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="tt">${own?esc(c.store):esc(friend.name)+"'s card"}</span>${own&&Cloud.on?`<button class="postbtn" id="dPost">Post</button>`:""}<button class="sharebtn" id="dShare" aria-label="Share this card">${SHARE_ICON}</button></div>
    ${cardHTML(c)}
-   ${own&&c.check&&c.check.length&&!unv?`<div class="checkbar"><span><b>Double-check this one.</b> The scanner wasn't sure about ${c.check.map(k=>CHECK_TXT[k]).join(" and ")}.</span><button class="mini" id="dCheck">Fix</button></div>`:""}
+   ${own&&c.check&&c.check.length&&!unv?`<div class="checkbar"><span><b>Double-check this one.</b> The scanner wasn't sure about ${c.check.map(k=>CHECK_TXT[k]).join(" and ")}. Compare it with your offer screen.</span>${canHandFix()?`<button class="mini" id="dCheck">Fix</button>`:""}</div>`:""}
    ${unv?`<div class="checkbar"><span><b>Edited by hand.</b> Capped at Uncommon.</span>${own&&canRestore(c)?`<button class="mini" id="dRestore">Restore</button>`:""}</div>`:""}
    ${f?`<div class="pull ${f}" style="animation:none">✦ ${FINISHES[f]} frame${c.boost>1?" · pack bonus":""} ✦</div>`:""}
    <div class="panel">
@@ -1788,13 +1874,13 @@ function openCard(c,friend){
      ${own&&(c.vb||51)!==51?`<p class="msg">Your Accept line was ${c.vb} for this one, tuned to your recent offers.</p>`:""}
    </div>
    ${own?trendHTML(c):""}
-   ${own?locationHTML(c):""}
-   ${own?`<details class="panel" id="dFix"><summary style="color:var(--tx);font-weight:600;font-size:.95rem">Fix a misread number or the time</summary>
+   ${own&&placeKey(c)?locationHTML(c):""}
+   ${own&&canHandFix()?`<details class="panel" id="dFix"><summary style="color:var(--tx);font-weight:600;font-size:.95rem">Fix a misread number or the time</summary>
      <p class="msg" style="margin-top:10px">Match the numbers on your screenshot. Numbers that don't match what the scanner read cap the card at Uncommon.</p>
      <div class="fields" style="margin-top:12px">${fieldsHTML("e",c,true)}</div>
      <button class="btn" id="eSave" style="margin-top:12px">Save and re-grade</button>
-   </details>
-   <div class="delbox"><button class="btn ghost danger" id="dDel">Delete card</button><p class="about">Frees a spot in your Dex${Cloud.user?" and removes it from your posts":""}. You keep the XP. The same offer can't be scanned again for 24 hours.</p></div>`:""}`;
+   </details>`:""}
+   ${own?`<div class="delbox"><button class="btn ghost danger" id="dDel">Delete card</button><p class="about">Frees a spot in your Dex${Cloud.user?" and removes it from your posts":""}. You keep the XP. The same offer can't be scanned again for 24 hours.</p></div>`:""}`;
   const back=own?()=>show(lastList):friend.back;
   show("vDetail");toTop();
   $("dBack").onclick=back;
@@ -1802,12 +1888,12 @@ function openCard(c,friend){
   if($("dPost"))$("dPost").onclick=()=>postSheet(c);
   if(!own)return;
   wireLocation(c);
-  if($("dCheck"))$("dCheck").onclick=()=>{const d=$("dFix");d.open=true;d.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
+  if($("dCheck"))$("dCheck").onclick=()=>{const d=$("dFix");if(!d)return;d.open=true;d.scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
   if($("dRestore"))$("dRestore").onclick=()=>{const o=c.ocr;
     rescore(c,{pay:o.pay>0?o.pay:o.strip,minutes:o.minutes,miles:o.miles,stops:Math.max(+o.stops||2,1),store:c.store,ts:c.ts});c.check=false;save();checkLevel();
     toast(c.verified===false?"Couldn't restore this one":"Restored · "+TIERS.find(t=>t.id===c.tier).name+" "+c.score);openCard(c,null)};
   wireTrend();
-  $("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
+  if($("eSave"))$("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
     rescore(c,o);c.check=false;save();checkLevel();toast(c.verified===false?"Saved. Hand-edited cards are capped at Uncommon.":"Re-graded: "+gradeOf(c)+" · "+vOf(c).label);openCard(c,null)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to delete";setTimeout(()=>{armed=false;if(e.target.isConnected)e.target.textContent="Delete card"},4000);return}
     deleteCards([c.id]);toast("Card deleted");show(lastList==="vDetail"?"vDex":lastList);toTop()};
@@ -1962,7 +2048,7 @@ function trendHTML(c){
       <rect x="${lx}" y="${Math.max(0,my-26)}" width="28" height="16" rx="5" class="tg-tag"/><text x="${lx+14}" y="${Math.max(0,my-26)+12}" text-anchor="middle" class="tg-tagt">${lab}</text>
       <text x="${L}" y="${H-6}" class="tg-ax">${esc(d(pts[0]))}</text><text x="${W-R}" y="${H-6}" class="tg-ax" text-anchor="end">${esc(d(pts[n-1]))}</text>
     </svg>
-    <p class="msg">${exact?"Same address.":"Same store name. Turn on Settings › Privacy › Read pickup addresses to track one exact location."} Tap a dot to open that offer.</p></div>`;
+    <p class="msg tg-note">Tap a dot to open that offer. ${exact?"Based on this exact address.":"Based on the store name, not the location."}</p></div>`;
 }
 function wireTrend(){document.querySelectorAll("#detail .tg-dot").forEach(el=>el.onclick=()=>{const id=el.dataset.tid,cur=document.querySelector("#detail .tg-dot.on");if(cur&&cur.dataset.tid===id)return;openDetail(id)})}
 function locationHTML(c){
@@ -2202,7 +2288,7 @@ function verdictHTML(card){
 function grade(r,parsedOverride){
   if(parsedOverride){r.parsed={...r.parsed,...parsedOverride};r.check=null}
   const before=snap();
-  const card=cardFrom(r);store.cards.push(card);const saved=finishSave([card]);
+  const card=cardFrom(r);addStickers([card]);store.cards.push(card);const saved=finishSave([card]);
   const rewards=rewardHTML(before,[card]);
   $("shot").classList.add("gone");
   showSingle(card,rewards,saved,r.check);
@@ -2214,11 +2300,12 @@ function showSingle(card,rewards,saved,check){
     ${verdictHTML(card)}
     ${check&&check.length?checkHTML(check):""}
     ${f?`<div class="pull ${f}">✦ ${FINISHES[f]} pull ✦</div>`:""}
+    ${card.stk?`<div class="pull stkpull">🎃 Pumpkin sticker: ${esc(stkLabel(card.stk))}</div>`:""}
     ${revealHTML(card)}
     ${rewards||""}
     ${saved===false?`<p class="msg err" style="text-align:center">This browser isn't saving cards (private mode or storage full), so this one won't stay in your Dex.</p>`:""}
     ${actions()}
-    <div id="qfix"><button class="linkbtn" id="qfixBtn">Misread a number? Fix it here</button></div>
+    ${canHandFix()?`<div id="qfix"><button class="linkbtn" id="qfixBtn">Misread a number? Fix it here</button></div>`:""}
   </div>`;
   wireQuickFix(card,()=>showSingle(card,rewards,saved,null));
   wireGiftBtn();
@@ -2233,9 +2320,11 @@ function wireQuickFix(card,after){
   if(btn)btn.onclick=open;
   const cb=$("checkFix");if(cb)cb.onclick=()=>{open();$("qfix").scrollIntoView({block:"center",behavior:RM?"auto":"smooth"})};
 }
+/* typing over the scanner's numbers is a moderator tool now */
+const canHandFix=()=>typeof Cloud!=="undefined"&&!!Cloud.isMod;
 const CHECK_TXT={pay:"the payout",trip:"the time and miles",odd:"numbers that look unusual"};
 function checkHTML(check){
-  return `<div class="checkbar"><span><b>Double-check this one.</b> The scanner wasn't sure about ${check.map(k=>CHECK_TXT[k]).join(" and ")}.</span><button class="mini" id="checkFix">Fix</button></div>`;
+  return `<div class="checkbar"><span><b>Double-check this one.</b> The scanner wasn't sure about ${check.map(k=>CHECK_TXT[k]).join(" and ")}. Compare it with your offer screen.</span>${canHandFix()?`<button class="mini" id="checkFix">Fix</button>`:""}</div>`;
 }
 function askFix(r,onDone){
   const p=r.parsed||{},missing=["pay","minutes","miles"].filter(k=>!(p[k]>0)),names={pay:"pay",minutes:"time",miles:"miles"};
@@ -2312,6 +2401,7 @@ async function scanPack(files){
     const last=cards[cards.length-1];if(k>=2){last.boost=tier.boost;last.finish=C.rollFinish(last.tier,last.roll,tier.boost*luckMult())}
     packs.push({cards,tier});
   }
+  addStickers(all,c=>{const pk=packs.find(x=>x.cards.length>=2&&x.cards[x.cards.length-1]===c);return pk?pk.tier.boost:1});
   const before=snap();
   store.cards.push(...all);finishSave(all);
   const extras=results.filter(r=>r.status!=="ok");
@@ -2321,10 +2411,12 @@ async function scanPack(files){
 }
 /* a closed pack, ready to tear open */
 function showPack(P,pi){
-  const pk=P.packs[pi],t=pk.tier,lastPack=pi===P.packs.length-1;
+  const pk=P.packs[pi],t0=pk.tier,lastPack=pi===P.packs.length-1,ev=eventNow();
+  /* during an event every pack is reskinned; the cards and odds are exactly the same */
+  const t=ev?{...t0,name:(ev.id==="halloween"?"Haunted ":ev.name+" ")+t0.name}:t0;
   $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
     ${P.packs.length>1?`<div class="pk-row">${P.packs.map((x,k)=>`<span class="pk-chip${k===pi?" now":k<pi?" done":""}" style="--c:${PK_COL[x.tier.id]}"><i></i>${x.tier.name.replace(" Pack","")} · ${x.cards.length}</span>`).join("")}</div>`:""}
-    <div class="pack ready" id="pack" data-pk="${t.id}" role="button" tabindex="0" aria-label="Open ${esc(t.name)}"><div class="crimp t"></div><div class="lid"></div><div class="face">${gemSVG(t.id)}<div class="pn">${esc(t.name)}</div><div class="pc">${pk.cards.length} card${pk.cards.length>1?"s":""}</div></div><div class="crimp b"></div></div>
+    <div class="pack ready" id="pack" data-pk="${t.id}"${ev?` data-ev="${ev.id}"`:""} role="button" tabindex="0" aria-label="Open ${esc(t.name)}"><div class="crimp t"></div><div class="lid"></div><div class="face">${ev&&ev.id==="halloween"?`<span class="pk-pump">${pumpkinSVG(t.id==="ruby"||t.id==="diamond"?"grin":"happy","")}</span>`:gemSVG(t.id)}<div class="pn">${esc(t.name)}</div><div class="pc">${pk.cards.length} card${pk.cards.length>1?"s":""}</div></div><div class="crimp b"></div></div>
     <button class="btn" id="openPack">Open ${esc(t.name)}</button>
     ${pk.cards.length>=2?`<p class="boostnote">${lastPack&&P.packs.length>1?"Your best card is in here. ":""}The last card gets <b>×${t.boost.toFixed(2)}</b> special-frame odds${luckMult()>1?` (plus your luck ${fmtLuck()})`:""}</p>`:""}
     ${pi===0&&P.extras.some(r=>r.status!=="ok")?`<p class="tapnote">${P.extras.length} screenshot${P.extras.length>1?"s":""} skipped. You'll see why after the last card.</p>`:""}
@@ -2341,11 +2433,12 @@ function revealPack(P,pi,i){
   $("sBody").innerHTML=`<div class="rv">
     <div class="prog-pips" aria-label="Card ${i+1} of ${cards.length}">${cards.map((_,k)=>`<i class="${k<=i?"on":""}${k===cards.length-1?" last":""}"></i>`).join("")}</div>
     ${end&&P.cards.length>1?`<div class="bestpull">★ Best pull ★</div>`:`<div class="pcount">${P.packs.length>1?esc(pk.tier.name)+" · ":""}Card <b>${i+1}</b> of ${cards.length}</div>`}
-    <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span>${c.verified===false?`<span class="vpill" data-v="decline">Edited</span>`:""}${c.luck>=6?`<span class="vpill" data-v="lucky">Lucky pull</span>`:""}${c.rc?`<span class="vpill" data-v="consider">Red Card</span>`:""}${c.check&&c.check.length?`<span class="vpill" data-v="consider">Check</span>`:""}</div>
+    <div class="vline"><span class="vpill" data-v="${v.id}">${v.label}</span><span>${money(c.pph)}/hr · ${money(c.ppm)}/mi</span>${c.verified===false?`<span class="vpill" data-v="decline">Edited</span>`:""}${c.luck>=6?`<span class="vpill" data-v="lucky">Lucky pull</span>`:""}${c.rc?`<span class="vpill" data-v="consider">Red Card</span>`:""}${c.stk?`<span class="vpill" data-v="stk">🎃 Sticker</span>`:""}${c.check&&c.check.length?`<span class="vpill" data-v="consider">Check</span>`:""}</div>
     ${f?`<div class="pull ${f}" style="animation-delay:.7s">✦ ${FINISHES[f]} pull ✦</div>`:""}
+    ${c.stk?`<div class="pull stkpull" style="animation-delay:.9s">🎃 ${esc(stkLabel(c.stk))} sticker</div>`:""}
     ${revealHTML(c,"rvCard")}
     ${end?`<div class="packend">${P.rewards}${packExtrasHTML(P)}${actions("Scan more")}</div>`
-      :last?`<button class="btn" id="rvNext">Open the next pack: ${esc(P.packs[pi+1].tier.name)}</button>`
+      :last?`<button class="btn" id="rvNext">Open the next pack: ${esc((eventNow()&&eventNow().id==="halloween"?"Haunted ":"")+P.packs[pi+1].tier.name)}</button>`
       :`<button class="btn" id="rvNext">Next card</button>${cards.length>2?`<button class="linkbtn" id="rvSkip">Skip to this pack's last card</button>`:""}`}
   </div>`;
   if(!isBig(c))$("rvCard").querySelector(".card").style.animation=`flip .8s cubic-bezier(.2,.9,.25,1.15) both`;
@@ -2385,7 +2478,7 @@ function wirePackExtras(P,back){
     if(roomLeft()<1){limitSheet();return}
     askFix(r,done=>{
       if(done){const lk=lockLeft(null,null,C.offerKey(done.parsed));if(lk){toast(`You deleted this offer recently. Try again in ${fmtLeft(lk)}.`);back();return}
-        const before=snap(),card=cardFrom(done,{});store.cards.push(card);finishSave([card]);P.cards.push(card);P.extras.splice(P.extras.indexOf(r),1);
+        const before=snap(),card=cardFrom(done,{});addStickers([card]);store.cards.push(card);finishSave([card]);P.cards.push(card);P.extras.splice(P.extras.indexOf(r),1);
         const a=snap();toast(vOf(card).label+" · "+gradeOf(card)+" added · +"+(a.xp-before.xp)+" XP")}
       back();
     });
@@ -2533,16 +2626,13 @@ const kb=n=>n>1e6?(n/1e6).toFixed(1)+" MB":Math.max(1,Math.round(n/1e3))+" KB";
 function renderSettings(){
   /* a sync finishing re-draws this page: keep the reset box open and what was typed in it */
   const rb=$("resetBox"),keepOpen=!!(rb&&rb.open),keepTxt=$("resetTxt")?$("resetTxt").value:"";
+  const dvb=document.querySelector("#settingsBody .devbox"),keepDev=!!(dvb&&dvb.open),y0=scrollY;
   const si=storageInfo();
   const segBtn=(k,v,l)=>`<button data-k="${k}" data-v="${v}" aria-pressed="${SET[k]===v}">${l}</button>`;
-  $("settingsBody").innerHTML=`${accountHTML()}
+  $("settingsBody").innerHTML=`${accountHTML()}${modHTML()}
   <div class="sbox"><h3>Appearance</h3>
     <div class="seg seg3" role="group" aria-label="Theme">${segBtn("theme","dark","Dark")}${segBtn("theme","light","Light")}${segBtn("theme","system","Match phone")}</div>
     <label class="sw"><span><b>Card animations</b><small>Holo shimmer, card flips and the pack tear. Turn off to save battery.</small></span><input type="checkbox" id="setMotion" ${SET.motion?"checked":""}><i></i></label>
-  </div>
-  <div class="sbox"><h3>Daily goal <small>resets at midnight</small></h3>
-    <div class="goalpick" role="radiogroup" aria-label="Daily goal">${[["rare3","Get 3 Rare or better"],["rare5","Get 5 Rare or better"],["epic1","Pull an Epic or better"],["accept5","Find 5 offers worth accepting"],["scan8","Scan 8 offers"],["off","No daily goal"]].map(([v,l])=>`<button role="radio" data-goal="${v}" aria-checked="${(SET.goal||"rare3")===v}">${l}</button>`).join("")}</div>
-    <p class="msg">Only offers you scan within a day and a half of getting them count.</p>
   </div>
   ${privacyHTML()}
   <div class="sbox"><h3>Scanning <small>${usedToday()}/${dayLimit()} today</small></h3>
@@ -2582,8 +2672,8 @@ function renderSettings(){
   $("setClock").onchange=e=>{SET.clock=e.target.checked;saveSet()};
   $("setRc").onchange=e=>{SET.redCard=e.target.checked;saveSet()};
   $("setHow").onclick=()=>introSheet();
-  $("settingsBody").querySelectorAll("[data-goal]").forEach(btn=>btn.onclick=()=>{SET.goal=btn.dataset.goal;saveSet();renderSettings()});
-  wireData();wireAccount();
+  wireData();wireAccount();wireMod();
+  if(keepDev){const d=document.querySelector("#settingsBody .devbox");if(d){d.open=true;scrollTo(0,y0)}}
   if(keepOpen){$("resetBox").open=true;$("resetTxt").value=keepTxt;$("wipe").disabled=keepTxt.trim().toUpperCase()!=="RESET"}
 }
 function wireData(){
@@ -2623,7 +2713,7 @@ const dayLimit=()=>signedIn()?50:25;
 const capLimit=()=>signedIn()?300:100;
 const usedToday=()=>store.use&&store.use.d===dayKey(new Date())?(+store.use.n||0):0;
 function addUse(n){const d=dayKey(new Date());if(!store.use||store.use.d!==d)store.use={d,n:0};store.use.n+=n}
-const roomLeft=()=>Math.max(0,Math.min(dayLimit()-usedToday(),capLimit()-store.cards.length));
+const roomLeft=()=>SET.devNoLimit&&typeof Cloud!=="undefined"&&Cloud.isHead?999:Math.max(0,Math.min(dayLimit()-usedToday(),capLimit()-store.cards.length));
 function limitSheet(){
   const full=store.cards.length>=capLimit(),day=usedToday()>=dayLimit();
   qrSheet(`<div class="qrcard"><h2>${full?"Your Dex is full":"That's all for today"}</h2>
@@ -2864,6 +2954,7 @@ function renderProfile(){
     <div class="kpi"><b>${a.n?Math.round(a.good/a.n*100)+"%":"–"}</b><span>Recommended</span><small>${a.good} of ${a.n} worth accepting</small></div>
     <div class="kpi"><b>${fav?esc(fav.name):"–"}</b><span>Most seen store</span><small>${fav?fav.n+" offer"+(fav.n>1?"s":""):""}</small></div>
   </div>
+  ${stickerBookHTML()}
   ${friendsHTML()}
   ${weeklyHTML()}
   ${best?`<div class="sbox"><h3>Best pull <small>tap to open</small></h3><div class="showcase">${cardHTML(best)}</div></div>`:`<div class="sempty">Scan your first offer to start leveling up.</div>`}
@@ -2871,7 +2962,7 @@ function renderProfile(){
     <div class="achs">${ach.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
   </div>
   <p class="about">XP per card: Trash 3 · Common 6 · Uncommon 10 · Rare 18 · Super Rare 30 · Epic 55 · Legendary 120 · Mythic 300 · Holo or Gold +150 · Neon +100 · Carbon or Inverted +60 · packs +7 to +23 · daily quests 15–80. Hand-edited cards earn 3. Every level gives you a luck card.</p>`;
-  $("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile();if(Cloud.user)Cloud.pushProfile().catch(err=>Cloud.fail(err))};
+  $("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile();renderProfBtns();if(Cloud.user)Cloud.pushProfile().catch(err=>Cloud.fail(err))};
   $("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
   const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
   wireFriends();
@@ -2891,16 +2982,16 @@ function renderGift(){
 }
 function wireGiftBtn(root){(root||document).querySelectorAll("[data-gift]").forEach(b=>b.onclick=e=>{e.stopPropagation();openLuck()})}
 let luckTok=0;
-function openLuck(){
-  const p=prog(),n=Math.min(+p.unseen||0,p.luck.length);if(!n){renderGift();return}
-  const list=p.luck.slice(p.luck.length-n),base=Math.min(LUCK_MAX,1+(luckPct()-list.reduce((a,x)=>a+(+x[2]||0),0))/100);
+function openLuck(preview){
+  const p=prog(),n=preview?preview.length:Math.min(+p.unseen||0,p.luck.length);if(!n){renderGift();return}
+  const list=preview||p.luck.slice(p.luck.length-n),base=preview?luckMult():Math.min(LUCK_MAX,1+(luckPct()-list.reduce((a,x)=>a+(+x[2]||0),0))/100);
   let i=0,cur=base;const tok=++luckTok;
   /* the sheet can be closed mid-animation: stop quietly (the luck is already saved) */
   const alive=()=>tok===luckTok&&!!$("lkCard")&&!$("qrSheet").hidden;
   const step=()=>{
     const [L,rid,pct]=list[i],T=LUCK_NAME[rid]||"Common",big=["epic","legendary","mythic"].includes(rid),col=TC[rid]||TC.common;
     qrSheet(`<div class="luckwrap" data-r="${rid}" style="--c:${col}">
-      <div class="lk-head"><small>Level ${L} reward${n>1?` · ${i+1} of ${n}`:""}</small><b>Luck pack</b></div>
+      <div class="lk-head"><small>${preview?"Preview · ":""}Level ${L} reward${n>1?` · ${i+1} of ${n}`:""}</small><b>Luck pack</b></div>
       <div class="lk-stage">
         <div class="pack ready lk-pack" id="lkPack" data-pk="luck" role="button" tabindex="0" aria-label="Open the luck pack"><div class="crimp t"></div><div class="lid"></div><div class="face"><span class="lk-gem">${CLOVER}</span><div class="pn">Luck</div><div class="pc">1 card</div></div><div class="crimp b"></div></div>
         <div class="lk-card" id="lkCard" hidden>${big?`<div class="lk-rays"></div>`:""}<div class="lk-face"><span class="lk-r">${T}</span><span class="lk-c">${CLOVER}</span><b class="lk-p">+${pct}%</b><span class="lk-l">LUCK</span></div></div>
@@ -2915,7 +3006,7 @@ function openLuck(){
       $("lkMsg").textContent=`${T} luck card!`;await sleep(900);if(!alive())return;
       /* the luck counts up, then the card is used up */
       const to=Math.min(LUCK_MAX,cur+pct/100),from=cur,m=$("lkMeter");m.hidden=false;const t0=performance.now(),dur=RM?0:800;
-      p.unseen=Math.max(0,(+p.unseen||0)-1);save();renderGift();
+      if(!preview){p.unseen=Math.max(0,(+p.unseen||0)-1);save();renderGift()}
       await new Promise(res=>{const tick=t=>{const v=$("lkVal");if(!v)return res();const k=dur?Math.min(1,(t-t0)/dur):1;v.textContent=fmtLuck(from+(to-from)*k);if(k<1)requestAnimationFrame(tick);else res()};requestAnimationFrame(tick)});
       if(!alive())return;m.classList.add("pop");m.insertAdjacentHTML("beforeend",`<small>was ${fmtLuck(from)}</small>`);cur=to;
       await sleep(650);if(!alive())return;card.classList.add("used");$("lkMsg").textContent=to>=LUCK_MAX?"Luck is maxed out. Nice.":"Added to your luck for good. Better odds on special frames and lucky pulls.";
@@ -2937,7 +3028,7 @@ function applyScanMode(){const f=$("file");if(f)f.multiple=SET.scanMode!=="fast"
    ========================================================= */
 const FB_CFG=(window.OFFERDEX_FIREBASE&&window.OFFERDEX_FIREBASE.apiKey)?window.OFFERDEX_FIREBASE:null;
 const FBV="10.14.1";
-const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp"];
+const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp","dev","stk"];
 const CODE_ABC="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 const loadJS=src=>new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.onload=res;s.onerror=()=>rej(new Error("Couldn't load "+src));document.head.appendChild(s)});
 const ART_RE=/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
@@ -2950,6 +3041,8 @@ function cleanCard(d,id){
   if(c.rc!==undefined){c.rc=[1,2].includes(+c.rc)?+c.rc:undefined;if(!c.rc)delete c.rc}
   if(c.vb!==undefined){c.vb=Math.max(45,Math.min(57,Math.round(num0(c.vb))||51))}
   if(c.noxp!==undefined){if(c.noxp)c.noxp=1;else delete c.noxp}
+  if(c.dev!==undefined){if(c.dev)c.dev=1;else delete c.dev}
+  if(c.stk!==undefined){const k=c.stk;c.stk=k&&typeof k==="object"&&/^[a-z]+-\d{4}$/.test(String(k.e))&&STK_FACES.some(f=>f.id===k.f)?{e:String(k.e),f:String(k.f),t:STK_TRIMS[k.t]?String(k.t):""}:undefined;if(!c.stk)delete c.stk}
   c.stops=c.stops||2;c.no=c.no||0;
   if(!TIERS.some(t=>t.id===c.tier))c.tier=C.tierFor(c.score||1).id;
   if(!["standard",...C.FINISH_KEYS].includes(c.finish))c.finish="standard";
@@ -3008,8 +3101,8 @@ const Cloud={
       this.auth.getRedirectResult().catch(e=>{this.err=friendly(e);rerenderAccount()});
       this.auth.onAuthStateChanged(async u=>{
         this.user=u;this.ready=true;this.profile=null;this.friends=[];this.requests=[];rerenderAccount();
-        if(!u){let pend=null;try{pend=localStorage.getItem("offerdex.pendingAdd")}catch(e){}if(pend)gotFriendCode(pend)}
-        if(u){try{await this.fullSync();await this.loadFriends()}catch(e){this.fail(e)}takePendingAdd()}
+        if(!u){this.isHead=this.isMod=false;applySkin();let pend=null;try{pend=localStorage.getItem("offerdex.pendingAdd")}catch(e){}if(pend)gotFriendCode(pend)}
+        if(u){this.checkMod().catch(()=>{});try{await this.fullSync();await this.loadFriends()}catch(e){this.fail(e)}takePendingAdd()}
       });
     }catch(e){this.on=false;this.err=friendly(e);console.warn(e);rerenderAccount()}
   },
@@ -3174,7 +3267,7 @@ const Cloud={
     if(!this.user)return;const snap=await this.stateRef().get();if(!snap.exists)return;
     const d=snap.data()||{},R=d.prog&&typeof d.prog==="object"?d.prog:null,P=prog();
     if(R){
-      const rs=num0(R.rs),luck=(Array.isArray(R.luck)?R.luck:[]).slice(0,400).map(x=>String(x).split("|")).map(([L,r,p])=>[Math.round(num0(L)),LUCK_NAME[r]?r:"common",[1,2,3,5,8,15].includes(+p)?+p:1]).filter(x=>x[0]>=2&&x[0]<=400);
+      const rs=num0(R.rs),luck=(Array.isArray(R.luck)?R.luck:[]).slice(0,400).map(x=>String(x).split("|")).map(([L,r,p])=>[Math.round(num0(L)),LUCK_NAME[r]?r:"common",[1,2,3,5,8,15].includes(+p)?+p:1]).filter(x=>x[0]>=2&&x[0]<=2000);
       const qd={};if(R.qd&&typeof R.qd==="object")for(const [k,v] of Object.entries(R.qd).slice(0,400))if(/^\d{4}-\d\d-\d\d$/.test(k))qd[k]=String(v).split(",").filter(Boolean).slice(0,3);
       const bank=Math.max(0,Math.min(1e8,num0(R.bank))),lvlMax=Math.max(1,Math.min(400,Math.round(num0(R.lvlMax))||1));
       if(rs>num0(P.rs)){store.prog={v:3,rs,bank,lvlMax,luck,unseen:0,qd};store.resetAt=Math.max(num0(store.resetAt),rs)}
@@ -3516,7 +3609,7 @@ function weeklyHTML(){
    Global posts use preset captions so nobody has to moderate free text; friends posts can have your own words.
    ========================================================= */
 const GLOBAL_CAPTIONS=["Look at this pull!","Worth it?","Easy money","Not worth the gas","Lucky day","Rare find","Holo!","First Mythic!"];
-const POST_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","finish","ts","boost","verified","rc","vb"];
+const POST_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","finish","ts","boost","verified","rc","vb","stk"];
 const CAPTION_MAX=120,GLOBAL_PER_DAY=10;
 let feedAud=null,feedCache={friends:null,global:null},feedAt={friends:0,global:0};
 const postCard=c=>{const o={};for(const k of POST_FIELDS)if(c[k]!==undefined&&c[k]!==null)o[k]=c[k];return o};
@@ -3531,11 +3624,14 @@ Object.assign(Cloud,{
   async post(c,aud,caption){
     if(!this.user)throw new Error("Sign in to post.");
     if(c.verified===false)throw new Error("Hand-edited cards can't be posted.");
+    if(c.dev)throw new Error("Test cards can't be posted.");
     caption=String(caption||"").trim().slice(0,CAPTION_MAX);
     if(aud==="global"){
       if(caption&&!GLOBAL_CAPTIONS.includes(caption))throw new Error("Pick one of the captions for Global.");
       const today=dayKey(new Date()),log=(SET.gposts||[]).filter(x=>x[0]===today);
-      if(log.length>=GLOBAL_PER_DAY)throw new Error(`You can post ${GLOBAL_PER_DAY} cards to Global a day. Try again tomorrow.`);
+      if(log.length>=GLOBAL_PER_DAY&&!this.isHead)throw new Error(`You can post ${GLOBAL_PER_DAY} cards to Global a day. Try again tomorrow.`);
+      let banned=false;try{banned=(await this.db.collection("bans").doc(this.user.uid).get()).exists}catch(e){}
+      if(banned)throw new Error("A moderator has blocked you from posting to Global. You can still post to Friends.");
     }
     const doc={uid:this.user.uid,name:myName(),level:levelOf(totalXP()),caption,card:postCard(c),at:Date.now()};
     const ref=aud==="global"?this.db.collection("posts").doc(this.user.uid+"_"+c.id):this.me().collection("posts").doc(c.id);
@@ -3620,7 +3716,7 @@ async function renderFeed(force){
     (posts.length?`<div class="posts">${posts.map(p=>`<article class="post" data-pid="${esc(p.id)}">
       <header><span class="avatar sm" style="--c:${TC[p.card.tier]||"var(--t-rare)"}">${esc((p.name[0]||"D").toUpperCase())}</span>
         <span class="pn"><b>${p.uid===me?"You":esc(p.name)}</b><small>Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
-        ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide this post">Hide</button>`:""}</header>
+        ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`${Cloud.isMod?`<button class="mini modbtn" data-mod="${esc(p.id)}">Mod</button>`:""}<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide this post">Hide</button>`:""}</header>
       ${p.caption?`<p class="pcap">${esc(p.caption)}</p>`:""}
       <div class="pcard" data-open="${esc(p.id)}">${cardHTML({...p.card,_friend:true,_art:""})}</div>
     </article>`).join("")}</div>`
@@ -3632,11 +3728,219 @@ async function renderFeed(force){
     openCard({...p.card,_friend:true,_art:""},{name:p.uid===me?"You":p.name,back:()=>{show("vFeed");requestAnimationFrame(()=>scrollTo(0,y))}})});
   box.querySelectorAll("[data-del]").forEach(el=>{let armed=false;el.onclick=async()=>{if(!armed){armed=true;el.textContent="Tap again";return}
     const p=posts.find(x=>x.id===el.dataset.del);try{await Cloud.deletePost(p);toast("Post deleted");renderFeed(true)}catch(e){toast(friendly(e))}}});
+  box.querySelectorAll("[data-mod]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.mod);if(p)modSheet(p)});
   box.querySelectorAll("[data-hide]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.hide);
     qrSheet(`<div class="qrcard"><h2>Hide this post?</h2><p class="msg">Hidden posts only disappear for you.</p></div><div class="btnrow"><button class="btn ghost" id="hOne">Hide this post</button><button class="btn ghost" id="hAll">Hide everything from ${esc(p.name)}</button></div>`);
     $("hOne").onclick=()=>{SET.hidePosts=[...hiddenSet("hidePosts"),p.id].slice(-500);saveSet();closeQR();renderFeed()};
     $("hAll").onclick=()=>{SET.hideUsers=[...hiddenSet("hideUsers"),p.uid].slice(-200);saveSet();closeQR();renderFeed()}});
   padForBar();
+}
+
+/* =========================================================
+   Events: limited-time seasons. Halloween runs Oct 24-31 every year: Halloween colors, haunted packs
+   (same cards, same odds) and pumpkin stickers that can drop on cards. Stickers stay on the card forever.
+   ========================================================= */
+const EVENTS=[{id:"halloween",name:"Halloween",from:[10,24],to:[10,31],skin:"halloween",icon:"🎃"}];
+function eventNow(){
+  const ov=SET.devEvent;if(ov==="none")return null;
+  const d=new Date(),y=d.getFullYear();
+  for(const e of EVENTS){const a=new Date(y,e.from[0]-1,e.from[1]),b=new Date(y,e.to[0]-1,e.to[1]+1);
+    if(ov===e.id||(d>=a&&d<b)){const end=d<b?b:new Date(y,e.to[0]-1,e.to[1]+1);return {...e,year:y,key:e.id+"-"+y,end:+end,left:Math.max(1,Math.ceil((end-d)/864e5))}}}
+  return null;
+}
+/* pumpkin stickers: about 1 card in 33 gets one; each pack's last card gets that pack's bonus; luck helps.
+   Faces have their own rarity, and 1 in 10 stickers comes with a special trim. */
+const STK_FACES=[{id:"happy",name:"Happy Jack",r:"common",w:50},{id:"spooky",name:"Spooky",r:"uncommon",w:28},{id:"grin",name:"Grinning",r:"rare",w:14},
+  {id:"ghost",name:"Ghost Pumpkin",r:"epic",w:6},{id:"golden",name:"Golden Jack",r:"legendary",w:1.8},{id:"cursed",name:"Cursed Lantern",r:"mythic",w:0.2}];
+const STK_TRIMS={holo:"Holo",gold:"Gold Foil",neon:"Neon",inverted:"Inverted"};
+const STK_TRIM_ODDS=[["holo",0.02],["gold",0.02],["neon",0.03],["inverted",0.03]];
+const STK_BASE=0.03;
+function rollSticker(mult){
+  const ev=eventNow();if(!ev||ev.id!=="halloween")return null;
+  if(Math.random()>=Math.min(0.5,STK_BASE*(mult||1)*luckMult()))return null;
+  let r=Math.random()*100,face=STK_FACES[0];for(const f of STK_FACES){if((r-=f.w)<0){face=f;break}}
+  let t="",x=Math.random();const lm=Math.min(2,luckMult());for(const [k,p] of STK_TRIM_ODDS){if((x-=p*lm)<0){t=k;break}}
+  return {e:ev.key,f:face.id,t};
+}
+const stkFace=id=>STK_FACES.find(f=>f.id===id);
+let STK_N=0;
+function pumpkinSVG(f,trim){
+  const n=++STK_N,P={happy:["#ff8a1f","#d96a0c","#ffd23f"],spooky:["#f07a12","#c75e08","#ffb02e"],grin:["#ff9a2e","#e07614","#fff06a"],
+    ghost:["#eef1f7","#c9d1df","#2b3654"],golden:[`url(#pg${n})`,"#9c7420","#fff7d6"],cursed:["#4b1f6e","#2c1042","#7dff6a"]}[f]||["#ff8a1f","#d96a0c","#ffd23f"];
+  const [body,rib,lit]=P;
+  const faces={
+    happy:`<path d="M19 30l5-7 5 7z M35 30l5-7 5 7z" fill="${lit}"/><path d="M29.5 36l2.5-4 2.5 4z" fill="${lit}"/><path d="M18 40c4 7 24 7 28 0c-3 2-6 3-8 3l-1 2-2-2h-6l-2 2-1-2c-3 0-5-1-8-3z" fill="${lit}"/>`,
+    spooky:`<path d="M17 25l11 5-9 3z M47 25l-11 5 9 3z" fill="${lit}"/><path d="M30 37l2-3 2 3z" fill="${lit}"/><path d="M17 42l4-3 3 4 4-4 4 4 4-4 4 4 3-4 4 3-3 5H20z" fill="${lit}"/>`,
+    grin:`<circle cx="24" cy="28" r="4.5" fill="${lit}"/><circle cx="40" cy="28" r="4.5" fill="${lit}"/><path d="M15 36c4 11 30 11 34 0z" fill="${lit}"/><path d="M22 37v4M28 37v6M34 37v6M40 37v4" stroke="${rib}" stroke-width="2.2"/>`,
+    ghost:`<ellipse cx="24" cy="29" rx="4" ry="5.5" fill="${lit}"/><ellipse cx="40" cy="29" rx="4" ry="5.5" fill="${lit}"/><ellipse cx="32" cy="41" rx="3.5" ry="4.5" fill="${lit}"/>`,
+    golden:`<path d="M24 23l1.8 3.8 4.2.6-3 2.9.7 4.1-3.7-2-3.7 2 .7-4.1-3-2.9 4.2-.6z M40 23l1.8 3.8 4.2.6-3 2.9.7 4.1-3.7-2-3.7 2 .7-4.1-3-2.9 4.2-.6z" fill="${lit}"/><path d="M20 39c5 7 19 7 24 0" stroke="${lit}" stroke-width="3" fill="none" stroke-linecap="round"/>`,
+    cursed:`<path d="M17 29l11-2-1 3z M47 29l-11-2 1 3z" fill="${lit}"/><path d="M18 45l5-5 4 3 5-4 5 4 4-3 5 5-3-1-6 2-5-2-5 2-6-2z" fill="${lit}"/>`
+  };
+  return `<svg viewBox="0 0 64 64" aria-hidden="true"><defs>
+    <linearGradient id="pg${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a3"/><stop offset=".5" stop-color="#f3c55a"/><stop offset="1" stop-color="#b8862b"/></linearGradient>
+    <linearGradient id="ph${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff4fa0"/><stop offset=".25" stop-color="#ffd84f"/><stop offset=".5" stop-color="#4fffc1"/><stop offset=".75" stop-color="#4fb5ff"/><stop offset="1" stop-color="#c44fff"/></linearGradient></defs>
+    <g stroke="#fff" stroke-width="5" stroke-linejoin="round"><path d="M30 13c0-4 2-7 6-8" fill="none"/><ellipse cx="22" cy="35" rx="14" ry="19"/><ellipse cx="42" cy="35" rx="14" ry="19"/><ellipse cx="32" cy="35" rx="16" ry="20"/></g>
+    <path d="M30 14c0-4 2-7 6-8" stroke="#3f8f3a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="22" cy="35" rx="14" ry="19" fill="${rib}"/><ellipse cx="42" cy="35" rx="14" ry="19" fill="${rib}"/><ellipse cx="32" cy="35" rx="16" ry="20" fill="${body}"/>
+    <path d="M32 16v38" stroke="${rib}" stroke-width="1.5" opacity=".6"/>
+    ${faces[f]||faces.happy}
+    ${trim==="holo"?`<g class="stk-holo" opacity=".55" style="mix-blend-mode:color-dodge"><ellipse cx="32" cy="35" rx="26" ry="20" fill="url(#ph${n})"/></g>`:""}
+    ${trim==="gold"?`<ellipse cx="32" cy="35" rx="27" ry="20.5" fill="none" stroke="url(#pg${n})" stroke-width="3"/>`:""}
+    ${trim==="neon"?`<ellipse cx="32" cy="35" rx="27" ry="20.5" fill="none" stroke="#00e5ff" stroke-width="2.4"/>`:""}
+  </svg>`;
+}
+function stickerHTML(s){
+  if(!s||!stkFace(s.f))return "";
+  const F=stkFace(s.f);return `<span class="stk" data-t="${s.t||""}" title="${esc(F.name)} sticker${s.t?" · "+STK_TRIMS[s.t]:""}">${pumpkinSVG(s.f,s.t)}</span>`;
+}
+const stkLabel=s=>{const F=stkFace(s.f);return F?`${F.name}${s.t?" · "+STK_TRIMS[s.t]+" trim":""}`:"Sticker"};
+/* give fresh cards their stickers. lastBoost: each pack's last card gets that pack's bonus */
+function addStickers(cards,boostFor){for(const c of cards){const s=rollSticker(boostFor?boostFor(c):1);if(s)c.stk=s}}
+function renderEvent(){
+  const el=$("event");if(!el)return;const ev=eventNow();el.hidden=!ev;if(!ev)return;
+  const d=new Date(ev.end-1).toLocaleDateString([],{month:"short",day:"numeric"});
+  el.innerHTML=`<span class="ev-ic">${pumpkinSVG("happy","")}</span><div><b>${ev.name} event · ${ev.left} day${ev.left>1?"s":""} left</b><small>Haunted packs are here. Any card can drop a pumpkin sticker, only until ${d}. Rare faces and trims are out there.</small></div>`;
+}
+function stickerBookHTML(){
+  const mine=store.cards.filter(c=>c.stk&&/^halloween-/.test(c.stk.e)),ev=eventNow();
+  if(!mine.length&&!(ev&&ev.id==="halloween"))return "";
+  const have=new Map();for(const c of mine){const k=c.stk.f;have.set(k,(have.get(k)||0)+1)}
+  const trims=mine.filter(c=>c.stk.t).length;
+  return `<div class="sbox"><h3>Pumpkin stickers <small>${have.size} of ${STK_FACES.length} faces${trims?` · ${trims} trimmed`:""}</small></h3>
+    <div class="stkbook">${STK_FACES.map(f=>`<div class="stkslot${have.has(f.id)?" on":""}" style="--c:${TC[f.r]}">${pumpkinSVG(f.id,"")}<b>${have.has(f.id)?esc(f.name):"???"}</b><small>${have.has(f.id)?`×${have.get(f.id)}`:TIERS.find(t=>t.id===f.r).name}</small></div>`).join("")}</div>
+    <p class="msg">${ev&&ev.id==="halloween"?`Only during Halloween week. ${ev.left} day${ev.left>1?"s":""} left this year.`:"Back next Halloween."}</p></div>`;
+}
+
+/* =========================================================
+   Themes: Classic, or an event's colors. Moderators can pick any theme for themselves.
+   ========================================================= */
+const SKINS={auto:"Auto (events)",classic:"Classic",halloween:"Halloween",frost:"Frost",neon:"Neon Night",royal:"Royal Gold"};
+function applySkin(){
+  const ev=eventNow(),mod=typeof Cloud!=="undefined"&&Cloud.isMod;
+  const s=mod&&SET.skin&&SET.skin!=="auto"&&SKINS[SET.skin]?SET.skin:(ev&&ev.skin)||"classic";
+  document.documentElement.setAttribute("data-skin",s);
+}
+
+/* =========================================================
+   Moderators. The head moderator is the Google account below; they can make other drivers moderators.
+   Moderators can remove any Global post and block drivers from posting to Global.
+   The security rules check all of this on Google's servers, so a modified app can't fake it.
+   ========================================================= */
+const HEAD_EMAIL="ninjaboy8787@gmail.com";
+Object.assign(Cloud,{isHead:false,isMod:false,modList:[],banList:[],
+  async checkMod(){
+    const u=this.user;
+    this.isHead=!!(u&&u.email&&u.email.toLowerCase()===HEAD_EMAIL&&u.emailVerified!==false);
+    let m=false;if(u&&!this.isHead){try{m=(await this.db.collection("mods").doc(u.uid).get()).exists}catch(e){}}
+    this.isMod=this.isHead||m;applySkin();rerenderAccount();if(view==="vFeed")renderFeed();
+  },
+  async loadModLists(){
+    if(!this.isMod)return;
+    const bans=[];try{(await this.db.collection("bans").get()).forEach(d=>bans.push({id:d.id,...d.data()}))}catch(e){}
+    this.banList=bans;
+    if(this.isHead){const mods=[];try{(await this.db.collection("mods").get()).forEach(d=>mods.push({id:d.id,...d.data()}))}catch(e){}this.modList=mods}
+  },
+  async addMod(code){
+    if(!this.isHead)throw new Error("Only the head moderator can do that.");
+    code=String(code||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(code.length!==8)throw new Error("Friend codes are 8 letters and numbers.");
+    const s=await this.db.collection("codes").doc(code).get();if(!s.exists)throw new Error("No driver has that code.");
+    const {uid,name}=s.data();if(uid===this.user.uid)throw new Error("You're already the head moderator.");
+    await this.db.collection("mods").doc(uid).set({name:String(name||"Driver").slice(0,24),by:this.user.uid,at:Date.now()});
+    await this.loadModLists();return `${name} is now a moderator`;
+  },
+  async removeMod(uid){await this.db.collection("mods").doc(uid).delete();await this.loadModLists()},
+  async ban(uid,name){if(uid===this.user.uid)throw new Error("You can't block yourself.");
+    await this.db.collection("bans").doc(uid).set({name:String(name||"Driver").slice(0,24),by:this.user.uid,at:Date.now()});await this.loadModLists()},
+  async unban(uid){await this.db.collection("bans").doc(uid).delete();await this.loadModLists()},
+  async modRemove(p){await this.db.collection("posts").doc(p.id).delete();feedCache.global=null}
+});
+
+/* the moderator sheet on a Global post */
+function modSheet(p){
+  qrSheet(`<div class="qrcard"><h2>Moderate this post</h2><p class="msg">Posted by <b>${esc(p.name)}</b>. Removing it deletes it for everyone. Blocking stops ${esc(p.name)} from posting to Global until you unblock them in Settings › Moderator tools.</p></div>
+    <div class="btnrow"><button class="btn ghost danger" id="mRemove">Remove post</button><button class="btn danger-fill" id="mBan">Remove + block</button></div>`);
+  const run=async(ban)=>{try{await Cloud.modRemove(p);if(ban)await Cloud.ban(p.uid,p.name);closeQR();toast(ban?`Removed and blocked ${p.name}`:"Post removed");renderFeed(true)}catch(e){toast(e.message&&!e.code?e.message:friendly(e))}};
+  $("mRemove").onclick=()=>run(false);$("mBan").onclick=()=>run(true);
+}
+
+/* ---------- Settings › Moderator tools (and dev tools for the head moderator) ---------- */
+function modHTML(){
+  if(!Cloud.isMod)return "";
+  const head=Cloud.isHead,ev=eventNow(),opt=(v,l,cur)=>`<option value="${v}"${cur===v?" selected":""}>${l}</option>`;
+  return `<div class="sbox modbox"><h3>Moderator tools <small class="modbadge">${head?"Head moderator":"Moderator"}</small></h3>
+    <p class="msg">On the Global feed, tap <b>Mod</b> on any post to remove it or block the driver from posting to Global.</p>
+    <div class="flabel">Blocked from Global</div><div id="banList" class="flist"><p class="msg">Loading…</p></div>
+    ${head?`<div class="flabel">Moderators</div>
+      <div class="fadd"><input id="modCode" maxlength="9" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Their friend code"><button class="btn sm" id="modAdd">Make mod</button></div>
+      <div id="modList" class="flist"><p class="msg">Loading…</p></div>`:""}
+    <div class="flabel">Theme</div>
+    <div class="skinpick">${Object.entries(SKINS).map(([k,l])=>`<button data-skin="${k}" aria-pressed="${(SET.skin||"auto")===k}"><i class="sk-${k}"></i>${l}</button>`).join("")}</div>
+    ${head?`<details class="devbox"><summary>Dev tools &amp; cheats</summary>
+      <p class="msg">Cheats only change your own Dex. Test cards are marked DEV and can't be posted.</p>
+      <div class="flabel">XP and luck</div>
+      <div class="btnrow wrap3"><button class="btn sm" id="dvXp">+500 XP</button><button class="btn sm" id="dvLvl">Level up</button><button class="btn ghost sm" id="dvLuckOpen">Preview luck pack</button></div>
+      <div class="fadd"><select id="dvLuckR">${LUCK_CARDS.map(c=>`<option value="${c.id}">${LUCK_NAME[c.id]} luck card (+${c.p}%)</option>`).join("")}</select><button class="btn sm" id="dvLuck">Give</button></div>
+      <div class="flabel">Test card</div>
+      <div class="fadd"><select id="dvTier">${TIERS.map(t=>`<option value="${t.id}">${t.name}</option>`).join("")}</select><select id="dvFin"><option value="standard">No frame</option>${C.FINISH_KEYS.map(k=>`<option value="${k}">${FINISHES[k]}</option>`).join("")}</select></div>
+      <div class="fadd"><select id="dvStk"><option value="">No sticker</option>${STK_FACES.map(f=>`<option value="${f.id}">${f.name} sticker</option>`).join("")}</select><select id="dvTrim"><option value="">No trim</option>${Object.entries(STK_TRIMS).map(([k,l])=>`<option value="${k}">${l} trim</option>`).join("")}</select></div>
+      <button class="btn sm" id="dvCard">Add test card</button>
+      <div class="flabel">Packs</div>
+      <div class="fadd"><select id="dvN">${[1,2,3,5,7,10,13,23,30].map(n=>`<option value="${n}"${n===23?" selected":""}>${n} cards</option>`).join("")}</select><button class="btn sm" id="dvPack">Preview packs</button></div>
+      <div class="flabel">Limits</div>
+      <label class="sw"><span><b>No limits for me</b><small>Skip the daily scan limit and the Dex size cap on this account.</small></span><input type="checkbox" id="dvNoLim" ${SET.devNoLimit?"checked":""}><i></i></label>
+      <div class="btnrow"><button class="btn ghost sm" id="dvUse">Reset today's scans</button><button class="btn ghost sm" id="dvLock">Clear 24-hour locks</button></div>
+      <div class="flabel">Events</div>
+      <select id="dvEv">${opt("auto","Auto (by date)",SET.devEvent||"auto")}${EVENTS.map(e=>opt(e.id,e.name+" on",SET.devEvent)).join("")}${opt("none","No events",SET.devEvent)}</select>
+      <div class="flabel">Info</div>
+      <pre class="devinfo">${esc([`uid ${Cloud.user.uid}`,`email ${Cloud.user.email||""}`,`event ${ev?ev.key+" ("+ev.left+"d left)":"none"}`,`level ${levelOf(totalXP())} · xp ${totalXP()} · bank ${prog().bank}`,`luck ${fmtLuck()} · cards ${prog().luck.length} · unseen ${prog().unseen}`,`cards ${store.cards.length}/${capLimit()} · scans today ${usedToday()}/${dayLimit()}`,`locks ${pruneDel().length} · synced ${ago(Cloud.last)}`].join("\n"))}</pre>
+    </details>`:""}
+  </div>`;
+}
+async function wireMod(){
+  if(!Cloud.isMod)return;
+  const on=(id,f)=>{const el=$(id);if(el)el.onclick=f};
+  const run=async(f,ok)=>{try{const m=await f();toast(m||ok||"Done");return true}catch(e){toast(e.message&&!e.code?e.message:friendly(e));return false}};
+  document.querySelectorAll("#settingsBody [data-skin]").forEach(b=>b.onclick=()=>{SET.skin=b.dataset.skin;saveSet();applySkin();renderSettings()});
+  const lists=()=>{
+    const bl=$("banList");if(bl)bl.innerHTML=Cloud.banList.length?Cloud.banList.map(b=>`<div class="frow"><span class="avatar sm" style="--c:var(--decline)">${esc((b.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(b.name||"Driver")}</b><small>blocked ${new Date(b.at||0).toLocaleDateString()}</small></span><button class="mini ghost" data-unban="${esc(b.id)}">Unblock</button></div>`).join(""):`<p class="msg">Nobody is blocked.</p>`;
+    const ml=$("modList");if(ml)ml.innerHTML=Cloud.modList.length?Cloud.modList.map(m=>`<div class="frow"><span class="avatar sm" style="--c:var(--t-epic)">${esc((m.name||"D")[0].toUpperCase())}</span><span class="fn"><b>${esc(m.name||"Driver")}</b><small>moderator</small></span><button class="mini ghost" data-unmod="${esc(m.id)}">Remove</button></div>`).join(""):`<p class="msg">No other moderators yet. Add one with their friend code.</p>`;
+    document.querySelectorAll("#settingsBody [data-unban]").forEach(b=>b.onclick=()=>run(async()=>{await Cloud.unban(b.dataset.unban);lists();return "Unblocked"}));
+    document.querySelectorAll("#settingsBody [data-unmod]").forEach(b=>b.onclick=()=>run(async()=>{await Cloud.removeMod(b.dataset.unmod);lists();return "Moderator removed"}));
+  };
+  on("modAdd",()=>run(async()=>{const m=await Cloud.addMod($("modCode").value);$("modCode").value="";lists();return m}));
+  if(!Cloud.isHead){Cloud.loadModLists().then(lists).catch(()=>{});return}
+  /* dev tools and cheats */
+  const redo=msg=>{save();checkLevel();toast(msg);renderSettings()};
+  on("dvXp",()=>{prog().bank+=500;redo("+500 XP")});
+  on("dvLvl",()=>{const L=levelOf(totalXP());prog().bank+=lvlStart(L+1)-totalXP();redo("Level "+(L+1))});
+  on("dvLuck",()=>{const c=LUCK_CARDS.find(x=>x.id===$("dvLuckR").value)||LUCK_CARDS[0],p=prog();p.luck.push([1000+p.luck.length,c.id,c.p]);p.unseen=(+p.unseen||0)+1;save();renderGift();toast(`${LUCK_NAME[c.id]} luck card added. Open it from the Dex.`)});
+  on("dvLuckOpen",()=>{const c=rollLuckCard();openLuck([[levelOf(totalXP())+1,c.id,c.p]])});
+  on("dvCard",()=>{
+    const tier=$("dvTier").value,T=TIERS.find(t=>t.id===tier),score=Math.round((T.min+T.max)/2),nx=store.next;
+    const c=makeCard0({pay:10,minutes:20,miles:4,stops:2,store:"Test Card",platform:"DoorDash"},{roll:Math.random()});
+    Object.assign(c,{score,grade:score,tier,finish:$("dvFin").value,dev:1,store:"Test "+T.name});
+    if($("dvStk").value)c.stk={e:(eventNow()||{key:"halloween-"+new Date().getFullYear()}).key,f:$("dvStk").value,t:$("dvTrim").value};
+    store.cards.push(c);save();checkLevel();toast("Test card added");fresh.add(c.id);
+  });
+  on("dvPack",()=>previewPacks(+$("dvN").value||10));
+  const nl=$("dvNoLim");if(nl)nl.onchange=e=>{SET.devNoLimit=e.target.checked;saveSet()};
+  on("dvUse",()=>{store.use={d:dayKey(new Date()),n:0};redo("Today's scans reset")});
+  on("dvLock",()=>{store.del=[];redo("24-hour locks cleared")});
+  const evs=$("dvEv");if(evs)evs.onchange=e=>{SET.devEvent=e.target.value==="auto"?"":e.target.value;saveSet();applySkin();renderSettings();toast(eventNow()?eventNow().name+" event on":"No event")};
+  Cloud.loadModLists().then(lists).catch(()=>{});
+}
+/* open packs with made-up offers, nothing is saved */
+function previewPacks(n){
+  const keep=store.next,cards=[];
+  for(let i=0;i<n;i++){const pay=+(3+Math.random()*16).toFixed(2),min=10+Math.floor(Math.random()*30),mi=+(1+Math.random()*12).toFixed(1);
+    cards.push(makeCard0({pay,minutes:min,miles:mi,stops:2,store:"Preview "+(i+1),platform:"DoorDash"},{roll:Math.random()}))}
+  store.next=keep;cards.sort((a,b)=>a.score-b.score);cards.forEach((c,i)=>{c.no=i+1;c.dev=1});
+  const packs=[];let at=0;
+  for(const k of C.packSizes(n)){const cs=cards.slice(at,at+k);at+=k;const tier=C.packFor(k),last=cs[cs.length-1];
+    if(k>=2){last.boost=tier.boost;last.finish=C.rollFinish(last.tier,last.roll,tier.boost*luckMult())}packs.push({cards:cs,tier})}
+  addStickers(cards,c=>{const p=packs.find(x=>x.cards[x.cards.length-1]===c);return p?p.tier.boost:1});
+  openSheet();$("sheetCol").classList.add("wide");
+  showPack({packs,cards,extras:[],rewards:`<p class="msg" style="text-align:center">Preview only. Nothing was saved.</p>`},0);
 }
 
 
@@ -3667,7 +3971,7 @@ function movedBanner(){
 /* =========================================================
    Boot
    ========================================================= */
-applyScanMode();
+applyScanMode();applySkin();
 loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")}).then(()=>Cloud.init()).then(()=>{try{movedBanner()}catch(e){}});
 /* warm up the reader in the background so the first scan is faster */
 /* start loading the reader the moment Scan is touched, while the photo picker is still open */
