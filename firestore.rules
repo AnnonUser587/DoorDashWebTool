@@ -7,7 +7,7 @@ rules_version = '2';
 //   close friends  also your route maps, pickup addresses and screenshot fingerprints (cardLoc), while that setting is on
 //   location notes only you, never friends
 //   progress + lock list only you (users/{uid}/meta/state)
-//   feed posts     Friends posts: your friends. Global posts: every signed-in driver. Never maps or addresses.
+//   feed posts     Friends posts: your friends. Global posts and their comments: anyone. Never maps or addresses.
 //   moderators     can remove any Global post and block drivers from Global (head moderator: jackemoseley@gmail.com)
 //   anyone else    nothing, except looking up a single driver ID to send a request
 service cloud.firestore {
@@ -31,9 +31,12 @@ service cloud.firestore {
     function isMod() { return headMod() || (signedIn() && exists(/databases/$(db)/documents/mods/$(request.auth.uid))); }
     function blocked() { return exists(/databases/$(db)/documents/bans/$(request.auth.uid)); }
     function smallString(v, n) { return v is string && v.size() <= n; }
+    // no slurs in free text (the app checks more carefully; this stops the worst if someone skips the app)
+    function noSlur(v) { return !v.lower().matches('.*(n[i1!|]+gg+[aeu3r]|n[i1!|]+g+[e3]+r|f[a4@]+gg+[o0]+t|k[i1y]+ke|tr[a4@]+nn+[yi]|ch[i1]+nk|wetback|sandn[i1]g|towelhead|beaner|retard|kill yourself).*'); }
     function recent(t) { return t is int && t > request.time.toMillis() - 300000 && t < request.time.toMillis() + 300000; }
     function validPost(d, owner) {
-      return d.keys().hasOnly(['uid','name','level','caption','card','at'])
+      return d.keys().hasOnly(['uid','name','level','caption','card','at','title'])
+        && (!('title' in d) || smallString(d.title, 30))
         && d.uid == owner && smallString(d.name, 24) && d.level is int && recent(d.at)
         && d.card is map && d.card.size() <= 30 && smallString(d.card.store, 40)
         && d.card.get('verified', true) != false && d.card.get('dev', 0) == 0
@@ -65,7 +68,7 @@ service cloud.firestore {
         allow read: if isMe(uid) || (isFriendOf(uid) && sharesCards(uid)) || headMod();
         allow delete: if headMod();
         allow write: if isMe(uid)
-          && (request.resource == null || (smallString(request.resource.data.store, 40) && request.resource.data.size() <= 40
+          && (request.resource == null || (smallString(request.resource.data.store, 40) && request.resource.data.size() <= 46
               && request.resource.data.get('score', 0) is number && request.resource.data.get('score', 0) <= 100));
       }
 
@@ -84,7 +87,7 @@ service cloud.firestore {
       match /posts/{postId} {
         allow read: if isMe(uid) || (isFriendOf(uid) && sharesCards(uid));
         allow create: if isMe(uid) && validPost(request.resource.data, uid)
-          && smallString(request.resource.data.caption, 120);
+          && smallString(request.resource.data.caption, 120) && noSlur(request.resource.data.caption);
         allow delete: if isMe(uid) || headMod();
         allow update: if false;
       }
@@ -151,23 +154,65 @@ service cloud.firestore {
       }
     }
 
-    // global posts: every signed-in driver can read them; preset captions only, so there's no free text to moderate
+    // global (community) posts: anyone can look, even signed out. Posting and commenting need an account that isn't banned.
     match /posts/{postId} {
-      allow read: if signedIn();
+      allow read: if true;
       allow create: if signedIn() && !blocked() && postId.matches(request.auth.uid + '_.+')
         && validPost(request.resource.data, request.auth.uid)
-        && request.resource.data.caption in ['', 'Look at this pull!', 'Worth it?', 'Easy money', 'Not worth the gas', 'Lucky day', 'Rare find', 'Holo!', 'First Mythic!']
+        && smallString(request.resource.data.caption, 120) && noSlur(request.resource.data.caption)
         && postMatchesCard(request.resource.data.card, postId);
       // your own post, or any post when you're a moderator
       allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isMod());
-      allow update: if false;
+      allow update: if signedIn() && (
+        // a report: add yourself to the list once (3 different drivers hide the post until a moderator checks)
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rb'])
+          && request.resource.data.rb is list && request.resource.data.rb.size() <= 100
+          && request.resource.data.rb.hasAll(resource.data.get('rb', []))
+          && request.resource.data.rb.size() == resource.data.get('rb', []).size() + 1
+          && request.auth.uid in request.resource.data.rb)
+        // the comment counter goes up or down by one
+        || (!blocked() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cc'])
+          && request.resource.data.cc is int && request.resource.data.cc >= 0
+          && (request.resource.data.cc == resource.data.get('cc', 0) + 1 || request.resource.data.cc == resource.data.get('cc', 0) - 1))
+        // a moderator keeps a reported post up
+        || (isMod() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ok','rb'])));
+
+      match /comments/{cid} {
+        allow read: if true;
+        allow create: if signedIn() && !blocked() && cid.matches(request.auth.uid + '_[a-z0-9]{4,14}')
+          && request.resource.data.keys().hasOnly(['uid','name','title','text','at'])
+          && request.resource.data.uid == request.auth.uid && smallString(request.resource.data.name, 24)
+          && smallString(request.resource.data.text, 200) && request.resource.data.text.size() > 0
+          && noSlur(request.resource.data.text) && recent(request.resource.data.at)
+          && (!('title' in request.resource.data) || smallString(request.resource.data.title, 30))
+          && exists(/databases/$(db)/documents/posts/$(postId));
+        allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isMod()
+          || get(/databases/$(db)/documents/posts/$(postId)).data.uid == request.auth.uid);
+        allow update: if false;
+      }
+    }
+
+    // Legendary and Mythic pulls the driver chose to share in Discord. The bot posts them, then deletes them.
+    match /bigpulls/{id} {
+      allow create: if signedIn() && !blocked() && id.matches(request.auth.uid + '_.+')
+        && request.resource.data.keys().hasOnly(['uid','name','card','at'])
+        && request.resource.data.uid == request.auth.uid && smallString(request.resource.data.name, 24) && recent(request.resource.data.at)
+        && request.resource.data.card is map && request.resource.data.card.size() <= 12
+        && request.resource.data.card.tier in ['legendary','mythic'] && request.resource.data.card.id is string
+        && exists(/databases/$(db)/documents/users/$(request.auth.uid)/cards/$(request.resource.data.card.id))
+        && get(/databases/$(db)/documents/users/$(request.auth.uid)/cards/$(request.resource.data.card.id)).data.tier == request.resource.data.card.tier
+        && get(/databases/$(db)/documents/users/$(request.auth.uid)/cards/$(request.resource.data.card.id)).data.score == request.resource.data.card.score;
+      allow read, delete: if headMod();
     }
 
     // public profile: what any signed-in driver sees when they tap your name (level, prestige, achievements). No cards or email.
     match /pub/{uid} {
       allow read: if signedIn();
-      allow write: if isMe(uid) && request.resource.data.keys().hasOnly(['name','username','level','pr','ach','best','cards','updated'])
-        && smallString(request.resource.data.name, 24) && request.resource.data.ach is list && request.resource.data.ach.size() <= 100;
+      allow write: if isMe(uid) && request.resource.data.keys().hasOnly(['name','username','level','pr','ach','best','cards','updated','title','show','note'])
+        && smallString(request.resource.data.name, 24) && request.resource.data.ach is list && request.resource.data.ach.size() <= 100
+        && (!('title' in request.resource.data) || smallString(request.resource.data.title, 30))
+        && (!('show' in request.resource.data) || (request.resource.data.show is list && request.resource.data.show.size() <= 3))
+        && (!('note' in request.resource.data) || (smallString(request.resource.data.note, 80) && noSlur(request.resource.data.note)));
     }
     // the weekly community challenge counter: anyone signed in can add a little (one upload at a time), nobody can lower it
     match /community/{wk} {

@@ -30,6 +30,9 @@ function info(html) {
     embed = { title: `🔧 Small update (v${now.ver})`, url: "https://dasherdex.web.app", color: 0x4cc9a6,
       description: "Bug fixes and polish. Close DasherDex and open it again to get it.", timestamp: new Date().toISOString() };
   }
-  await L.discord("POST", `/channels/${ch.id}/messages`, { embeds: [embed], allowed_mentions: { parse: [] } });
+  // new versions ping the people who picked 🔔 Update pings
+  let ping = null;
+  if (!before || before.ver !== now.ver) { try { const roles = await L.discord("GET", `/guilds/${L.GUILD}/roles`); ping = roles.find(r => L.nounOf(r.name) === "update pings") || null; } catch (e) {} }
+  await L.discord("POST", `/channels/${ch.id}/messages`, { content: ping ? `<@&${ping.id}>` : undefined, embeds: [embed], allowed_mentions: { parse: [], roles: ping ? [ping.id] : [] } });
   console.log("Posted: " + embed.title);
 })().catch(e => { console.error(e.message); process.exit(1); });

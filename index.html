@@ -1147,6 +1147,108 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 .cback.frame-gold{background:linear-gradient(135deg,#7a5413,#f7d774,#b8862b,#ffe9a3)}
 .cback.frame-neon{border-color:#00e5ff;box-shadow:0 0 40px #00e5ff,0 0 80px -10px #ff3df2}
 .rv.teasing .packend{opacity:.25;transition:opacity .3s}
+/* ===== 1.8: bottom bar = Dex, Feed, Stats, Profile in one pill, and Scan on its own at the right ===== */
+.nav .navin{max-width:528px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.nav .row{flex:1;min-width:0;max-width:none;margin:0;grid-template-columns:repeat(4,minmax(0,1fr))}
+.nav .nscan{flex:none;width:66px;height:66px;margin:0;border-radius:24px;box-shadow:0 8px 24px -8px #000c}
+@media (max-width:350px){.nav .navin{gap:6px}.nav .nscan{width:58px;height:58px}}
+.nbadge.dot{min-width:10px;width:10px;height:10px;padding:0;top:8px;right:26%}
+.gearbtn{--c:var(--line)}
+.gearbtn svg.gear{width:21px;height:21px;color:var(--tx)}
+.ibact{display:flex;flex-direction:column;gap:6px;flex:none}
+.ibact .btn{width:auto;padding-inline:18px}
+.ibhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ibok{font:500 .78rem var(--f-body);color:var(--mut);letter-spacing:0;text-transform:none}
+#vProfile>section{margin-bottom:12px}
+/* offline notice */
+.notice.offl{border-color:color-mix(in srgb,var(--consider) 55%,var(--line));background:color-mix(in srgb,var(--consider) 10%,var(--panel))}
+/* rare pull flash (visual only) */
+.rareflash{--c:#fff;position:fixed;inset:0;z-index:90;pointer-events:none;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--c) 55%,transparent),transparent 70%);animation:rflash .85s ease-out forwards}
+@keyframes rflash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97)}
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+/* earnings goal */
+.egoal{display:flex;align-items:center;gap:14px}
+.ering{--p:0;flex:none;width:64px;height:64px;border-radius:99px;display:grid;place-items:center;background:conic-gradient(var(--accept) calc(var(--p)*1%),var(--track) 0)}
+.ering b{width:50px;height:50px;border-radius:99px;background:var(--panel);display:grid;place-items:center;font:700 .85rem var(--f-mono)}
+.egoal .et{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.egoal .et small{color:var(--mut);font-size:.78rem}.egoal .et b{font:700 1.25rem var(--f-display)}.egoal .et b span{font:500 .85rem var(--f-body);color:var(--mut)}
+.egoal .mini{flex:none}
+.tkbox .btn[aria-pressed="true"]{background:var(--accept);color:#08130c}
+/* areas */
+.zonebox h2 small,.panel h2 small{font:500 .72rem var(--f-body);color:var(--mut);margin-left:6px}
+.zrow{display:flex;gap:8px;align-items:center;margin:8px 0}
+.zrow input{flex:1;min-width:0;background:var(--bg2);border:1px solid var(--line);border-radius:12px;color:var(--tx);padding:10px 12px;font:500 1rem var(--f-body)}
+.zrow .mini{flex:none}
+/* titles */
+.ptitle{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0 2px}
+.ttag{--c:var(--t-rare);display:inline-block;font:700 .7rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:99px;color:var(--c);border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 12%,transparent)}
+.ttag.none{--c:var(--dim)}
+.ttlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.ttl{--c:var(--t-rare);position:relative;text-align:left;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));background:color-mix(in srgb,var(--c) 8%,var(--panel));border-radius:14px;padding:10px;color:var(--tx);cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.ttl b{font:700 .85rem var(--f-display);color:var(--c)}.ttl small{color:var(--mut);font-size:.72rem;line-height:1.3}
+.ttl.locked{opacity:.45;cursor:default;--c:var(--dim)}.ttl.on{box-shadow:0 0 0 2px var(--c)}
+.ttok{position:absolute;top:8px;right:8px;font:700 .58rem var(--f-mono);color:var(--c)}
+/* weekly boss */
+.boss{--c:#fff;border-color:color-mix(in srgb,var(--c) 45%,var(--line));background:linear-gradient(150deg,color-mix(in srgb,var(--c) 14%,var(--panel)),var(--panel) 60%)}
+.bossrow{display:flex;gap:14px;align-items:center}
+.bosst{display:flex;flex-direction:column;gap:2px;min-width:0}.bosst small{font:600 .68rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.bosst b{font:700 1.2rem var(--f-display)}.bosst span{color:var(--mut);font-size:.88rem}
+.bossb{--c:#fff;position:relative;flex:none;width:58px;height:66px;display:grid;place-items:center;filter:drop-shadow(0 4px 12px color-mix(in srgb,var(--c) 45%,transparent))}
+.bossb svg{position:absolute;inset:0;width:100%;height:100%}
+.bossb i{position:relative;font-style:normal;font-size:1.5rem;margin-top:-4px}
+.bossb em{position:absolute;right:-4px;bottom:-2px;font:700 .62rem var(--f-mono);font-style:normal;background:var(--bg);border:1px solid var(--c);color:var(--tx);border-radius:99px;padding:2px 5px}
+.bossb.lock{filter:grayscale(1) brightness(.55);opacity:.7}
+.boss.done .bossrow .bossb{animation:bosspulse 2.4s ease-in-out infinite}
+@keyframes bosspulse{50%{filter:drop-shadow(0 0 16px var(--c))}}
+.bossall{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.bossall .bossb{width:38px;height:44px}.bossall .bossb i{font-size:1rem}
+.bossn{display:block;color:var(--mut);font-size:.75rem;margin-top:6px}
+/* showcase */
+.show3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.show3 .card{cursor:pointer}
+.shownote{margin:10px 2px 4px;font:italic 500 .95rem var(--f-body);color:var(--silver)}
+.pickgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;max-height:60vh;overflow:auto;padding:4px}
+.pickwrap{position:relative;border-radius:14px;cursor:pointer;transition:transform .12s}
+.pickwrap.on{outline:3px solid var(--accept);outline-offset:2px}
+.pkn{position:absolute;top:-6px;left:-6px;width:24px;height:24px;border-radius:99px;background:var(--accept);color:#08130c;display:grid;place-items:center;font:800 .8rem var(--f-body);z-index:3}
+/* heat map */
+.hmseg{margin-bottom:10px}
+.hm{display:grid;grid-template-columns:34px repeat(7,minmax(0,1fr));gap:3px;font:600 .6rem var(--f-mono)}
+.hmh{text-align:center;color:var(--mut);font-size:.52rem;padding-bottom:2px;white-space:nowrap;overflow:hidden}
+.hmd{color:var(--mut);align-self:center}
+.hmc{--t:0;border-radius:6px;min-height:30px;display:grid;place-items:center;color:#fff;font-size:.56rem;background:color-mix(in srgb,#3ddc84 calc(var(--t)*100%),#7a2b2b);text-shadow:0 1px 2px #0009;overflow:hidden}
+.hmc.empty{background:var(--track)}
+.hmc.best{outline:2px solid #fff;outline-offset:-2px}
+/* recycling */
+.rcbig{font-size:3rem;text-align:center;margin:10px 0;animation:pop .6s cubic-bezier(.2,.9,.25,1.2)}
+.rcline{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:var(--bg2);margin:8px 0}
+.delbox .btn+.btn{margin-top:8px}
+.ptitle .mini{background:var(--raise);border:1px solid var(--raise-line);color:var(--tx);border-radius:99px;padding:6px 10px;font:600 .74rem var(--f-body);width:auto;min-height:0}
+.sortrow{display:flex;align-items:center;gap:6px;margin:10px 2px 0;font:600 .72rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.sortrow span{margin-right:4px}
+.sortrow button{border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:99px;padding:7px 12px;font:600 .8rem var(--f-body);letter-spacing:0;text-transform:none;cursor:pointer}
+.sortrow button[aria-pressed="true"]{background:var(--raise);color:var(--tx);border-color:var(--raise-line)}
+.zrow .mini{background:var(--raise);color:var(--tx);border:1px solid var(--raise-line)}
+/* pull to refresh (iPhone only) */
+.ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:40;width:40px;height:40px;margin-top:-40px;border-radius:99px;background:var(--raise);border:1px solid var(--raise-line);display:grid;place-items:center;color:var(--tx);font:700 1.2rem var(--f-body);opacity:0;pointer-events:none;box-shadow:0 6px 18px #0008}
+.ptr.ready{background:var(--tx);color:var(--bg)}
+.ptr.spin span{animation:ptrs .7s linear infinite}@keyframes ptrs{to{transform:rotate(360deg)}}
+@media (pointer:coarse){.feedtop{display:none}}
+/* comments and held posts */
+.pfoot{display:flex;gap:8px;margin-top:8px}
+.cmbtn{border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:99px;padding:8px 14px;font:600 .85rem var(--f-body);cursor:pointer}
+.cm{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.cmb{flex:1;min-width:0}.cmb b{font-size:.88rem}.cmb small{color:var(--mut);font-weight:500}.cmb p{margin:3px 0 0;font-size:.95rem;line-height:1.4;word-wrap:break-word}
+.cmb .ttag{font-size:.56rem;padding:3px 6px;vertical-align:1px}
+.cmin{display:flex;gap:8px;align-items:flex-end;margin-top:6px}
+.cmin textarea{flex:1;min-width:0;background:var(--bg2);border:1px solid var(--line);border-radius:14px;color:var(--tx);padding:10px 12px;font:500 1rem var(--f-body);resize:none;min-height:44px}
+.cmin .btn{width:auto;flex:none;padding-inline:16px}
+.cmerr{color:var(--decline);min-height:0}
+.post.held{opacity:.75;outline:1px dashed var(--decline)}
+.heldbar{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.8rem;color:var(--decline);margin-bottom:8px}
+.post .pn small .ttag{font-size:.55rem;padding:3px 6px;margin-right:2px}
+.notice.signout .btn{width:auto;flex:none;padding-inline:16px}
 /* ===== Desktop: only for computers with a mouse and a wide window. iPhones (touch) never match this. ===== */
 @media (min-width:1000px) and (hover:hover) and (pointer:fine){
   body{padding-left:232px}
@@ -1156,12 +1258,16 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
   /* the bottom bar becomes a side bar */
   .nav{left:0;top:0;bottom:0;right:auto;width:232px;padding:20px 14px;background:var(--bg2);border-right:1px solid var(--line);display:flex}
   .nav .row{display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%;max-width:none;margin:0;padding:0;background:none;border:0;border-radius:0;backdrop-filter:none;-webkit-backdrop-filter:none}
-  .nav .row::before{content:"DasherDex";display:block;font:700 1.4rem var(--f-display);padding:4px 12px 18px;color:var(--tx)}
+  .nav .navin{display:flex;flex-direction:column;align-items:stretch;gap:0;width:100%;max-width:none;margin:0}
+  .nav .navin::before{content:"DasherDex";display:block;font:700 1.4rem var(--f-display);padding:4px 12px 18px;color:var(--tx);order:-2}
   .ntab{flex-direction:row;justify-content:flex-start;gap:14px;min-height:46px;padding:0 14px;font-size:.95rem;border-radius:14px}
   .ntab:hover{background:var(--raise);color:var(--tx)}
-  .nav .row::before{order:-2}
   .cdays{max-width:560px}
-  .nscan{order:-1;flex-direction:row;width:100%;height:52px;margin:0 0 14px;gap:10px;font-size:1rem;border-radius:16px}
+  .nav .nscan{order:-1;flex-direction:row;width:100%;height:52px;margin:0 0 14px;gap:10px;font-size:1rem;border-radius:16px;box-shadow:none}
+  /* the side bar stays on a card's page too, so you can jump straight to another tab */
+  .nav[hidden]{display:flex!important}
+  /* cards: corners and edges sized for the card, not the whole window (they turned into circles on wide screens) */
+  .card{border-radius:22px;padding:9px}
   .nscan:hover{filter:brightness(.92)}
   .toast{bottom:28px;left:calc(50% + 116px)}
   /* more room for cards and stats */
@@ -1173,7 +1279,7 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
   .posts{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;align-items:start}
   .stkbook{grid-template-columns:repeat(6,minmax(0,1fr))}
   /* Dex top: challenges and rewards side by side */
-  #vDex .quests,#vDex .gamebar{max-width:none}
+  #vProfile .quests,#vProfile .gamebar{max-width:none}
   /* a card's page: the card on the left, the details on the right */
   .detail{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:18px 28px;align-items:start}
   .detail>*{grid-column:2}
@@ -1201,24 +1307,20 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 <div class="wrap" id="vDex">
   <header class="top appbar">
     <div class="logo">
-      <img class="mark" alt="" src="data:image/png;base64,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">
+      <img class="mark" alt="" src="data:image/png;base64,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">
       DasherDex
     </div>
     <div class="hright">
       <div class="streak" id="streakBox" hidden title="Days in a row with a scan"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1 3.2-.6 5-2 6.6C8.5 10.3 7 12 7 14.6 7 18 9.3 21 12.5 21S18 18.4 18 15.2c0-2.4-1.2-4-2.3-5.3-.3 1.4-1 2.4-2.1 2.9.6-3.6-.3-7.6-1.6-10.8z"/></svg><b id="streakN">0</b></div>
       <div class="count" id="countBox" hidden><b id="countN">0</b>in your Dex</div>
-      <button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button>
+      <button class="pfbtn gearbtn" data-set aria-label="Settings"><svg class="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </div>
   </header>
   <section class="moved" id="moved" hidden></section>
-  <section class="notice" id="inboxNote" hidden></section>
   <section class="notice" id="notice" hidden></section>
   <section class="notice nudge" id="nudge" hidden></section>
   <section class="evbar" id="event" hidden></section>
-  <section class="gift" id="gift" hidden></section>
-  <section class="quests" id="quests" aria-label="Daily quests"></section>
-  <section class="gamebar" id="gamebar" hidden></section>
-  <section class="goal" id="goal" aria-label="Daily goal" hidden></section>
+  <section class="notice offl" id="offline" hidden></section>
 
   <section class="empty" id="empty">
     <div class="fan" aria-hidden="true"><span></span><span></span><span>$</span></div>
@@ -1233,6 +1335,7 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
     <div class="today" id="todayStrip"></div>
     <div class="chips" id="filters" role="toolbar" aria-label="Filter cards"></div>
     <div class="seg seg4 groupby" id="groupBy" role="group" aria-label="Group cards by"></div>
+    <div class="sortrow" id="sortBy" role="group" aria-label="Sort cards"></div>
     <div id="days"></div>
   </section>
 </div>
@@ -1240,7 +1343,7 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 <!-- ===== STATS ===== -->
 <div class="wrap" id="vStats" hidden>
   <div class="appbar">
-    <div class="pagehead"><h1>Stats</h1><span class="phr"><span id="statSpan"></span><button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button></span></div>
+    <div class="pagehead"><h1>Stats</h1><span class="phr"><span id="statSpan"></span><button class="pfbtn gearbtn" data-set aria-label="Settings"><svg class="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></div>
     <div class="seg" id="range" role="group" aria-label="Time range">
       <button data-r="today" aria-pressed="false">Today</button><button data-r="7" aria-pressed="true">7 days</button><button data-r="30" aria-pressed="false">30 days</button><button data-r="all" aria-pressed="false">All</button>
     </div>
@@ -1250,19 +1353,26 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 
 <!-- ===== PROFILE ===== -->
 <div class="wrap" id="vProfile" hidden>
-  <div class="appbar"><div class="pagehead"><span class="phl"><button class="close" id="profBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h1>Profile</h1></span><span id="profSince"></span></div></div>
+  <div class="appbar"><div class="pagehead"><h1>Profile</h1><span class="phr"><span id="profSince"></span><button class="pfbtn gearbtn" data-set aria-label="Settings"><svg class="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></div></div>
+  <div id="profHero"></div>
+  <section class="notice" id="inboxNote" hidden></section>
+  <section class="gift" id="gift" hidden></section>
+  <section class="egoal" id="egoal" hidden></section>
+  <section class="quests" id="quests" aria-label="Daily quests"></section>
+  <section class="goal" id="goal" aria-label="Daily goal" hidden></section>
+  <section class="gamebar" id="gamebar" hidden></section>
   <div id="profileBody"></div>
 </div>
 
 <!-- ===== SETTINGS ===== -->
 <div class="wrap" id="vSettings" hidden>
-  <div class="appbar"><div class="pagehead"><h1>Settings</h1><span class="phr"><span>Saved on this device</span><button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button></span></div></div>
+  <div class="appbar"><div class="pagehead"><span class="phl"><button class="close" id="setBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><h1>Settings</h1></span><span class="phr"><span>Saved on this device</span></span></div></div>
   <div id="settingsBody"></div>
 </div>
 
 <!-- ===== FEED ===== -->
 <div class="wrap" id="vFeed" hidden>
-  <div class="appbar"><div class="pagehead"><h1>Feed</h1><span class="phr"><span id="feedSub"></span><button class="pfbtn" data-prof aria-label="Profile"><span>D</span></button></span></div>
+  <div class="appbar"><div class="pagehead"><h1>Feed</h1><span class="phr"><span id="feedSub"></span><button class="pfbtn gearbtn" data-set aria-label="Settings"><svg class="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></div>
     <div class="seg seg2" id="feedTabs" role="tablist" aria-label="Feed"><button data-a="friends" aria-pressed="true">Friends</button><button data-a="global" aria-pressed="false">Global</button></div></div>
   <div id="feedBody"></div>
 </div>
@@ -1274,12 +1384,13 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 <div class="wrap" id="vDetail" hidden><div class="detail" id="detail"></div></div>
 
 <!-- ===== bottom nav ===== -->
-<nav class="nav" id="nav" aria-label="Main"><div class="row">
+<nav class="nav" id="nav" aria-label="Main"><div class="navin"><div class="row">
   <button class="ntab" data-v="vDex" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="8" height="11" rx="2"/><rect x="13" y="4" width="8" height="11" rx="2"/><path d="M5 19h14"/></svg>Dex</button>
   <button class="ntab" data-v="vFeed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>Feed</button>
-  <label class="nscan" for="file" role="button" aria-label="Scan offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg><span>Scan</span></label>
   <button class="ntab" data-v="vStats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Stats</button>
-  <button class="ntab" data-v="vSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
+  <button class="ntab" data-v="vProfile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>Profile</button>
+</div>
+  <label class="nscan" for="file" role="button" aria-label="Scan offers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M7 12h10"/></svg><span>Scan</span></label>
 </div></nav>
 
 <!-- ===== scan result / pack sheet ===== -->
@@ -1308,6 +1419,7 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
       .replace(/[“”]/g, '"')
       .replace(/(^|\s)[S§](?=\d{1,3}[.,]\d{2}\b)/g, "$1$")  // S9.05 -> $9.05
       .replace(/\$\s+(?=\d)/g, "$")                          // "$ 9.05"
+      .replace(/(^|\s)[S§$](\d)\s(\d[.,]\d{2})(?=\s*incl)/gi, "$1$$$2$3")   // "S1 6.95 incl" -> "$16.95 incl"
       .replace(/(\d),(\d{2})\b/g, "$1.$2");                  // 9,05 -> 9.05
   }
 
@@ -1390,16 +1502,29 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
     // Stores: every name line after the trip summary until the dropoff line. Stacked orders list two or more.
     const ti = lines.findIndex(l => l === tripLine);
     const stores = [];
+    // alcohol orders: ID checks and lines at the register (graded a little lower)
+    out.alc = /alcohol|age\s*21\s*\+?|\bID\s*check|\bID\s*required/i.test(text);
+    const isAddr = l => /^\W{0,3}\d{2,6}\s+[A-Za-z]/.test(l || "") || /\b\d{5}\b/.test(l || "") || /,\s*[A-Z]{2}\b/.test(l || "");
+    const isChip = c => /^(red\s*card|shop\s*(&|and)?\s*pay|shop for items|priority|exclusive|order ready|large order|catering|pick\s*up in store|heavy|fragile)\b/i.test(c)
+      || /^busy\b\s*(area|now|zone)?\s*$/i.test(c) || /alcohol|age\s*21|\bID\s*check|\bID\s*required|\bverify\s*age/i.test(c);
     if (ti >= 0) {
-      for (const l of lines.slice(ti + 1, ti + 10)) {
+      const after = lines.slice(ti + 1, ti + 12);
+      for (let j = 0; j < after.length; j++) {
+        const l = after[j];
         if (/customer\s*drop|multiple\s*drop|^\W*accept\b/i.test(l)) break;
         const clean = cleanStore(l);
-        if (!clean || /^\d+\s/.test(clean) || /customer|drop\s*-?\s*off|pick\s*-?\s*up|view items|accept|decline|incl|total/i.test(clean)) continue;
-        // chips DoorDash puts between the trip line and the store ("Red Card", "Shop & pay", "Priority")
-        if (/^(red\s*card|shop\s*(&|and)?\s*pay|shop for items|priority|busy|exclusive|order ready)/i.test(clean)) continue;
+        if (!clean || /^\d+\s/.test(clean) || /customer|drop\s*-?\s*off|pick\s*-?\s*up|view items|\baccept\b|\bdecline\b|\bincl\b/i.test(clean) || /^\W*total\b|\btotal\s*(pay|earn|\$|\d)|\)\s*total\b/i.test(l)) continue;
+        // chips DoorDash puts between the trip line and the store ("Red Card", "Alcohol, age 21+ · ID check", "Busy")
+        if (isChip(clean)) continue;
         // the rest of a wrapped address ("Fulshear, 77441 TX")
-        if (/\b\d{5}\b/.test(clean) || /,\s*[A-Z]{2}\b/.test(clean)) continue;
-        if (clean.length >= 2) stores.push(clean.slice(0, 40));
+        if (isAddr(clean)) continue;
+        // bits of icons or buttons read as letters ("ms:", "|")
+        if ((clean.match(/[A-Za-z]/g) || []).length < 3 || /:\s*$/.test(clean)) continue;
+        let name = clean;
+        // a long name wrapped onto a second line, right before its address ("Busy Boy's ... Mediterranean" / "Grill & Cafe")
+        const nx = after[j + 1], nx2 = after[j + 2];
+        if (nx && !isAddr(nx) && isAddr(nx2) && !isChip(cleanStore(nx)) && !/customer|drop|accept/i.test(nx) && (cleanStore(nx).match(/[A-Za-z]/g) || []).length >= 3) { const two = name + " " + cleanStore(nx); if (two.length <= 40) name = two; j++; }
+        stores.push(name.slice(0, 40).trim());
         if (stores.length >= 3) break;
       }
     }
@@ -1502,7 +1627,8 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
   const SCORE_VERSION = 4;
   const PPH_CURVE = [[8, 0], [15, 25], [20, 50], [25, 66], [30, 78], [40, 90], [60, 100]];
   const PPM_CURVE = [[0.5, 0], [1.0, 25], [1.5, 50], [2.0, 65], [2.5, 77], [3.5, 90], [5, 100]];
-  const W_PPH = 0.55, W_PPM = 0.45;
+  // 1.8: pay per mile counts as much as pay per hour (it was 45/55)
+  const W_PPH = 0.5, W_PPM = 0.5;
 
   // v4: eight rarity tiers. The grade gates in scoreOffer still decide Trash / Common / Rare / Epic / Legendary
   // territory; each gate is split so there's always a next tier to chase. Mythic is the very top of Legendary.
@@ -1553,7 +1679,9 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
 
     const trash = pph < 15 || ppm < 1 || miles >= 25;
     const rare = pph >= 19 && ppm >= 1.25;
-    const epic = pph >= 25 && ppm >= 1.75 && miles <= 10 && pay >= 7;
+    // 1.8: $2+/mi with a decent hourly rate is Epic territory too
+    const bigMile = ppm >= 2 && pph >= 20;
+    const epic = (pph >= 25 && ppm >= 1.75 || bigMile) && miles <= 10 && pay >= 7;
     const legendRates = pph >= 30 && ppm >= 2.5 && stops <= 2 && miles <= 8;
     const legend = legendRates && pay >= 10;
 
@@ -1567,12 +1695,17 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
       s = 91 + 9 * t * size;
     } else if (epic) {
       s = Math.min(Math.max(s, 76), 90);
+      // the more it pays per mile past $2, the higher in Epic (about 83 at $2.90/mi)
+      if (bigMile) s = Math.min(90, Math.max(s, 76 + Math.min(12, (ppm - 2) * 8)));
       if (legendRates) reasons.push(`Legendary needs a $10+ payout`);
     } else if (rare) s = Math.min(Math.max(s, 51), 75);
     else s = Math.min(Math.max(s, 26), 50);
 
     let pen = 0;
-    if (stops >= 3) { const p = Math.min(21, (stops - 2) * 7); pen += p; reasons.push(`${stops} stops (−${p})`); }
+    // 1.8: multi-stop orders take longer than they look (two waits, two drop-offs)
+    if (stops >= 3) { const p = stops === 3 ? 10 : stops === 4 ? 15 : 18; pen += p; reasons.push(`${stops} stops (−${p})`); }
+    // 1.8: alcohol means ID checks, lines and the chance of a return trip
+    if (o.alc) { pen += 10; reasons.push(`Alcohol / ID check (−10)`); }
     if (pay < 5) { pen += 10; reasons.push(`Under $5 total (−10)`); }
     if (miles > 12) { const p = Math.min(15, Math.round((miles - 12) * 1.5)); pen += p; reasons.push(`${miles} mi trip (−${p})`); }
     s -= pen;
@@ -1584,8 +1717,12 @@ html[data-skin="royal"] .ntab[aria-current="page"]{color:#f3c55a}
     else if (ppm >= 1.5 && !trash) reasons.push(`$${ppm.toFixed(2)}/mi clears $1.50`);
     else if (ppm >= 1 && ppm < 1.3 && !trash) reasons.push(`$${ppm.toFixed(2)}/mi is thin`);
 
+    // 1.8: under $18/hr or $1.20/mi is never worth a "Consider"
+    const multiBad = stops >= 3 && score < 45;
+    const hard = pph < 18 || ppm < 1.2 || multiBad;
+    if (hard && !trash) reasons.push(pph < 18 ? `Under $18/hr: Decline` : ppm < 1.2 ? `Under $1.20/mi: Decline` : `${stops} stops for this pay: Decline`);
     return {
-      score, tier: tierFor(score), pph, ppm,
+      score, tier: tierFor(score), pph, ppm, hard,
       parts: { pph: Math.round(sPPH), ppm: Math.round(sPPM), base: Math.round(base), penalty: pen },
       reasons
     };
@@ -1886,26 +2023,27 @@ const DEX_JUNK=/\$\d|single order|per hour|per mile|payout|\bclass\b/i;
 const luckSeed=c=>c.sha?parseInt(c.sha.slice(8,16),16)/4294967296:(((+c.roll||0)*7.7713+0.1234)%1);
 function makeCard(o,ex){const c=makeCard0(o,ex);if(typeof rngCal==="function"&&rngCal())calCard(c);applyTrust(c);remember(c);return c}
 function makeCard0(o,ex){
-  const rc=ex.rc||0,g=C.scoreOffer({...o,extraMin:rc?C.RED_CARD_MIN:0}),roll=ex.roll??Math.random(),boost=(ex.boost||1)*luckMult()*(typeof frameMult==="function"?frameMult():1);
+  const rc=ex.rc||0,g=C.scoreOffer({...o,alc:o.alc?1:0,extraMin:rc?C.RED_CARD_MIN:0}),roll=ex.roll??Math.random(),boost=(ex.boost||1)*luckMult()*(typeof frameMult==="function"?frameMult():1);
   const luck=C.luckFor(luckSeed({sha:ex.sha,roll}),luckMult()),score=C.applyLuck(g.score,luck),r={...g,score,tier:C.tierFor(score)};
   return {id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),no:store.next++,
     store:o.store||"Mystery order",platform:o.platform||"",pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,
     stores:Array.isArray(o.stores)&&o.stores.length>1?o.stores.slice(0,3):undefined,dropoffs:o.dropoffs||undefined,
     addr:SET.addr&&o.addr?o.addr:undefined,city:SET.addr&&o.city?o.city:undefined,upd:realNow(),
     ocr:ex.ocr||undefined,verified:ex.ocr?matchesOCR(ex.ocr,o):(ex.manual?false:true),
-    rc:rc||undefined,vb:ex.vb||myBar().bar,
+    rc:rc||undefined,vb:ex.vb||myBar().bar,alc:o.alc?1:undefined,dv:g.hard?1:undefined,
     grade:g.score,luck,score:r.score,tier:r.tier.id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts,roll,boost,finish:C.rollFinish(r.tier.id,roll,boost),
     art:ex.art||"",sha:ex.sha||"",ph:ex.ph||"",ts:(ex.ts||new Date()).toISOString?(ex.ts||new Date()).toISOString():ex.ts,added:today().toISOString(),pack:ex.pack||""};
 }
 /* the finish is decided once, when the card is pulled: fixing numbers later re-grades the card but never re-rolls it */
-function rescore(c,o){const r=C.scoreOffer({...o,extraMin:c.rc?C.RED_CARD_MIN:0});if(c.luck==null)c.luck=C.luckFor(luckSeed(c));const score=C.applyLuck(r.score,c.luck);
+function rescore(c,o){const r=C.scoreOffer({...o,alc:c.alc?1:0,extraMin:c.rc?C.RED_CARD_MIN:0});if(r.hard)c.dv=1;else delete c.dv;if(c.luck==null)c.luck=C.luckFor(luckSeed(c));const score=C.applyLuck(r.score,c.luck);
   if(c.ocr)c.verified=matchesOCR(c.ocr,o)&&!DEX_JUNK.test(o.store||c.store);
   else if(c.verified!==false&&(Math.abs(+o.pay-c.pay)>0.006||Math.round(+o.minutes)!==Math.round(c.minutes)||Math.abs(+o.miles-c.miles)>0.06||(+o.stops||2)<(c.stops||2)))c.verified=false;
   c.upd=realNow();
   Object.assign(c,{pay:+o.pay,minutes:+o.minutes,miles:+o.miles,stops:+o.stops||2,store:o.store||c.store},o.ts?{ts:o.ts}:{},{grade:r.score,score,tier:C.tierFor(score).id,pph:r.pph,ppm:r.ppm,reasons:r.reasons,parts:r.parts});applyTrust(c)}
 /* what to do with the offer comes from its grade; luck only moves the rarity */
 const gradeOf=c=>c.grade??c.score;
-const vOf=c=>C.verdictFor(gradeOf(c),c.vb||51);
+/* 1.8: offers under $18/hr or $1.20/mi are always a Decline (dv is set when the card is graded, so older cards don't change) */
+const vOf=c=>{const v=C.verdictFor(gradeOf(c),c.vb||51);return c.dv&&v.id!=="decline"?C.verdictFor(0):v};
 const isAccept=c=>vOf(c).id==="accept";
 const special=c=>c.finish&&c.finish!=="standard";
 /* store location key (chain + street address) when the address was saved */
@@ -1966,7 +2104,7 @@ const agg=cs=>{const pay=cs.reduce((a,c)=>a+c.pay,0),min=cs.reduce((a,c)=>a+c.mi
 /* =========================================================
    Dex page
    ========================================================= */
-let filter="all",fresh=new Set();const collapsed=new Map();
+let filter="all",filterInit=false,fresh=new Set();const collapsed=new Map();
 function renderLadder(){
   const pct=t=>{const v=Object.values(FINISH_ODDS[t]).reduce((a,b)=>a+b,0)*100;return v<1?v.toFixed(1):Math.round(v)};
   $("ladder").innerHTML=`<div class="lhead"><span>Rarity</span><span>Special finish odds</span></div>`+
@@ -1987,20 +2125,22 @@ function renderNudge(){
 }
 function renderDex(){
   try{movedBanner()}catch(e){}
-  renderGift();renderEvent();renderNotice();try{renderInboxBadge()}catch(e){}try{renderNudge()}catch(e){}
+  renderEvent();renderNotice();try{renderInboxBadge()}catch(e){}try{renderNudge()}catch(e){}try{renderOffline()}catch(e){}
   const cs=store.cards;
   $("empty").hidden=!!cs.length;$("col").hidden=!cs.length;$("countBox").hidden=!cs.length;
   if(!cs.length){renderLadder();return}
   $("countN").textContent=cs.length;
   const sk=streakNow();$("streakBox").hidden=!sk;$("streakN").textContent=sk;
-  renderQuests();renderGoal();try{renderGameBar()}catch(e){console.warn(e)}
   $("groupBy").innerHTML=[["day","Days"],["shift","Shifts"],["loc","Locations"],["fav","★ Favorites"]].map(([v,l])=>`<button data-g="${v}" aria-pressed="${(SET.group||"day")===v}">${l}</button>`).join("");
+  $("sortBy").innerHTML=`<span>Sort</span><button data-s="rare" aria-pressed="${(SET.sort||"rare")==="rare"}">Rarest first</button><button data-s="new" aria-pressed="${SET.sort==="new"}">Newest first</button>`;
   const td=agg(cs.filter(c=>dayKey(c.ts)===dayKey(today())));
   $("todayStrip").innerHTML=td.n?`<span>Today <b>${td.n}</b> offer${td.n>1?"s":""} · <b>$${td.pph.toFixed(0)}</b>/hr avg</span><span class="vdots"><span class="vd" style="--c:var(--accept)"><i></i>${td.good}</span><span class="vd" style="--c:var(--consider)"><i></i>${td.mid}</span><span class="vd" style="--c:var(--decline)"><i></i>${td.bad}</span></span>`
     :`<span>No offers scanned today yet.</span><span class="vdots"><span class="vd" style="--c:var(--mut)">${cs.length} total</span></span>`;
   const spec=cs.filter(special).length;
   const opts=[{id:"all",name:"All",n:cs.length},{id:"special",name:"Specials",n:spec,holo:1},...TIERS.map(t=>({id:t.id,name:t.name,n:cs.filter(c=>c.tier===t.id).length,c:TC[t.id]}))];
+  if(!filterInit){filterInit=true;filter=SET.filter||"all"}
   if(filter!=="all"&&!opts.find(o=>o.id===filter&&o.n))filter="all";
+  const srt=SET.sort==="new"?"new":"rare";
   $("filters").innerHTML=opts.filter(o=>o.id==="all"||o.n).map(o=>`<button class="fchip" data-f="${o.id}" aria-pressed="${filter===o.id}" style="--c:${o.c||"var(--mut)"}">${o.id==="all"?"":o.holo?'<i class="holo"></i>':"<i></i>"}${o.name} <span style="opacity:.6">${o.n}</span></button>`).join("");
   const shown=cs.filter(c=>(filter==="all"||(filter==="special"?special(c):c.tier===filter))&&(SET.group!=="fav"||c.fav));
   /* group by day (default), by shift, or by store location */
@@ -2015,7 +2155,8 @@ function renderDex(){
     for(const [k,list] of m){const [n1,n2]=dayName(k);G.push({k,n1,n2,list})}}
   let i=0,html="";
   for(const {k,n1,n2,list} of G){
-    list.sort((x,y)=>RANK[y.tier]-RANK[x.tier]||(special(y)?1:0)-(special(x)?1:0)||y.score-x.score);
+    if(srt==="new")list.sort((x,y)=>new Date(y.added||y.ts)-new Date(x.added||x.ts)||(y.no||0)-(x.no||0));
+    else list.sort((x,y)=>RANK[y.tier]-RANK[x.tier]||(special(y)?1:0)-(special(x)?1:0)||y.score-x.score);
     const a=agg(list),open=collapsed.has(k)?!collapsed.get(k):i<3;i++;
     html+=`<section class="day" data-day="${k}">
       <button class="dayhead" aria-expanded="${open}" data-day="${k}">
@@ -2030,7 +2171,8 @@ function renderDex(){
   if(fresh.size){for(const id of fresh){const el=$("days").querySelector(`[data-id="${id}"]`);if(el)el.classList.add("new")}fresh.clear()}
 }
 $("groupBy").onclick=e=>{const b=e.target.closest("button");if(!b)return;SET.group=b.dataset.g;saveSet();collapsed.clear();renderDex()};
-$("filters").onclick=e=>{const b=e.target.closest(".fchip");if(!b)return;filter=b.dataset.f;renderDex()};
+$("filters").onclick=e=>{const b=e.target.closest(".fchip");if(!b)return;filter=b.dataset.f;SET.filter=filter;saveSet();renderDex()};
+$("sortBy").onclick=e=>{const b=e.target.closest("button");if(!b)return;SET.sort=b.dataset.s;saveSet();renderDex()};
 $("days").onclick=e=>{
   const h=e.target.closest(".dayhead");if(h){const k=h.dataset.day;collapsed.set(k,h.getAttribute("aria-expanded")==="true");renderDex();return}
   const c=e.target.closest(".card");if(c)openDetail(c.dataset.id);
@@ -2046,7 +2188,8 @@ function renderProfBtns(){
   const n=(typeof myName==="function"?myName():"Driver").trim(),best=store.cards.slice().sort((x,y)=>y.score-x.score)[0];
   document.querySelectorAll("[data-prof]").forEach(b=>{b.style.setProperty("--c",best?TC[best.tier]:"var(--t-rare)");b.firstElementChild.textContent=(n[0]||"D").toUpperCase()});
 }
-document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-prof]");if(b){show("vProfile");toTop()}});
+document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-prof]");if(b){show("vProfile");toTop()}
+  const g=e.target.closest&&e.target.closest("[data-set]");if(g){show("vSettings");toTop()}});
 const VIEWS=["vDex","vFeed","vStats","vProfile","vSettings","vDetail","vFriend"];
 /* push the page down by the pinned top bar's height, so its first line is never underneath it */
 function padForBar(){
@@ -2057,13 +2200,17 @@ function padForBar(){
 }
 const barRO=typeof ResizeObserver!=="undefined"?new ResizeObserver(()=>padForBar()):null;
 addEventListener("resize",()=>padForBar());
+/* remember where you were on a list, so going back from a card lands you on the same spot */
+const SCROLL={};
+function restoreScroll(){const y=SCROLL[view]||0;const go=()=>window.scrollTo(0,y);go();requestAnimationFrame(go);setTimeout(go,60);setTimeout(go,200)}
 function show(v){
+  if(view!=="vDetail"&&view!=="vFriend"&&v!==view)SCROLL[view]=window.scrollY||document.documentElement.scrollTop||0;
   view=v;for(const id of VIEWS)$(id).hidden=id!==v;
   $("nav").hidden=v==="vDetail"||v==="vFriend";
   const tab=v;
   document.querySelectorAll(".ntab").forEach(t=>{if(t.dataset.v===tab)t.setAttribute("aria-current","page");else t.removeAttribute("aria-current")});
   if(v!=="vDetail"&&v!=="vFriend")lastList=v;
-  if(v!=="vDetail"&&v!=="vFriend"&&v!=="vProfile")lastTab=v;
+  if(v!=="vDetail"&&v!=="vFriend"&&v!=="vSettings")lastTab=v;
   renderProfBtns();
   if(v==="vDex")renderDex();
   if(v==="vStats")renderStats();
@@ -2076,7 +2223,7 @@ function show(v){
 /* always open a page at its top, so its header is never hidden under the status bar */
 const toTop=()=>{const go=()=>{window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0};go();requestAnimationFrame(go);setTimeout(go,60)};
 $("howBtn").onclick=()=>introSheet();
-$("profBack").onclick=()=>{show(lastTab||"vDex");toTop()};
+$("setBack").onclick=()=>{show(lastTab||"vDex");toTop()};
 document.querySelectorAll(".ntab").forEach(t=>t.onclick=()=>{if(view===t.dataset.v){window.scrollTo({top:0,behavior:RM?"auto":"smooth"});return}show(t.dataset.v);toTop()});
 
 /* =========================================================
@@ -2133,8 +2280,9 @@ function openCard(c,friend){
      <button class="btn" id="eSave" style="margin-top:12px">Save and re-grade</button>
    </details>`:""}
    ${own&&invOf("reroll")>0&&!special(c)&&trusted(c)&&!c.noxp&&!c.dev?`<div class="panel rrbox"><h2>🎲 Re-roll the frame</h2><p class="msg">Use a Re-roll Token for another shot at a special frame on this card, at 5× the usual odds. You have ${invOf("reroll")}.</p><button class="btn" id="dRoll">Re-roll</button></div>`:""}
-   ${own?`<div class="delbox"><button class="btn ghost danger" id="dDel">Delete card</button><p class="about">Frees a spot in your Dex${Cloud.user?" and removes it from your posts":""}. You keep the XP. The same offer can't be scanned again for 24 hours.</p></div>`:""}`;
-  const back=own?()=>show(lastList):friend.back;
+   ${own?detail18HTML(c):""}
+   ${own?`<div class="delbox">${scrapOK(c)?`<button class="btn ghost" id="dRec">♻️ Recycle for ${SCRAP_VAL[c.tier]} scrap</button>`:""}<button class="btn ghost danger" id="dDel">Delete card</button><p class="about">Frees a spot in your Dex${Cloud.user?" and removes it from your posts":""}. You keep the XP. The same offer can't be scanned again for 24 hours.</p></div>`:""}`;
+  const back=own?()=>{show(lastList);restoreScroll()}:friend.back;
   show("vDetail");toTop();
   $("dBack").onclick=back;
   $("dShare").onclick=()=>shareCard(c,friend);
@@ -2154,7 +2302,9 @@ function openCard(c,friend){
   if($("eSave"))$("eSave").onclick=()=>{const o=readFields("e");if(!validOffer(o)){toast("Pay, time and miles must be above zero");return}
     rescore(c,o);c.check=false;save();checkLevel();toast(c.verified===false?"Saved. Hand-edited cards are capped at Uncommon.":"Re-graded: "+gradeOf(c)+" · "+vOf(c).label);openCard(c,null)};
   let armed=false;$("dDel").onclick=e=>{if(!armed){armed=true;e.target.textContent="Tap again to delete";setTimeout(()=>{armed=false;if(e.target.isConnected)e.target.textContent="Delete card"},4000);return}
-    const undo=undoPoint([c]);deleteCards([c.id]);undoToast("Card deleted",undo);show(lastList==="vDetail"?"vDex":lastList);toTop()};
+    const undo=undoPoint([c]);deleteCards([c.id]);undoToast("Card deleted",undo);show(lastList==="vDetail"?"vDex":lastList);restoreScroll()};
+  if($("dRec"))$("dRec").onclick=()=>{if(recycleCard(c)){show(lastList==="vDetail"?"vDex":lastList);restoreScroll()}};
+  try{wireDetail18(c)}catch(e){console.warn(e)}
 }
 
 /* ---------- first-time scan intro: an example screenshot, an example scan, and how to upload ---------- */
@@ -2577,6 +2727,7 @@ function grade(r,parsedOverride){
 /* the single-scan result: verdict first, card right after, then what it earned */
 function showSingle(card,rewards,saved,check){
   const f=special(card)?card.finish:"";
+  if(RANK[card.tier]>=RANK.epic||f)setTimeout(()=>{try{flashRare(f?"mythic":card.tier)}catch(e){}},500);
   $("sBody").innerHTML=`<div style="display:flex;flex-direction:column;gap:14px">
     ${verdictHTML(card)}
     ${check&&check.length?checkHTML(check):""}
@@ -2731,6 +2882,7 @@ function revealPack(P,pi,i){
       :`<button class="btn" id="rvNext">Next card</button>${cards.length>2?`<button class="linkbtn" id="rvSkip">Skip to this pack's last card</button>`:""}`}
   </div>`;
   const wire=()=>{
+  if(RANK[c.tier]>=RANK.epic||special(c))setTimeout(()=>{try{flashRare(special(c)?"mythic":c.tier)}catch(e){}},450);
   if(!isBig(c))$("rvCard").querySelector(".card").style.animation=`flip .8s cubic-bezier(.2,.9,.25,1.15) both`;
   if(!end){
     const next=()=>last?showPack(P,pi+1):revealPack(P,pi,i+1);
@@ -2812,16 +2964,16 @@ document.addEventListener("drop",e=>{e.preventDefault();handleFiles(e.dataTransf
 document.addEventListener("paste",e=>{const fs=[...(e.clipboardData?.items||[])].filter(i=>i.type.startsWith("image/")).map(i=>i.getAsFile());if(fs.length)handleFiles(fs)});
 let tT;function toast(t){const e=$("toast");e.classList.remove("act");e.textContent=t;e.classList.add("on");clearTimeout(tT);tT=setTimeout(()=>e.classList.remove("on"),2000)}
 /* a few seconds to take back a delete. The cloud waits until the time is up. */
-const UNDO_MS=6000;
+const UNDO_MS=5000;
 function undoPoint(cards){
   const cp=x=>JSON.parse(JSON.stringify(x));
   return {cards:cards.map(c=>({...cp(c),art:artOf(c)})),seen:cp(seenList()),del:cp(delList()),gone:cp(goneList()),bd:cp(prog().bd||{}),hist:histList().length,kp:cp(store.kp||[])};
 }
-function undoToast(msg,u){
-  const e=$("toast");e.innerHTML=`<span>${esc(msg)}</span><button type="button" id="tUndo">Undo</button>`;e.classList.add("on","act");
+function undoToast(msg,u,opt){
+  opt=opt||{};const e=$("toast");e.innerHTML=`<span>${esc(msg)}</span><button type="button" id="tUndo">Undo</button>`;e.classList.add("on","act");
   if(typeof Cloud!=="undefined")Cloud.hold=Date.now()+UNDO_MS;
-  clearTimeout(tT);tT=setTimeout(()=>{e.classList.remove("on","act");if(typeof Cloud!=="undefined"){Cloud.hold=0;Cloud.soon()}},UNDO_MS);
-  $("tUndo").onclick=async()=>{clearTimeout(tT);e.classList.remove("on","act");
+  clearTimeout(tT);tT=setTimeout(()=>{e.classList.remove("on","act");if(typeof Cloud!=="undefined"){Cloud.hold=0;Cloud.soon()}if(opt.done)opt.done()},UNDO_MS);
+  $("tUndo").onclick=async()=>{clearTimeout(tT);e.classList.remove("on","act");if(opt.undo)opt.undo();
     store.seen=u.seen;store.del=u.del;store.gone=u.gone;prog().bd=u.bd;store.kp=u.kp;if(store.hist)store.hist.length=Math.min(store.hist.length,u.hist);
     for(const c of u.cards)if(!store.cards.some(x=>x.id===c.id)){const art=c.art;delete c.artInDb;c.art=art;store.cards.push(c);if(art)await putArt(c)}
     save();if(typeof Cloud!=="undefined"){Cloud.hold=0;Cloud.soon()}toast("Card restored");if(view==="vDex")renderDex()};
@@ -2851,8 +3003,6 @@ function renderStats(){
     <div class="kpi"><b>${a.n?"$"+a.pph.toFixed(2):"–"}</b><span>Avg per hour</span><small>${a.n?Math.round(a.min)+" min of driving":""}</small></div>
     <div class="kpi"><b>${a.n?"$"+a.ppm.toFixed(2):"–"}</b><span>Avg per mile</span><small>${a.n?a.mi.toFixed(1)+" mi total":""}</small></div>
     <div class="kpi"><b>${a.n?Math.round(a.good/a.n*100)+"%":"–"}</b><span>Worth taking</span><small>${a.good} of ${a.n} scored 51+</small></div>
-    <div class="kpi"><b>${a.n?a.avgGrade:"–"}</b><span>Avg grade</span><small>${a.n?vOf({grade:a.avgGrade}).label+" on average":""}</small></div>
-    <div class="kpi"><b>${bestC?bestC.score:"–"}</b><span>Best score</span><small>${bestC?esc(bestC.store):""}</small></div>
   </div>`;
   if(a.n){
     h+=`<div class="sbox"><h3>Verdicts</h3>
@@ -2862,10 +3012,8 @@ function renderStats(){
   h+=dailyChart();
   h+=weeklyTable();
   if(a.n){
-    /* best hours */
-    const rows=BLOCKS.map(([n,s,e,lab])=>{const l=cs.filter(c=>{const hr=new Date(c.ts).getHours();return hr>=s&&hr<e});return {n,lab,a:agg(l)}}).filter(x=>x.a.n);
-    const mx=Math.max(...rows.map(x=>x.a.pph),1),top=rows.slice().sort((x,y)=>y.a.pph-x.a.pph)[0];
-    h+=`<div class="sbox"><h3>Best time to drive <small>avg $/hr</small></h3><div class="hbars">${rows.map(x=>`<div class="hb${x===top&&rows.length>1?" best":""}"><span class="hl">${x.n}<small>${x.lab} · ${x.a.n}</small></span><span class="ht"><i style="width:${x.a.pph/mx*100}%"></i></span><b>$${x.a.pph.toFixed(2)}</b></div>`).join("")}</div></div>`;
+    h+=heatHTML(cs);
+    h+=zonesHTML(cs);
     /* stores */
     const sm=new Map();for(const c of cs){const k=c.store.toLowerCase().replace(/[^a-z0-9]/g,"");(sm.get(k)||sm.set(k,[]).get(k)).push(c)}
     const st=[...sm.values()].map(l=>({name:l[0].store,a:agg(l),avg:l.reduce((s,c)=>s+c.score,0)/l.length})).sort((x,y)=>y.avg-x.avg);
@@ -2873,19 +3021,9 @@ function renderStats(){
     const srow=x=>`<div class="srow" style="--c:${TC[tierOf(x.avg)]}"><i></i><span class="sn">${esc(x.name)}<small>${x.a.n} offer${x.a.n>1?"s":""} · $${x.a.pph.toFixed(2)}/hr</small></span><b>${Math.round(x.avg)}<small>avg score</small></b></div>`;
     h+=`<div class="sbox"><h3>Stores <small>by average score</small></h3><div class="stores">${st.slice(0,5).map(srow).join("")}</div>
       ${st.length>5?`<h3 style="margin-top:4px">Worst stores</h3><div class="stores">${st.slice(-3).reverse().filter(x=>!st.slice(0,5).includes(x)).map(srow).join("")}</div>`:""}</div>`;
-    /* rarity */
-    const mt=Math.max(...TIERS.map(t=>cs.filter(c=>c.tier===t.id).length),1);
-    h+=`<div class="sbox"><h3>Rarity pulls</h3><div class="hbars">${TIERS.map(t=>{const n=cs.filter(c=>c.tier===t.id).length;return `<div class="hb"><span class="hl">${t.name}</span><span class="ht"><i style="width:${n/mt*100}%;--c:${TC[t.id]}"></i></span><b>${n}</b></div>`}).join("")}</div></div>`;
   }
-  /* collection progress (all time) */
-  const fins=C.FINISH_KEYS,have=new Set(all.filter(special).map(c=>c.tier+"|"+c.finish));
-  h+=`<div class="sbox"><h3>Finish collection <small>${have.size} of ${TIERS.length*fins.length} · all time</small></h3>
-    <div class="tblwrap"><table class="wk"><thead><tr><th>Tier</th>${fins.map(f=>`<th>${FIN_SHORT[f]}</th>`).join("")}</tr></thead><tbody>
-    ${TIERS.map(t=>`<tr><td><span style="color:${TC[t.id]}">●</span> ${t.name}</td>${fins.map(f=>`<td>${have.has(t.id+"|"+f)?"✓":"<span style='color:var(--dim)'>–</span>"}</td>`).join("")}</tr>`).join("")}
-    </tbody></table></div>
-    <p class="msg">Scan streak: <b style="color:var(--tx)">${streak()} day${streak()===1?"":"s"}</b> in a row.</p></div>`;
   $("statsBody").innerHTML=h;
-  wireChart();
+  wireChart();try{wireStats18()}catch(e){}
 }
 function chartDays(){
   const n=range==="today"||range==="7"?7:range==="30"?30:Math.min(30,Math.max(7,Math.ceil((Date.now()-Math.min(...allOffers().map(c=>+new Date(c.ts))))/864e5)+1));
@@ -2957,6 +3095,7 @@ function renderSettings(){
     <label class="sw"><span><b>Card animations</b><small>Holo shimmer, card flips and the pack tear. Turn off to save battery.</small></span><input type="checkbox" id="setMotion" ${SET.motion?"checked":""}><i></i></label>
   </div>
   ${privacyHTML()}
+  ${extras18HTML()}
   <div class="sbox"><h3>Scanning <small>${usedToday()}/${dayLimit()} today</small></h3>
     <div class="seg seg2" role="group" aria-label="Scan mode">${segBtn("scanMode","auto","Auto")}${segBtn("scanMode","fast","Fast")}</div>
     <p class="msg">${(SET.scanMode||"auto")==="fast"?"<b>Fast:</b> one screenshot at a time, straight to the verdict.":`<b>Auto:</b> one screenshot is a quick scan. Pick several to open packs: up to ${uploadMax()} at once${signedIn()?"":" (30 when signed in)"}, 10 cards per pack. Bigger packs are better packs.`}</p>
@@ -2971,14 +3110,15 @@ function renderSettings(){
     <p class="msg">The Home Screen app keeps its own copy of your cards. ${Cloud.on?"Sign in there with the same Google account and your Dex syncs over.":"Cards scanned in Safari won't appear there."}</p>
   </div>
   <div class="sbox"><h3>How cards are graded</h3>
-    <p class="msg">Each offer gets a grade from its pay per hour (55%) and pay per mile (45%). Accept, Consider and Decline come from the grade. Once you've scanned 12+ offers, the Accept line moves a little (up to 6 points) toward what's normal in your area, using only your recent grades. Rarity is the grade plus a little luck.</p>
-    <div class="hbars">${[["mythic","Grade 95+: a Legendary order with outstanding rates. The bigger the payout (up to $20), the easier it is to reach."],["legendary","$30/hr, $2.50/mi, single order, 8 mi or less, $10+ pay"],["epic","$25/hr, $1.75/mi, 10 mi or less, $7+ pay"],["superrare","The top of the Rare range: around $22/hr and $1.60/mi"],["rare","$19/hr and $1.25/mi"],["uncommon","Close to Rare, but short on $/hr or $/mi"],["common","Clears $15/hr and $1/mi, not much more"],["trash","Under $15/hr, under $1/mi, or 25+ mi"]].map(([t,d])=>{const T=TIERS.find(x=>x.id===t);return `<div class="grade"><i style="--c:${TC[t]}"></i><span><b>${T.name}</b> <small>${T.min}–${T.max}</small><br><span class="gd">${d}</span></span></div>`}).join("")}</div>
+    <p class="msg">Each offer gets a grade from its pay per hour and pay per mile, weighted equally. Accept, Consider and Decline come from the grade, but anything under $18/hr or $1.20/mi is always a Decline. Orders with 3 stops lose 10 points, 4 stops 15, and alcohol orders (ID check) lose 10 more, because they take longer than they look. Once you've scanned 12+ offers, the Accept line moves a little (up to 6 points) toward what's normal in your area, using only your recent grades. Rarity is the grade plus a little luck.</p>
+    <div class="hbars">${[["mythic","Grade 95+: a Legendary order with outstanding rates. The bigger the payout (up to $20), the easier it is to reach."],["legendary","$30/hr, $2.50/mi, single order, 8 mi or less, $10+ pay"],["epic","$25/hr and $1.75/mi, or $20/hr and $2+/mi · 10 mi or less, $7+ pay"],["superrare","The top of the Rare range: around $22/hr and $1.60/mi"],["rare","$19/hr and $1.25/mi"],["uncommon","Close to Rare, but short on $/hr or $/mi"],["common","Clears $15/hr and $1/mi, not much more"],["trash","Under $15/hr, under $1/mi, or 25+ mi"]].map(([t,d])=>{const T=TIERS.find(x=>x.id===t);return `<div class="grade"><i style="--c:${TC[t]}"></i><span><b>${T.name}</b> <small>${T.min}–${T.max}</small><br><span class="gd">${d}</span></span></div>`}).join("")}</div>
     <p class="msg">Luck moves rarity up to 3 points either way, and about 2% of scans are lucky pulls. Luck never lifts a Trash offer out of Trash or creates a Mythic. 100 needs a grade of 97+.</p>
     <p class="msg">Special frame odds: Trash 0.1% · Common 0.2% · Uncommon 0.4% · Rare 0.8% · Super Rare 1.5% · Epic 2.5% · Legendary 6% · Mythic 15%. Holographic and Gold Foil are the rarest, then Neon, Carbon Fiber and Inverted. The last card of each pack gets a bonus, from ×1.03 for a Stone Pack up to ×2.4 for a Red Ruby Pack. Your luck (${fmtLuck()}, from luck cards you earn by leveling up) multiplies all of it.</p>
     <p class="msg">Cards whose numbers were typed or changed by hand are capped at Uncommon with no special finish, and screenshots that aren't one DoorDash or Uber Eats offer are refused.</p>
   </div>
   <div class="sbox data"><h3>Your data <small>${store.cards.length} cards · ${kb(si.data+si.art)}</small></h3>
     <p class="msg">${store.cards.length} of ${capLimit()} card spots used. ${Cloud.user?"Synced to your Google account.":"Cards are saved in this browser on this phone only. Copy a backup as a spreadsheet (CSV) now and then."}</p>
+    <p class="msg">Want a copy of everything DasherDex has about you, or want it deleted? Email <a href="mailto:supportdasherdex@gmail.com">supportdasherdex@gmail.com</a>.</p>
     <div class="btnrow"><button class="btn sm" id="csv">Copy as CSV</button>${store.cards.some(c=>c.tier==="trash"&&!c.fav)?`<button class="btn ghost sm" id="delTrash">Delete Trash cards (${store.cards.filter(c=>c.tier==="trash"&&!c.fav).length})</button>`:""}</div>
     <label class="sw"><span><b>Auto-delete after ${AUTO_DAYS} days</b><small>Frees up space. Cards of the rarities you pick are deleted ${AUTO_DAYS} days after you scan them. You keep the XP, and their numbers stay in your stats and charts. When your Dex is full, the least valuable ones go first to make room. Favorites (★) and cards with a special frame or sticker are never auto-deleted, and your posts stay up.</small></span><input type="checkbox" id="setAuto" ${SET.autoDel?"checked":""}><i></i></label>
     ${SET.autoDel?`<div class="ntags autotiers" role="group" aria-label="Rarities to auto-delete">${TIERS.slice().reverse().map(t=>`<button class="ntag" data-auto="${t.id}" aria-pressed="${(Array.isArray(SET.autoTiers)?SET.autoTiers:["trash","common"]).includes(t.id)}" style="--c:${TC[t.id]}">${t.name}</button>`).join("")}</div>`:""}
@@ -2997,6 +3137,7 @@ function renderSettings(){
   $("setClock").onchange=e=>{SET.clock=e.target.checked;saveSet()};
   $("setRc").onchange=e=>{SET.redCard=e.target.checked;saveSet()};
   $("setHow").onclick=()=>introSheet();
+  try{wireSettings18()}catch(e){console.warn(e)}
   wireData();wireAccount();wireMod();wireAbout();
   if(keepDev){const d=document.querySelector("#settingsBody .devbox");if(d){d.open=true;scrollTo(0,y0)}}
   if(keepOpen){$("resetBox").open=true;$("resetTxt").value=keepTxt;$("wipe").disabled=keepTxt.trim().toUpperCase()!=="RESET"}
@@ -3458,12 +3599,13 @@ function renderProfile(){
   const fav=[...sm.values()].sort((x,y)=>y.n-x.n)[0];
   const ach=achievements(),done=ach.filter(x=>x.done).length;
   const name=myName();
-  $("profileBody").innerHTML=`
+  $("profHero").innerHTML=`
   <div class="phero">
     <div class="avatar" style="--c:${best?TC[best.tier]:"var(--mut)"}">${esc(name.trim()[0]||"D").toUpperCase()}</div>
     <div class="pmeta">
       ${Cloud.user&&Cloud.username()?`<div class="pname unrow"><span>@${esc(Cloud.username())}</span><button class="mini ghost" id="pUname">Change</button></div>`:`<input id="pName" class="pname" value="${esc(name)}" maxlength="24" autocomplete="off" aria-label="Your name">`}
       <div class="plvl">${prBadge()}Level ${L} · ${titleOf(L)}</div>
+      <div class="ptitle">${titleTag(myTitle())||`<span class="ttag none">No title</span>`}<button class="mini ghost" id="pTitles">🏷️ Titles ${myTitles().length}/${Object.keys(ETITLES).length}</button></div>
       <div class="xpbar" role="progressbar" aria-valuemin="0" aria-valuemax="${to-from}" aria-valuenow="${xp-from}"><i style="width:${(xp-from)/(to-from)*100}%"></i></div>
       <div class="xpl"><span>${xp-from} / ${to-from} XP</span><span>${xp} total</span></div>
       <div class="luckline"><span class="clover">${CLOVER}</span><b>Luck ${fmtLuck()}</b><small>${prog().luck.length?`${prog().luck.length} luck card${prog().luck.length>1?"s":""} · boosts frames and lucky pulls`:"Level up to earn luck cards"}${charmPct()?` · charm +${charmPct()}% next upload`:""}</small></div>
@@ -3474,23 +3616,32 @@ function renderProfile(){
     <div class="kpi"><b>${money(a.pay)}</b><span>Offered</span><small>${a.mi.toFixed(0)} mi scanned</small></div>
     <div class="kpi"><b>${a.n?Math.round(a.good/a.n*100)+"%":"–"}</b><span>Recommended</span><small>${a.good} of ${a.n} worth accepting</small></div>
     <div class="kpi"><b>${fav?esc(fav.name):"–"}</b><span>Most seen store</span><small>${fav?fav.n+" offer"+(fav.n>1?"s":""):""}</small></div>
-  </div>
+  </div>`;
+  checkTitles();
+  $("profileBody").innerHTML=`
   ${prestigeHTML()}
+  ${store.cards.length?bossHTML():""}
+  ${store.cards.length?showcaseHTML():""}
   ${bagHTML()}
   ${passState()?`<button class="sbox passrow" id="prPass"><span><b>🎟️ ${esc(passState().name)}</b><small>Tier ${passState().tier} of ${PASS_TIERS} · free rewards all season</small></span><span class="abgo">›</span></button>`:""}
   ${stickerBookHTML()}
   ${friendsHTML()}
   ${weeklyHTML()}
-  ${best?`<div class="sbox"><h3>Best pull <small>tap to open</small></h3><div class="showcase">${cardHTML(best)}</div></div>`:`<div class="sempty">Scan your first offer to start leveling up.</div>`}
+  ${best?(showIds().length?"":`<div class="sbox"><h3>Best pull <small>tap to open</small></h3><div class="showcase">${cardHTML(best)}</div></div>`):`<div class="sempty">Scan your first offer to start leveling up.</div>`}
   ${[["Achievements",ach],["Collections",collections()]].map(([title,list])=>`<div class="sbox"><h3>${title} <small>${list.filter(x=>x.done).length} of ${list.length}</small></h3>
     <div class="achs">${list.map(x=>`<div class="ach${x.done?" on":""}" style="--c:${x.col}"><span class="ai">${BADGE}</span><span class="at"><b>${x.name}</b><small>${x.desc}</small>${ACH_XP[x.name]?`<small class="axp">${x.done?"Earned":"+"} ${ACH_XP[x.name]} XP</small>`:""}${x.need>1&&!x.done?`<span class="ap"><i style="width:${x.have/x.need*100}%"></i></span><small>${x.have} / ${x.need}</small>`:""}</span></div>`).join("")}</div>
   </div>`).join("")}
+  ${finishCollHTML()}
   <p class="about">XP per card: Trash 3 · Common 6 · Uncommon 10 · Rare 18 · Super Rare 30 · Epic 55 · Legendary 120 · Mythic 300 · Holo or Gold +150 · Neon +100 · Carbon or Inverted +60 · packs +7 to +23 · daily quests 15–80. Hand-edited cards earn 3. Every level gives you a luck card.</p>`;
+  try{renderInboxBadge()}catch(e){}renderGift();try{renderEarnGoal()}catch(e){console.warn(e)}
+  if(store.cards.length){renderQuests();renderGoal()}else{$("quests").innerHTML="";$("goal").hidden=true}
+  try{renderGameBar()}catch(e){console.warn(e)}
   if($("pUname"))$("pUname").onclick=()=>usernameSheet(false).then(()=>renderProfile());
   if($("pName"))$("pName").onchange=e=>{SET.name=e.target.value.trim().slice(0,24);saveSet();renderProfile();renderProfBtns();if(Cloud.user)Cloud.pushProfile().catch(err=>Cloud.fail(err))};
   if($("pName"))$("pName").onkeydown=e=>{if(e.key==="Enter")e.target.blur()};
   const sc=$("profileBody").querySelector(".showcase .card");if(sc)sc.onclick=()=>openDetail(sc.dataset.id);
-  wireFriends();wireGame($("profileBody"));
+  wireFriends();wireGame($("profileBody"));try{wireShowcase($("profileBody"))}catch(e){}
+  if($("pTitles"))$("pTitles").onclick=titleSheet;
 }
 
 
@@ -3553,7 +3704,7 @@ function applyScanMode(){const f=$("file");if(f)f.multiple=SET.scanMode!=="fast"
    ========================================================= */
 const FB_CFG=(window.OFFERDEX_FIREBASE&&window.OFFERDEX_FIREBASE.apiKey)?window.OFFERDEX_FIREBASE:null;
 const FBV="10.14.1";
-const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp","dev","stk","nrf","cb","god","boosted","fav"];
+const PUB_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","roll","boost","finish","ts","added","pack","check","upd","verified","ocr","finish0","rc","vb","noxp","dev","stk","nrf","cb","god","boosted","fav","tk","zone","dv","alc"];
 const CODE_ABC="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
 /* driver IDs: 12 characters shown as XXXX-XXXX-XXXX (about 10^17 possible, so nobody can guess one) */
 const ID_LEN=12;
@@ -3569,6 +3720,9 @@ function cleanCard(d,id){
   if(c.rc!==undefined){c.rc=[1,2].includes(+c.rc)?+c.rc:undefined;if(!c.rc)delete c.rc}
   if(c.vb!==undefined){c.vb=Math.max(45,Math.min(57,Math.round(num0(c.vb))||51))}
   if(c.noxp!==undefined){if(c.noxp)c.noxp=1;else delete c.noxp}
+  for(const k of ["dv","alc"])if(c[k]!==undefined){if(c[k])c[k]=1;else delete c[k]}
+  if(c.tk!==undefined){c.tk=num0(c.tk);if(!c.tk)delete c.tk}
+  if(c.zone!==undefined){c.zone=String(c.zone||"").slice(0,24);if(!c.zone)delete c.zone}
   if(c.dev!==undefined){if(c.dev)c.dev=1;else delete c.dev}
   if(c.god!==undefined){if(c.god)c.god=1;else delete c.god}
   for(const k of ["cb","nrf"])if(c[k]!==undefined){const n=c[k];c[k]=n&&typeof n==="object"&&TIERS.some(t=>t.id===n.t)?{s:Math.max(1,Math.min(100,num0(n.s))),t:n.t,f:["standard",...C.FINISH_KEYS].includes(n.f)?n.f:"standard"}:undefined;if(!c[k])delete c[k]}
@@ -3835,7 +3989,7 @@ const Cloud={
   stateOut(){const p=prog(),qd={};for(const k of Object.keys(p.qd).sort().slice(-400))qd[k]=p.qd[k].slice(0,3);
     return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,bd:Object.fromEntries(Object.entries(p.bd||{}).slice(-20).map(([k,v])=>[k,Math.round(+v||0)])),md:{xp:+((store.modDone||{}).xp)||0,god:+((store.modDone||{}).god)||0},
       ach:Object.keys(p.ach||{}).slice(0,80),ev:Object.fromEntries(Object.entries(p.ev||{}).slice(-3000)),cal:p.cal&&p.cal.d?{d:String(p.cal.d),n:+p.cal.n||1}:null,
-      pm:{p:Math.round((+(p.pm&&p.pm.p)||0)*10)/10,r:+(p.pm&&p.pm.r)||0},pr:+p.pr||0,prx:Math.round(+p.prx||0),ss:p.ss&&typeof p.ss==="object"?p.ss:{},qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
+      pm:{p:Math.round((+(p.pm&&p.pm.p)||0)*10)/10,r:+(p.pm&&p.pm.r)||0},pr:+p.pr||0,prx:Math.round(+p.prx||0),ss:p.ss&&typeof p.ss==="object"?p.ss:{},qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,tsel:String(p.tsel||"").slice(0,20),sc:p.sc&&typeof p.sc==="object"?{ids:(Array.isArray(p.sc.ids)?p.sc.ids:[]).slice(0,3).map(x=>String(x).slice(0,40)),note:String(p.sc.note||"").slice(0,80),upd:+p.sc.upd||0}:null,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
       del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0},
       ...(this.histOK()?{}:{hist:histList().slice(-1500)})}},
   /* auto-deleted cards' numbers live in their own document (meta/hist), written only when they change */
@@ -3893,6 +4047,9 @@ const Cloud={
     {const rpr=Math.max(0,Math.min(99,Math.round(num0(R.pr))));if(rpr>(+P.pr||0)){P.pr=rpr;P.prx=Math.max(0,num0(R.prx))}}
     if(!P.ss||typeof P.ss!=="object")P.ss={};if(R.ss&&typeof R.ss==="object")for(const [k,v] of Object.entries(R.ss).slice(0,40))if(/^s\d{1,3}$/.test(k)&&Number.isFinite(+v))P.ss[k]=P.ss[k]==null?+v:Math.min(+P.ss[k],+v);
     if(!P.qt||typeof P.qt!=="object")P.qt={};if(R.qt&&typeof R.qt==="object")for(const [k,v] of Object.entries(R.qt).slice(-14))if(/^\d{4}-\d\d-\d\d$/.test(k)&&Array.isArray(v)){const a=P.qt[k]||(P.qt[k]=[]);v.slice(0,3).forEach((t,i)=>{t=num0(t);if(t>0&&!(a[i]>0))a[i]=t})}
+    /* title and showcase: the newest choice wins */
+    if(typeof R.tsel==="string"&&R.tsel.length<=20&&(R.tsel===""||ITEMS["t_"+R.tsel])&&!P.tsel)P.tsel=R.tsel;
+    if(R.sc&&typeof R.sc==="object"&&num0(R.sc.upd)>num0(P.sc&&P.sc.upd))P.sc={ids:(Array.isArray(R.sc.ids)?R.sc.ids:[]).slice(0,3).map(x=>String(x).slice(0,40)),note:String(R.sc.note||"").slice(0,80),upd:num0(R.sc.upd)};
     if(!P.sw||typeof P.sw!=="object")P.sw={};if(R.sw&&typeof R.sw==="object")for(const [k,v] of Object.entries(R.sw).slice(-14))if(/^\d{4}-\d\d-\d\d$/.test(k)&&v&&typeof v==="object"&&[0,1,2].includes(+v.i)&&ALL_QUESTS.some(q=>q.id===v.id)&&!P.sw[k])P.sw[k]={i:+v.i,id:String(v.id)};
   },
   async pushState(){
@@ -4234,7 +4391,7 @@ function weeklyHTML(){
    Global posts use preset captions so nobody has to moderate free text; friends posts can have your own words.
    ========================================================= */
 const GLOBAL_CAPTIONS=["Look at this pull!","Worth it?","Easy money","Not worth the gas","Lucky day","Rare find","Holo!","First Mythic!"];
-const POST_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","finish","ts","boost","verified","rc","vb","stk"];
+const POST_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","finish","ts","boost","verified","rc","vb","stk","dv","alc"];
 const CAPTION_MAX=120,GLOBAL_PER_DAY=10;
 let feedAud=null,feedCache={friends:null,global:null},feedAt={friends:0,global:0};
 const postCard=c=>{const o={};for(const k of POST_FIELDS)if(c[k]!==undefined&&c[k]!==null)o[k]=c[k];return o};
@@ -4243,16 +4400,17 @@ const hiddenSet=k=>new Set(Array.isArray(SET[k])?SET[k]:[]);
 function cleanPost(d,id,aud){
   if(!d||!d.card||typeof d.card!=="object")return null;
   return {id:String(id).slice(0,120),aud,uid:String(d.uid||""),name:String(d.name||"Driver").slice(0,24),level:num0(d.level)||1,
-    caption:String(d.caption||"").slice(0,CAPTION_MAX),at:num0(d.at),card:cleanCard(d.card,d.card.id||id)};
+    caption:String(d.caption||"").slice(0,CAPTION_MAX),at:num0(d.at),card:cleanCard(d.card,d.card.id||id),
+    title:typeof d.title==="string"?d.title.slice(0,30):"",rb:Array.isArray(d.rb)?d.rb.length:0,ok:d.ok===true,cc:Math.max(0,Math.round(num0(d.cc)))};
 }
 Object.assign(Cloud,{
   async post(c,aud,caption){
     if(!this.user)throw new Error("Sign in to post.");
     if(c.verified===false)throw new Error("Hand-edited cards can't be posted.");
     if(c.dev)throw new Error("Test cards can't be posted.");
-    caption=String(caption||"").trim().slice(0,CAPTION_MAX);
+    caption=String(caption||"").replace(/\s+/g," ").trim().slice(0,CAPTION_MAX);
+    {const m=modCheck(caption);if(!m.ok)throw new Error(m.why)}
     if(aud==="global"){
-      if(caption&&!GLOBAL_CAPTIONS.includes(caption))throw new Error("Pick one of the captions for Global.");
       const tk=dayKey(today()),log=(SET.gposts||[]).filter(x=>x[0]===tk);
       if(log.length>=GLOBAL_PER_DAY&&!this.isHead)throw new Error(`You can post ${GLOBAL_PER_DAY} cards to Global a day. Try again tomorrow.`);
       let banned=false;try{banned=(await this.db.collection("bans").doc(this.user.uid).get()).exists}catch(e){}
@@ -4261,6 +4419,7 @@ Object.assign(Cloud,{
     /* Global posts are checked against your synced card, so make sure this one is in the cloud first */
     if(aud==="global"){const s=this.synced(),sg=sigOf(c);if(s[c.id]!==sg){await this.me().collection("cards").doc(c.id).set(pubOf(c));await this.me().collection("cardLoc").doc(c.id).set(locOf(c));s[c.id]=sg;this.setSynced(s)}}
     const doc={uid:this.user.uid,name:myName(),level:myLevel(),caption,card:postCard(c),at:Date.now()};
+    {const t=myTitle();if(t)doc.title=titleName(t).slice(0,30)}
     const ref=aud==="global"?this.db.collection("posts").doc(this.user.uid+"_"+c.id):this.me().collection("posts").doc(c.id);
     if((await ref.get().catch(()=>({exists:false}))).exists)throw new Error(aud==="global"?"You already posted this card to Global.":"You already posted this card to Friends.");
     await ref.set(doc);
@@ -4293,10 +4452,10 @@ function postSheet(c){
       <div class="seg seg2" role="radiogroup" aria-label="Who sees it"><button data-aud="friends" aria-pressed="${aud==="friends"}">Friends</button><button data-aud="global" aria-pressed="${aud==="global"}">Global</button></div>
       <p class="msg">${aud==="friends"?"Only your friends see it.":"Every signed-in DasherDex driver sees it, with your name and level."} The route map and address are never included.</p>
       <div class="pcard">${cardHTML({...c,_friend:true,_art:""})}</div>
-      ${aud==="friends"?`<label class="nlab" for="pCap"><span>Caption</span><span id="pCount">${cap.length}/${CAPTION_MAX}</span></label><textarea id="pCap" maxlength="${CAPTION_MAX}" rows="2" placeholder="Say something (optional)">${esc(cap)}</textarea>`
-        :`<div class="ntags" role="radiogroup" aria-label="Caption">${GLOBAL_CAPTIONS.map(t=>`<button class="ntag" data-cap="${esc(t)}" aria-pressed="${cap===t}">${esc(t)}</button>`).join("")}</div>`}
+      <label class="nlab" for="pCap"><span>Caption</span><span id="pCount">${cap.length}/${CAPTION_MAX}</span></label><textarea id="pCap" maxlength="${CAPTION_MAX}" rows="2" placeholder="Say something (optional) 🔥">${esc(cap)}</textarea>
+      ${aud==="global"?`<p class="msg">Be cool: swearing is fine, slurs and hate get blocked. Posts with 3 reports are hidden until a mod checks them.</p>`:""}
       </div><button class="btn" id="pGo">Post to ${aud==="friends"?"Friends":"Global"}</button>`);
-    document.querySelectorAll("#qrSheet [data-aud]").forEach(b=>b.onclick=()=>{aud=b.dataset.aud;if(aud==="global"&&!GLOBAL_CAPTIONS.includes(cap))cap="";draw()});
+    document.querySelectorAll("#qrSheet [data-aud]").forEach(b=>b.onclick=()=>{aud=b.dataset.aud;draw()});
     document.querySelectorAll("#qrSheet [data-cap]").forEach(b=>b.onclick=()=>{cap=cap===b.dataset.cap?"":b.dataset.cap;draw()});
     const ta=$("pCap");if(ta)ta.oninput=()=>{cap=ta.value;$("pCount").textContent=ta.value.length+"/"+CAPTION_MAX};
     $("pGo").onclick=async()=>{$("pGo").disabled=true;
@@ -4307,7 +4466,7 @@ function postSheet(c){
 }
 
 /* ---------- the Feed page ---------- */
-$("feedTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;feedAud=b.dataset.a;renderFeed()};
+$("feedTabs").onclick=e=>{const b=e.target.closest("button");if(!b)return;if(!Cloud.user&&b.dataset.a==="friends"){toast("Sign in with Google to add friends and see their posts");return}feedAud=b.dataset.a;renderFeed()};
 const hasFriends=()=>Cloud.friends.some(f=>f.accepted);
 /* friends you've added, as a row of faces at the top of the Friends feed, plus a shortcut to add more */
 function friendRowHTML(){
@@ -4324,7 +4483,9 @@ async function renderFeed(force){
   const box=$("feedBody");
   if(!Cloud.on){box.innerHTML=`<div class="sempty">The feed needs cloud sync, which isn't set up for this copy of DasherDex.</div>`;return}
   if(!Cloud.ready){box.innerHTML=`<div class="sempty">Connecting…</div>`;return}
-  if(!Cloud.user){box.innerHTML=`<div class="sempty">Sign in with Google to see what friends and other drivers are pulling.<br><br><button class="btn sm" id="feedIn" style="width:auto;padding-inline:20px">Go to Settings</button></div>`;$("feedIn").onclick=()=>{show("vSettings");toTop()};return}
+  if(!Cloud.user&&feedAud!=="global")feedAud="global";
+  document.querySelectorAll("#feedTabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.a===feedAud));
+  if(!Cloud.user&&false){box.innerHTML=`<div class="sempty">Sign in with Google to see what friends and other drivers are pulling.<br><br><button class="btn sm" id="feedIn" style="width:auto;padding-inline:20px">Go to Settings</button></div>`;$("feedIn").onclick=()=>{show("vSettings");toTop()};return}
   const aud=feedAud,fresh=feedCache[aud]&&Date.now()-feedAt[aud]<60000&&!force;
   $("feedSub").textContent=aud==="friends"?"You and your friends":"Everyone on DasherDex";
   if(aud==="friends"&&!hasFriends()){
@@ -4338,17 +4499,24 @@ async function renderFeed(force){
   }
   const hidP=hiddenSet("hidePosts"),hidU=hiddenSet("hideUsers");
   const posts=(feedCache[aud]||[]).filter(p=>!hidP.has(p.id)&&!hidU.has(p.uid));
-  const me=Cloud.user.uid;
-  box.innerHTML=(aud==="friends"?friendRowHTML():"")+groupChallengeHTML(aud)+`<div class="feedtop"><button class="linkbtn" id="feedRefresh">Refresh</button></div>`+
-    (posts.length?`<div class="posts">${posts.map(p=>`<article class="post" data-pid="${esc(p.id)}">
+  const me=Cloud.user?Cloud.user.uid:"";
+  /* 3 reports from different drivers hide a Global post until a moderator looks at it */
+  const shown=posts.filter(p=>!(p.aud==="global"&&p.rb>=3&&!p.ok)||Cloud.isMod||p.uid===me);
+  box.innerHTML=(!Cloud.user?`<div class="notice signout"><span class="nt-ic">👋</span><div><b>You're seeing community posts</b><small>Sign in with Google to post, comment, add friends and back up your cards.</small></div><button class="btn sm" id="feedIn2">Sign in</button></div>`:"")+(aud==="friends"?friendRowHTML():"")+(Cloud.user?groupChallengeHTML(aud):"")+`<div class="feedtop"><button class="linkbtn" id="feedRefresh">↻ Refresh</button></div>`+
+    (shown.length?`<div class="posts">${shown.map(p=>`<article class="post${p.rb>=3&&!p.ok?" held":""}" data-pid="${esc(p.id)}">
+      ${p.rb>=3&&!p.ok?`<div class="heldbar">Hidden from everyone: ${p.rb} reports. ${Cloud.isMod?`<button class="mini" data-keep="${esc(p.id)}">Keep it up</button>`:"A moderator will check it."}</div>`:""}
       <header><span class="avatar sm" style="--c:${TC[p.card.tier]||"var(--t-rare)"}">${esc((p.name[0]||"D").toUpperCase())}</span>
-        <span class="pn"${p.uid!==me?` data-who="${esc(p.uid)}" data-nm="${esc(p.name)}" role="button" tabindex="0"`:""}><b>${p.uid===me?"You":esc(p.name)}</b><small>Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
+        <span class="pn"${p.uid!==me?` data-who="${esc(p.uid)}" data-nm="${esc(p.name)}" role="button" tabindex="0"`:""}><b>${p.uid===me?"You":esc(p.name)}</b><small>${p.title?`<span class="ttag">${esc(p.title)}</span> `:""}Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
         ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`${Cloud.isMod?`<button class="mini modbtn" data-mod="${esc(p.id)}">Mod</button>`:""}<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide or report this post">•••</button>`:""}</header>
       ${p.caption?`<p class="pcap">${esc(p.caption)}</p>`:""}
       <div class="pcard" data-open="${esc(p.id)}">${cardHTML({...p.card,_friend:true,_art:""})}</div>
+      ${aud==="global"?`<footer class="pfoot"><button class="cmbtn" data-cm="${esc(p.id)}">💬 ${p.cc?p.cc+" comment"+(p.cc>1?"s":""):"Comment"}</button></footer>`:""}
     </article>`).join("")}</div>`
     :`<div class="sempty">${aud==="friends"?"No posts yet. Open one of your cards and tap Post to share it with friends.":"No posts yet. Be the first: open a card and tap Post."}</div>`);
   $("feedRefresh").onclick=()=>renderFeed(true);
+  if($("feedIn2"))$("feedIn2").onclick=()=>Cloud.signIn();
+  box.querySelectorAll("[data-cm]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.cm);if(p)commentSheet(p)});
+  box.querySelectorAll("[data-keep]").forEach(el=>el.onclick=async()=>{try{await Cloud.keepPost(el.dataset.keep);toast("Post is visible again");renderFeed(true)}catch(e){toast(friendly(e))}});
   box.querySelectorAll("[data-fr]").forEach(b=>b.onclick=()=>openFriend(b.dataset.fr,()=>{show("vFeed");toTop()}));
   const ad=box.querySelector("[data-addfr]");if(ad)ad.onclick=goAddFriends;
   box.querySelectorAll("[data-open]").forEach(el=>el.onclick=()=>{const p=posts.find(x=>x.id===el.dataset.open);if(!p)return;const y=scrollY;
@@ -4763,6 +4931,7 @@ function unameErr(n){
   if(n.length>20)return "20 characters at most.";
   if(!UNAME_RE.test(n))return "Letters, numbers, _ and . only (no spaces).";
   if(UNAME_BAD.test(n))return "That username isn't allowed. Try another one.";
+  if(typeof modCheck==="function"&&!modCheck(n.replace(/[_.]/g," ")).ok)return "That username isn't allowed. Try another one.";
   return "";
 }
 Object.assign(Cloud,{
@@ -4781,8 +4950,9 @@ Object.assign(Cloud,{
     if(!old){
       /* tell the head moderator right away in Discord; the hourly bot is the backup */
       const email=String(this.user.email||"").slice(0,120),code=(this.profile&&this.profile.code)||"";
-      const sent=await this.alert("signup",{title:"🆕 New DasherDex driver",color:0x5f8dff,fields:[{name:"Username",value:"@"+name,inline:true},{name:"Player ID",value:code?fmtID(code):"not made yet",inline:true},
-        {name:"Gmail",value:email||"?"},{name:"Google name",value:String(this.user.displayName||"?").slice(0,60),inline:true}],timestamp:new Date().toISOString()});
+      /* mods see the username and ID; only the Head Mod's channel gets the Gmail */
+      const sent=await this.alert("signup",{title:"🆕 New DasherDex driver",color:0x5f8dff,fields:[{name:"Username",value:"@"+name,inline:true},{name:"Player ID",value:code?fmtID(code):"not made yet",inline:true}],timestamp:new Date().toISOString()});
+      if(sent)await this.alert("sus",{title:"📧 New driver's Gmail",color:0x5f8dff,fields:[{name:"Username",value:"@"+name,inline:true},{name:"Gmail",value:email||"?",inline:true},{name:"Google name",value:String(this.user.displayName||"?").slice(0,60),inline:true}],timestamp:new Date().toISOString()});
       await this.db.collection("signups").doc(this.user.uid).set({username:name,email,name:String(this.user.displayName||"").slice(0,40),at:Date.now(),...(sent?{hk:1}:{})}).catch(()=>{});
     }
     await this.pushProfile().catch(()=>{});renderProfBtns();rerenderAccount();
@@ -4816,7 +4986,7 @@ function usernameSheet(required){
 /* =========================================================
    Head moderator inbox: new sign-ups, reported posts and suspicious offers. Only the head moderator can read it.
    ========================================================= */
-const REPORT_WHY=["Fake or edited offer","Spam","Rude name or caption","Something else"];
+const REPORT_WHY=["Fake or edited offer","Spam","Rude name or caption","Something else","Hate or slurs","Harassment or bullying","Private info (name, address, phone)"];
 Object.assign(Cloud,{inbox:{signups:[],reports:[],flags:[]},inboxAt:0,
   async loadInbox(){
     if(!this.isHead)return;
@@ -4829,6 +4999,8 @@ Object.assign(Cloud,{inbox:{signups:[],reports:[],flags:[]},inboxAt:0,
     if(!this.user)throw new Error("Sign in to report posts.");
     await this.db.collection("reports").doc(this.user.uid+"_"+p.id.replace(/[^A-Za-z0-9_]/g,"").slice(0,80)).set({
       post:p.id,aud:p.aud,uid:p.uid,name:String(p.name||"").slice(0,24),by:this.user.uid,byName:myName(),why:REPORT_WHY.includes(why)?why:REPORT_WHY[3],at:Date.now()});
+    /* count this driver's report on the post itself: 3 different drivers hide it until a moderator checks */
+    if(p.aud==="global"){try{await this.db.collection("posts").doc(p.id).update({rb:firebase.firestore.FieldValue.arrayUnion(this.user.uid)});feedCache.global=null}catch(e){console.warn(e)}}
     this.alert("sus",{title:"📣 Post reported",color:0xf5b83d,fields:[{name:"Reason",value:REPORT_WHY.includes(why)?why:REPORT_WHY[3]},{name:"Posted by",value:String(p.name||"?").slice(0,24),inline:true},
       {name:"Reported by",value:"@"+(this.username()||myName()),inline:true},{name:"Card",value:`${String(p.card&&p.card.store||"").slice(0,40)} · ${p.card&&p.card.tier} ${p.card&&p.card.score}`}],timestamp:new Date().toISOString()});
   },
@@ -4866,9 +5038,12 @@ Object.assign(Cloud,{inbox:{signups:[],reports:[],flags:[]},inboxAt:0,
 const inboxNew=()=>{const seen=+SET.inboxSeen||0,I=Cloud.inbox;return [...I.signups,...I.reports,...I.flags].filter(x=>+x.at>seen).length};
 function renderInboxBadge(){
   const n=Cloud.isHead?inboxNew():0;
-  const tab=document.querySelector('.ntab[data-v="vSettings"]');
-  if(tab){let b=tab.querySelector(".nbadge");if(n&&!b){b=document.createElement("i");b.className="nbadge";tab.appendChild(b)}if(b){b.hidden=!n;b.textContent=n>9?"9+":n}}
-  const el=$("inboxNote");if(el){el.hidden=!n;if(n)el.innerHTML=`<span class="nt-ic">📥</span><div><b>${n} new in your mod inbox</b><small>New drivers, reports or suspicious offers.</small></div><button class="btn sm" id="inboxGo">Open</button>`;
+  /* the Profile tab: a number for new mod inbox items, or a dot when a luck card or today's login reward is waiting */
+  let dot=false;try{dot=(+prog().unseen||0)>0||(store.cards.length>0&&!calState().done)}catch(e){}
+  const tab=document.querySelector('.ntab[data-v="vProfile"]');
+  if(tab){let b=tab.querySelector(".nbadge");if((n||dot)&&!b){b=document.createElement("i");b.className="nbadge";tab.appendChild(b)}if(b){b.hidden=!n&&!dot;b.classList.toggle("dot",!n&&dot);b.textContent=n?(n>9?"9+":n):""}}
+  const el=$("inboxNote");if(el){el.hidden=!n;if(n)el.innerHTML=`<span class="nt-ic">📥</span><div><b>${n} new in your mod inbox</b><small>New drivers, reports or suspicious offers.</small></div><span class="ibact"><button class="btn sm" id="inboxGo">Open</button><button class="mini ghost" id="inboxRead">Mark read</button></span>`;
+    const rd=$("inboxRead");if(rd)rd.onclick=()=>{SET.inboxSeen=Date.now();saveSet();renderInboxBadge();toast("Inbox marked as read")};
     const g=$("inboxGo");if(g)g.onclick=()=>{show("vSettings");toTop();setTimeout(()=>{const x=$("modInbox");if(x)x.scrollIntoView({block:"start",behavior:RM?"auto":"smooth"})},150)}}
 }
 function inboxHTML(){
@@ -4881,10 +5056,10 @@ function inboxHTML(){
     flags:I.flags.map(f=>`<div class="frow ib${+f.at>seen?" new":""}"><span class="avatar sm" style="--c:var(--consider)">?</span><span class="fn"><b>${esc(f.name||"Driver")} · ${esc(f.card&&f.card.store||"")} $${num0(f.card&&f.card.pay).toFixed(2)}</b><small>${esc(f.why||"")} · ${when(f.at)}</small></span><button class="mini ghost" data-ibdrv="${esc(f.uid)}" data-nm="${esc(f.name||"")}">Open</button><button class="mini ghost" data-ibdel="flags|${esc(f.id)}" aria-label="Dismiss">✕</button></div>`)
   };
   const empty={signups:"No sign-ups yet.",reports:"No reports. Nice.",flags:"Nothing suspicious."};
-  return `<div class="mgroup" id="modInbox"><div class="flabel">Inbox ${inboxNew()?`<span class="ibn">${inboxNew()} new</span>`:""}</div>
+  return `<div class="mgroup" id="modInbox"><div class="flabel ibhead"><span>Inbox ${inboxNew()?`<span class="ibn">${inboxNew()} new</span>`:""}</span>${inboxNew()?`<button class="mini" id="ibSeen2">✓ Mark all read</button>`:`<span class="ibok">All caught up</span>`}</div>
     <div class="seg seg3 ibtabs" role="tablist"><button data-ibt="signups" aria-pressed="${tab==="signups"}">New users ${dot(I.signups)}</button><button data-ibt="reports" aria-pressed="${tab==="reports"}">Reports ${dot(I.reports)}</button><button data-ibt="flags" aria-pressed="${tab==="flags"}">Suspicious ${dot(I.flags)}</button></div>
     <div class="flist ibl">${rows[tab].length?rows[tab].join(""):`<p class="msg">${empty[tab]}</p>`}</div>
-    <div class="btnrow"><button class="btn ghost sm" id="ibRef">Refresh</button>${inboxNew()?`<button class="btn ghost sm" id="ibSeen">Mark all seen</button>`:""}</div></div>`;
+    <div class="btnrow"><button class="btn ghost sm" id="ibRef">Refresh</button>${rows[tab].length?`<button class="btn ghost sm" id="ibClear">Clear this tab</button>`:""}</div></div>`;
 }
 function wireInbox(){
   const box=$("modInbox");if(!box)return;
@@ -4892,7 +5067,11 @@ function wireInbox(){
   box.querySelectorAll("[data-ibdrv]").forEach(b=>b.onclick=()=>openDriver(b.dataset.ibdrv,b.dataset.nm));
   box.querySelectorAll("[data-ibdel]").forEach(b=>b.onclick=async()=>{const [col,id]=b.dataset.ibdel.split("|");try{await Cloud.clearInbox(col,id);renderSettings()}catch(e){toast(friendly(e))}});
   const r=$("ibRef");if(r)r.onclick=async()=>{await Cloud.loadInbox();renderSettings();toast("Inbox up to date")};
-  const s=$("ibSeen");if(s)s.onclick=()=>{SET.inboxSeen=Date.now();saveSet();renderInboxBadge();renderSettings()};
+  const s=$("ibSeen2");if(s)s.onclick=()=>{SET.inboxSeen=Date.now();saveSet();renderInboxBadge();renderSettings();toast("All read")};
+  /* clear every item in the open tab (tap twice). Bans and hidden posts are not touched. */
+  const cl=$("ibClear");if(cl){let armed=false;cl.onclick=async()=>{if(!armed){armed=true;cl.textContent="Tap again to clear";return}
+    const tab=SET.inboxTab||"signups",col={signups:"signups",reports:"reports",flags:"flags"}[tab],list=(Cloud.inbox[tab]||[]).slice();
+    cl.disabled=true;cl.textContent="Clearing…";for(const x of list){try{await Cloud.clearInbox(col,x.id)}catch(e){}}renderSettings();toast("Cleared")}}
 }
 /* report a Global post */
 function reportSheet(p){
@@ -4937,7 +5116,8 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="1.7";
+const APP_VER="1.8";
+const SUPPORT_EMAIL="supportdasherdex@gmail.com";
 /* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
 const DISCORD_DEFAULT="";
 const discordOK=u=>/^https:\/\/(discord\.gg|discord\.com\/invite)\/[A-Za-z0-9-]{2,40}\/?$/.test(String(u||""));
@@ -4945,6 +5125,24 @@ const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.
 const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["1.8","October 2026",[
+    "New tabs: Dex, Feed, Stats and Profile, with Scan on its own at the bottom right. The gear in the top corner opens Settings.",
+    "The Dex is just your cards and the event now. Challenges, luck cards, the calendar, frame meter, pass and your Bag moved to Profile.",
+    "Sort your cards by Rarest first or Newest first. The Dex remembers your sort, tab and filter.",
+    "Going back from a card keeps your spot in the list.",
+    "Weekly boss: one special offer to find each week, with a badge, a Silver Chest and a title the first time.",
+    "Titles to earn from milestones, bosses, chests and recycling. Pick one to show under your name.",
+    "Showcase your 3 best cards with a short note on your profile.",
+    "Comments on community posts, and captions you write yourself. Swearing's fine, slurs aren't.",
+    "Anyone can browse community posts now, even signed out.",
+    "Recycle a card for scrap from its page, with Undo. Every recycle has a tiny chance at a bonus drop.",
+    "Stats: a heat map of your best days and hours, and Best areas when you tag offers with an area.",
+    "Optional daily earnings goal: mark offers you took and fill the ring.",
+    "Tougher grading: under $18/hr or $1.20/mi is always a Decline, multi-stop and alcohol orders lose points, and great pay per mile now reaches Epic.",
+    "Better scanning of alcohol orders and orders with two pickups.",
+    "Pull down to refresh the feed on iPhone, a clear notice when you're offline, and a flash on big pulls.",
+    "Computers: the side menu stays on a card's page, and cards no longer get squished.",
+    "Discord: pick your roles, !card to show a driver's best card, and share your Legendary pulls if you turn it on in Settings."]],
   ["1.7","October 2026",[
     "Items and a Bag: Lucky Charms, Double XP, Re-roll Tokens, Frame Boosters and more, each with its own rarity.",
     "Bronze, Silver and Gold Chests from daily and weekly challenges, level milestones and the pass.",
@@ -5018,14 +5216,19 @@ function privacySheet(){
     <li>We keep your Google name and email, your username and your driver ID. Your email is never shown to other drivers.</li></ul>
     <h3>Who can see what</h3>
     <ul><li><b>Friends</b> you accept see your username, level, stats and cards, if Share my cards is on. Only close friends see maps and addresses, if you allow it.</li>
-    <li><b>Global posts</b> are seen by every signed-in driver. They never include maps or addresses.</li>
-    <li><b>The DasherDex team</b> (moderators) can see account details (in the app and in a private moderators-only Discord channel), cards and reports to keep the app fair and safe: for example, to remove fake cards or posts.</li>
+    <li><b>Community (Global) posts and their comments</b> can be seen by anyone who opens DasherDex, even signed out, with your username, level and title. They never include maps or addresses.</li>
+    <li><b>Your profile</b> (username, level, title, achievements and your showcase cards) can be seen by signed-in drivers who tap your name.</li>
+    <li><b>Discord</b>: if you turn on sharing Legendary and Mythic pulls, that card (store, pay and rarity) and your username are posted in the DasherDex Discord. Off by default.</li>
+    <li><b>Areas</b> you tag offers with and offers you mark as taken are private to you.</li>
+    <li><b>The DasherDex team</b> (moderators) can see account details, cards and reports (in the app, and your username and driver ID in a private moderators-only Discord channel; your email only goes to the head moderator) to keep the app fair and safe: for example, to remove fake cards or posts.</li>
     <li>Nobody else. DasherDex doesn't sell your data, doesn't show ads and doesn't use trackers.</li></ul>
     <h3>Deleting your data</h3>
     <ul><li>Delete any card from its page. Settings › Your data › Reset deletes all progress.</li>
     <li>Settings › Account › Delete my cloud data removes your cloud copy, friends and posts.</li>
     <li>Signed out, everything lives only in this browser. Clearing Safari's website data deletes it.</li></ul>
-    <p class="msg">DasherDex is for drivers 13 and older. Questions? Ask the DasherDex team.</p></div>`);
+    <h3>Get a copy of your data</h3>
+    <ul><li>Email <a href="mailto:${SUPPORT_EMAIL}">${SUPPORT_EMAIL}</a> from the Gmail you sign in with, and we'll send you what DasherDex has about you, or delete it.</li></ul>
+    <p class="msg">DasherDex is for drivers 13 and older. Questions? Email ${SUPPORT_EMAIL}.</p></div>`);
 }
 function termsSheet(){
   qrSheet(`<div class="qrcard legal"><h2>Terms of use</h2>
@@ -5033,14 +5236,17 @@ function termsSheet(){
     <h3>Just for fun</h3>
     <ul><li>Grades, verdicts, rarities and stats are estimates from your screenshots, not financial advice. Always check the offer in your delivery app before you accept.</li>
     <li>DasherDex is an independent fan project. It isn't affiliated with or endorsed by DoorDash or Uber.</li>
-    <li>DasherDex is free and comes as is. Features can change, and data can be lost, so don't rely on it as your only record.</li></ul>
+    <li>DasherDex is free and comes as is. Features can change, and data can be lost, so don't rely on it as your only record.</li>
+    <li>DasherDex is not a mileage log, earnings record or tax document. The scanner can misread numbers. For taxes, use the earnings and mileage records from DoorDash or Uber.</li></ul>
     <h3>Play fair</h3>
     <ul><li>Only scan real offers you got. No edited, fake or AI-made screenshots.</li>
     <li>Don't try to cheat levels, cards or limits, or mess with the app or other drivers' accounts.</li>
-    <li>Be kind. No hateful, mean or private stuff in your username or posts.</li></ul>
+    <li>Be kind. Swearing is fine; slurs, hate, harassment, threats and other people's private info are not, in your username, captions, comments or showcase note.</li>
+    <li>Don't spam, post links or advertise.</li></ul>
     <h3>Moderation</h3>
-    <ul><li>The DasherDex team can remove cards or posts, block drivers from Global, change rewards, or close accounts that break these rules.</li>
-    <li>You can report any Global post from its ••• menu.</li></ul>
+    <ul><li>The DasherDex team can remove cards, posts or comments, ban drivers from posting and commenting (you can still use your own Dex), change rewards, or close accounts that break these rules.</li>
+    <li>You can report any community post from its ••• menu. A post reported by 3 different drivers is hidden until a moderator checks it.</li>
+    <li>Questions or problems: ${SUPPORT_EMAIL}.</li></ul>
     <p class="msg">We may update these terms. Big changes will show up in What's new.</p></div>`);
 }
 /* =========================================================
@@ -5238,6 +5444,7 @@ function gameAfterScan(cards){
     if(real.some(special)){if(m.p>0)GAME_NEW.push(real.some(c=>c.meter)?"Frame meter paid off!":"Frame meter reset: you got a frame");m.p=0;m.r=(+m.r||0)+1}
     else{const was=meterFull();m.p=Math.min(METER_FULL,(+m.p||0)+(real.length>=2?0.3*real.length:0.3));if(!was&&meterFull())GAME_NEW.push("Frame meter is FULL")}}
   gameMilestones();
+  if(real.length){try{checkBoss()}catch(e){console.warn(e)}try{checkTitles()}catch(e){}try{bigPullOut(real)}catch(e){}}
   if(typeof Cloud!=="undefined"&&Cloud.user&&real.length)Cloud.bumpCommunity(real.length,real.filter(c=>RANK[c.tier]>=RANK.rare).length).catch(()=>{});
 }
 /* level milestones every 5 levels, and season pass tiers */
@@ -5349,15 +5556,15 @@ function itemSheet(k){
 function scrapSheet(){
   const pool=store.cards.filter(scrapOK),sel=new Set(Array.isArray(SET.scrapTiers)?SET.scrapTiers:["trash"]);
   const pick=pool.filter(c=>sel.has(c.tier)),val=scrapOf(pick),scrap=invOf("scrap");
-  qrSheet(`<div class="qrcard scrap"><h2>🔩 Scrap &amp; craft</h2>
-    <p class="msg">Scrapping deletes cards for scrap. You keep their XP and their stats. Favorites, special frames and stickers are never scrapped.</p>
+  qrSheet(`<div class="qrcard scrap"><h2>♻️ Recycle &amp; craft</h2>
+    <p class="msg">Recycling deletes cards for scrap. You keep their XP and their stats. Favorites, special frames and stickers are never recycled. Each card has a tiny chance at a bonus drop.</p>
     <div class="ntags">${["trash","common","uncommon","rare"].map(t=>`<button class="ntag" data-st="${t}" aria-pressed="${sel.has(t)}" style="--c:${TC[t]}">${TIERS.find(x=>x.id===t).name} · ${SCRAP_VAL[t]}</button>`).join("")}</div>
-    <button class="btn" id="scDo" ${pick.length?"":"disabled"}>Scrap ${pick.length} card${pick.length===1?"":"s"} for ${val} scrap</button>
+    <button class="btn" id="scDo" ${pick.length?"":"disabled"}>Recycle ${pick.length} card${pick.length===1?"":"s"} for ${val} scrap</button>
     <h3>Craft <small>you have ${scrap.toLocaleString()} scrap</small></h3>
     <div class="recipes">${RECIPES.map(([k,cost])=>`<div class="rec" style="--c:${TC[ITEMS[k].r]}"><span class="li">${ITEMS[k].i}</span><span><b>${esc(ITEMS[k].n)}</b><small>${cost.toLocaleString()} scrap</small><span class="ap"><i style="width:${Math.min(100,scrap/cost*100)}%"></i></span></span><button class="mini" data-cr="${k}" ${scrap>=cost?"":"disabled"}>Craft</button></div>`).join("")}</div></div>`);
   document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const t=b.dataset.st;if(sel.has(t))sel.delete(t);else sel.add(t);SET.scrapTiers=[...sel];saveSet();scrapSheet()});
-  let armed=false;$("scDo").onclick=e=>{if(!pick.length)return;if(!armed){armed=true;e.target.textContent=`Tap again to scrap ${pick.length}`;return}
-    const n=addScrap(pick,"Scrapped "+pick.length+" cards");deleteCards(pick.map(c=>c.id),{quiet:true,hist:true});save();GAME_NEW=[];toast(`+${n} scrap`);scrapSheet()};
+  let armed=false;$("scDo").onclick=e=>{if(!pick.length)return;if(!armed){armed=true;e.target.textContent=`Tap again to recycle ${pick.length}`;return}
+    recycleMany(pick)};
   document.querySelectorAll("[data-cr]").forEach(b=>b.onclick=()=>{if(craft(b.dataset.cr)){toast("Crafted "+ITEMS[b.dataset.cr].n);scrapSheet()}});
 }
 function prestigeHTML(){
@@ -5402,6 +5609,7 @@ Object.assign(Cloud,{
     if(!this.user)return;const a=Object.keys(prog().ach||{}).slice(0,80);
     const doc={name:String(p.name||myName()).slice(0,24),username:String(this.username()||"").slice(0,20),level:Math.round(+p.level||1),pr:Math.round(+p.pr||0),
       ach:a,best:p.best?{tier:p.best.tier,score:p.best.score,finish:p.best.finish||"standard",store:String(p.best.store||"").slice(0,40)}:null,cards:+p.cards||0,updated:Date.now()};
+    try{const t=myTitle();if(t)doc.title=titleName(t);const sh=showPub();if(sh.length)doc.show=sh;const nt=prog().sc&&prog().sc.note;if(nt)doc.note=String(nt).slice(0,80)}catch(e){}
     const sig=JSON.stringify({...doc,updated:0});if(sig===this.pubSig)return;
     await this.db.collection("pub").doc(this.user.uid).set(doc);this.pubSig=sig;
   },
@@ -5410,6 +5618,7 @@ Object.assign(Cloud,{
 });
 /* tap a driver on the feed: friends open their whole Dex; anyone else shows their level, achievements and Global posts */
 async function openUser(uid,nameHint,back){
+  if(!Cloud.user){toast("Sign in to see driver profiles");return}
   if(Cloud.isHead){openDriver(uid,nameHint);return}
   const fr=(Cloud.friends||[]).find(f=>f.id===uid&&f.accepted);
   if(fr){openFriend(uid,back);return}
@@ -5419,7 +5628,8 @@ async function openUser(uid,nameHint,back){
   const nm=(pub&&pub.name)||nameHint||"Driver",L=(pub&&+pub.level)||1,ach=pub&&Array.isArray(pub.ach)?pub.ach:[];
   qrSheet(`<div class="qrcard pubp">
     <div class="drv-head"><span class="avatar" style="--c:${pub&&pub.best?TC[pub.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${esc(nm[0].toUpperCase())}</span>
-      <div><h2>${pub&&pub.username?"@"+esc(pub.username):esc(nm)}</h2><small>${pub&&pub.pr?`<span class="prb">★${pub.pr>1?pub.pr:""}</span>`:""}Level ${L} · ${titleOf(L)}${pub&&pub.cards?` · ${pub.cards} cards`:""}</small></div></div>
+      <div><h2>${pub&&pub.username?"@"+esc(pub.username):esc(nm)}</h2><small>${pub&&pub.pr?`<span class="prb">★${pub.pr>1?pub.pr:""}</span>`:""}Level ${L} · ${titleOf(L)}${pub&&pub.cards?` · ${pub.cards} cards`:""}</small>${pub&&pub.title?`<div><span class="ttag">${esc(String(pub.title).slice(0,30))}</span></div>`:""}</div></div>
+    ${pub&&Array.isArray(pub.show)&&pub.show.length?`<div class="flabel">Showcase</div><div class="show3 pubshow">${pub.show.slice(0,3).map((c,i)=>cardHTML({...cleanCard(c,"sc"+i),_friend:true,_art:""})).join("")}</div>${pub.note?`<p class="shownote">“${esc(String(pub.note).slice(0,80))}”</p>`:""}`:""}
     ${ach.length?`<div class="flabel">Achievements · ${ach.length}</div><div class="pubach">${ach.map(a=>`<span>${esc(a)}</span>`).join("")}</div>`:""}
     <div class="flabel">Posted to Global · ${posts.length}</div>
     ${posts.length?`<div class="grid pubgrid">${posts.map(p=>cardHTML({...p.card,_friend:true,_art:""})).join("")}</div>`:`<p class="msg">No Global posts yet.</p>`}
@@ -5449,12 +5659,395 @@ function runTease(c,best,done){
   };
   tm=setTimeout(tick,best?500:250);
 }
+
+/* =========================================================
+   DasherDex 1.8
+   ========================================================= */
+/* ---------- offline: say clearly that scans are kept on this phone and sync later ---------- */
+function renderOffline(){
+  const el=$("offline");if(!el)return;const off=typeof navigator!=="undefined"&&navigator.onLine===false;
+  el.hidden=!off;if(!off)return;
+  const signed=typeof Cloud!=="undefined"&&Cloud.user;
+  el.innerHTML=`<span class="nt-ic">📴</span><div><b>You're offline</b><small>Scanning still works. New cards are saved on this ${/iPhone|iPad/.test(navigator.userAgent)?"iPhone":"device"} right away${signed?" and back up to your account as soon as you're online again":""}. Nothing is lost.</small></div>`;
+}
+addEventListener("offline",()=>{renderOffline();toast("You're offline. Scans are still saved on this device.")});
+addEventListener("online",()=>{renderOffline();if(typeof Cloud!=="undefined"&&Cloud.user){toast("Back online. Syncing your cards…");try{Cloud.push().then(()=>toast("All synced ✓")).catch(()=>{})}catch(e){}}});
+
+/* ---------- text check for captions, comments and notes ----------
+   Loose on purpose: swearing is fine. Blocks slurs (also spelled with numbers, symbols or spaces),
+   telling someone to kill themselves, links, and a few violent emoji. Mods still get reports for anything else. */
+const MOD_EMOJI=/[\u{1F52B}\u{1F4A3}\u{1F9E8}\u{1F52A}\u{1F5E1}\u{2694}\u{1FA93}\u{1FA78}\u{2620}\u{5350}\u{534D}\u{1F9B9}\u{1F489}]/u;
+const MOD_LINK=/(https?:\/\/|www\.|\b[a-z0-9-]{2,}\.(com|net|org|gg|io|ly|xyz|co|me|app|link|ru)\b)/i;
+const MOD_SUB={"0":"o","1":"i","!":"i","|":"i","3":"e","4":"a","@":"a","5":"s","$":"s","7":"t","+":"t","8":"b","9":"g","6":"g","2":"z","€":"e","£":"l","¡":"i","ı":"i","х":"x","а":"a","е":"e","о":"o","р":"p","с":"c","і":"i"};
+const modNorm=s=>String(s||"").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g,"").replace(/[0-9!|@$+€£¡ıхаеорсі]/g,ch=>MOD_SUB[ch]||ch);
+/* word stems; checked on each word and on the whole text with spaces and symbols removed */
+const MOD_JOINED=[/n+i+g+(?:g+|e+r|a+h?|u+h|z|l+e?t)/,/n+[i1]+g+e+r+s?\b/,/f+a+g+(?:g+o+t|o+t|s\b|$)/,/f+a+g+g/,/k+y+k+e/,/t+r+a+n+n+(?:y|i+e)/,/c+h+i+n+k/,/w+e+t+b+a+c+k/,/s+a+n+d+n+i/,/t+o+w+e+l+h+e+a+d/,/r+a+g+h+e+a+d/,/b+e+a+n+e+r/,/r+e+t+a+r+d/,/k+i+l+l+y+o+u+r+s+e+l+f/,/k+y+s\b/,/c+r+a+c+k+e+r/,/p+o+r+c+h+m+o+n+k/,/j+i+g+a+b+o+o/,/z+i+p+p+e+r+h+e+a+d/,/g+o+o+k+s?$/,/d+y+k+e/];
+const MOD_WORDS=/^(fag|fags|kike|kikes|spic|spics|spick|coon|coons|gook|gooks|chink|chinks|nig|nigs|wop|wops|dago|tranny|trannies|kys|negro|negroes|nazi|heil)$/;
+function modCheck(text){
+  const raw=String(text||"");
+  if(MOD_EMOJI.test(raw))return {ok:false,why:"That emoji isn't allowed here."};
+  if(MOD_LINK.test(raw))return {ok:false,why:"Links aren't allowed here."};
+  const n=modNorm(raw),words=n.split(/[^a-z]+/).filter(Boolean).map(w=>w.replace(/(.)\1{2,}/g,"$1$1"));
+  const joined=n.replace(/[^a-z]/g,"");
+  if(words.some(w=>MOD_WORDS.test(w)||MOD_WORDS.test(w.replace(/(.)\1+/g,"$1"))))return {ok:false,why:"Slurs aren't allowed. Swearing is fine, hate isn't."};
+  if(MOD_JOINED.some(r=>r.test(joined)||words.some(w=>r.test(w))))return {ok:false,why:"Slurs aren't allowed. Swearing is fine, hate isn't."};
+  return {ok:true};
+}
+
+/* ---------- titles: earned names shown under yours. Each one is an item in the reward events, so they sync like items. ---------- */
+const ETITLES={
+  rookie:{n:"Rookie Runner",r:"common",how:"Scan your first offer"},
+  lv10:{n:"Road Regular",r:"uncommon",how:"Reach level 10"},
+  lv25:{n:"Route Veteran",r:"rare",how:"Reach level 25"},
+  lv50:{n:"Dex Legend",r:"legendary",how:"Reach level 50"},
+  pr1:{n:"Prestiged",r:"epic",how:"Prestige once"},
+  c100:{n:"Collector",r:"uncommon",how:"Scan 100 offers"},
+  c500:{n:"Hoarder",r:"rare",how:"Scan 500 offers"},
+  miles:{n:"Mileage Master",r:"rare",how:"Scan 1,000 miles of offers"},
+  night:{n:"Night Owl",r:"uncommon",how:"Scan 10 offers between 11 PM and 4 AM"},
+  early:{n:"Early Bird",r:"uncommon",how:"Scan 10 offers between 5 and 8 AM"},
+  myth:{n:"Mythic Hunter",r:"mythic",how:"Pull a Mythic card"},
+  shiny:{n:"Shiny Chaser",r:"epic",how:"Get a Holo or Gold frame"},
+  streak:{n:"Iron Streak",r:"epic",how:"Scan 14 days in a row"},
+  boss1:{n:"Boss Slayer",r:"rare",how:"Beat your first weekly boss"},
+  boss5:{n:"Boss Hunter",r:"epic",how:"Beat 5 different weekly bosses"},
+  bossall:{n:"Boss Master",r:"legendary",how:"Beat every weekly boss"},
+  lucky:{n:"Lucky Duck",r:"epic",how:"Rare drop from Silver and Gold Chests"},
+  golden:{n:"Golden Touch",r:"legendary",how:"Very rare drop from Gold Chests"},
+  panda:{n:"Trash Panda",r:"epic",how:"Very rare drop from recycling cards"},
+  alchem:{n:"Scrap Alchemist",r:"legendary",how:"Extremely rare drop from recycling cards"}
+};
+for(const [k,t] of Object.entries(ETITLES))ITEMS["t_"+k]={n:"Title: "+t.n,r:t.r,i:"🏷️",hide:1,title:1,d:t.how};
+ITEMS.bb={n:"Boss badge",r:"epic",i:"🛡️",hide:1,d:"Weekly bosses beaten."};
+const hasTitle=k=>invOf("t_"+k)>0;
+const myTitles=()=>Object.keys(ETITLES).filter(hasTitle);
+const titleName=k=>ETITLES[k]?ETITLES[k].n:"";
+const myTitle=()=>{const k=prog().tsel;return k&&hasTitle(k)?k:""};
+function giveTitle(k,why){if(!ETITLES[k]||hasTitle(k))return false;return grant("tt:"+k,{["t_"+k]:1},why||"New title")}
+/* milestone titles: checked after scans and when the profile opens */
+function checkTitles(){
+  try{
+    const all=allOffers(),cs=store.cards.filter(c=>trusted(c)&&!c.noxp&&!c.dev),L=myLevel()+50*(+prog().pr||0);
+    if(cs.length)giveTitle("rookie");
+    if(L>=10)giveTitle("lv10");if(L>=25)giveTitle("lv25");if(L>=50)giveTitle("lv50");if((+prog().pr||0)>=1)giveTitle("pr1");
+    if(all.length>=100)giveTitle("c100");if(all.length>=500)giveTitle("c500");
+    if(all.reduce((a,c)=>a+(+c.miles||0),0)>=1000)giveTitle("miles");
+    const hr=c=>new Date(c.ts).getHours();
+    if(cs.filter(c=>{const h=hr(c);return h>=23||h<4}).length>=10)giveTitle("night");
+    if(cs.filter(c=>{const h=hr(c);return h>=5&&h<8}).length>=10)giveTitle("early");
+    if(cs.some(c=>c.tier==="mythic"))giveTitle("myth");
+    if(cs.some(c=>c.finish==="holo"||c.finish==="gold"))giveTitle("shiny");
+    if(streakNow()>=14)giveTitle("streak");
+    const beat=bossesBeaten();if(beat.size>=1)giveTitle("boss1");if(beat.size>=5)giveTitle("boss5");if(beat.size>=BOSSES.length)giveTitle("bossall");
+  }catch(e){console.warn(e)}
+}
+function titleSheet(){
+  const have=myTitles(),cur=myTitle();
+  qrSheet(`<div class="qrcard"><h2>🏷️ Titles</h2><p class="msg">Your title shows under your name on your profile and your posts. Earn them from milestones, weekly bosses, chests and recycling.</p>
+    <div class="ttlist">${Object.entries(ETITLES).map(([k,t])=>{const on=have.includes(k);return `<button class="ttl${on?"":" locked"}${cur===k?" on":""}" data-tt="${k}" ${on?"":"disabled"} style="--c:${TC[t.r]}"><b>${on?esc(t.n):"???"}</b><small>${esc(t.how)}</small>${cur===k?`<span class="ttok">Showing</span>`:""}</button>`}).join("")}</div>
+    ${cur?`<button class="btn ghost" id="ttNone">Show no title</button>`:""}</div>`);
+  document.querySelectorAll("[data-tt]").forEach(b=>b.onclick=()=>{prog().tsel=b.dataset.tt;save();closeQR();renderProfile();toast("Title set: "+titleName(b.dataset.tt));pushPubSoon()});
+  const nn=$("ttNone");if(nn)nn.onclick=()=>{prog().tsel="";save();closeQR();renderProfile();pushPubSoon()};
+}
+const titleTag=k=>k&&ETITLES[k]?`<span class="ttag" style="--c:${TC[ETITLES[k].r]}">${esc(ETITLES[k].n)}</span>`:"";
+let pubT=0;function pushPubSoon(){clearTimeout(pubT);pubT=setTimeout(()=>{if(typeof Cloud!=="undefined"&&Cloud.user)Cloud.pushProfile().catch(()=>{})},1500)}
+
+/* chests: a small chance at a title you don't have yet */
+const rollLoot0=rollLoot;
+rollLoot=function(k){const out=rollLoot0(k);
+  const r=Math.random();
+  if(k==="chest_g"&&r<0.01&&!hasTitle("golden"))out.t_golden=1;
+  else if((k==="chest_g"&&r<0.04||k==="chest_s"&&r<0.012)&&!hasTitle("lucky"))out.t_lucky=1;
+  return out};
+
+/* ---------- weekly boss: one special offer to find each week (Monday to Sunday). Beat it for a badge; the first time for each boss also gives a title. ---------- */
+const BOSSES=[
+  {id:"hop",n:"The Short Hop",i:"🐇",col:"#3ddc84",t:"$10 or more, under 4 miles",f:c=>c.pay>=10&&c.miles<4},
+  {id:"whale",n:"The Big Fish",i:"🐋",col:"#5f8dff",t:"One offer paying $20 or more",f:c=>c.pay>=20},
+  {id:"dino",n:"The Mile Eater",i:"🦖",col:"#ff8a3d",t:"$2.00+ a mile on a trip of 5+ miles",f:c=>c.miles>=5&&c.pay/c.miles>=2},
+  {id:"flash",n:"The Quick Flip",i:"⚡",col:"#ffd23f",t:"$8 or more in 15 minutes or less",f:c=>c.pay>=8&&c.minutes<=15},
+  {id:"owl",n:"The Night Shift",i:"🌙",col:"#9b7bff",t:"$25+/hr after 9 PM",f:c=>new Date(c.ts).getHours()>=21&&c.pph>=25},
+  {id:"rush",n:"The Rush Hour",i:"⏱️",col:"#ff5c8a",t:"$30+/hr between 11 AM–1 PM or 5–8 PM",f:c=>{const h=new Date(c.ts).getHours();return (h>=11&&h<13||h>=17&&h<20)&&c.pph>=30}},
+  {id:"crown",n:"The Crown",i:"👑",col:"#f3c55a",t:"Pull a Legendary or Mythic card",f:c=>RANK[c.tier]>=RANK.legendary},
+  {id:"broom",n:"The Clean Sweep",i:"🧹",col:"#41d6c3",t:"$1.75+/mi and $25+/hr on one offer",f:c=>c.miles>0&&c.pay/c.miles>=1.75&&c.pph>=25},
+  {id:"road",n:"The Road Trip",i:"🛣️",col:"#c9ccd6",t:"One offer paying $35 or more",f:c=>c.pay>=35},
+  {id:"dbl",n:"The Double Stack",i:"🧾",col:"#ff7a59",t:"A 3+ stop offer paying $22 or more",f:c=>(+c.stops||2)>=3&&c.pay>=22}
+];
+const BOSS_ORDER=[0,2,6,4,1,7,3,9,5,8];
+const bossWeek=d=>dayKey(weekStart(d||today()));
+function bossFor(wk){const w=Math.round((+new Date(wk+"T12:00:00")-+new Date("2026-10-26T12:00:00"))/(7*864e5));return BOSSES[BOSS_ORDER[((w%10)+10)%10]]}
+function bossState(){
+  const wk=bossWeek(),b=bossFor(wk),ws=+weekStart(),we=ws+7*864e5;
+  const hit=store.cards.find(c=>trusted(c)&&!c.noxp&&!c.dev&&c.verified!==false&&+new Date(c.ts)>=ws&&+new Date(c.ts)<we&&+new Date(c.added||c.ts)>=ws&&b.f(c));
+  return {wk,b,hit,done:!!gEv()["bs:"+wk]};
+}
+function bossesBeaten(){const s=new Set();for(const k of Object.keys(gEv()))if(k.startsWith("bs:")){const id=k.split(".")[1];if(id)s.add(id)}return s}
+const bossCount=id=>Object.keys(gEv()).filter(k=>k.startsWith("bs:")&&k.endsWith("."+id)).length;
+/* called after every scan: claims the badge the moment you find the boss offer */
+function checkBoss(){
+  const s=bossState();if(s.done||!s.hit)return null;
+  const first=!bossesBeaten().has(s.b.id);
+  gEv()["bs:"+s.wk]={bb:1};gEv()["bs:"+s.wk+"."+s.b.id]={xp:250,chest_s:1};
+  GAME_NEW.push(`${s.b.i} Boss beaten: ${s.b.n} · +250 XP · ${ITEMS.chest_s.i} Silver Chest`);
+  checkTitles();save();return {b:s.b,first};
+}
+const bossBadge=(b,n,lock)=>`<span class="bossb${lock?" lock":""}" style="--c:${b.col}" title="${esc(b.n)}"><svg viewBox="0 0 64 72" aria-hidden="true"><defs><linearGradient id="bg_${b.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${b.col}"/><stop offset="1" stop-color="#111"/></linearGradient></defs><path d="M32 2 60 16v22c0 16-12 27-28 32C16 65 4 54 4 38V16z" fill="url(#bg_${b.id})" stroke="${b.col}" stroke-width="2.5"/><path d="M32 9 53 20v17c0 12-9 21-21 25-12-4-21-13-21-25V20z" fill="#0008"/></svg><i>${b.i}</i>${n>1?`<em>×${n}</em>`:""}</span>`;
+function bossHTML(){
+  const s=bossState(),b=s.b,beat=bossesBeaten();
+  const end=new Date(+weekStart()+7*864e5-1),left=Math.max(1,Math.ceil((+end-Date.now())/864e5));
+  return `<div class="sbox boss${s.done?" done":""}" style="--c:${b.col}">
+    <div class="bossrow">${bossBadge(b,0,false)}<span class="bosst"><small>Weekly boss · ${s.done?"beaten!":left+" day"+(left>1?"s":"")+" left"}</small><b>${esc(b.n)}</b><span>${esc(b.t)}</span></span></div>
+    ${s.done?`<p class="msg">You found it. Badge, +250 XP and a Silver Chest are yours. A new boss shows up on Monday.</p>`:`<p class="msg">Scan an offer this week that matches and you win a badge, +250 XP and a Silver Chest. ${beat.has(b.id)?"":"First time beating this boss also gives a title."}</p>`}
+    <div class="bossall">${BOSSES.map(x=>bossBadge(x,bossCount(x.id),!beat.has(x.id))).join("")}</div>
+    <small class="bossn">${beat.size} of ${BOSSES.length} bosses beaten</small></div>`;
+}
+
+/* ---------- recycling: a card becomes scrap, plus a tiny chance at a bonus. Trash almost never pays out; Rare a bit more often. ---------- */
+const RECYCLE_ODDS={trash:1/6000,common:1/3000,uncommon:1/1200,rare:1/450};
+function recycleBonus(tier){
+  if(Math.random()>=(RECYCLE_ODDS[tier]||0))return null;
+  const r=Math.random();
+  if(r<0.02&&!hasTitle("alchem"))return {t_alchem:1};
+  if(r<0.08&&!hasTitle("panda"))return {t_panda:1};
+  if(r<0.14)return {chest_g:1};
+  if(r<0.30)return {reroll:1};
+  if(r<0.50)return {chest_s:1};
+  if(r<0.70)return {charm2:1};
+  return {xp:[50,100,150,250][Math.floor(Math.random()*4)]};
+}
+let recyclePending=null;
+function commitRecycle(){
+  const p=recyclePending;if(!p)return;recyclePending=null;clearTimeout(p.timer);
+  const won=recycleBonus(p.tier);
+  if(won){grant("rc:"+rid(),won,"Lucky recycle");save();checkLevel();GAME_NEW=[];flashRare();
+    qrSheet(`<div class="qrcard rcwin"><h2>♻️ Lucky recycle!</h2><div class="rcbig">${Object.keys(won).map(k=>k==="xp"?"⭐":ITEMS[k].i).join("")}</div><p class="msg">Recycling that ${esc(TIERS.find(t=>t.id===p.tier).name)} card turned up <b>${esc(lootText(won))}</b>. That almost never happens.</p></div><button class="btn" onclick="closeQR()">Nice!</button>`)}
+  else toast(`♻️ Recycled for ${p.n} scrap. No bonus this time.`);
+}
+addEventListener("pagehide",()=>{if(recyclePending)commitRecycle()});
+function recycleCard(c){
+  if(!scrapOK(c))return false;
+  if(recyclePending)commitRecycle();
+  const u=undoPoint([c]),id="sc:"+rid(),n=SCRAP_VAL[c.tier]||0;
+  gEv()[id]={scrap:n};GAME_NEW=[];
+  deleteCards([c.id],{quiet:true,hist:true});save();
+  recyclePending={tier:c.tier,n,timer:setTimeout(commitRecycle,UNDO_MS+300)};
+  undoToast(`♻️ Recycled for ${n} scrap…`,u,{undo:()=>{if(recyclePending){clearTimeout(recyclePending.timer);recyclePending=null}delete gEv()[id];save()}});
+  return true;
+}
+/* many cards at once (the Scrap & craft sheet): every card gets its own tiny roll, then you see what came out */
+function recycleMany(cards){
+  const n=addScrap(cards,"Scrapped "+cards.length+" cards"),wins=[];
+  for(const c of cards){const w=recycleBonus(c.tier);if(w)wins.push(w)}
+  deleteCards(cards.map(c=>c.id),{quiet:true,hist:true});
+  for(const w of wins)grant("rc:"+rid(),w,"Lucky recycle");
+  save();checkLevel();GAME_NEW=[];
+  const tally={};for(const w of wins)for(const [k,v] of Object.entries(w))tally[k]=(tally[k]||0)+v;
+  if(wins.length)flashRare();
+  qrSheet(`<div class="qrcard rcres"><h2>♻️ Recycling results</h2>
+    <div class="rcline"><span>${cards.length} card${cards.length>1?"s":""} recycled</span><b>+${n} scrap</b></div>
+    ${wins.length?`<div class="rcbig">${Object.keys(tally).map(k=>k==="xp"?"⭐":ITEMS[k].i).join("")}</div><p class="msg"><b>Lucky!</b> ${esc(lootText(tally))}</p>`:`<p class="msg">No bonus drops this time. Every card has a tiny chance at XP, items or even a rare title. Rare cards have the best odds, Trash the worst.</p>`}</div>
+    <button class="btn" id="rcOk">Done</button>`);
+  $("rcOk").onclick=()=>{closeQR();if(typeof scrapSheet==="function"&&invOf("scrap")>=0){}if(view==="vProfile")renderProfile();if(view==="vDex")renderDex()};
+  return n;
+}
+
+/* ---------- a quick flash on rare pulls (no sound, no vibration) ---------- */
+function flashRare(tier){
+  if(typeof RM!=="undefined"&&RM)return;
+  const el=document.createElement("div");el.className="rareflash";if(tier)el.style.setProperty("--c",TC[tier]||"#fff");
+  document.body.appendChild(el);setTimeout(()=>el.remove(),900);
+  const s=document.querySelector("#sheet:not([hidden]) .col,#qrSheet:not([hidden]) .col");if(s){s.classList.remove("shake");void s.offsetWidth;s.classList.add("shake");setTimeout(()=>s.classList.remove("shake"),600)}
+}
+
+/* ---------- earnings goal (Settings, off by default): a daily $ goal that fills as you mark offers you took ---------- */
+const egoalAmt=()=>Math.max(10,Math.min(2000,Math.round(+SET.egoal||150)));
+const tookToday=()=>store.cards.filter(c=>c.tk&&dayKey(c.ts)===dayKey(today()));
+function renderEarnGoal(){
+  const el=$("egoal");if(!el)return;el.hidden=!SET.egoalOn;if(!SET.egoalOn)return;
+  const list=tookToday(),got=list.reduce((a,c)=>a+(+c.pay||0),0),goal=egoalAmt(),pct=Math.min(100,got/goal*100),done=got>=goal;
+  el.className="egoal sbox"+(done?" done":"");
+  el.innerHTML=`<span class="ering" style="--p:${pct}"><b>${Math.round(pct)}%</b></span>
+    <span class="et"><small>Today's earnings goal</small><b>${money(got)} <span>of ${money(goal)}</span></b><small>${list.length?`${list.length} offer${list.length>1?"s":""} taken today`:"Open a card and tap “I took this offer” to count it."}</small></span>
+    ${done?`<span class="gdone">Goal hit!</span>`:`<button class="mini ghost" id="egEdit">Change</button>`}`;
+  const e=$("egEdit");if(e)e.onclick=()=>{show("vSettings");toTop();setTimeout(()=>{const x=$("egBox");if(x)x.scrollIntoView({block:"center"})},150)};
+}
+/* areas you tag offers with ("Katy", "Downtown"), most used first */
+const zonesUsed=()=>{const m=new Map();for(const c of store.cards)if(c.zone){const k=c.zone.toLowerCase();const e=m.get(k)||{n:c.zone,k,c:0};e.c++;m.set(k,e)}return [...m.values()].sort((a,b)=>b.c-a.c)};
+function detail18HTML(c){
+  const zs=zonesUsed().filter(z=>z.k!==String(c.zone||"").toLowerCase()).slice(0,6);
+  return `${SET.egoalOn?`<div class="panel tkbox"><button class="btn ${c.tk?"":"ghost"}" id="dTook" aria-pressed="${!!c.tk}">${c.tk?"✓ You took this offer":"I took this offer"}</button><p class="about">Counts ${money(c.pay)} toward today's earnings goal${c.tk?". Tap again to undo.":"."}</p></div>`:""}
+  <div class="panel zonebox"><h2>Area <small>for “Best areas” in Stats</small></h2>
+    <div class="zrow"><input id="dZone" maxlength="24" autocomplete="off" placeholder="e.g. Katy, Downtown" value="${esc(c.zone||"")}"><button class="mini" id="dZoneOk">Save</button></div>
+    ${zs.length?`<div class="ntags">${zs.map(z=>`<button class="ntag" data-zone="${esc(z.n)}">${esc(z.n)}</button>`).join("")}</div>`:""}
+    <p class="about">Only you can see your areas.</p></div>`;
+}
+function wireDetail18(c){
+  const t=$("dTook");if(t)t.onclick=()=>{if(c.tk)delete c.tk;else c.tk=realNow();c.upd=realNow();save();toast(c.tk?`+${money(c.pay)} toward today's goal`:"Removed from today's goal");openCard(c,null)};
+  const setZone=z=>{z=String(z||"").replace(/\s+/g," ").trim().slice(0,24);if(z)c.zone=z;else delete c.zone;c.upd=realNow();save();toast(z?"Area saved: "+z:"Area removed");openCard(c,null)};
+  const ok=$("dZoneOk");if(ok)ok.onclick=()=>setZone($("dZone").value);
+  const zi=$("dZone");if(zi)zi.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();setZone(zi.value)}};
+  document.querySelectorAll("[data-zone]").forEach(b=>b.onclick=()=>setZone(b.dataset.zone));
+}
+function extras18HTML(){
+  return `<div class="sbox" id="egBox"><h3>Goals and sharing</h3>
+    <label class="sw"><span><b>Daily earnings goal</b><small>Set a $ goal for the day. Mark offers you took on their card page and a ring on your Profile fills up. Off by default.</small></span><input type="checkbox" id="setEgoal" ${SET.egoalOn?"checked":""}><i></i></label>
+    ${SET.egoalOn?`<div class="zrow"><span class="msg" style="margin:0">Goal per day: $</span><input id="setEgAmt" type="number" inputmode="numeric" min="10" max="2000" step="5" value="${egoalAmt()}"></div>`:""}
+    ${typeof Cloud!=="undefined"&&Cloud.on?`<label class="sw"><span><b>Post my Legendary and Mythic pulls to Discord</b><small>Shares the card (store, pay and rarity, never maps or addresses) in the DasherDex Discord's big-pulls channel with your username. ${Cloud.user?"":"Needs sign in. "}Off by default.</small></span><input type="checkbox" id="setBig" ${SET.bigPulls?"checked":""} ${Cloud.user?"":"disabled"}><i></i></label>`:""}
+  </div>`;
+}
+function wireSettings18(){
+  const g=$("setEgoal");if(g)g.onchange=()=>{SET.egoalOn=g.checked;saveSet();renderSettings()};
+  const a=$("setEgAmt");if(a)a.onchange=()=>{SET.egoal=Math.max(10,Math.min(2000,Math.round(+a.value||150)));a.value=SET.egoal;saveSet();toast("Goal set to "+money(SET.egoal)+" a day")};
+  const b=$("setBig");if(b)b.onchange=()=>{SET.bigPulls=b.checked;saveSet();toast(b.checked?"Your Legendary and Mythic pulls will show up in Discord":"Discord sharing off")};
+}
+/* opted in: Legendary and Mythic pulls go to a queue the Discord bot posts from (a few minutes later) */
+function bigPullOut(cards){
+  if(!SET.bigPulls||typeof Cloud==="undefined"||!Cloud.user||!Cloud.bigPull)return;
+  for(const c of cards)if(RANK[c.tier]>=RANK.legendary&&trusted(c)&&c.verified!==false&&!c.noxp&&!c.dev)Cloud.bigPull(c).catch(e=>console.warn(e));
+}
+
+/* ---------- Stats: when and where the miles pay best ---------- */
+const DOW=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const HM_COLS=[["12–5a",0,5],["5–9a",5,9],["9–11a",9,11],["11–2p",11,14],["2–5p",14,17],["5–9p",17,21],["9–12p",21,24]];
+function heatHTML(cs){
+  const by=SET.hmBy==="pph"?"pph":"ppm",cell=Array.from({length:7},()=>HM_COLS.map(()=>[]));
+  for(const c of cs){const d=new Date(c.ts),r=(d.getDay()+6)%7,h=d.getHours(),k=HM_COLS.findIndex(([,s,e])=>h>=s&&h<e);if(k>=0)cell[r][k].push(c)}
+  const val=l=>{const a=agg(l);return l.length?(by==="ppm"?a.ppm:a.pph):null};
+  const vals=cell.flat().map(val).filter(v=>v!=null);if(vals.length<2)return "";
+  const lo=Math.min(...vals),hi=Math.max(...vals);let best=null;
+  cell.forEach((row,r)=>row.forEach((l,k)=>{const v=val(l);if(v!=null&&l.length>=2&&(!best||v>best.v))best={v,r,k,n:l.length}}));
+  const fmt=v=>by==="ppm"?"$"+v.toFixed(2):"$"+Math.round(v);
+  return `<div class="sbox heat"><h3>Best times <small>avg ${by==="ppm"?"$/mile":"$/hour"}</small></h3>
+    <div class="seg seg2 hmseg"><button data-hm="ppm" aria-pressed="${by==="ppm"}">$ per mile</button><button data-hm="pph" aria-pressed="${by==="pph"}">$ per hour</button></div>
+    <div class="hm" role="table"><span></span>${HM_COLS.map(([l])=>`<span class="hmh">${l}</span>`).join("")}
+    ${cell.map((row,r)=>`<span class="hmd">${DOW[r]}</span>${row.map((l,k)=>{const v=val(l);if(v==null)return `<span class="hmc empty"></span>`;const t=hi>lo?(v-lo)/(hi-lo):1;
+      return `<span class="hmc${best&&best.r===r&&best.k===k?" best":""}" style="--t:${t.toFixed(2)}" title="${DOW[r]} ${HM_COLS[k][0]}: ${fmt(v)} · ${l.length} offer${l.length>1?"s":""}">${fmt(v)}</span>`}).join("")}`).join("")}</div>
+    <p class="msg">${best?`Your best spot: <b>${DOW[best.r]} ${HM_COLS[best.k][0]}</b> at <b>${fmt(best.v)}${by==="ppm"?"/mi":"/hr"}</b> over ${best.n} offers.`:"Scan more offers to find your best times."} Greener is better. From your own scans in this range.</p></div>`;
+}
+function zonesHTML(cs){
+  const m=new Map();for(const c of cs)if(c.zone){const k=c.zone.toLowerCase();(m.get(k)||m.set(k,{n:c.zone,l:[]}).get(k)).l.push(c)}
+  const rows=[...m.values()].map(z=>({...z,a:agg(z.l)})).sort((x,y)=>y.a.ppm-x.a.ppm);
+  if(!rows.length)return `<div class="sbox"><h3>Best areas</h3><p class="msg">Tag offers with an area on their card page (like “Katy” or “Downtown”) and you'll see which areas pay best here.</p></div>`;
+  const mx=Math.max(...rows.map(r=>r.a.ppm),0.01);
+  return `<div class="sbox"><h3>Best areas <small>avg $/mile</small></h3><div class="hbars">${rows.slice(0,8).map((r,i)=>`<div class="hb${i===0&&rows.length>1?" best":""}"><span class="hl">${esc(r.n)}<small>${r.a.n} offer${r.a.n>1?"s":""} · $${r.a.pph.toFixed(0)}/hr</small></span><span class="ht"><i style="width:${r.a.ppm/mx*100}%"></i></span><b>$${r.a.ppm.toFixed(2)}</b></div>`).join("")}</div></div>`;
+}
+function wireStats18(){document.querySelectorAll("[data-hm]").forEach(b=>b.onclick=()=>{SET.hmBy=b.dataset.hm;saveSet();renderStats()})}
+
+/* ---------- card showcase: your 3 favorite cards and a short note, on your profile and your public profile ---------- */
+const showIds=()=>{const s=prog().sc;return s&&Array.isArray(s.ids)?s.ids.filter(id=>store.cards.some(c=>c.id===id)).slice(0,3):[]};
+function showcaseHTML(){
+  const ids=showIds(),cards=ids.map(id=>store.cards.find(c=>c.id===id)).filter(Boolean),note=(prog().sc&&prog().sc.note)||"";
+  return `<div class="sbox showbox"><h3>Showcase <small>${cards.length?"tap a card to open it":"your 3 best cards"}</small></h3>
+    ${cards.length?`<div class="show3">${cards.map(cardHTML).join("")}</div>`:`<p class="msg">Pick up to 3 cards to show off on your profile. Friends and anyone who taps your name sees them.</p>`}
+    ${note?`<p class="shownote">“${esc(note)}”</p>`:""}
+    <div class="btnrow"><button class="btn ghost sm" id="shPick">${cards.length?"Change cards":"Pick cards"}</button><button class="btn ghost sm" id="shNote">${note?"Edit note":"Add a note"}</button></div></div>`;
+}
+function wireShowcase(root){
+  root.querySelectorAll(".show3 .card").forEach(el=>el.onclick=()=>openDetail(el.dataset.id));
+  const p=root.querySelector("#shPick");if(p)p.onclick=showPick;
+  const n=root.querySelector("#shNote");if(n)n.onclick=showNote;
+}
+function showPick(){
+  const sel=showIds(),pool=store.cards.slice().sort((x,y)=>RANK[y.tier]-RANK[x.tier]||(special(y)?1:0)-(special(x)?1:0)||y.score-x.score).slice(0,60);
+  const draw=()=>{qrSheet(`<div class="qrcard wide"><h2>Pick your showcase</h2><p class="msg">Tap up to 3 cards. ${sel.length}/3 picked.</p>
+    <div class="grid pickgrid">${pool.map(c=>`<div class="pickwrap${sel.includes(c.id)?" on":""}" data-pk="${c.id}">${cardHTML(c)}${sel.includes(c.id)?`<span class="pkn">${sel.indexOf(c.id)+1}</span>`:""}</div>`).join("")}</div></div>
+    <button class="btn" id="pkDone">Save showcase</button>`);
+    document.querySelectorAll("[data-pk]").forEach(el=>el.onclick=()=>{const id=el.dataset.pk,i=sel.indexOf(id);if(i>=0)sel.splice(i,1);else if(sel.length<3)sel.push(id);else{toast("3 cards max. Tap one to remove it first.");return}draw()});
+    $("pkDone").onclick=()=>{const p=prog();p.sc={...(p.sc||{}),ids:sel.slice(0,3),upd:Date.now()};save();closeQR();renderProfile();pushPubSoon();toast("Showcase saved")}};
+  draw();
+}
+function showNote(){
+  const cur=(prog().sc&&prog().sc.note)||"";
+  qrSheet(`<div class="qrcard"><h2>Showcase note</h2><p class="msg">A short line under your showcase. Swearing's fine, hate isn't.</p>
+    <textarea id="snTxt" maxlength="80" rows="2" placeholder="e.g. Chasing that Mythic 👀">${esc(cur)}</textarea><p class="msg" id="snErr" style="color:var(--decline)"></p></div>
+    <button class="btn" id="snSave">Save</button>`);
+  $("snSave").onclick=()=>{const t=$("snTxt").value.replace(/\s+/g," ").trim().slice(0,80),m=modCheck(t);if(!m.ok){$("snErr").textContent=m.why;return}
+    const p=prog();p.sc={...(p.sc||{}),note:t,upd:Date.now()};save();closeQR();renderProfile();pushPubSoon();toast("Note saved")};
+}
+/* what goes to your public profile: the cards' faces only (no maps, no addresses) */
+const showPub=()=>showIds().map(id=>store.cards.find(c=>c.id===id)).filter(Boolean).map(c=>postCard(c));
+
+/* the special-frame collection (moved here from Stats) */
+function finishCollHTML(){
+  const all=allOffers(),fins=C.FINISH_KEYS,have=new Set(all.filter(special).map(c=>c.tier+"|"+c.finish));
+  return `<div class="sbox"><h3>Frame collection <small>${have.size} of ${TIERS.length*fins.length}</small></h3>
+    <div class="tblwrap"><table class="wk"><thead><tr><th>Tier</th>${fins.map(f=>`<th>${FIN_SHORT[f]}</th>`).join("")}</tr></thead><tbody>
+    ${TIERS.map(t=>`<tr><td><span style="color:${TC[t.id]}">●</span> ${t.name}</td>${fins.map(f=>`<td>${have.has(t.id+"|"+f)?"✓":"<span style='color:var(--dim)'>–</span>"}</td>`).join("")}</tr>`).join("")}
+    </tbody></table></div></div>`;
+}
+
+/* ---------- comments on Global posts ---------- */
+const COMMENT_MAX=200;
+if(typeof Cloud!=="undefined")Object.assign(Cloud,{
+  async comments(pid){const out=[];(await this.db.collection("posts").doc(pid).collection("comments").orderBy("at","asc").limit(100).get()).forEach(d=>{const v=d.data()||{};out.push({id:d.id,uid:String(v.uid||""),name:String(v.name||"Driver").slice(0,24),title:typeof v.title==="string"?v.title.slice(0,30):"",text:String(v.text||"").slice(0,COMMENT_MAX),at:num0(v.at)})});return out},
+  async addComment(p,text){
+    if(!this.user)throw new Error("Sign in to comment.");
+    text=String(text||"").replace(/\s+/g," ").trim().slice(0,COMMENT_MAX);if(!text)throw new Error("Write something first.");
+    const m=modCheck(text);if(!m.ok)throw new Error(m.why);
+    const last=+SET.lastCm||0;if(Date.now()-last<8000&&!this.isMod)throw new Error("Slow down a little, then try again.");
+    let banned=false;try{banned=(await this.db.collection("bans").doc(this.user.uid).get()).exists}catch(e){}
+    if(banned)throw new Error("A moderator has blocked you from posting and commenting.");
+    const doc={uid:this.user.uid,name:myName(),text,at:Date.now()};{const t=myTitle();if(t)doc.title=titleName(t).slice(0,30)}
+    const ref=this.db.collection("posts").doc(p.id);
+    await ref.collection("comments").doc(this.user.uid+"_"+Date.now().toString(36)).set(doc);
+    try{await ref.update({cc:firebase.firestore.FieldValue.increment(1)})}catch(e){}
+    SET.lastCm=Date.now();saveSet();feedCache.global=null;
+  },
+  async delComment(p,c){const ref=this.db.collection("posts").doc(p.id);await ref.collection("comments").doc(c.id).delete();try{await ref.update({cc:firebase.firestore.FieldValue.increment(-1)})}catch(e){}feedCache.global=null},
+  /* a moderator looked at a post with 3+ reports and it's fine: show it again */
+  async keepPost(pid){await this.db.collection("posts").doc(pid).update({ok:true});feedCache.global=null}
+});
+async function commentSheet(p){
+  const me=Cloud.user?Cloud.user.uid:"";
+  qrSheet(`<div class="qrcard cmts"><h2>💬 Comments</h2><p class="msg">${esc(p.name)}'s ${esc(p.card.store)} card</p><div id="cmList"><p class="msg">Loading…</p></div></div>
+    ${me?`<div class="cmin"><textarea id="cmTxt" maxlength="${COMMENT_MAX}" rows="1" placeholder="Add a comment 😎"></textarea><button class="btn sm" id="cmGo">Send</button></div><p class="msg cmerr" id="cmErr"></p>`:`<button class="btn" id="cmIn">Sign in to comment</button>`}`);
+  const draw=async()=>{let list=[];try{list=await Cloud.comments(p.id)}catch(e){$("cmList").innerHTML=`<p class="msg">${esc(friendly(e))}</p>`;return}
+    if($("qrSheet").hidden)return;
+    $("cmList").innerHTML=list.length?list.map(c=>`<div class="cm"><span class="avatar sm" style="--c:var(--t-rare)">${esc((c.name[0]||"D").toUpperCase())}</span><div class="cmb"><b>${c.uid===me?"You":esc(c.name)}${c.title?` <span class="ttag">${esc(c.title)}</span>`:""}<small> · ${timeAgo(c.at)}</small></b><p>${esc(c.text)}</p></div>${me&&(c.uid===me||p.uid===me||Cloud.isMod)?`<button class="mini ghost" data-cdel="${esc(c.id)}" aria-label="Delete comment">✕</button>`:""}</div>`).join(""):`<p class="msg">No comments yet. Say something nice.</p>`;
+    $("cmList").querySelectorAll("[data-cdel]").forEach(b=>b.onclick=async()=>{const c=list.find(x=>x.id===b.dataset.cdel);try{await Cloud.delComment(p,c);toast("Comment deleted");draw()}catch(e){toast(friendly(e))}})};
+  draw();
+  const go=$("cmGo");if(go)go.onclick=async()=>{const t=$("cmTxt").value;$("cmErr").textContent="";go.disabled=true;
+    try{await Cloud.addComment(p,t);$("cmTxt").value="";p.cc=(p.cc||0)+1;draw()}catch(e){$("cmErr").textContent=e.message&&!e.code?e.message:friendly(e)}go.disabled=false};
+  const ci=$("cmIn");if(ci)ci.onclick=()=>{closeQR();Cloud.signIn()};
+}
+
+/* ---------- pull to refresh on iPhone (Feed and Profile/friends). Computers get a Refresh button instead. ---------- */
+(function(){
+  const touch=matchMedia("(pointer:coarse)").matches;if(!touch)return;
+  let y0=0,pull=0,on=false,el=null;
+  const ok=()=>(view==="vFeed"||view==="vProfile")&&(window.scrollY||document.documentElement.scrollTop)<=0&&$("qrSheet").hidden&&$("sheet").hidden;
+  addEventListener("touchstart",e=>{if(!ok()||e.touches.length!==1)return;y0=e.touches[0].clientY;on=true;pull=0},{passive:true});
+  addEventListener("touchmove",e=>{if(!on)return;pull=e.touches[0].clientY-y0;if(pull<=0){if(el)el.style.opacity=0;return}
+    if(!el){el=document.createElement("div");el.className="ptr";el.innerHTML=`<span>↻</span>`;document.body.appendChild(el)}
+    const d=Math.min(90,pull*0.5);el.style.opacity=Math.min(1,d/50);el.style.transform=`translate(-50%,${d}px) rotate(${pull*1.5}deg)`;el.classList.toggle("ready",d>=60)},{passive:true});
+  addEventListener("touchend",async()=>{if(!on)return;on=false;const go=el&&el.classList.contains("ready");
+    if(!go){if(el){el.remove();el=null}return}
+    el.classList.add("spin");
+    try{if(view==="vFeed")await renderFeed(true);else if(Cloud.user){Cloud.fAt=Date.now();await Cloud.loadFriends();renderProfile()}}catch(e){}
+    setTimeout(()=>{if(el){el.remove();el=null}},350)});
+})();
+if(typeof Cloud!=="undefined")Object.assign(Cloud,{
+  async bigPull(c){
+    if(!this.user||!this.db)return;
+    /* the database checks the card against your synced copy, so sync this one first */
+    const s=this.synced(),sg=sigOf(c);if(s[c.id]!==sg){await this.me().collection("cards").doc(c.id).set(pubOf(c));await this.me().collection("cardLoc").doc(c.id).set(locOf(c));s[c.id]=sg;this.setSynced(s)}
+    const card={id:c.id,store:String(c.store).slice(0,40),tier:c.tier,score:c.score,finish:c.finish||"standard",pay:Math.round((+c.pay||0)*100)/100,pph:Math.round((+c.pph||0)*100)/100,ppm:Math.round((+c.ppm||0)*100)/100,miles:Math.round((+c.miles||0)*10)/10,minutes:Math.round(+c.minutes||0),platform:String(c.platform||"").slice(0,20)};
+    await this.db.collection("bigpulls").doc(this.user.uid+"_"+c.id).set({uid:this.user.uid,name:String(this.username()?"@"+this.username():myName()).slice(0,24),card,at:Date.now()});
+  }
+});
 /* =========================================================
    Español. Casual, the way drivers talk ("tú", "oferta", "pedido", "sobre").
    English stays the source; this swaps text as it appears on screen.
    Numbers in the English text are matched as {n} and put back in the same order.
    ========================================================= */
 const ES={
+/* 1.8 */
+"Sort":"Ordenar","Rarest first":"Más raras primero","Newest first":"Más nuevas primero","Showcase":"Vitrina","Pick cards":"Elegir tarjetas","Change cards":"Cambiar tarjetas","Add a note":"Agregar nota","Edit note":"Editar nota",
+"Titles":"Títulos","No title":"Sin título","Show no title":"No mostrar título","Weekly boss":"Jefe semanal","Best times":"Mejores horas","Best areas":"Mejores zonas","Area":"Zona","Save":"Guardar",
+"I took this offer":"Tomé esta oferta","✓ You took this offer":"✓ Tomaste esta oferta","Today's earnings goal":"Meta de ganancias de hoy","Goal hit!":"¡Meta lograda!","Goals and sharing":"Metas y compartir",
+"Daily earnings goal":"Meta diaria de ganancias","Comments":"Comentarios","Comment":"Comentar","Send":"Enviar","Sign in to comment":"Inicia sesión para comentar","Recycling results":"Resultados del reciclaje",
+"You're offline":"Estás sin conexión","Mark read":"Marcar leído","✓ Mark all read":"✓ Marcar todo leído","All caught up":"Todo al día","Clear this tab":"Borrar esta pestaña","Frame collection":"Colección de marcos",
+"Pick your showcase":"Elige tu vitrina","Save showcase":"Guardar vitrina","Showcase note":"Nota de la vitrina","Lucky recycle!":"¡Reciclaje con suerte!","↻ Refresh":"↻ Actualizar",
 /* nav + common */
 "Dex":"Dex","Feed":"Feed","Scan":"Escanear","Stats":"Stats","Settings":"Ajustes","Profile":"Perfil","Back":"Atrás","Close":"Cerrar","Done":"Listo","Open":"Abrir","Change":"Cambiar","Copy":"Copiar","Share":"Compartir","Post":"Publicar","Delete":"Borrar","Undo":"Deshacer","Fix":"Corregir","Search":"Buscar","Refresh":"Actualizar","Loading…":"Cargando…","Checking…":"Revisando…","New":"Nuevo","Off":"No","Add":"Agregar","Main":"Principal","Event":"Evento","You":"Tú","Today":"Hoy","Yesterday":"Ayer","This week":"Esta semana","Best":"Mejor","All":"Todas","Auto":"Auto","Fast":"Rápido","Phone":"Teléfono","English":"English","Español":"Español","Language · Idioma":"Idioma · Language","Language":"Idioma",
 "Phone: follows your iPhone's language.":"Teléfono: usa el idioma de tu iPhone.",
