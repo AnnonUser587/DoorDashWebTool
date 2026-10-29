@@ -3987,7 +3987,7 @@ const Cloud={
   skey(){return "offerdex.syncedState."+(this.user?this.user.uid:"")},
   stateRef(){return this.me().collection("meta").doc("state")},
   stateOut(){const p=prog(),qd={};for(const k of Object.keys(p.qd).sort().slice(-400))qd[k]=p.qd[k].slice(0,3);
-    return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,bd:Object.fromEntries(Object.entries(p.bd||{}).slice(-20).map(([k,v])=>[k,Math.round(+v||0)])),md:{xp:+((store.modDone||{}).xp)||0,god:+((store.modDone||{}).god)||0},
+    return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,bd:Object.fromEntries(Object.entries(p.bd||{}).slice(-20).map(([k,v])=>[k,Math.round(+v||0)])),md:{xp:+((store.modDone||{}).xp)||0,god:+((store.modDone||{}).god)||0,dc:+((store.modDone||{}).dc)||0},
       ach:Object.keys(p.ach||{}).slice(0,80),ev:Object.fromEntries(Object.entries(p.ev||{}).slice(-3000)),cal:p.cal&&p.cal.d?{d:String(p.cal.d),n:+p.cal.n||1}:null,
       pm:{p:Math.round((+(p.pm&&p.pm.p)||0)*10)/10,r:+(p.pm&&p.pm.r)||0},pr:+p.pr||0,prx:Math.round(+p.prx||0),ss:p.ss&&typeof p.ss==="object"?p.ss:{},qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,tsel:String(p.tsel||"").slice(0,20),sc:p.sc&&typeof p.sc==="object"?{ids:(Array.isArray(p.sc.ids)?p.sc.ids:[]).slice(0,3).map(x=>String(x).slice(0,40)),note:String(p.sc.note||"").slice(0,80),upd:+p.sc.upd||0}:null,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
       del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0},
@@ -4035,7 +4035,7 @@ const Cloud={
   mergeExtra(P,R){
     if(!P.bd||typeof P.bd!=="object")P.bd={};
     if(R.bd&&typeof R.bd==="object")for(const [k,v] of Object.entries(R.bd).slice(0,40))if(/^[a-z0-9]{8}$/.test(k))P.bd[k]=Math.max(+P.bd[k]||0,Math.max(0,Math.min(1e8,Math.round(num0(v)))));
-    if(R.md&&typeof R.md==="object"){const d=store.modDone||(store.modDone={xp:0,god:0});d.xp=Math.max(+d.xp||0,Math.max(0,num0(R.md.xp)));d.god=Math.max(+d.god||0,Math.max(0,num0(R.md.god)))}
+    if(R.md&&typeof R.md==="object"){const d=store.modDone||(store.modDone={xp:0,god:0});d.xp=Math.max(+d.xp||0,Math.max(0,num0(R.md.xp)));d.god=Math.max(+d.god||0,Math.max(0,num0(R.md.god)));d.dc=Math.max(+d.dc||0,Math.max(0,num0(R.md.dc)))}
     if(!P.ach||typeof P.ach!=="object")P.ach={};if(Array.isArray(R.ach))for(const a of R.ach.slice(0,80))if(typeof a==="string"&&a.length<40)P.ach[a]=1;
     /* rewards: every event is one-time, so merging is just adding the ones this phone doesn't have yet */
     if(!P.ev||typeof P.ev!=="object")P.ev={};
@@ -4747,6 +4747,19 @@ Object.assign(Cloud,{
     await u.collection("cards").doc(c.id).delete();await u.collection("cardLoc").doc(c.id).delete().catch(()=>{});
     await u.collection("posts").doc(c.id).delete().catch(()=>{});await this.db.collection("posts").doc(uid+"_"+c.id).delete().catch(()=>{});
   },
+  /* head moderator: bump a one-time command counter (hr = reset hashed photos, dc = delete all cards) */
+  async bumpMod(uid,key){const s=await this.modRef(uid).get(),cur=s.exists?s.data():{};await this.setModState(uid,{[key]:num0(cur[key])+1})},
+  async killAllCards(uid){
+    const u=this.db.collection("users").doc(uid);
+    await this.bumpMod(uid,"dc");
+    const cardRefs=[],locRefs=[];
+    (await u.collection("cards").get()).forEach(d=>cardRefs.push(d.ref));
+    try{(await u.collection("cardLoc").get()).forEach(d=>locRefs.push(d.ref))}catch(e){}
+    const all=cardRefs.concat(locRefs);
+    for(let i=0;i<all.length;i+=400){const b=this.db.batch();all.slice(i,i+400).forEach(r=>b.delete(r));await b.commit()}
+    await this.killPosts(uid);
+    return cardRefs.length
+  },
   async killPosts(uid){
     const refs=[];try{(await this.db.collection("posts").where("uid","==",uid).get()).forEach(d=>refs.push(d.ref))}catch(e){}
     try{(await this.db.collection("users").doc(uid).collection("posts").get()).forEach(d=>refs.push(d.ref))}catch(e){}
@@ -4764,10 +4777,14 @@ Object.assign(Cloud,{
   }
 });
 function applyModState(d){
-  const ms={xpGift:Math.max(0,Math.round(num0(d.xpGift))),god:Math.max(0,Math.round(num0(d.god))),cal:d.cal===true||d.nerf===true,gm:d.gm===true,
+  const ms={xpGift:Math.max(0,Math.round(num0(d.xpGift))),god:Math.max(0,Math.round(num0(d.god))),cal:d.cal===true||d.nerf===true,gm:d.gm===true,hr:Math.max(0,Math.round(num0(d.hr))),dc:Math.max(0,Math.round(num0(d.dc))),
     block:(Array.isArray(d.block)?d.block:[]).slice(-500).map(String)};
   const done=store.modDone||(store.modDone={xp:0,god:0});
   if(ms.xpGift>done.xp){bankAdd(ms.xpGift-done.xp);done.xp=ms.xpGift}
+  /* head moderator: delete all their cards (XP stays) */
+  if(ms.dc>(+done.dc||0)){done.dc=ms.dc;if(store.cards.length){deleteCards(store.cards.map(c=>c.id),{quiet:true});toast("A moderator cleared your Dex. Your XP and levels are kept.")}}
+  /* head moderator: reset their hashed photos (this phone only, repeating it is harmless) */
+  if(ms.hr>(+done.hr||0)){done.hr=ms.hr;resetHashes()}
   const was=rngCal(),wasGod=!!(store.modState&&store.modState.gm);
   store.modState=ms;
   /* God mode just ended: keep the best card of each offer, delete the copies (XP stays) */
@@ -4776,6 +4793,8 @@ function applyModState(d){
   else if(was)for(const c of store.cards){const o=c.cb||c.nrf;if(o){Object.assign(c,{score:o.s,tier:o.t,finish:o.f});delete c.cb;delete c.nrf;c.upd=realNow()}}
   save();checkLevel();
 }
+/* forget every screenshot fingerprint: scanned-photo list, 24-hour delete locks, deleted-offer list, and the hashes kept on each card */
+function resetHashes(){store.seen=[];store.del=[];store.gone=[];const t=realNow();for(const c of store.cards)if(c.sha||c.ph){delete c.sha;delete c.ph;c.upd=t}}
 const rngCal=()=>!!(store.modState&&(store.modState.cal||store.modState.nerf));
 function calCard(c){if(c.cb||c.nrf||c._friend)return;c.cb={s:c.score,t:c.tier,f:c.finish};c.score=Math.max(1,Math.min(c.score,Math.round(gradeOf(c)*0.3)));c.tier=C.tierFor(c.score).id;c.finish="standard";delete c.finish0;c.upd=realNow()}
 /* god packs waiting from the head moderator (weekly-challenge ones are counted separately in prog.gb10) */
@@ -4831,6 +4850,9 @@ async function openDriver(uid,nameHint){
     <div class="flabel">Punish</div>
     <label class="sw"><span><b>Calibrate luck</b><small>Secret. Their luck stops counting, no special frames, and very low rarity on all their cards. They still see their normal luck number. Their grade and Accept/Decline stay true. Turn off to undo.</small></span><input type="checkbox" data-dx="cal" ${ms.cal?"checked":""}><i></i></label>
     <div class="btnrow"><button class="btn ghost sm danger" data-dx="ban">${d.banned?"Unblock from Global":"Block from Global"}</button><button class="btn ghost sm" data-dx="posts">Delete all their posts</button></div>
+    <div class="flabel">Photos and cards</div>
+    <div class="btnrow"><button class="btn ghost sm" data-dx="hr">Reset hashed photos</button><button class="btn ghost sm danger" data-dx="dc">Delete all cards</button></div>
+    <p class="msg">Reset hashed photos forgets every screenshot fingerprint on their account, so they can scan old screenshots again. Delete all cards removes every card, map and post. Their XP and levels stay.</p>
     <div class="flabel">Moderator</div>
     <button class="btn ghost sm" data-dx="mod">${d.isMod?"Remove as moderator":"Make moderator"}</button>
     <div class="flabel">Their cards <small>${cards.length}</small></div>
@@ -4848,6 +4870,8 @@ async function openDriver(uid,nameHint){
       if(k==="god")run(()=>Cloud.setModState(uid,{god:num0(ms.god)+1}),"God Pack given. Their next upload gets it.");
       if(k==="ban")run(()=>d.banned?Cloud.unban(uid):Cloud.ban(uid,nm),d.banned?"Unblocked":"Blocked from Global");
       if(k==="posts")run(async()=>`Deleted ${await Cloud.killPosts(uid)} posts`,"Done");
+      if(k==="hr")run(()=>Cloud.bumpMod(uid,"hr"),"Hashed photos reset. It applies next time they open the app.");
+      if(k==="dc"){if(!el.dataset.armed){el.dataset.armed="1";el.textContent="Sure? Tap again";return}run(async()=>`Deleted ${await Cloud.killAllCards(uid)} cards. Their app clears next time they open it.`,"Done")}
       if(k==="mod")run(()=>d.isMod?Cloud.removeMod(uid):Cloud.db.collection("mods").doc(uid).set({name:nm,by:Cloud.user.uid,at:Date.now()}),d.isMod?"Moderator removed":nm+" is now a moderator");
     }});
   box.querySelectorAll("[data-kill]").forEach(el=>{let armed=false;el.onclick=()=>{if(!armed){armed=true;el.textContent="Sure?";return}
