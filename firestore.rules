@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// OfferDex security rules.
+// DasherDex security rules (v1.9). Paste this whole file into Firebase console > Firestore Database > Rules, then Publish.
 // Who can see what:
 //   you            everything of yours
 //   friends        your profile, stats and cards (only friends YOU accepted, and only while "Share my cards" is on)
@@ -59,7 +59,7 @@ service cloud.firestore {
       allow get: if isMe(uid) || (isFriendOf(uid) && sharesCards(uid)) || headMod();
       allow list: if false;
       allow create, update: if isMe(uid)
-        && request.resource.data.keys().hasOnly(['name','username','code','xp','level','pr','cards','specials','pph','ppm','streak','best','week','pw','share','shareLoc','since','updated'])
+        && request.resource.data.keys().hasOnly(['name','username','code','xp','level','pr','cards','specials','pph','ppm','streak','best','week','pw','share','shareLoc','since','updated','cpm','gpo'])
         && smallString(request.resource.data.name, 24);
       allow delete: if isMe(uid);
 
@@ -68,7 +68,7 @@ service cloud.firestore {
         allow read: if isMe(uid) || (isFriendOf(uid) && sharesCards(uid)) || headMod();
         allow delete: if headMod();
         allow write: if isMe(uid)
-          && (request.resource == null || (smallString(request.resource.data.store, 40) && request.resource.data.size() <= 46
+          && (request.resource == null || (smallString(request.resource.data.store, 40) && request.resource.data.size() <= 50
               && request.resource.data.get('score', 0) is number && request.resource.data.get('score', 0) <= 100));
       }
 
@@ -89,7 +89,11 @@ service cloud.firestore {
         allow create: if isMe(uid) && validPost(request.resource.data, uid)
           && smallString(request.resource.data.caption, 120) && noSlur(request.resource.data.caption);
         allow delete: if isMe(uid) || headMod();
-        allow update: if false;
+        // reactions: you and your friends can add, change or remove your own emoji, nothing else
+        allow update: if signedIn() && (isMe(uid) || isFriendOf(uid)) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rx'])
+          && request.resource.data.rx is map && request.resource.data.rx.size() <= 1000
+          && request.resource.data.rx.diff(resource.data.get('rx', {})).affectedKeys().hasOnly([request.auth.uid])
+          && (!(request.auth.uid in request.resource.data.rx) || request.resource.data.rx[request.auth.uid] in ['🔥','💰','😂','😮','👎']);
       }
 
       // what the head moderator set for this driver (level gifts, god packs, calibration, blocked offers).
@@ -97,7 +101,7 @@ service cloud.firestore {
       match /mod/{docId} {
         allow read: if isMe(uid) || headMod();
         allow write: if headMod() && docId == 'state'
-          && request.resource.data.keys().hasOnly(['xpGift','god','cal','nerf','gm','block','upd'])
+          && request.resource.data.keys().hasOnly(['xpGift','god','cal','nerf','gm','block','upd','unlim','upMax','hr','wipe','prMin'])
           && request.resource.data.block is list && request.resource.data.block.size() <= 500;
       }
 
@@ -174,6 +178,11 @@ service cloud.firestore {
         || (!blocked() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['cc'])
           && request.resource.data.cc is int && request.resource.data.cc >= 0
           && (request.resource.data.cc == resource.data.get('cc', 0) + 1 || request.resource.data.cc == resource.data.get('cc', 0) - 1))
+        // reactions: your own emoji only
+        || (!blocked() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rx'])
+          && request.resource.data.rx is map && request.resource.data.rx.size() <= 1000
+          && request.resource.data.rx.diff(resource.data.get('rx', {})).affectedKeys().hasOnly([request.auth.uid])
+          && (!(request.auth.uid in request.resource.data.rx) || request.resource.data.rx[request.auth.uid] in ['🔥','💰','😂','😮','👎']))
         // a moderator keeps a reported post up
         || (isMod() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ok','rb'])));
 
