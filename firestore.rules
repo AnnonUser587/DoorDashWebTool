@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// DasherDex security rules (v1.9). Paste this whole file into Firebase console > Firestore Database > Rules, then Publish.
+// DasherDex security rules (v1.9 Pre-Alpha). Paste this whole file into Firebase console > Firestore Database > Rules, then Publish.
 // Who can see what:
 //   you            everything of yours
 //   friends        your profile, stats and cards (only friends YOU accepted, and only while "Share my cards" is on)
@@ -93,7 +93,8 @@ service cloud.firestore {
         allow update: if signedIn() && (isMe(uid) || isFriendOf(uid)) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rx'])
           && request.resource.data.rx is map && request.resource.data.rx.size() <= 1000
           && request.resource.data.rx.diff(resource.data.get('rx', {})).affectedKeys().hasOnly([request.auth.uid])
-          && (!(request.auth.uid in request.resource.data.rx) || request.resource.data.rx[request.auth.uid] in ['🔥','💰','😂','😮','👎']);
+          && (!(request.auth.uid in request.resource.data.rx) || request.resource.data.rx[request.auth.uid] in ['🔥','💰','😂','😮','👎'])
+          || (isMe(uid) && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['card']) && request.resource.data.card is map && request.resource.data.card.id == resource.data.card.id);
       }
 
       // what the head moderator set for this driver (level gifts, god packs, calibration, blocked offers).
@@ -183,6 +184,9 @@ service cloud.firestore {
           && request.resource.data.rx is map && request.resource.data.rx.size() <= 1000
           && request.resource.data.rx.diff(resource.data.get('rx', {})).affectedKeys().hasOnly([request.auth.uid])
           && (!(request.auth.uid in request.resource.data.rx) || request.resource.data.rx[request.auth.uid] in ['🔥','💰','😂','😮','👎']))
+        // you updated your own card (a Re-roll Token gave it a frame): the post shows the new frame
+        || (resource.data.uid == request.auth.uid && !blocked() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['card'])
+          && request.resource.data.card is map && request.resource.data.card.id == resource.data.card.id)
         // a moderator keeps a reported post up
         || (isMod() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ok','rb'])));
 
@@ -217,10 +221,12 @@ service cloud.firestore {
     // public profile: what any signed-in driver sees when they tap your name (level, prestige, achievements). No cards or email.
     match /pub/{uid} {
       allow read: if signedIn();
-      allow write: if isMe(uid) && request.resource.data.keys().hasOnly(['name','username','level','pr','ach','best','cards','updated','title','show','note'])
+      allow write: if isMe(uid) && request.resource.data.keys().hasOnly(['name','username','level','pr','ach','best','cards','updated','title','show','note','bd','av'])
         && smallString(request.resource.data.name, 24) && request.resource.data.ach is list && request.resource.data.ach.size() <= 100
         && (!('title' in request.resource.data) || smallString(request.resource.data.title, 30))
         && (!('show' in request.resource.data) || (request.resource.data.show is list && request.resource.data.show.size() <= 3))
+        && (!('bd' in request.resource.data) || (request.resource.data.bd is string && request.resource.data.bd.size() <= 12))
+        && (!('av' in request.resource.data) || (request.resource.data.av is string && request.resource.data.av.size() <= 24000 && request.resource.data.av.matches('^data:image/jpeg;base64,.*')))
         && (!('note' in request.resource.data) || (smallString(request.resource.data.note, 80) && noSlur(request.resource.data.note)));
     }
     // the weekly community challenge counter: anyone signed in can add a little (one upload at a time), nobody can lower it

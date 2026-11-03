@@ -772,7 +772,7 @@ html.calm .reveal.big .bp-back,html.calm .reveal.big .bp-name,html.calm .reveal.
 .xf-l{display:flex;justify-content:space-between;font:500 .72rem var(--f-mono);color:var(--mut)}.xpfx.lvl .xf-l span:first-child{color:#f3c55a;font-weight:700}
 html.calm .xpfx,html.calm .xf-bar i{transition:none}
 #days .card{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-#days .card.holding{animation:holdpress 3s linear forwards}
+#days .card.holding{animation:holdpress .7s linear forwards}
 @keyframes holdpress{0%{transform:none}8%{transform:scale(.97)}100%{transform:scale(.93);filter:brightness(1.25);box-shadow:0 0 0 3px var(--accept),0 0 30px -4px var(--accept)}}
 html.selecting #days .card{transform:scale(.94);transition:transform .15s}
 html.selecting #days .card::after{content:"";position:absolute;z-index:9;top:17%;right:8%;width:9cqw;height:9cqw;min-width:22px;min-height:22px;border-radius:50%;border:2px solid #fff;background:#0008}
@@ -2268,7 +2268,7 @@ $("sortBy").onclick=e=>{const b=e.target.closest("button");if(!b||!b.dataset.s)r
 /* ---------- recycling from the Dex, Apple style ----------
    Hold a card for 3 seconds: a quick menu opens. Tap Recycle to recycle that card, or hold Recycle for 5 seconds to
    start selecting: that card is picked, tap more, then Recycle them all at once. */
-const HOLD_CARD=3000,HOLD_MULTI=5000;
+const HOLD_CARD=700,HOLD_MULTI=5000;
 let SEL=null,holdT=0,holdEl=null,holdXY=null,swallowClick=false;
 function holdCancel(){clearTimeout(holdT);holdT=0;if(holdEl)holdEl.classList.remove("holding");holdEl=null}
 $("days").addEventListener("pointerdown",e=>{
@@ -2308,7 +2308,7 @@ function selBar(){
     <button class="mini ghost" id="sbAll">${shown.length&&shown.every(id=>SEL.has(id))?"Clear":"Select all"}</button><button class="mini ghost" id="sbX">Cancel</button><button class="mini sb-go" id="sbGo" ${cs.length?"":"disabled"}>♻️ Recycle</button></div>`;
   $("sbX").onclick=endSelect;
   $("sbAll").onclick=()=>{if(shown.every(id=>SEL.has(id)))shown.forEach(id=>SEL.delete(id));else shown.forEach(id=>SEL.add(id));markSel();selBar()};
-  let armed=false;$("sbGo").onclick=e=>{if(!cs.length)return;if(!armed){armed=true;e.target.textContent=`Tap again: ${cs.length} card${cs.length>1?"s":""}`;return}
+  let armed=false,ready=false;$("sbGo").onclick=e=>{if(!cs.length)return;if(!armed){armed=true;const btn=e.target;btn.disabled=true;let sec=3;const tick=()=>{if(!btn.isConnected)return;if(sec>0){btn.textContent=`Wait ${sec}…`;sec--;setTimeout(tick,1000)}else{btn.disabled=false;ready=true;btn.textContent=`Confirm: ${cs.length} card${cs.length>1?"s":""}`}};tick();return}if(!ready)return;
     const list=store.cards.filter(c=>SEL.has(c.id));SEL=null;document.documentElement.classList.remove("selecting");$("selBar").remove();recycleMany(list);renderDex()};
 }
 $("days").onclick=e=>{
@@ -2344,6 +2344,7 @@ addEventListener("resize",()=>padForBar());
 const SCROLL={};
 function restoreScroll(){const y=SCROLL[view]||0;const go=()=>window.scrollTo(0,y);go();requestAnimationFrame(go);setTimeout(go,60);setTimeout(go,200)}
 function show(v){
+  if(v==="vProfile"&&SET.pnew){SET.pnew=0;saveSet();setTimeout(()=>{try{renderInboxBadge()}catch(e){}},0)}
   if(SEL&&v!=="vDex"){SEL=null;document.documentElement.classList.remove("selecting");const sb=$("selBar");if(sb)sb.remove()}
   if(view!=="vDetail"&&view!=="vFriend"&&v!==view)SCROLL[view]=window.scrollY||document.documentElement.scrollTop||0;
   view=v;for(const id of VIEWS)$(id).hidden=id!==v;
@@ -2422,7 +2423,7 @@ function openCard(c,friend){
      <div class="fields" style="margin-top:12px">${fieldsHTML("e",c,true)}</div>
      <button class="btn" id="eSave" style="margin-top:12px">Save and re-grade</button>
    </details>`:""}
-   ${own&&invOf("reroll")>0&&!special(c)&&trusted(c)&&!c.noxp&&!c.dev?`<div class="panel rrbox"><h2>🎲 Re-roll the frame</h2><p class="msg">Use a Re-roll Token for another shot at a special frame on this card, at 5× the usual odds. You have ${invOf("reroll")}.</p><button class="btn" id="dRoll">Re-roll</button></div>`:""}
+   ${own&&invOf("reroll")>0&&!special(c)&&trusted(c)&&!c.noxp&&!c.dev?`<div class="panel rrbox"><h2>🎲 Re-roll the frame</h2><p class="msg">Use a Re-roll Token for another shot at a special frame on this card, a 1 in 10 chance at a special frame, picked by normal frame rarity. You have ${invOf("reroll")}.</p><button class="btn" id="dRoll">Re-roll</button></div>`:""}
    ${own?detail18HTML(c):""}
    ${own&&!c.dev?`<div class="panel rsbox"><div class="rshead"><span><b>Numbers look wrong?</b><small>${c.rs?`Rescanned ${timeAgo(c.rs)} ago.`:"Stops and miles get mixed up sometimes."} Rescan reads the same screenshot again, more carefully and several ways.</small></span><button class="mini" id="dRescan">🔍 Rescan</button></div>
      ${c.rs?`<button class="linkbtn" id="dReview">Still wrong after the rescan? Send it for review</button>`:`<p class="about">After a rescan, you can send the card for review if it's still wrong.</p>`}</div>`:""}
@@ -4155,7 +4156,7 @@ function cleanLoc(d){
   return o;
 }
 const pubOf=c=>{const o={};for(const k of PUB_FIELDS)if(c[k]!==undefined&&c[k]!==null)o[k]=c[k];return o};
-const locOf=c=>{const o={};const a=artOf(c);if(a&&SET.maps!==false&&a.length<400000)o.art=a;if(SET.addr&&c.addr)o.addr=c.addr;if(SET.addr&&c.city)o.city=c.city;if(c.sha)o.sha=c.sha;if(c.ph)o.ph=c.ph;return o};
+const locOf=c=>{const o={};const a=artOf(c);if(a&&SET.maps!==false&&SET.cPhoto===true&&a.length<400000)o.art=a;if(SET.addr&&c.addr)o.addr=c.addr;if(SET.addr&&c.city)o.city=c.city;if(c.sha)o.sha=c.sha;if(c.ph)o.ph=c.ph;return o};
 const pubSig=c=>JSON.stringify(pubOf(cleanCard(pubOf(c),c.id)));
 const sigOf=c=>{const l=locOf(c);return pubSig(c)+"|"+(l.art?l.art.length:0)+"|"+(l.addr||"")};
 /* this phone's saves are numbered; if the saved copy is older than what was synced (a failed save), never delete cloud cards */
@@ -5496,7 +5497,7 @@ const inboxNew=()=>{const seen=+SET.inboxSeen||0,I=Cloud.inbox;return [...I.sign
 function renderInboxBadge(){
   const n=Cloud.isHead?inboxNew():0;
   /* the Profile tab: a number for new mod inbox items, or a dot when a luck card or today's login reward is waiting */
-  let dot=false;try{dot=(+prog().unseen||0)>0||(store.cards.length>0&&!calState().done)}catch(e){}
+  let dot=false;try{dot=SET.pdot!==false&&((+prog().unseen||0)>0||!!SET.pnew)}catch(e){}
   const tab=document.querySelector('.ntab[data-v="vProfile"]');
   if(tab){let b=tab.querySelector(".nbadge");if((n||dot)&&!b){b=document.createElement("i");b.className="nbadge";tab.appendChild(b)}if(b){b.hidden=!n&&!dot;b.classList.toggle("dot",!n&&dot);b.textContent=n?(n>9?"9+":n):""}}
   const el=$("inboxNote");if(el){el.hidden=!n;if(n)el.innerHTML=`<span class="nt-ic">📥</span><div><b>${n} new in your mod inbox</b><small>New drivers, reports or suspicious offers.</small></div><span class="ibact"><button class="btn sm" id="inboxGo">Open</button><button class="mini ghost" id="inboxRead">Mark read</button></span>`;
@@ -5573,7 +5574,7 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="1.9";
+const APP_VER="1.9 Pre-Alpha";
 const SUPPORT_EMAIL="supportdasherdex@gmail.com";
 /* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
 const DISCORD_DEFAULT="";
@@ -5582,6 +5583,21 @@ const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.
 const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["1.9 Pre-Alpha","November 2026",[
+    "DasherDex is in Pre-Alpha. Older cards are tagged Prototype and new cards are tagged Pre-Alpha.",
+    "Simpler welcome tour, with no map or screenshot of anyone's location.",
+    "Stats: Accepts first, then Verdicts, then the general numbers. The estimates warning only shows when a card is marked CHECK. Reorder or hide sections with Customize.",
+    "Privacy and data choices: see what the app needs, choose what to keep online, download your server data or delete it.",
+    "The profile tab dot only shows when you get an item, and goes away when you open it. You can turn it off in Settings.",
+    "Double XP now lasts 5 minutes, 1 hour, 1 day, 3 days or a week. Luck items are gone. +10 Scans, Streak Savers and Re-roll Tokens are rarer, and +10 Scans works once every 24 hours. Re-roll is a 1 in 10 chance at a frame, and the post on your feed updates.",
+    "Lots of new items: Medium and Huge Bonus XP, Scrap Pouch, Scrap Crate, Meter Charge, Meter Fill, Swap Pack, Season Ticket, Mystery Box, Title Crate, Border Crate and the Diamond Chest.",
+    "66 titles and 21 profile borders to earn, including crate-only ones. Owned titles show first.",
+    "Sticker packs fold up, and there's a Frames pack from most common to rarest.",
+    "Season pass: see your rewards, with titles and borders along the way. Rare rewards are a surprise.",
+    "Titles have art, harder ones are animated. New profile borders and a profile picture (public).",
+    "Recycling: shorter hold, a Select more button, tap-twice recycle, and a 3 second wait before a bulk recycle can be confirmed.",
+    "Dex: Collapse all, and pick what each day's summary shows. Pay per hour now uses Accepted offers by default.",
+    "Usernames can be changed once every 2 months."]],
   ["1.9","October 2026",[
     "Profit: every card shows what you keep after driving costs (miles × $0.65 by default, change it in Settings). Per hour and your stats use the profit. Only you and your friends see it.",
     "Recycling, Apple style: press and hold a card for 3 seconds, then tap Recycle. Hold Recycle for 5 seconds to pick more cards and recycle them all at once. Every card can be recycled now, and higher rarities are worth more scrap.",
@@ -5760,7 +5776,7 @@ const lootText=items=>Object.entries(items).filter(([k,v])=>v>0).map(([k,v])=>k=
 /* new rewards since the last scan or screen, shown as chips */
 let GAME_NEW=[];
 function grant(id,items,why){
-  const E=gEv();if(E[id])return false;items={...items};const xs=xpDrops(items);E[id]=items;GAME_NEW.push(`${why?why+": ":""}${lootText(items)}`);
+  const E=gEv();if(E[id])return false;items={...items};const xs=xpDrops(items);E[id]=items;try{SET.pnew=1;saveSet()}catch(e){}GAME_NEW.push(`${why?why+": ":""}${lootText(items)}`);
   if(xs.length)xpFX(xs.reduce((a,b)=>a+b,0),why);return true;
 }
 /* Bonus XP drops: a random amount, bigger amounts rarer. They turn into XP right away (no item to use). */
@@ -5970,7 +5986,7 @@ function useItem(k){
   else if(k==="reroll"){toast("Open one of your cards and tap Re-roll");return false}
   else if(k==="saver"){toast("Streak Savers are used automatically");return false}
   E[id]={[k]:-1};saveSet();save();
-  toast(k.startsWith("dx")?`⚡ Double XP for ${it.min} min`:k==="scans"?"+10 scans today":k==="swap"?"One more swap today":"Ready for your next upload");
+  toast(k.startsWith("dx")?`⚡ Double XP for ${paLeft(it.min*60e3)}`:k==="scans"?"+10 scans today":k==="swap"?"One more swap today":"Ready for your next upload");
   return true;
 }
 /* re-roll a card's special-frame chance at 5x the odds */
@@ -6007,7 +6023,7 @@ function gameBarHTML(){
       <div class="cdays">${days}</div>
       ${cs.done?"":`<button class="btn sm" id="calGo">Claim ${esc(lootText(CAL[cs.n-1]))}</button>`}
     </div>
-    ${dx||peak?`<div class="gdx">⚡ <b>Double XP</b><span>${dx?`${Math.ceil(dx/60e3)} min left`:"Peak hours: Fri–Sun, 6–9 PM"}</span></div>`:""}
+    ${dx||peak?`<div class="gdx">⚡ <b>Double XP</b><span>${dx?`${paLeft(dx)} left`:"Peak hours: Fri–Sun, 6–9 PM"}</span></div>`:""}
     <button class="gmeter${full?" full":""}" id="gMeter"><span class="gm-l"><b>✦ Frame meter</b><small>${full?"FULL: big chance at a special frame every upload":"Fills with every upload without a special frame"}</small></span><span class="gm-bar"><i style="width:${mp}%"></i></span><span class="gm-p">${mp}%</span></button>
     ${s?`<button class="gpass" id="gPass"><span class="gm-l"><b>🎟️ ${esc(s.name)}</b><small>Tier ${s.tier} of ${PASS_TIERS} · ${s.left} day${s.left===1?"":"s"} left</small></span><span class="gm-bar"><i style="width:${s.tier>=PASS_TIERS?100:s.into/PASS_XP*100}%"></i></span></button>`:""}`;
 }
@@ -6038,7 +6054,7 @@ function passSheet(){
 function bagHTML(){
   const have=ITEM_ORDER.filter(k=>invOf(k)>0),scrap=invOf("scrap"),f=fx(),act=[];
   if(f.charm)act.push(`🍀 +${f.charm}% luck on your next upload`);if(f.frame)act.push("✨ Frame Booster on your next upload");
-  if(dxLeft())act.push(`⚡ Double XP · ${Math.ceil(dxLeft()/60e3)} min left`);
+  if(dxLeft())act.push(`⚡ Double XP · ${paLeft(dxLeft())} left`);
   return `<div class="sbox bag"><h3>🎒 Bag <small>${have.reduce((a,k)=>a+invOf(k),0)} items</small></h3>
     ${act.length?`<div class="bagact">${act.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
     ${have.length?`<div class="bagitems">${have.map(k=>`<button class="bagit" data-item="${k}" style="--c:${TC[ITEMS[k].r]}"><span class="li">${ITEMS[k].i}</span><b>${esc(ITEMS[k].n)}</b><small>×${invOf(k)}</small></button>`).join("")}</div>`
@@ -6108,9 +6124,9 @@ Object.assign(Cloud,{
     if(!this.user)return;const a=Object.keys(prog().ach||{}).slice(0,80);
     const doc={name:String(p.name||myName()).slice(0,24),username:String(this.username()||"").slice(0,20),level:Math.round(+p.level||1),pr:Math.round(+p.pr||0),
       ach:a,best:p.best?{tier:p.best.tier,score:p.best.score,finish:p.best.finish||"standard",store:String(p.best.store||"").slice(0,40)}:null,cards:+p.cards||0,updated:Date.now()};
-    try{const t=myTitle();if(t)doc.title=titleName(t);const sh=showPub();if(sh.length)doc.show=sh;const nt=prog().sc&&prog().sc.note;if(nt)doc.note=String(nt).slice(0,80)}catch(e){}
+    try{const t=myTitle();if(t)doc.title=titleName(t);const sh=showPub();if(sh.length)doc.show=sh;const nt=prog().sc&&prog().sc.note;if(nt)doc.note=String(nt).slice(0,80);if(prog().bsel)doc.bd=String(prog().bsel).slice(0,12);if(SET.pfp&&SET.pfpPub!==false&&SET.pfp.length<24000)doc.av=SET.pfp}catch(e){}
     const sig=JSON.stringify({...doc,updated:0});if(sig===this.pubSig)return;
-    await this.db.collection("pub").doc(this.user.uid).set(doc);this.pubSig=sig;
+    try{await this.db.collection("pub").doc(this.user.uid).set(doc)}catch(e){if(!doc.av&&!doc.bd)throw e;delete doc.av;delete doc.bd;await this.db.collection("pub").doc(this.user.uid).set(doc)}this.pubSig=sig;
   },
   async pubOf(uid){const s=await this.db.collection("pub").doc(uid).get();return s.exists?s.data():null},
   async globalPostsOf(uid){const out=[];(await this.db.collection("posts").where("uid","==",uid).limit(30).get()).forEach(d=>{const p=cleanPost(d.data(),d.id,"global");if(p)out.push(p)});return out.sort((a,b)=>b.at-a.at)}
@@ -6126,7 +6142,7 @@ async function openUser(uid,nameHint,back){
   if($("qrSheet").hidden)return;
   const nm=(pub&&pub.name)||nameHint||"Driver",L=(pub&&+pub.level)||1,ach=pub&&Array.isArray(pub.ach)?pub.ach:[];
   qrSheet(`<div class="qrcard pubp">
-    <div class="drv-head"><span class="avatar" style="--c:${pub&&pub.best?TC[pub.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${esc(nm[0].toUpperCase())}</span>
+    <div class="drv-head"><span class="avatar${pub&&typeof pub.bd==="string"&&/^[a-z0-9]{2,12}$/i.test(pub.bd)?" bd-"+pub.bd:""}" style="--c:${pub&&pub.best?TC[pub.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${pub&&typeof pub.av==="string"&&/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(pub.av)?`<img src="${pub.av}" alt="">`:esc(nm[0].toUpperCase())}</span>
       <div><h2>${pub&&pub.username?"@"+esc(pub.username):esc(nm)}</h2><small>${pub&&pub.pr?`<span class="prb">★${pub.pr>1?pub.pr:""}</span>`:""}Level ${L} · ${titleOf(L)}${pub&&pub.cards?` · ${pub.cards} cards`:""}</small>${pub&&pub.title?`<div><span class="ttag">${esc(String(pub.title).slice(0,30))}</span></div>`:""}</div></div>
     ${pub&&Array.isArray(pub.show)&&pub.show.length?`<div class="flabel">Showcase</div><div class="show3 pubshow">${pub.show.slice(0,3).map((c,i)=>cardHTML({...cleanCard(c,"sc"+i),_friend:true,_art:""})).join("")}</div>${pub.note?`<p class="shownote">“${esc(String(pub.note).slice(0,80))}”</p>`:""}`:""}
     ${ach.length?`<div class="flabel">Achievements · ${ach.length}</div><div class="pubach">${ach.map(a=>`<span>${esc(a)}</span>`).join("")}</div>`:""}
@@ -6249,7 +6265,7 @@ function titleSheet(){
   document.querySelectorAll("[data-tt]").forEach(b=>b.onclick=()=>{prog().tsel=b.dataset.tt;save();closeQR();renderProfile();toast("Title set: "+titleName(b.dataset.tt));pushPubSoon()});
   const nn=$("ttNone");if(nn)nn.onclick=()=>{prog().tsel="";save();closeQR();renderProfile();pushPubSoon()};
 }
-const titleTag=k=>k&&ETITLES[k]?`<span class="ttag" style="--c:${TC[ETITLES[k].r]}">${esc(ETITLES[k].n)}</span>`:"";
+const titleTag=k=>k&&ETITLES[k]?`<span class="ttag" style="--c:${TC[ETITLES[k].r]}">${typeof PA_TART!=="undefined"&&PA_TART[k]?PA_TART[k][0]+" ":""}${esc(ETITLES[k].n)}</span>`:"";
 let pubT=0;function pushPubSoon(){clearTimeout(pubT);pubT=setTimeout(()=>{if(typeof Cloud!=="undefined"&&Cloud.user)Cloud.pushProfile().catch(()=>{})},1500)}
 
 /* chests: a small chance at a title you don't have yet */
@@ -6932,4 +6948,650 @@ loadStore().then(()=>show("vDex")).catch(e=>{console.error(e);show("vDex")}).the
 /* warm up the reader in the background so the first scan is faster */
 /* start loading the reader the moment Scan is touched, while the photo picker is still open */
 document.querySelector(".nscan").addEventListener("pointerdown",()=>getWorker().catch(()=>{}),{once:true});
+</script>
+<style id="pa-css">/* ===== Pre-Alpha layer ===== */
+.pachip{margin-left:8px;font:800 .58rem/1 var(--f-mono);letter-spacing:.08em;padding:3px 6px;border-radius:6px;background:color-mix(in srgb,#ff9f1c 22%,transparent);color:#ffb84d;border:1px solid color-mix(in srgb,#ff9f1c 55%,transparent);vertical-align:middle}
+.patag{position:absolute;z-index:3;top:6px;left:6px;font:800 .5rem/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:3px 5px;border-radius:5px;pointer-events:none;backdrop-filter:blur(3px)}
+.patag.pa{background:rgba(255,159,28,.88);color:#2a1700}.patag.pt{background:rgba(120,130,150,.85);color:#fff}
+.card .art{position:relative}
+.statbar{display:flex;justify-content:flex-end;margin:0 0 8px}
+.strows{display:grid;gap:6px;margin:10px 0}.strow{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:6px 8px;background:var(--track)}
+.strow span{flex:1;font-size:.9rem;min-width:0}.strow .mini{padding:6px 9px}
+.sw.sm{margin:0;padding:0}.sw.sm i{transform:scale(.85)}
+#sortBy{flex-wrap:wrap;gap:6px}
+#sortBy [data-pa]{border:1px solid var(--line);background:transparent;color:var(--tx);border-radius:99px;padding:5px 10px;font:600 .74rem var(--f-body)}
+.privc .sbox{margin:10px 0}.privc h3 small{font-weight:500;opacity:.7}
+.btn.danger,.btn.ghost.danger{color:var(--decline);border-color:color-mix(in srgb,var(--decline) 50%,var(--line))}
+.paact .btnrow{display:flex;gap:8px;flex-wrap:wrap}
+/* titles with art */
+.ttlist{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.ttl.art{position:relative;overflow:hidden;text-align:left;border:2px solid var(--c);border-radius:14px;padding:10px 10px 10px;min-height:92px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;display:flex;flex-direction:column;gap:2px}
+.ttl.art .tart{position:absolute;right:-6px;bottom:-14px;font-style:normal;font-size:3.4rem;opacity:.35;transform:rotate(-10deg)}
+.ttl.art b{font:700 .95rem var(--f-display);position:relative}.ttl.art small{font-size:.7rem;opacity:.85;position:relative}
+.ttl.art em{font:700 .58rem var(--f-mono);font-style:normal;text-transform:uppercase;letter-spacing:.06em;position:relative;margin-top:auto;color:var(--c);text-shadow:0 0 6px #000}
+.ttl.art.locked{filter:grayscale(1) brightness(.55)}.ttl.art.locked .tart{filter:blur(3px)}
+.ttl.art.on{box-shadow:0 0 0 2px var(--c),0 0 18px -2px var(--c)}
+.ttl.art.anim::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%);transform:translateX(-120%);animation:pashine 3.2s ease-in-out infinite}
+.ttl.art.anim .tart{animation:pafloat 3s ease-in-out infinite}
+@keyframes pashine{60%,100%{transform:translateX(120%)}}@keyframes pafloat{50%{transform:translateY(-5px) rotate(-4deg)}}
+html.calm .ttl.art.anim::after,html.calm .ttl.art.anim .tart,html.calm .bdanim{animation:none}
+.ttok{position:absolute;top:6px;right:6px;font:700 .56rem var(--f-mono);background:var(--c);color:#000;border-radius:5px;padding:2px 5px}
+.ttl.bdc{display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid var(--line);border-radius:14px;padding:12px 8px;background:var(--track);position:relative;color:var(--tx)}
+.ttl.bdc.on{border-color:var(--c);box-shadow:0 0 0 1px var(--c)}.ttl.bdc.locked{opacity:.45}.ttl.bdc small{font-size:.68rem;opacity:.8;text-align:center}
+/* borders */
+.avatar{position:relative;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+.avatar.tap{cursor:pointer}.avatar.big{width:96px;height:96px;font-size:2.4rem;margin:0 auto}.pfp-prev{display:flex;justify-content:center;margin:8px 0}
+.avatar[class*="bd-"]{overflow:visible}
+.bd-ring10{box-shadow:0 0 0 3px #7ac98a,0 0 0 5px #1f3a28}.bd-ring25{box-shadow:0 0 0 3px #cfd6e4,0 0 0 5px #5b6578}.bd-ring50{box-shadow:0 0 0 3px #f3c55a,0 0 0 5px #7a5a10,0 0 14px #f3c55a88}
+.bd-boss{box-shadow:0 0 0 3px #ff4d4d,0 0 14px #ff2d2daa}.bd-streak{box-shadow:0 0 0 3px #ff8a1f,0 0 14px #ff8a1faa}
+.bd-shiny{box-shadow:0 0 0 3px #fff,0 0 16px #8affff}.bd-myth{box-shadow:0 0 0 3px #ff4d8d,0 0 18px #ff4d8d}
+.bd-s1a{box-shadow:0 0 0 3px #d9a441,0 0 0 5px #6a7a2c}.bd-s1b{box-shadow:0 0 0 3px #8fdcff,0 0 14px #8fdcffaa}.bd-s1c{box-shadow:0 0 0 3px #ffd34d,0 0 18px #ffd34d,0 0 0 6px #7a5a10}
+.bdanim{animation:pabd 2.4s ease-in-out infinite}@keyframes pabd{50%{filter:brightness(1.35) saturate(1.3)}}
+/* battle pass */
+.pbar{height:10px;border-radius:99px;background:var(--track);overflow:hidden;margin:6px 0}.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accept),#7be0a3);border-radius:inherit}
+.ptiers2{display:grid;gap:8px;margin:10px 0}
+.pt2{display:flex;align-items:center;gap:10px;border:2px solid var(--c);border-radius:14px;padding:9px 10px;background:color-mix(in srgb,var(--c) 7%,var(--track))}
+.pt2.now{box-shadow:0 0 0 2px var(--c),0 0 16px -3px var(--c)}
+.pt2.got{background:color-mix(in srgb,var(--accept) 20%,var(--track))}
+.pt2 .ptn{font:800 1rem var(--f-display);min-width:26px;text-align:center;color:var(--c)}
+.pt2 .pcs{flex:1;display:flex;flex-wrap:wrap;gap:6px;min-width:0}.pt2 .pts{font:600 .72rem var(--f-mono);color:var(--mut)}
+.pdone{font:800 1.4rem var(--f-display);color:var(--accept)}
+.pchip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--c);border-radius:99px;padding:3px 8px;font-size:.72rem;background:color-mix(in srgb,var(--c) 14%,transparent)}.pchip b{font-weight:600}
+.pchip.q{font-size:1rem;padding:2px 12px}
+/* packs */
+details.cdet>summary{list-style:none;cursor:pointer}details.cdet>summary::-webkit-details-marker{display:none}
+details.cdet>summary h3{margin:0;display:flex;align-items:center;gap:6px}details.cdet>summary h3::after{content:"▾";margin-left:auto;opacity:.6;transition:transform .2s}
+details.cdet[open]>summary h3::after{transform:rotate(180deg)}details.cdet[open]>summary{margin-bottom:8px}
+.frsw{display:block;width:44px;height:58px;border-radius:8px;margin:0 auto 4px;border:2px solid #0006}
+.frsw.f-carbon{background:repeating-linear-gradient(45deg,#1b1b1f 0 4px,#2a2a31 4px 8px)}
+.frsw.f-inverted{background:linear-gradient(135deg,#f2f2f2,#222)}
+.frsw.f-neon{background:#0a0f1f;box-shadow:0 0 10px #00f0ff,inset 0 0 8px #ff2bd6;border-color:#00f0ff}
+.frsw.f-gold{background:linear-gradient(135deg,#8a6a10,#f7dc6f,#b8860b,#f7dc6f)}
+.frsw.f-holo{background:linear-gradient(120deg,#ff6ec7,#7afcff,#fff59d,#b19cff,#ff6ec7);background-size:300% 300%;animation:paholo 4s linear infinite}
+@keyframes paholo{to{background-position:300% 0}}html.calm .frsw.f-holo{animation:none}
+.frbook{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+/* welcome / example */
+.ishot.mock{position:relative;aspect-ratio:9/16;max-height:420px;margin:0 auto;border-radius:16px;overflow:hidden;background:#0d0f14;container-type:inline-size;border:1px solid var(--line)}
+.ishot.mock .mkt{position:absolute;color:#fff;line-height:1.1;white-space:nowrap}
+.ishot.mock .mkmap{position:absolute;top:8%;left:0;right:0;height:42%;display:grid;place-content:center;text-align:center;background:repeating-linear-gradient(45deg,#1a2030 0 10px,#171c2a 10px 20px);color:#7e89a6;font-size:4.4cqw}
+.ishot.mock .mkred{color:#ff6b6b;font-weight:700}
+.ishot.mock .mkbtn{position:absolute;left:6%;right:6%;top:84%;padding:3cqw;border-radius:99px;background:#eb1700;color:#fff;font-weight:800;text-align:center;font-size:4.4cqw}
+.isteps.big{font-size:1rem}.isteps.big li{margin:6px 0}
+.pareveal .prv-item{display:grid;gap:4px;place-items:center;margin:18px 0;padding:22px 12px;border:2px solid var(--c);border-radius:18px;background:color-mix(in srgb,var(--c) 14%,var(--track));animation:paPop .6s cubic-bezier(.2,1.4,.4,1)}
+.pareveal .prv-item b{font:800 1.25rem var(--f-display);text-align:center}.pareveal .prv-item small{color:var(--c);font:700 .7rem var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
+@keyframes paPop{0%{transform:scale(.6);opacity:0}100%{transform:none;opacity:1}}html.calm .pareveal .prv-item{animation:none}
+.bd-diamond{box-shadow:0 0 0 3px #b9f2ff,0 0 16px #b9f2ffaa}.bd-rainbow{box-shadow:0 0 0 3px #ff6ec7,0 0 0 6px #7afcff,0 0 18px #fff59d}
+.bd-redline{box-shadow:0 0 0 3px #eb1700}.bd-checker{box-shadow:0 0 0 3px #fff,0 0 0 6px #111}.bd-cash{box-shadow:0 0 0 3px #3fbf5a,0 0 18px #3fbf5a}
+.bd-royal{box-shadow:0 0 0 3px #9b59ff,0 0 16px #9b59ffaa}.bd-x_ice{box-shadow:0 0 0 3px #a8e6ff,0 0 0 6px #3a7fa8}
+.bd-x_toxic{box-shadow:0 0 0 3px #7dff3a,0 0 16px #7dff3a}.bd-x_lava{box-shadow:0 0 0 3px #ff5a1f,0 0 20px #ff2d00}
+.bd-x_galaxy{box-shadow:0 0 0 3px #6a3aff,0 0 0 6px #ff4dd2,0 0 22px #6a3aff}.bd-x_mint{box-shadow:0 0 0 3px #7affc9}
+</style>
+<script id="pa-js">/* =====================================================================
+   DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
+   Everything is wrapped so a problem in one part can never stop the rest of the app.
+   ===================================================================== */
+function paLeft(ms){const m=Math.max(1,Math.ceil(ms/60e3));if(m<60)return m+" min";const h=Math.ceil(ms/36e5);if(h<48)return h+" hr";return Math.ceil(ms/864e5)+" days"}
+const PA_REROLL=0.10;           /* chance a Re-roll Token gives a frame (1 in 10) */
+const PA_SCANS_COOLDOWN=864e5;  /* +10 Scans: once every 24 hours */
+const PA_NAME_DAYS=60;          /* username changes: once every 2 months */
+const paEsc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const paTry=(n,f)=>{try{f()}catch(e){console.warn("PA "+n,e)}};
+
+/* ---------- 1. items: double XP lengths, no luck items, rarer helpers, new items ---------- */
+paTry("items",()=>{
+  Object.assign(ITEMS,{
+    charm:{n:"Lucky Charm (retired)",r:"uncommon",i:"🍀",d:"Luck items are gone. Tap Use to turn it into 40 XP."},
+    charm2:{n:"Four-Leaf Charm (retired)",r:"rare",i:"☘️",d:"Luck items are gone. Tap Use to turn it into 100 XP."},
+    dx5:{n:"Double XP · 5 min",r:"common",i:"⚡",min:5,d:"Cards you scan earn double XP for 5 minutes."},
+    dx60:{n:"Double XP · 1 hour",r:"uncommon",i:"⚡",min:60,d:"Cards you scan earn double XP for 1 hour."},
+    dxd:{n:"Double XP · 1 day",r:"rare",i:"⚡",min:1440,d:"Cards you scan earn double XP for 24 hours."},
+    dx3d:{n:"Double XP · 3 days",r:"epic",i:"⚡",min:4320,d:"Cards you scan earn double XP for 3 days."},
+    dxw:{n:"Double XP · 1 week",r:"legendary",i:"⚡",min:10080,d:"Cards you scan earn double XP for a whole week."},
+    dx15:{n:"Double XP · 15 min (old)",r:"uncommon",i:"⚡",min:15,d:"Cards you scan earn double XP for 15 minutes."},
+    dx30:{n:"Double XP · 30 min (old)",r:"rare",i:"⚡",min:30,d:"Cards you scan earn double XP for 30 minutes."},
+    dx60old:undefined,
+    reroll:{n:"Re-roll Token",r:"epic",i:"🎲",d:"Open one of your cards and re-roll it: a 1 in 10 chance at a special frame. Which frame follows the normal frame rarity (Carbon most often, Holo rarest)."},
+    saver:{n:"Streak Saver",r:"epic",i:"🛡️",d:"Keeps your login calendar going if you miss a day. Used automatically."},
+    scans:{n:"+10 Scans",r:"rare",i:"📸",d:"Scan 10 more offers today, past the daily limit. You can use one every 24 hours."},
+    xp_m:{n:"Medium Bonus XP",r:"uncommon",i:"💫",hide:1,d:"Random XP (100 to 500), added the moment it drops."},
+    pouch:{n:"Scrap Pouch",r:"common",i:"👝",d:"Open it for 150 to 600 scrap."},
+    mcharge:{n:"Meter Charge",r:"uncommon",i:"🔋",d:"Adds a big chunk to your frame meter (+6 of 60)."}
+  });delete ITEMS.dx60old;
+  XP_ROLL.xp_m=[[100,34],[150,30],[200,18],[300,10],[400,5],[500,3]];
+  ITEM_ORDER.length=0;ITEM_ORDER.push("chest_g","chest_s","chest_b","frame","reroll","dxw","dx3d","dxd","dx60","dx30","dx15","dx5","saver","scans","mcharge","pouch","swap","charm2","charm");
+  CHEST.chest_b={rolls:2,xp:[25,60],t:[["xp_s",38],["dx5",20],["swap",14],["pouch",14],["mcharge",6],["xp_m",7],["scans",1]]};
+  CHEST.chest_s={rolls:3,xp:[75,150],t:[["xp_s",20],["xp_m",14],["dx60",15],["pouch",13],["mcharge",9],["dxd",6],["scans",3],["saver",1.5],["reroll",2],["chest_b",16],["frame",0.5]]};
+  CHEST.chest_g={rolls:4,xp:[200,400],t:[["xp_l",16],["xp_m",12],["dxd",16],["dx3d",9],["dxw",2],["saver",3],["reroll",5],["chest_s",12],["scans",3],["mcharge",8],["pouch",8],["frame",2.5]]};
+  CAL.length=0;CAL.push({xp_s:1},{pouch:1},{dx60:1},{chest_b:1},{swap:1,xp_s:1},{chest_s:1},{chest_g:1});
+  RECIPES.length=0;RECIPES.push(["dxd",5000],["dx3d",9000],["reroll",9000],["chest_g",10000],["frame",25000]);
+  /* all XP-drop items turn into XP right away */
+  window.xpDrops=function(items){const out=[];for(const k of ["xp_s","xp_m","xp_l"]){const n=+items[k]||0;if(n>0){for(let i=0;i<n;i++)out.push(rollXP(k));delete items[k]}}
+    if(out.length)items.xp=(+items.xp||0)+out.reduce((a,b)=>a+b,0);return out};
+  /* using items */
+  const use0=window.useItem;
+  window.useItem=function(k){
+    const it=ITEMS[k];if(!it||invOf(k)<1)return false;const E=gEv(),id="u:"+rid();
+    if(k==="charm"||k==="charm2"){const x=k==="charm"?40:100;E[id]={[k]:-1,xp:x};save();checkLevel();xpFX(x,"Retired charm");return true}
+    if(k==="pouch"){const n=150+Math.floor(Math.random()*451);E[id]={pouch:-1,scrap:n};save();toast(`👝 +${n} scrap`);return true}
+    if(k==="mcharge"){const m=meter();m.p=Math.min(METER_FULL,(+m.p||0)+6);E[id]={mcharge:-1};save();toast("🔋 Frame meter +6");return true}
+    if(k==="scans"){const last=+fx().scansAt||0,left=PA_SCANS_COOLDOWN-(realNow()-last);
+      if(left>0){toast(`+10 Scans works once every 24 hours. Ready again in ${paLeft(left)}.`);return false}
+      const ok=use0(k);if(ok){fx().scansAt=realNow();saveSet()}return ok}
+    return use0(k)};
+  /* Re-roll Token: a flat 1 in 10 for a frame; the frame follows the normal frame rarity */
+  window.rerollCard=function(c){
+    if(invOf("reroll")<1||special(c)||c.noxp||!trusted(c)||c.dev)return null;
+    gEv()["u:"+rid()]={reroll:-1};
+    if(!(typeof rngCal==="function"&&rngCal())&&Math.random()<PA_REROLL){
+      const o=C.FINISH_ODDS[c.tier]||C.FINISH_ODDS.common,ks=Object.keys(o),tot=ks.reduce((a,k)=>a+o[k],0);let r=Math.random()*tot,f=ks[0];for(const k of ks){if((r-=o[k])<0){f=k;break}}
+      c.finish=f;c.upd=realNow();paRefreshPost(c)}
+    save();return special(c)?c.finish:""};
+  const rr=ITEMS.reroll;
+});
+/* a card that gains a frame also updates its post on the feed (Global and Friends) */
+async function paRefreshPost(c){
+  try{if(typeof Cloud==="undefined"||!Cloud.user||!Cloud.db)return;const uid=Cloud.user.uid,pc=postCard(c);
+    await Cloud.db.collection("posts").doc(uid+"_"+c.id).update({card:pc}).catch(()=>{});
+    await Cloud.me().collection("posts").doc(c.id).update({card:pc}).catch(()=>{});
+    feedCache.global=null;feedCache.friends=null}catch(e){console.warn(e)}
+}
+/* update the re-roll text in the card page (was "5x the odds") */
+paTry("rrtext",()=>{const f0=window.openDetail;});
+
+/* ---------- 2. Pre-Alpha / Prototype tags ---------- */
+paTry("tags",()=>{
+  if(PUB_FIELDS.indexOf("pa")<0)PUB_FIELDS.push("pa");
+  const mk=window.makeCard;window.makeCard=function(o,ex){const c=mk(o,ex);c.pa=1;return c};
+  const ch=window.cardHTML;window.cardHTML=function(c){let h=ch(c);
+    if(c&&!c._friend&&!c._example&&SET.paTags!==false){const pa=c.pa?1:0;h=h.replace('<div class="art">',`<div class="art"><span class="patag ${pa?"pa":"pt"}">${pa?"Pre-Alpha":"Prototype"}</span>`)}return h};
+  const cl=PUB_FIELDS;
+});
+/* a Pre-Alpha chip next to the logo, and a one-time heads-up */
+paTry("chip",()=>{
+  const lg=document.querySelector(".top .logo");if(lg&&!lg.querySelector(".pachip")){const s=document.createElement("span");s.className="pachip";s.textContent="PRE-ALPHA";s.title="DasherDex is in Pre-Alpha: things change often";lg.appendChild(s)}
+});
+function paAlphaNotice(){
+  if(SET.paSeen===APP_VER)return;SET.paSeen=APP_VER;saveSet();
+  qrSheet(`<div class="qrcard"><h2>🧪 DasherDex is in Pre-Alpha</h2>
+    <p class="msg">This is an early version. Things change a lot, and some things will be rough or reset.</p>
+    <p class="msg"><b>Prototype</b> cards were made before this version. <b>Pre-Alpha</b> cards are made from now on. The tags only show which version made the card.</p>
+    <p class="msg">Found a bug or have an idea? Tell us in the Discord or email supportdasherdex@gmail.com.</p></div><button class="btn" id="paOk">Got it</button>`);
+  const b=$("paOk");if(b)b.onclick=closeQR;
+}
+setTimeout(()=>{try{if(store.cards.length||SET.introDone)paAlphaNotice()}catch(e){}},2500);
+
+/* ---------- 3. Settings: Pre-Alpha panel (profile dot, tags, privacy center, odds) ---------- */
+function paSwitch(id,k,t,d,def){return `<label class="sw"><span><b>${t}</b><small>${d}</small></span><input type="checkbox" id="${id}" ${(SET[k]??def)?"checked":""}><i></i></label>`}
+paTry("settings",()=>{
+  const rs=window.renderSettings;
+  window.renderSettings=function(){rs.apply(this,arguments);
+    try{const b=$("settingsBody");if(!b)return;
+      b.insertAdjacentHTML("afterbegin",`<div class="sbox" id="paBox"><h3>Pre-Alpha options</h3>
+        ${paSwitch("paDot","pdot","Profile tab dot","A red dot on the Profile tab when you get a new item. It goes away when you open the tab.",true)}
+        ${paSwitch("paTagsSw","paTags","Pre-Alpha and Prototype tags","Show which version made each card.",true)}
+        <button class="btn ghost sm" id="paPriv">🔒 Privacy and data choices</button>
+        <small class="msg" style="display:block;margin-top:6px">Version ${paEsc(APP_VER)}. Tags: Prototype = made before Pre-Alpha, Pre-Alpha = made since.</small></div>`);
+      $("paDot").onchange=e=>{SET.pdot=e.target.checked;saveSet();try{renderInboxBadge()}catch(x){}};
+      $("paTagsSw").onchange=e=>{SET.paTags=e.target.checked;saveSet();toast(e.target.checked?"Tags on":"Tags off")};
+      $("paPriv").onclick=()=>paPrivacySheet(false);
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- 4. Privacy and data choices (GDPR): what's needed, what's optional, download, delete ---------- */
+function paPrivacySheet(first){
+  const signed=!!(typeof Cloud!=="undefined"&&Cloud.user);
+  const sw=(id,on,t,d,dis)=>`<label class="sw"><span><b>${t}</b><small>${d}</small></span><input type="checkbox" id="${id}" ${on?"checked":""} ${dis?"disabled":""}><i></i></label>`;
+  qrSheet(`<div class="qrcard privc"><h2>🔒 ${first?"Your data choices":"Privacy and data choices"}</h2>
+    <p class="msg">${first?"Before we sync, pick what you're OK with. You can change any of this later in Settings.":"What DasherDex uses, what's optional, and your rights."}</p>
+    <div class="sbox"><h3>Needed to run the app <small>always on</small></h3>
+      <p class="msg"><b>Reading your screenshot.</b> The pay, miles, minutes, stops and store name are read on your phone. They're used to work out the verdict, grade and card rarity.</p>
+      <p class="msg"><b>A fingerprint (hash) of each screenshot</b> is saved so the same screenshot can't be scanned twice. It can't be turned back into the picture.</p>
+      ${signed?`<p class="msg"><b>Your account:</b> Google email, name and your username, plus the numbers on your cards (pay, miles, minutes, grade), your stats and friends. Needed to sync and use the community.</p>`:""}</div>
+    <div class="sbox"><h3>Optional <small>off unless you turn it on</small></h3>
+      ${sw("pcPhoto",SET.cPhoto===true,"Keep my offer picture on the server","Off: your screenshot is used once to scan and never kept online. Cards show the average dollar amount instead of the picture. On: the picture is kept with your card and you can download it from the card.")}
+      ${sw("pcAddr",!!SET.addr,"Save pickup addresses","Off: addresses are skipped when scanning. Public posts never show maps or addresses either way.")}
+    </div>
+    ${signed?`<div class="sbox"><h3>Your rights</h3>
+      <button class="btn ghost sm" id="pcDl">⬇️ Download my server data (JSON)</button>
+      <button class="btn ghost sm danger" id="pcDel" style="margin-top:8px">🗑️ Delete my account and server data</button>
+      <p class="msg">Deleting removes your cloud copy, friends, posts and your profile. Cards on this phone stay. Questions: <a href="mailto:supportdasherdex@gmail.com">supportdasherdex@gmail.com</a>.</p></div>`
+      :`<p class="msg">You aren't signed in, so nothing leaves this phone.</p>`}
+  </div><button class="btn" id="pcSave">${first?"Save my choices":"Save"}</button>`);
+  if(first){const x=$("qrClose");if(x)x.hidden=true}
+  $("pcSave").onclick=()=>{
+    SET.cPhoto=$("pcPhoto").checked;SET.addr=$("pcAddr").checked;SET.consent={v:1,at:Date.now(),photo:SET.cPhoto,addr:SET.addr};saveSet();closeQR();
+    toast("Choices saved");if(signed){try{Cloud.fullSync().catch(()=>{})}catch(e){}}
+    try{if(view==="vSettings")renderSettings()}catch(e){}};
+  if($("pcDl"))$("pcDl").onclick=paExportMine;
+  if($("pcDel"))$("pcDel").onclick=e=>{const b=e.target;if(!b.dataset.arm){b.dataset.arm=1;b.textContent="Tap again to delete everything on the server";return}
+    closeQR();const u=Cloud.user;Cloud.deleteCloud().then(()=>{try{u&&u.delete&&u.delete().catch(()=>{})}catch(x){}})};
+}
+async function paExportMine(){
+  const u=Cloud.user;if(!u){toast("Sign in first");return}
+  toast("Collecting your data…");
+  const out={exportedAt:new Date().toISOString(),app:"DasherDex "+APP_VER,uid:u.uid,email:u.email||"",displayName:u.displayName||"",account:null,collections:{}};
+  const me=Cloud.me();
+  try{out.account=(await me.get()).data()||null}catch(e){out.account="not readable"}
+  for(const sub of ["cards","cardLoc","friends","requests","notes","posts","meta"]){
+    try{const sn=await me.collection(sub).get();out.collections[sub]=[];sn.forEach(d=>out.collections[sub].push({id:d.id,...d.data()}))}catch(e){out.collections[sub]="not readable"}}
+  try{const gp=await Cloud.db.collection("posts").where("uid","==",u.uid).get();out.collections.globalPosts=[];gp.forEach(d=>out.collections.globalPosts.push({id:d.id,...d.data()}))}catch(e){}
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="dasherdex-my-data.json";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},4000);
+  toast("Your data file is ready");
+}
+/* new sign-ins are asked what they agree to; sync waits until they answer */
+paTry("consent",()=>{
+  for(const m of ["push","pushProfile"]){const f=Cloud[m];if(typeof f==="function")Cloud[m]=function(){if(this.user&&!SET.consent)return Promise.resolve();return f.apply(this,arguments)}}
+  setInterval(()=>{try{const q=$("qrSheet");
+    if(Cloud.user&&Cloud.profile&&Cloud.profile.username&&!SET.consent&&(!q||q.hidden))paPrivacySheet(true)}catch(e){}},2500);
+});
+/* Card page: share, and (only if you opted in) download the offer picture */
+paTry("detail",()=>{
+  const oc=window.openCard;
+  window.openCard=function(c,friend){oc.apply(this,arguments);
+    try{if(friend||c._example)return;const d=$("detail");if(!d||d.querySelector("#paShare"))return;
+      const a=artOf(c),can=SET.cPhoto===true&&a&&a.startsWith("data:image");
+      d.insertAdjacentHTML("beforeend",`<div class="panel paact"><h2>Share</h2><div class="btnrow"><button class="btn ghost sm" id="paShare">📤 Share this card</button>${can?`<button class="btn ghost sm" id="paSave">⬇️ Save offer image</button>`:""}</div>
+        ${can?"":`<p class="msg">${SET.cPhoto===true?"No offer picture saved for this card.":"Offer pictures aren't kept. Turn it on in Settings › Privacy and data choices to save them."}</p>`}</div>`);
+      $("paShare").onclick=async()=>{const t=`${c.store}: ${money(c.pay)} · ${c.miles} mi · ${c.minutes} min. Grade ${gradeOf(c)}, ${TIERS.find(x=>x.id===c.tier).name} card on DasherDex.`;
+        try{if(navigator.share)await navigator.share({title:"DasherDex card",text:t,url:"https://dasherdex.web.app/"});else{await navigator.clipboard.writeText(t+" https://dasherdex.web.app/");toast("Copied")}}catch(e){}};
+      if($("paSave"))$("paSave").onclick=()=>{const l=document.createElement("a");l.href=a;l.download="dasherdex-offer-"+(c.no||"card")+".jpg";document.body.appendChild(l);l.click();l.remove()};
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- 5. Stats: warning only when a card is marked CHECK, Accept stats first, customizable ---------- */
+const PA_SECS=[["accept","Offers the app said to Accept"],["verdicts","Verdicts"],["general","General stats (top numbers)"],["daily","Daily pay per hour"],["weekly","Weekly"],["more","More numbers"],["heat","Best times"],["zones","Best areas"],["stores","Stores"]];
+function paStatCfg(){const c=SET.statsCfg&&typeof SET.statsCfg==="object"?SET.statsCfg:{};
+  const ord=Array.isArray(c.order)?c.order.filter(k=>PA_SECS.some(s=>s[0]===k)):[];for(const [k] of PA_SECS)if(!ord.includes(k))ord.push(k);
+  return {order:ord,hide:Array.isArray(c.hide)?c.hide:[]}}
+function paSecKey(el){
+  if(el.classList.contains("statnote"))return "note";if(el.classList.contains("kpis"))return "general";
+  const h=el.querySelector&&el.querySelector("h3");const t=h?h.textContent.trim():"";
+  if(t.startsWith("Offers the app"))return "accept";if(t==="Verdicts"||t.startsWith("Verdicts"))return "verdicts";if(t.startsWith("Daily"))return "daily";if(t.startsWith("Weekly"))return "weekly";
+  if(t.startsWith("More numbers"))return "more";if(t.startsWith("Best times"))return "heat";if(t.startsWith("Best areas"))return "zones";if(t.startsWith("Stores"))return "stores";return "";
+}
+paTry("stats",()=>{
+  const rs=window.renderStats;
+  window.renderStats=function(){rs.apply(this,arguments);
+    try{const body=$("statsBody");if(!body||body.querySelector(".sempty"))return;
+      const cfg=paStatCfg(),kids=[...body.children],map={};let note=null;
+      for(const el of kids){const k=paSecKey(el);if(k==="note")note=el;else if(k&&!map[k])map[k]=el}
+      const anyCheck=allOffers().some(c=>c.check&&c.check.length);
+      if(note){if(!anyCheck||SET.statWarn===false)note.remove();else{note.style.position="relative";note.insertAdjacentHTML("beforeend",`<button class="mini ghost" id="paWarnX" aria-label="Hide this warning" style="margin-left:auto">Hide</button>`);
+        $("paWarnX").onclick=()=>{SET.statWarn=false;saveSet();renderStats();toast("Warning hidden. You can turn it back on in Customize.")}}}
+      const frag=document.createDocumentFragment();
+      if(note&&note.isConnected)frag.appendChild(note);
+      for(const k of cfg.order){const el=map[k];if(!el)continue;if(cfg.hide.includes(k)){el.remove();continue}frag.appendChild(el)}
+      for(const el of [...body.children])if(!frag.contains(el)&&el!==note)frag.appendChild(el);
+      body.appendChild(frag);
+      body.insertAdjacentHTML("afterbegin",`<div class="statbar"><button class="mini ghost" id="paStatCfg">⚙️ Customize stats</button></div>`);
+      $("paStatCfg").onclick=paStatSheet;
+    }catch(e){console.warn(e)}};
+});
+function paStatSheet(){
+  const cfg=paStatCfg(),row=(k,i)=>{const n=PA_SECS.find(s=>s[0]===k)[1],off=cfg.hide.includes(k);
+    return `<div class="strow" data-k="${k}"><button class="mini ghost" data-mv="-1" ${i?"":"disabled"} aria-label="Move up">▲</button><button class="mini ghost" data-mv="1" ${i<cfg.order.length-1?"":"disabled"} aria-label="Move down">▼</button><span>${paEsc(n)}</span><label class="sw sm"><input type="checkbox" data-sh ${off?"":"checked"} aria-label="Show ${paEsc(n)}"><i></i></label></div>`};
+  qrSheet(`<div class="qrcard"><h2>⚙️ Customize stats</h2><p class="msg">Move sections up or down, and turn off the ones you don't want.</p>
+    <div class="strows">${cfg.order.map(row).join("")}</div>
+    ${paSwitch("paWarnSw","statWarn","Show the “estimates” warning","Only appears when one of your cards is marked CHECK.",true)}
+    <button class="btn ghost sm" id="paStatReset">Reset to default</button></div><button class="btn" id="paStatDone">Done</button>`);
+  const save=()=>{SET.statsCfg={order:cfg.order,hide:cfg.hide};saveSet()};
+  document.querySelectorAll("#qrSheet .strow").forEach(r=>{const k=r.dataset.k;
+    r.querySelectorAll("[data-mv]").forEach(b=>b.onclick=()=>{const i=cfg.order.indexOf(k),j=i+ +b.dataset.mv;if(j<0||j>=cfg.order.length)return;[cfg.order[i],cfg.order[j]]=[cfg.order[j],cfg.order[i]];save();paStatSheet()});
+    r.querySelector("[data-sh]").onchange=e=>{const h=cfg.hide.filter(x=>x!==k);if(!e.target.checked)h.push(k);cfg.hide=h;save()}});
+  $("paWarnSw").onchange=e=>{SET.statWarn=e.target.checked;saveSet()};
+  $("paStatReset").onclick=()=>{SET.statsCfg=null;SET.statWarn=true;saveSet();paStatSheet()};
+  $("paStatDone").onclick=()=>{closeQR();renderStats()};
+}
+
+/* ---------- 6. Dex: collapse all, and choose what the day summary shows ---------- */
+function paDsum(){const d=SET.dsum&&typeof SET.dsum==="object"?SET.dsum:{};return {offers:d.offers!==false,rate:d.rate!==false,best:!!d.best,accepts:!!d.accepts,mode:d.mode==="all"?"all":"accept"}}
+paTry("dex",()=>{
+  const rd=window.renderDex;
+  window.renderDex=function(){rd.apply(this,arguments);
+    try{const sb=$("sortBy");if(!sb||sb.querySelector("[data-pa]"))return;
+      const heads=[...document.querySelectorAll("#days .dayhead")];
+      if(sb&&store.cards.length){sb.insertAdjacentHTML("beforeend",`<button data-pa="fold">${heads.some(h=>h.getAttribute("aria-expanded")==="true")?"Collapse all":"Expand all"}</button><button data-pa="sum">⚙ Day summary</button>`)}
+      if((SET.group||"day")==="day"){const D=paDsum();
+        document.querySelectorAll("#days section.day").forEach(sec=>{const k=sec.dataset.day,ds=sec.querySelector(".ds");if(!ds)return;
+          let list=store.cards.filter(c=>dayKey(c.ts)===k&&(filter==="all"||(filter==="special"?special(c):c.tier===filter)));
+          const acc=list.filter(c=>vOf(c).id==="accept"),a=agg(list),aa=agg(acc),ra=D.mode==="accept"?aa:a,p=[];
+          const [n1,n2]=dayName(k);p.push(paEsc(n2));
+          if(D.offers)p.push(`${a.n} offer${a.n>1?"s":""}`);
+          if(D.accepts)p.push(`${acc.length} Accept`);
+          if(D.rate)p.push(D.mode==="accept"?(acc.length?`$${ra.rate.toFixed(0)}/hr ${profitOn()?"profit":"avg"} on Accepts`:"no Accepts"):`$${ra.rate.toFixed(0)}/hr ${profitOn()?"profit":"avg"} (all offers)`);
+          if(D.best)p.push(`best ${a.best}`);
+          ds.innerHTML=p.join(" · ")})}
+    }catch(e){console.warn(e)}};
+  document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("#sortBy [data-pa]");if(!b)return;
+    if(b.dataset.pa==="fold"){const heads=[...document.querySelectorAll("#days .dayhead")],open=heads.some(h=>h.getAttribute("aria-expanded")==="true");
+      for(const h of heads)collapsed.set(h.dataset.day,open);renderDex()}
+    else paDsumSheet()});
+});
+function paDsumSheet(){
+  const D=paDsum(),sw=(id,k,t)=>`<label class="sw"><span><b>${t}</b></span><input type="checkbox" id="${id}" ${D[k]?"checked":""}><i></i></label>`;
+  qrSheet(`<div class="qrcard"><h2>Day summary</h2><p class="msg">Pick what shows under each day in the Dex.</p>
+    ${sw("dsO","offers","Number of offers")}${sw("dsR","rate","Pay per hour")}${sw("dsA","accepts","Number of Accepts")}${sw("dsB","best","Best grade")}
+    <p class="msg" style="margin-top:10px"><b>Pay per hour is from:</b></p>
+    <div class="seg seg2" role="group"><button id="dsM1" aria-pressed="${D.mode==="accept"}">Accepted offers</button><button id="dsM2" aria-pressed="${D.mode==="all"}">All offers</button></div></div><button class="btn" id="dsOk">Done</button>`);
+  const cur={...D};const save=()=>{SET.dsum={offers:cur.offers,rate:cur.rate,best:cur.best,accepts:cur.accepts,mode:cur.mode};saveSet()};
+  [["dsO","offers"],["dsR","rate"],["dsA","accepts"],["dsB","best"]].forEach(([id,k])=>$(id).onchange=e=>{cur[k]=e.target.checked;save()});
+  $("dsM1").onclick=()=>{cur.mode="accept";save();$("dsM1").setAttribute("aria-pressed",true);$("dsM2").setAttribute("aria-pressed",false)};
+  $("dsM2").onclick=()=>{cur.mode="all";save();$("dsM2").setAttribute("aria-pressed",true);$("dsM1").setAttribute("aria-pressed",false)};
+  $("dsOk").onclick=()=>{closeQR();renderDex()};
+}
+
+/* ---------- 7. Recycling: shorter hold, clearer menu, nothing recycles by accident ---------- */
+paTry("recycle",()=>{
+  window.quickMenu=function(id){
+    const c=store.cards.find(x=>x.id===id);if(!c)return;
+    qrSheet(`<div class="qrcard qmenu"><div class="qm-card">${cardHTML(c)}</div>
+      <button class="btn" id="qmSel">☑️ Select more cards</button>
+      <button class="btn ghost" id="qmRec">♻️ Recycle this card (+${scrapValue(c)} scrap)</button>
+      <button class="btn ghost" id="qmOpen">Open card</button></div>`);
+    $("qmSel").onclick=()=>{closeQR();startSelect([c.id])};
+    $("qmOpen").onclick=()=>{closeQR();openDetail(c.id)};
+    let armed=false;$("qmRec").onclick=e=>{const b=e.target;
+      if(!armed){armed=true;b.disabled=true;b.textContent="Wait…";setTimeout(()=>{if(!b.isConnected)return;b.disabled=false;b.textContent="Tap again to recycle";},1200);return}
+      closeQR();if(recycleCard(c))renderDex()};
+  };
+});
+
+/* ---------- 8. Usernames can be changed once every 2 months ---------- */
+paTry("uname",()=>{
+  const us=window.usernameSheet;
+  window.usernameSheet=function(required){
+    if(!required){const last=+SET.unameAt||0,next=last+PA_NAME_DAYS*864e5;
+      if(last&&Date.now()<next){qrSheet(`<div class="qrcard"><h2>Username locked for now</h2><p class="msg">You can change your username once every 2 months. You can change it again on <b>${new Date(next).toLocaleDateString([],{month:"long",day:"numeric",year:"numeric"})}</b>.</p></div><button class="btn" id="unOk">OK</button>`);$("unOk").onclick=closeQR;return Promise.resolve(null)}}
+    return us.apply(this,arguments).then(n=>{if(!required&&n){SET.unameAt=Date.now();saveSet()}return n})};
+});
+
+/* ---------- 9. Titles with art, profile borders, profile picture ---------- */
+const PA_TART={rookie:["👟","#3a4a63","#1b2434"],lv10:["🛣️","#3f5d46","#1a2a1f"],lv25:["🧭","#2c5f7a","#142b38"],lv50:["👑","#a8801f","#3b2a05",1],pr1:["⭐","#6b3fa0","#1f1233"],
+  c100:["📚","#5a4a8a","#1d1833"],c500:["🗃️","#7a5a2c","#2b1f0d"],miles:["🗺️","#2f6f6b","#10302e"],night:["🌙","#2b2f6b","#0b0d29"],early:["🌅","#c0662a","#3b1a08"],
+  myth:["🔮","#b0307a","#2e0a22",1],shiny:["✨","#c9a227","#3a2f06",1],streak:["🔥","#c2461f","#35100a",1],boss1:["⚔️","#7a2c2c","#2a0e0e"],boss5:["🛡️","#2c4f7a","#0e1c2e"],bossall:["🐉","#8a1f1f","#2a0505",1],
+  lucky:["🦆","#4f8a2c","#16280d"],golden:["🪙","#c9a227","#3d2e00",1],panda:["🦝","#555a66","#1a1c22"],alchem:["⚗️","#5b2c9a","#1c0d33",1],
+  s1a:["🌾","#9a7a2c","#2e220a"],s1b:["🎃","#d1661f","#3a1a05"],s1c:["❄️","#3a7fa8","#0f2433"],s1d:["🎄","#2f7a4a","#0c2a18"],s1e:["🏅","#7a7a8a","#22222b"],s1f:["🏆","#d4a21f","#3d2a00",1]};
+const PA_S1T={s1a:["Harvest Hand","common","Season 1 pass, tier 5"],s1b:["Pumpkin Patrol","uncommon","Season 1 pass, tier 10"],s1c:["Frost Runner","rare","Season 1 pass, tier 15"],
+  s1d:["Holiday Hustler","epic","Season 1 pass, tier 20"],s1e:["Season Veteran","epic","Season 1 pass, tier 25"],s1f:["Season 1 Champion","legendary","Season 1 pass, tier 30"]};
+const PA_BORDERS={ring10:["Road Ring","uncommon","Reach level 10"],ring25:["Silver Ring","rare","Reach level 25"],ring50:["Gold Ring","legendary","Reach level 50",1],boss:["Crimson Flame","epic","Beat 5 different weekly bosses",1],
+  streak:["Ember","epic","Scan 14 days in a row",1],shiny:["Prism","legendary","Get a Holo or Gold frame",1],myth:["Mythic Aura","mythic","Pull a Mythic card",1],
+  s1a:["Harvest Wreath","rare","Season 1 pass, tier 10"],s1b:["Frostbite","epic","Season 1 pass, tier 20",1],s1c:["Champion Halo","legendary","Season 1 pass, tier 30",1]};
+paTry("titles",()=>{
+  for(const [k,[n,r,how]] of Object.entries(PA_S1T)){ETITLES[k]={n,r,how};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:how}}
+  for(const [k,[n,r,how]] of Object.entries(PA_BORDERS))ITEMS["b_"+k]={n:"Border: "+n,r,i:"🖼️",hide:1,d:how};
+  /* the season pass: more rewards in every tier, with titles and borders along the way (hidden until you get there) */
+  PASS.length=0;PASS.push(
+    {xp_s:1,pouch:1},{xp_m:1,swap:1},{chest_b:1,dx5:1},{dx60:1,mcharge:1},{chest_b:1,t_s1a:1},
+    {xp_m:1,pouch:1},{chest_s:1,swap:1},{dx60:1,mcharge:1,xp_s:1},{chest_b:1,pouch:1},{chest_s:1,b_s1a:1,t_s1b:1},
+    {xp_m:1,dx60:1},{scans:1,pouch:1},{chest_s:1,mcharge:1},{dxd:1,xp_m:1},{chest_g:1,t_s1c:1},
+    {reroll:1,xp_m:1},{chest_s:1,dxd:1},{saver:1,pouch:1},{xp_l:1,mcharge:1},{chest_g:1,b_s1b:1,t_s1d:1},
+    {dxd:1,xp_l:1},{chest_s:1,reroll:1},{dx3d:1,pouch:1},{chest_g:1,xp_l:1},{reroll:1,saver:1,t_s1e:1},
+    {dx3d:1,chest_s:1},{chest_g:1,mcharge:1},{xp_l:1,reroll:1},{dxw:1,chest_g:1},{frame:1,chest_g:1,dxw:1,b_s1c:1,t_s1f:1});
+  const ct0=window.checkTitles;
+  window.checkTitles=function(){ct0.apply(this,arguments);
+    try{const L=myLevel()+50*(+prog().pr||0),cs=store.cards.filter(c=>trusted(c)&&!c.noxp&&!c.dev),g=(k,why)=>{if(invOf("b_"+k)<1)grant("bd:"+k,{["b_"+k]:1},why||"New border")};
+      if(L>=10)g("ring10");if(L>=25)g("ring25");if(L>=50)g("ring50");
+      if(bossesBeaten().size>=5)g("boss");if(streakNow()>=14)g("streak");
+      if(cs.some(c=>c.finish==="holo"||c.finish==="gold"))g("shiny");if(cs.some(c=>c.tier==="mythic"))g("myth")}catch(e){}};
+  window.titleSheet=function(tab){
+    tab=tab==="b"?"b":"t";const have=myTitles(),cur=myTitle(),bsel=prog().bsel||"";
+    const tcard=([k,t])=>{const on=have.includes(k),a=PA_TART[k]||["🏷️","#444","#222"];
+      return `<button class="ttl art${on?"":" locked"}${cur===k?" on":""}${a[3]&&on?" anim":""}" data-tt="${k}" ${on?"":"disabled"} style="--c:${TC[t.r]};--a:${a[1]};--b:${a[2]}"><i class="tart">${a[0]}</i><b>${on?paEsc(t.n):"???"}</b><small>${paEsc(t.how)}</small><em>${TIERS.find(x=>x.id===t.r).name}</em>${cur===k?`<span class="ttok">Showing</span>`:""}</button>`};
+    const bcard=([k,[n,r,how,an]])=>{const on=invOf("b_"+k)>0;
+      return `<button class="ttl bdc${on?"":" locked"}${bsel===k?" on":""}" data-bd="${k}" ${on?"":"disabled"} style="--c:${TC[r]}"><span class="avatar sm bd-${k}${an?" bdanim":""}" style="--c:${TC[r]}">D</span><b>${on?paEsc(n):"???"}</b><small>${paEsc(how)}</small>${bsel===k?`<span class="ttok">Showing</span>`:""}</button>`};
+    qrSheet(`<div class="qrcard"><h2>🏷️ Titles and borders</h2><p class="msg">Your title shows under your name and on your posts. Borders go around your profile picture.</p>
+      <div class="seg seg2" role="group"><button id="paTabT" aria-pressed="${tab==="t"}">Titles ${have.length}/${Object.keys(ETITLES).length}</button><button id="paTabB" aria-pressed="${tab==="b"}">Borders ${Object.keys(PA_BORDERS).filter(k=>invOf("b_"+k)>0).length}/${Object.keys(PA_BORDERS).length}</button></div>
+      <div class="ttlist">${tab==="t"?Object.entries(ETITLES).map(tcard).join(""):Object.entries(PA_BORDERS).map(bcard).join("")}</div>
+      ${tab==="t"?(cur?`<button class="btn ghost" id="ttNone">Show no title</button>`:""):(bsel?`<button class="btn ghost" id="bdNone">No border</button>`:"")}</div>`);
+    $("paTabT").onclick=()=>titleSheet("t");$("paTabB").onclick=()=>titleSheet("b");
+    document.querySelectorAll("#qrSheet [data-tt]").forEach(b=>b.onclick=()=>{prog().tsel=b.dataset.tt;save();closeQR();renderProfile();toast("Title set: "+titleName(b.dataset.tt));pushPubSoon()});
+    document.querySelectorAll("#qrSheet [data-bd]").forEach(b=>b.onclick=()=>{prog().bsel=b.dataset.bd;save();closeQR();renderProfile();toast("Border set");pushPubSoon()});
+    const nn=$("ttNone");if(nn)nn.onclick=()=>{prog().tsel="";save();closeQR();renderProfile();pushPubSoon()};
+    const nb=$("bdNone");if(nb)nb.onclick=()=>{prog().bsel="";save();closeQR();renderProfile();pushPubSoon()};
+  };
+});
+/* profile picture: pick a photo, it's squared and shrunk on your phone. It's public, so we say so. */
+async function paPickPhoto(file){
+  const bm=await createImageBitmap(file),s=Math.min(bm.width,bm.height),c=document.createElement("canvas");c.width=c.height=144;
+  const x=c.getContext("2d");x.drawImage(bm,(bm.width-s)/2,(bm.height-s)/2,s,s,0,0,144,144);
+  return c.toDataURL("image/jpeg",0.72);
+}
+function paAvatarSheet(){
+  const has=!!SET.pfp;
+  qrSheet(`<div class="qrcard"><h2>Profile picture</h2>
+    <div class="pfp-prev"><span class="avatar big bd-${paEsc(prog().bsel||"none")}${prog().bsel&&PA_BORDERS[prog().bsel]&&PA_BORDERS[prog().bsel][3]?" bdanim":""}">${has?`<img src="${SET.pfp}" alt="">`:paEsc((myName().trim()[0]||"D").toUpperCase())}</span></div>
+    <p class="msg"><b>Your picture is public.</b> Other signed-in drivers can see it on your profile. Don't use a photo you wouldn't want shared, and no one else's face.</p>
+    <label class="btn" for="paPfpIn" role="button">${has?"Change picture":"Choose a photo"}</label><input type="file" id="paPfpIn" accept="image/*" hidden>
+    ${has?`<button class="btn ghost" id="paPfpRm">Remove picture</button>`:""}
+    <button class="btn ghost" id="paBd">🖼️ Choose a border</button></div>`);
+  $("paPfpIn").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{SET.pfp=await paPickPhoto(f);SET.pfpPub=true;saveSet();closeQR();renderProfile();pushPubSoon();toast("Picture saved")}catch(x){toast("That photo couldn't be read")}};
+  if($("paPfpRm"))$("paPfpRm").onclick=()=>{SET.pfp="";saveSet();closeQR();renderProfile();pushPubSoon()};
+  $("paBd").onclick=()=>titleSheet("b");
+}
+paTry("profile",()=>{
+  const rp=window.renderProfile;
+  window.renderProfile=function(){rp.apply(this,arguments);
+    try{const av=document.querySelector("#profHero .avatar");if(!av)return;
+      const b=prog().bsel||"",B=PA_BORDERS[b];av.classList.add("tap");if(b)av.classList.add("bd-"+b);if(B&&B[3])av.classList.add("bdanim");
+      if(SET.pfp)av.innerHTML=`<img src="${SET.pfp}" alt="">`;
+      av.setAttribute("role","button");av.setAttribute("aria-label","Change profile picture and border");av.onclick=paAvatarSheet}catch(e){console.warn(e)}};
+});
+
+/* ---------- 10. Battle pass: see what you'll get ---------- */
+window.passSheet=function(){
+  const s=passState();if(!s)return;
+  const R=k=>(ITEMS[k]&&ITEMS[k].r)||"common",best=r=>Object.keys(r).filter(k=>k!=="xp").reduce((m,k)=>RANK[R(k)]>RANK[m]?R(k):m,"common");
+  const chip=(k,n,hide)=>hide?`<span class="pchip q" style="--c:var(--mut)">❓</span>`:`<span class="pchip" style="--c:${TC[R(k)]}" title="${paEsc(ITEMS[k]?ITEMS[k].n:k)}">${ITEMS[k]?ITEMS[k].i:"•"}<b>${paEsc(ITEMS[k]&&ITEMS[k].title?"Title":ITEMS[k]&&k.startsWith("b_")?"Border":ITEMS[k]?ITEMS[k].n:k)}${n>1?" ×"+n:""}</b></span>`;
+  qrSheet(`<div class="qrcard pass"><h2>🎟️ ${paEsc(s.name)}</h2>
+    <p class="msg">Free for everyone. Every ${PASS_XP} XP you earn this season unlocks the next tier, and rewards go straight to your Bag. Ends ${new Date(s.to+"T12:00:00").toLocaleDateString([],{month:"short",day:"numeric"})}.</p>
+    <div class="pbar"><i style="width:${s.tier>=PASS_TIERS?100:s.into/PASS_XP*100}%"></i></div><p class="msg"><b>Tier ${s.tier} of ${PASS_TIERS}</b> · ${s.tier>=PASS_TIERS?"All done!":`${PASS_XP-s.into} XP to tier ${s.tier+1}`}</p>
+    <div class="ptiers2">${PASS.map((r,i)=>{const t=i+1,got=s.tier>=t,now=s.tier+1===t,col=TC[best(r)];
+      const items=Object.entries(r).filter(([k])=>k!=="xp");
+      const body=got?`<span class="pdone">✓</span>`:items.map(([k,n])=>chip(k,n,!now&&RANK[R(k)]>=RANK.rare)).join("");
+      return `<div class="pt2${got?" got":""}${now?" now":""}" style="--c:${got?"var(--accept)":col}"><span class="ptn">${t}</span><span class="pcs">${body}</span><span class="pts">${got?"Done":now?`${s.into}/${PASS_XP}`:""}</span></div>`}).join("")}</div>
+    <p class="msg">Border colors show the best reward in a tier. Rare and better rewards are a surprise until you reach them. Titles and borders appear in Profile › Titles.</p></div>`);
+};
+
+/* ---------- 11. Sticker packs fold up; a Frames pack lists every frame, most common first ---------- */
+paTry("packs",()=>{
+  const ORDER=["carbon","inverted","neon","gold","holo"];
+  const framePack=()=>{
+    const split={holo:.14,gold:.14,neon:.2,carbon:.26,inverted:.26},own={};for(const c of store.cards)if(c.finish&&c.finish!=="standard")own[c.finish]=(own[c.finish]||0)+1;
+    const have=ORDER.filter(k=>own[k]).length;
+    return `<div class="sbox"><h3>🎞️ Frames <small>${have} of ${ORDER.length} found</small></h3><div class="stkbook frbook">${ORDER.map((k,i)=>{const on=!!own[k];
+      return `<div class="stkslot${on?" on":""}"><span class="frsw f-${k}"></span><b>${FINISHES[k]}</b><small>${on?`×${own[k]} · `:""}${Math.round(split[k]*100)}% of frames</small></div>`}).join("")}</div>
+      <p class="msg">Listed from most common to rarest. A frame is a rare shiny border on a card. Higher-rarity cards get one more often.</p></div>`};
+  const sb=window.stickerBookHTML;
+  window.stickerBookHTML=function(){let h=framePack()+sb.apply(this,arguments);const open=Array.isArray(SET.openPk)?SET.openPk:[];
+    return h.replace(/<div class="sbox"><h3>([^]*?)<\/h3>([^]*?)<p class="msg">([^]*?)<\/p><\/div>/g,(m,t,body,msg)=>{const id=t.replace(/<[^>]*>/g,"").trim().split(" ").slice(0,3).join("-").slice(0,24);
+      return `<details class="sbox cdet" data-pk="${paEsc(id)}" ${open.includes(id)?"open":""}><summary><h3>${t}</h3></summary>${body}<p class="msg">${msg}</p></details>`})};
+  document.addEventListener("toggle",e=>{const d=e.target;if(!d||!d.matches||!d.matches("details.cdet[data-pk]"))return;
+    const id=d.dataset.pk,set=new Set(Array.isArray(SET.openPk)?SET.openPk:[]);if(d.open)set.add(id);else set.delete(id);SET.openPk=[...set];saveSet()},true);
+});
+
+/* ---------- 12. Welcome: simpler, with no map or screenshot photo ---------- */
+const PA_EXART="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3a55"/><stop offset="1" stop-color="#141a28"/></linearGradient></defs><rect width="200" height="120" fill="url(#g)"/><g stroke="#ffffff14" stroke-width="1"><path d="M0 30H200M0 60H200M0 90H200M40 0V120M100 0V120M160 0V120"/></g><text x="100" y="74" font-size="48" font-family="Arial" font-weight="700" fill="#ffffff55" text-anchor="middle">$</text></svg>');
+paTry("welcome",()=>{
+  for(const e of EXS){e.art=()=>PA_EXART}
+  window.exShotHTML=function(k,id,beam){const e=EXS[k],o=e.o;
+    return `<div class="ishot mock${beam?"":" still"}"${id?` id="${id}"`:""}>
+      <span class="mkt" style="top:2.2%;left:8.4%;font-size:5cqw;font-weight:600">9:41</span>
+      <div class="mkmap">Offer screen<br><small>(example, made up)</small></div>
+      <span class="mkt" style="top:52.8%;left:3.4%;font-size:9cqw;font-weight:800">$${(+o.pay).toFixed(2)}</span>
+      <span class="mkt" style="top:58.8%;left:3.6%;font-size:4cqw">${o.minutes} min (${o.miles} mi) total</span>
+      ${e.rc?`<span class="mkt mkred" style="top:63.6%;left:3%;font-size:3.6cqw">Red Card order</span>`:""}
+      <span class="mkt" style="top:72.2%;left:11.2%;font-size:3.6cqw">${esc(o.store)}</span>
+      <span class="mkbtn">Accept</span>
+      ${beam?`<div class="ibeam"></div>`:""}
+      ${e.box.map(([c,l,tp,lf,w,h])=>`<span class="ibox ${c}" style="top:${tp}%;left:${lf}%;width:${w}%;height:${h}%"><i>${l}</i></span>`).join("")}</div>`};
+  window.introSheet=function(){
+    let k=+SET.exPick===1?1:0;
+    qrSheet(`<div class="qrcard intro"><h2>Welcome to DasherDex 👋</h2>
+      <p class="msg" style="text-align:center">Screenshot a delivery offer. We tell you if it's worth taking, and turn it into a collectible card.</p>
+      <ol class="steps isteps big"><li><b>Screenshot</b> an offer when it pops up.</li><li><b>Tap Scan</b> and pick the screenshot.</li><li><b>Get your verdict:</b> Accept, Consider or Decline.</li></ol>
+      <div class="seg seg2 expick" role="group" aria-label="Example offer">${EXS.map((e,i)=>`<button data-ex="${i}" aria-pressed="${i===k}">${i?"A bad offer":"A good offer"}</button>`).join("")}</div>
+      <div id="iShotWrap">${exShotHTML(k,"iShot",true)}</div>
+      <p class="msg exnote">This is a made-up example. Nothing here uses your location.</p>
+      <p class="msg istat" id="iStat" hidden>Reading the example…</p><div id="iResult"></div></div>
+      <button class="btn ghost" id="iDemo">▶ Try the example</button>
+      <label class="btn" for="file" id="iGo" role="button">Pick my screenshot</label>`);
+    const done=()=>{SET.introDone=1;saveSet()};
+    $("iGo").addEventListener("click",()=>{done();setTimeout(closeQR,50)});
+    document.querySelectorAll("#qrSheet [data-ex]").forEach(b=>b.onclick=()=>{k=+b.dataset.ex;SET.exPick=k;saveSet();
+      document.querySelectorAll("#qrSheet [data-ex]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+      $("iShotWrap").innerHTML=exShotHTML(k,"iShot",true);$("iResult").innerHTML="";$("iDemo").textContent="▶ Try the example";$("iDemo").disabled=false});
+    $("iDemo").onclick=()=>{
+      const e=EXS[k],EXo=e.o;$("iResult").innerHTML="";$("iStat").hidden=false;
+      const sh=$("iShot");sh.classList.remove("on");void sh.offsetWidth;sh.classList.add("on");$("iDemo").disabled=true;$("iDemo").textContent="Scanning…";
+      setTimeout(()=>{$("iStat").hidden=true;
+        const g=C.scoreOffer({...EXo,extraMin:e.rc?C.RED_CARD_MIN:0}),t=C.tierFor(g.score);
+        const demo={id:"example",no:0,...EXo,rc:e.rc||undefined,grade:g.score,luck:0,score:g.score,tier:t.id,pph:g.pph,ppm:g.ppm,reasons:g.reasons,parts:g.parts,dv:g.hard?1:undefined,finish:"standard",ts:new Date().toISOString(),_friend:true,_example:true,_art:PA_EXART};
+        $("iResult").innerHTML=`${verdictHTML(demo)}<div class="demo">${cardHTML(demo)}</div><p class="msg">That's your card. It's just an example, so it isn't added to your Dex. ${money(EXo.pay)} for ${EXo.minutes} minutes and ${EXo.miles} miles works out to ${money(g.pph)}/hr.</p>`;
+        $("iDemo").disabled=false;$("iDemo").textContent="Run the example again";$("iResult").scrollIntoView({block:"start",behavior:RM?"auto":"smooth"});
+      },RM?0:1800)};
+  };
+});
+
+/* ---------- 13. More items, more titles, more borders ---------- */
+const PA_T2={
+  /* milestones */
+  c1000:["Dex Machine","epic","Scan 1,000 offers","🤖","#3a4f7a","#0e1626"],
+  c2500:["Living Legend","mythic","Scan 2,500 offers","🌟","#8a3fa0","#220d2e",1],
+  miles5k:["Road King","epic","Scan 5,000 miles of offers","🛤️","#5a6a2c","#1a200a"],
+  lv75:["Road Royalty","epic","Reach level 75 (prestige counts)","💎","#2c6a8a","#0a2030",1],
+  lv100:["Centurion","mythic","Reach level 100 (prestige counts)","🏛️","#a88a3f","#2e2410",1],
+  pr3:["Triple Crown","legendary","Prestige 3 times","👑","#c9a227","#3a2a00",1],
+  /* offers */
+  accept25:["Cherry Picker","uncommon","25 offers the app said to Accept","🍒","#a02c3f","#2e0a10"],
+  accept100:["Sharp Eye","rare","100 Accept offers","🎯","#2c7a5a","#0a2a1e"],
+  decline50:["Picky Eater","uncommon","50 Decline offers","🙅","#7a3a2c","#2a120d"],
+  pay50:["Fifty Club","rare","Scan an offer that pays $50 or more","💵","#2f7a3a","#0c2a12"],
+  pay100:["Hundred Club","legendary","Scan an offer that pays $100 or more","💰","#3f8a2c","#0f2a08",1],
+  rc10:["Red Carder","uncommon","Scan 10 Red Card orders","🟥","#a82c2c","#2e0808"],
+  stack10:["Stack Master","rare","Scan 10 offers with 3 or more stops","🥞","#a8742c","#2e1e08"],
+  alc5:["Last Call","uncommon","Scan 5 alcohol orders","🍺","#a8862c","#2e2408"],
+  short:["Short and Sweet","rare","An Accept offer under 3 miles","🤏","#5a2c8a","#180a2a"],
+  lunch:["Lunch Rush","uncommon","25 offers between 11 AM and 2 PM","🥪","#a8682c","#2e1a08"],
+  dinner:["Dinner Rush","uncommon","25 offers between 5 and 9 PM","🍝","#8a3a2c","#2a0e08"],
+  weekend:["Weekend Warrior","rare","50 offers on Saturdays and Sundays","🗓️","#2c5a8a","#0a1a2e"],
+  stores25:["Store Hopper","uncommon","Offers from 25 different stores","🏪","#3a6a5a","#0e221c"],
+  stores75:["Food Critic","epic","Offers from 75 different stores","🧑‍🍳","#7a5a3a","#2a1c0e"],
+  trash100:["Trash King","rare","Collect 100 Trash cards","🗑️","#4a5a4a","#141a14"],
+  /* cards */
+  epic1:["Epic Find","rare","Pull an Epic card","💜","#6a2c9a","#1c0a2e"],
+  leg1:["Legend Spotter","epic","Pull a Legendary card","🧡","#c2661f","#331805",1],
+  f_carbon:["Carbon Copy","uncommon","Get a Carbon Fiber frame","⬛","#3a3a44","#111116"],
+  f_inverted:["Upside Down","uncommon","Get an Inverted frame","🔄","#6a6a7a","#1a1a22"],
+  f_neon:["Neon Nights","rare","Get a Neon frame","💡","#1f8aa8","#06222e",1],
+  f_gold:["Gold Digger","epic","Get a Gold Foil frame","🥇","#c9a227","#3a2c04",1],
+  f_holo:["Holo Hero","epic","Get a Holographic frame","🌈","#8a4fc9","#1c0e33",1],
+  f_all:["Frame Master","legendary","Get all 5 frames","🖼️","#c94f8a","#33081e",1],
+  /* game */
+  cal7:["Regular","uncommon","Claim all 7 days of the login calendar","📅","#2c6a7a","#0a1e24"],
+  scrap:["Scrap Baron","rare","Earn 2,500 scrap","🔩","#5a5a6a","#18181e"],
+  pass30:["Pass Completer","epic","Finish every tier of a season pass","🎟️","#a82c6a","#2e0a1e",1],
+  /* only from Title Crates */
+  x_midnight:["Midnight Snack","rare","Title Crate only","🌮","#3a2c7a","#0e0a24"],
+  x_turbo:["Turbo","rare","Title Crate only","🏎️","#a82c2c","#2a0606"],
+  x_courier:["The Courier","epic","Title Crate only","📦","#7a5a2c","#241a08"],
+  x_fork:["Golden Fork","epic","Title Crate only","🍴","#c9a227","#2e2402",1],
+  x_ghost:["Ghost Driver","legendary","Title Crate only","👻","#6a7a9a","#10141e",1],
+  x_dragon:["Dash Dragon","mythic","Title Crate only","🐲","#2c8a4f","#06200e",1],
+  x_comet:["Comet","legendary","Title Crate only","☄️","#c25a1f","#2a0e02",1],
+  x_chef:["Chef's Kiss","rare","Title Crate only","🤌","#a83a5a","#2a0a14"]
+};
+const PA_B2={
+  diamond:["Diamond","epic","Scan 1,000 offers",1],rainbow:["Rainbow","legendary","Get all 5 frames",1],redline:["Red Line","uncommon","Scan 10 Red Card orders"],
+  checker:["Checkered Flag","rare","50 weekend offers"],cash:["Cash Stack","legendary","Scan a $100 offer",1],royal:["Royal Purple","epic","Reach level 75 (prestige counts)",1],
+  x_ice:["Ice","rare","Border Crate only"],x_toxic:["Toxic","epic","Border Crate only",1],x_lava:["Lava","legendary","Border Crate only",1],x_galaxy:["Galaxy","mythic","Border Crate only",1],x_mint:["Mint","rare","Border Crate only"]
+};
+paTry("more",()=>{
+  for(const [k,[n,r,how,e,a,b,an]] of Object.entries(PA_T2)){ETITLES[k]={n,r,how};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:how};PA_TART[k]=[e,a,b,an?1:0]}
+  for(const [k,v] of Object.entries(PA_B2)){PA_BORDERS[k]=v;ITEMS["b_"+k]={n:"Border: "+v[0],r:v[1],i:"🖼️",hide:1,d:v[2]}}
+  Object.assign(ITEMS,{
+    xp_h:{n:"Huge Bonus XP",r:"epic",i:"🌠",hide:1,d:"Random XP (1,000 to 3,000), added the moment it drops."},
+    chest_d:{n:"Diamond Chest",r:"legendary",i:"💎",chest:1,d:"5 random items, the best odds, and a big pile of XP."},
+    mystery:{n:"Mystery Box",r:"rare",i:"❔",d:"Opens into one random item. Could be anything, even a Diamond Chest."},
+    mfill:{n:"Meter Fill",r:"legendary",i:"🔆",d:"Fills your frame meter all the way."},
+    crate:{n:"Scrap Crate",r:"rare",i:"🧰",d:"Open it for 1,000 to 3,000 scrap."},
+    ticket:{n:"Season Ticket",r:"epic",i:"🎫",d:"+400 XP: one whole season pass tier."},
+    tcrate:{n:"Title Crate",r:"epic",i:"🎁",d:"Unlocks a random crate-only title you don't have yet (or 500 XP if you have them all)."},
+    bcrate:{n:"Border Crate",r:"epic",i:"🖼️",d:"Unlocks a random crate-only profile border you don't have yet (or 500 XP)."},
+    swap3:{n:"Swap Pack",r:"uncommon",i:"🔁",d:"Three extra daily challenge swaps, for today."}
+  });
+  XP_ROLL.xp_h=[[1000,45],[1500,30],[2000,15],[2500,7],[3000,3]];
+  const ord=["chest_d","chest_g","chest_s","chest_b","mystery","tcrate","bcrate","ticket","mfill","frame","reroll"];
+  const rest=ITEM_ORDER.filter(k=>!ord.includes(k));ITEM_ORDER.length=0;ITEM_ORDER.push(...ord,...rest,"crate","swap3");
+  CHEST.chest_b.t.push(["mystery",3],["swap3",4]);
+  CHEST.chest_s.t.push(["mystery",5],["crate",3],["tcrate",1],["bcrate",1],["swap3",4]);
+  CHEST.chest_g.t.push(["mystery",6],["crate",6],["tcrate",3],["bcrate",3],["ticket",4],["xp_h",3],["chest_d",1.5],["mfill",1]);
+  CHEST.chest_d={rolls:5,xp:[500,1000],t:[["xp_h",14],["dx3d",12],["dxw",6],["chest_g",14],["tcrate",9],["bcrate",9],["ticket",9],["reroll",8],["mfill",5],["frame",6],["crate",8]]};
+  RECIPES.push(["mystery",3000],["tcrate",12000],["bcrate",12000],["chest_d",40000]);
+  /* more rewards in the pass: a Mystery Box, crates and a Diamond Chest at the end */
+  Object.assign(PASS[6],{mystery:1});Object.assign(PASS[12],{crate:1});Object.assign(PASS[17],{tcrate:1});Object.assign(PASS[22],{bcrate:1});Object.assign(PASS[26],{ticket:1});Object.assign(PASS[29],{chest_d:1});
+  const xd=window.xpDrops;window.xpDrops=function(items){const out=xd(items);const n=+items.xp_h||0;if(n>0){for(let i=0;i<n;i++)out.push(rollXP("xp_h"));delete items.xp_h;items.xp=(+items.xp||0)+out.slice(-n).reduce((a,b)=>a+b,0)}return out};
+  const MYST=[["xp_s",20],["xp_m",14],["pouch",12],["dx60",12],["mcharge",8],["swap3",6],["dxd",6],["chest_b",6],["crate",4],["scans",3],["chest_s",3],["reroll",2],["dx3d",1.5],["tcrate",1],["bcrate",1],["chest_g",0.8],["dxw",0.4],["chest_d",0.2],["frame",0.1]];
+  const pick=T=>{let r=Math.random()*T.reduce((a,x)=>a+x[1],0);for(const [k,w] of T){if((r-=w)<0)return k}return T[0][0]};
+  const crate=(pool,pre,k)=>{const own=pool.filter(x=>invOf(pre+x)>0),left=pool.filter(x=>!own.includes(x));return left.length?left[Math.floor(Math.random()*left.length)]:null};
+  const use1=window.useItem;
+  window.useItem=function(k){
+    const it=ITEMS[k];if(!it||invOf(k)<1)return false;const E=gEv(),id="u:"+rid();
+    if(k==="mystery"){const got=pick(MYST),items={[got]:1};const xs=xpDrops(items);E[id]={mystery:-1,...items};save();checkLevel();if(xs.length)xpFX(items.xp,"Mystery Box");
+      paReveal("❔ Mystery Box",got.startsWith("xp_")?`⭐ +${items.xp} XP`:`${ITEMS[got].i} ${ITEMS[got].n}`,TC[got.startsWith("xp_")?"rare":ITEMS[got].r]);return true}
+    if(k==="crate"){const n=1000+Math.floor(Math.random()*2001);E[id]={crate:-1,scrap:n};save();paReveal("🧰 Scrap Crate",`🔩 +${n.toLocaleString()} scrap`,TC.rare);return true}
+    if(k==="mfill"){const m=meter();m.p=METER_FULL;E[id]={mfill:-1};save();toast("🔆 Frame meter is FULL");return true}
+    if(k==="ticket"){E[id]={ticket:-1,xp:400};save();checkLevel();xpFX(400,"Season Ticket");return true}
+    if(k==="swap3"){const d=dayKey(today());fx().swaps={d,n:fxToday("swaps")+3};E[id]={swap3:-1};saveSet();save();toast("🔁 Three more swaps today");return true}
+    if(k==="tcrate"||k==="bcrate"){const T=k==="tcrate",pool=Object.keys(T?PA_T2:PA_B2).filter(x=>x.startsWith("x_")),got=crate(pool,T?"t_":"b_");
+      if(!got){E[id]={[k]:-1,xp:500};save();checkLevel();xpFX(500,ITEMS[k].n);return true}
+      E[id]={[k]:-1,[(T?"t_":"b_")+got]:1};save();
+      const nm=T?ETITLES[got].n:PA_BORDERS[got][0],r=T?ETITLES[got].r:PA_BORDERS[got][1];
+      paReveal(T?"🎁 Title Crate":"🖼️ Border Crate",`${T?"🏷️ Title":"🖼️ Border"}: ${nm}`,TC[r],TIERS.find(t=>t.id===r).name);return true}
+    return use1(k)};
+  /* milestone titles and borders */
+  const ct=window.checkTitles;
+  window.checkTitles=function(){ct.apply(this,arguments);
+    try{const all=allOffers(),cs=store.cards.filter(c=>trusted(c)&&!c.noxp&&!c.dev),T=k=>giveTitle(k),B=(k)=>{if(invOf("b_"+k)<1)grant("bd:"+k,{["b_"+k]:1},"New border")};
+      const L=myLevel()+50*(+prog().pr||0),pr=+prog().pr||0,hr=c=>new Date(c.ts).getHours(),dw=c=>new Date(c.ts).getDay();
+      if(all.length>=1000){T("c1000");B("diamond")}if(all.length>=2500)T("c2500");
+      if(all.reduce((a,c)=>a+(+c.miles||0),0)>=5000)T("miles5k");
+      if(L>=75){T("lv75");B("royal")}if(L>=100)T("lv100");if(pr>=3)T("pr3");
+      const v=id=>cs.filter(c=>{try{return vOf(c).id===id}catch(e){return false}}).length;
+      const acc=v("accept");if(acc>=25)T("accept25");if(acc>=100)T("accept100");if(v("decline")>=50)T("decline50");
+      if(cs.some(c=>+c.pay>=50))T("pay50");if(cs.some(c=>+c.pay>=100)){T("pay100");B("cash")}
+      if(cs.filter(c=>c.rc).length>=10){T("rc10");B("redline")}
+      if(cs.filter(c=>(+c.stops||2)>=3).length>=10)T("stack10");if(cs.filter(c=>c.alc).length>=5)T("alc5");
+      if(cs.some(c=>+c.miles>0&&+c.miles<3&&vOf(c).id==="accept"))T("short");
+      if(cs.filter(c=>{const h=hr(c);return h>=11&&h<14}).length>=25)T("lunch");
+      if(cs.filter(c=>{const h=hr(c);return h>=17&&h<21}).length>=25)T("dinner");
+      if(cs.filter(c=>dw(c)===0||dw(c)===6).length>=50){T("weekend");B("checker")}
+      const st=new Set(all.map(c=>String(c.store||"").toLowerCase().replace(/[^a-z0-9]/g,"")).filter(Boolean));if(st.size>=25)T("stores25");if(st.size>=75)T("stores75");
+      if(cs.filter(c=>c.tier==="trash").length>=100)T("trash100");
+      if(cs.some(c=>c.tier==="epic"))T("epic1");if(cs.some(c=>c.tier==="legendary"))T("leg1");
+      const fr=new Set(cs.map(c=>c.finish).filter(f=>f&&f!=="standard"));for(const f of ["carbon","inverted","neon","gold","holo"])if(fr.has(f))T("f_"+f);
+      if(["carbon","inverted","neon","gold","holo"].every(f=>fr.has(f))){T("f_all");B("rainbow")}
+      const c7=prog().cal;if(c7&&+c7.n>=7)T("cal7");
+      let sc=0;for(const e of Object.values(gEv()))if(+e.scrap>0)sc+=+e.scrap;if(sc>=2500)T("scrap");
+      const s=passState();if(s&&s.tier>=PASS_TIERS)T("pass30");
+    }catch(e){console.warn(e)}};
+});
+/* a quick reveal for boxes and crates */
+function paReveal(head,line,col,sub){
+  qrSheet(`<div class="qrcard chestwrap pareveal" style="--c:${col}"><h2>${paEsc(head)}</h2><div class="prv-item"><b>${paEsc(line)}</b>${sub?`<small>${paEsc(sub)}</small>`:""}</div></div><button class="btn" id="prvOk">Nice!</button>`);
+  $("prvOk").onclick=()=>{closeQR();try{if(view==="vProfile")renderProfile();renderGameBar()}catch(e){}};
+}
+/* titles sheet: owned first, then the rest by rarity */
+paTry("tsort",()=>{
+  const ts=window.titleSheet;
+  window.titleSheet=function(tab){
+    const T=Object.entries(ETITLES),own=k=>invOf("t_"+k)>0?1:0;
+    const sorted=T.slice().sort((a,b)=>own(b[0])-own(a[0])||RANK[a[1].r]-RANK[b[1].r]);
+    for(const [k] of T)delete ETITLES[k];for(const [k,v] of sorted)ETITLES[k]=v;
+    const B=Object.entries(PA_BORDERS),ob=k=>invOf("b_"+k)>0?1:0;
+    const bs=B.slice().sort((a,b)=>ob(b[0])-ob(a[0])||RANK[a[1][1]]-RANK[b[1][1]]);
+    for(const [k] of B)delete PA_BORDERS[k];for(const [k,v] of bs)PA_BORDERS[k]=v;
+    return ts.apply(this,arguments)};
+});
+
 </script>
