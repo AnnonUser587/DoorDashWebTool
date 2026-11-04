@@ -3618,7 +3618,7 @@ const LOCK_MS=24*3600e3;
 /* ---------- offer history: when a card is auto-deleted, its numbers (no picture) stay for stats and charts ---------- */
 const histList=()=>Array.isArray(store.hist)?store.hist:(store.hist=[]);
 function keepHist(c){histList().push({i:c.id,ts:c.ts,s:c.store,pl:c.platform||"",p:+c.pay,m:+c.minutes,mi:+c.miles,st:c.stops||2,g:gradeOf(c),sc:c.score,t:c.tier,vb:c.vb||51,rc:c.rc||0,a:c.addr||""});
-  if(store.hist.length>3000)store.hist=store.hist.slice(-3000)}
+  if(store.hist.length>5000)store.hist=store.hist.slice(-5000)}
 const histCard=h=>({id:h.i,_h:1,ts:h.ts,added:h.ts,store:h.s,platform:h.pl,pay:h.p,minutes:h.m,miles:h.mi,stops:h.st,grade:h.g,score:h.sc,tier:h.t,vb:h.vb,rc:h.rc||undefined,
   addr:h.a||undefined,pph:h.m?h.p/(h.m+(h.rc?C.RED_CARD_MIN:0))*60:0,ppm:h.mi?h.p/h.mi:0,finish:"standard",verified:true,reasons:[],parts:{}});
 /* every offer ever scanned: cards you still have plus the history of auto-deleted ones */
@@ -3720,7 +3720,7 @@ const fmtLuck=m=>"+"+Math.round(((m||luckShown())-1)*100)+"%";
 /* hand out a luck card for every level reached for the first time. Luck is saved right away; the pack is just the show. */
 function autoPrestige(){
   if(typeof PRESTIGE_AT==="undefined")return 0;let n=0;const p=prog();
-  while(myLevel()>=PRESTIGE_AT&&n<5){p.pr=(+p.pr||0)+1;p.prx=(+p.prx||0)+lvlStart(PRESTIGE_AT);(p.ach||(p.ach={})).Prestige=1;grant("pr:"+p.pr,{chest_g:2},"Prestige "+p.pr);n++}
+  while(myLevel()>=PRESTIGE_AT&&n<5){p.prx=(+p.prx||0)+lvlStart(PRESTIGE_AT)*(+p.prm||1);p.pr=(+p.pr||0)+1;if(typeof paOnPrestige==="function")paOnPrestige(p);(p.ach||(p.ach={})).Prestige=1;grant("pr:"+p.pr,{chest_g:2},"Prestige "+p.pr);n++}
   if(n){save();setTimeout(()=>{toast(`★ Prestige ${p.pr}! Back to level 1 with +${5*p.pr}% luck for good`);try{if(view==="vProfile")renderProfile()}catch(e){}},300);
     if(typeof Cloud!=="undefined"&&Cloud.user)Cloud.pushProfile().catch(()=>{})}
   return n;
@@ -4402,8 +4402,8 @@ const Cloud={
   stateRef(){return this.me().collection("meta").doc("state")},
   stateOut(){const p=prog(),qd={};for(const k of Object.keys(p.qd).sort().slice(-400))qd[k]=p.qd[k].slice(0,3);
     return {prog:{v:3,rs:+p.rs||0,bank:Math.round(+p.bank||0),lvlMax:+p.lvlMax||1,bd:Object.fromEntries(Object.entries(p.bd||{}).slice(-20).map(([k,v])=>[k,Math.round(+v||0)])),md:{xp:+((store.modDone||{}).xp)||0,god:+((store.modDone||{}).god)||0},
-      ach:Object.keys(p.ach||{}).slice(0,80),ev:Object.fromEntries(Object.entries(p.ev||{}).slice(-3000)),cal:p.cal&&p.cal.d?{d:String(p.cal.d),n:+p.cal.n||1}:null,
-      pm:{p:Math.round((+(p.pm&&p.pm.p)||0)*10)/10,r:+(p.pm&&p.pm.r)||0},pr:+p.pr||0,prx:Math.round(+p.prx||0),gpo:+p.gpo||0,ss:p.ss&&typeof p.ss==="object"?p.ss:{},qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,tsel:String(p.tsel||"").slice(0,20),sc:p.sc&&typeof p.sc==="object"?{ids:(Array.isArray(p.sc.ids)?p.sc.ids:[]).slice(0,3).map(x=>String(x).slice(0,40)),note:String(p.sc.note||"").slice(0,80),upd:+p.sc.upd||0}:null,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
+      ach:Object.keys(p.ach||{}).slice(0,250),ev:Object.fromEntries(Object.entries(p.ev||{}).slice(-3000)),cal:p.cal&&p.cal.d?{d:String(p.cal.d),n:+p.cal.n||1}:null,
+      pm:{p:Math.round((+(p.pm&&p.pm.p)||0)*10)/10,r:+(p.pm&&p.pm.r)||0},pr:+p.pr||0,prx:Math.round(+p.prx||0),prm:+p.prm||1,ar:+p.ar||0,prt:+p.prt||0,gpo:+p.gpo||0,ss:p.ss&&typeof p.ss==="object"?p.ss:{},qt:Object.fromEntries(Object.entries(p.qt||{}).slice(-14).map(([k,v])=>[k,(Array.isArray(v)?v:[]).slice(0,3).map(x=>+x||0)])),sw:Object.fromEntries(Object.entries(p.sw||{}).slice(-14)),gb10:+p.gb10||0,boost:+p.boost||0,tsel:String(p.tsel||"").slice(0,20),sc:p.sc&&typeof p.sc==="object"?{ids:(Array.isArray(p.sc.ids)?p.sc.ids:[]).slice(0,3).map(x=>String(x).slice(0,40)),note:String(p.sc.note||"").slice(0,80),upd:+p.sc.upd||0}:null,qv:Object.fromEntries(Object.entries(p.qv||{}).slice(-60)),wd:Object.fromEntries(Object.entries(p.wd||{}).slice(-60)),luck:p.luck.slice(-400).map(x=>[+x[0],String(x[1]),+x[2]]).map(x=>x.join("|")),qd:Object.fromEntries(Object.entries(qd).map(([k,v])=>[k,v.join(",")]))},
       del:pruneDel().map(x=>[x[0],x[1],encodeURIComponent(x[2]),x[3]].join("|")),use:store.use&&store.use.d?{d:String(store.use.d),n:+store.use.n||0}:{d:"",n:0},
       ...(this.histOK()?{}:{hist:histList().slice(-1500)})}},
   /* auto-deleted cards' numbers live in their own document (meta/hist), written only when they change */
@@ -4414,7 +4414,7 @@ const Cloud={
     if(!Array.isArray(list))return;const have=new Set(histList().map(h=>h.i));
     if(num0(R)>=num0(prog().rs))for(const h of list.slice(-1500))if(h&&typeof h==="object"&&!have.has(String(h.i))&&TIERS.some(t=>t.id===h.t)&&!isNaN(new Date(h.ts)))
       histList().push({i:String(h.i).slice(0,40),ts:new Date(h.ts).toISOString(),s:String(h.s||"").slice(0,40),pl:String(h.pl||"").slice(0,20),p:num0(h.p),m:num0(h.m),mi:num0(h.mi),st:num0(h.st)||2,g:num0(h.g),sc:num0(h.sc),t:h.t,vb:num0(h.vb)||51,rc:num0(h.rc),a:String(h.a||"").slice(0,80)});
-    if(store.hist.length>3000)store.hist=store.hist.slice(-3000);
+    if(store.hist.length>5000)store.hist=store.hist.slice(-5000);
   },
   async pullState(){
     if(!this.user)return;const snap=await this.stateRef().get();if(!snap.exists)return;
@@ -4451,7 +4451,7 @@ const Cloud={
     if(!P.bd||typeof P.bd!=="object")P.bd={};
     if(R.bd&&typeof R.bd==="object")for(const [k,v] of Object.entries(R.bd).slice(0,40))if(/^[a-z0-9]{8}$/.test(k))P.bd[k]=Math.max(+P.bd[k]||0,Math.max(0,Math.min(1e8,Math.round(num0(v)))));
     if(R.md&&typeof R.md==="object"){const d=store.modDone||(store.modDone={xp:0,god:0});d.xp=Math.max(+d.xp||0,Math.max(0,num0(R.md.xp)));d.god=Math.max(+d.god||0,Math.max(0,num0(R.md.god)))}
-    if(!P.ach||typeof P.ach!=="object")P.ach={};if(Array.isArray(R.ach))for(const a of R.ach.slice(0,80))if(typeof a==="string"&&a.length<40)P.ach[a]=1;
+    if(!P.ach||typeof P.ach!=="object")P.ach={};if(Array.isArray(R.ach))for(const a of R.ach.slice(0,250))if(typeof a==="string"&&a.length<40)P.ach[a]=1;
     /* rewards: every event is one-time, so merging is just adding the ones this phone doesn't have yet */
     if(!P.ev||typeof P.ev!=="object")P.ev={};
     if(R.ev&&typeof R.ev==="object")for(const [k,v] of Object.entries(R.ev).slice(-3000)){if(P.ev[k]||!/^[a-z0-9]{1,3}:[\w:.-]{1,60}$/i.test(k)||!v||typeof v!=="object")continue;
@@ -4459,7 +4459,7 @@ const Cloud={
     if(R.cal&&typeof R.cal==="object"&&/^\d{4}-\d\d-\d\d$/.test(String(R.cal.d))&&(!P.cal||String(R.cal.d)>String(P.cal.d||"")))P.cal={d:String(R.cal.d),n:Math.max(1,Math.min(7,Math.round(num0(R.cal.n))))};
     if(R.pm&&typeof R.pm==="object"){const m=P.pm&&typeof P.pm==="object"?P.pm:(P.pm={p:0,r:0}),rr=Math.round(num0(R.pm.r)),rp=Math.max(0,Math.min(60,num0(R.pm.p)));
       if(rr>(+m.r||0)){m.r=rr;m.p=rp}else if(rr===(+m.r||0))m.p=Math.max(+m.p||0,rp)}
-    {const rpr=Math.max(0,Math.min(99,Math.round(num0(R.pr))));if(rpr>(+P.pr||0)){P.pr=rpr;P.prx=Math.max(0,num0(R.prx))}}
+    {const rpr=Math.max(0,Math.min(99,Math.round(num0(R.pr))));const rr=()=>{P.prm=Math.max(1,Math.min(20,num0(R.prm)||1));P.ar=Math.max(0,Math.min(99,Math.round(num0(R.ar))));P.prt=Math.max(0,num0(R.prt))};if(rpr>(+P.pr||0)){P.pr=rpr;P.prx=Math.max(0,num0(R.prx));rr()}else if(rpr===(+P.pr||0)&&num0(R.ar)>(+P.ar||0))rr()}
     if(!P.ss||typeof P.ss!=="object")P.ss={};if(R.ss&&typeof R.ss==="object")for(const [k,v] of Object.entries(R.ss).slice(0,40))if(/^s\d{1,3}$/.test(k)&&Number.isFinite(+v))P.ss[k]=P.ss[k]==null?+v:Math.min(+P.ss[k],+v);
     if(!P.qt||typeof P.qt!=="object")P.qt={};if(R.qt&&typeof R.qt==="object")for(const [k,v] of Object.entries(R.qt).slice(-14))if(/^\d{4}-\d\d-\d\d$/.test(k)&&Array.isArray(v)){const a=P.qt[k]||(P.qt[k]=[]);v.slice(0,3).forEach((t,i)=>{t=num0(t);if(t>0&&!(a[i]>0))a[i]=t})}
     /* title and showcase: the newest choice wins */
@@ -5606,6 +5606,16 @@ const WHATS_NEW=[
     "Stats: Edit layout is at the top next to Settings. Hold any section and drag it to move it, or tap − to hide it.",
     "Liquid glass look for the tab bar, top bars and pop-ups. Turn it off in Settings › Pre-Alpha options.",
     "Computer: choose small, medium or large cards in the Dex, and zoom in on any card with the magnifier.",
+    "Search your Dex: tap the magnifier next to Settings and type a store, a pay amount like $15, a rarity or a day.",
+    "Hold a card to start picking cards to recycle together (the quick menu is gone).",
+    "Auto recycle: pick a rarity in Settings and new cards of that rarity are recycled after you close the pack. Special frames and stickers always ask first. Stats keep every recycled offer.",
+    "The Dex rarity filter goes back to All when you leave the tab. Your sort choice stays.",
+    "Stats open on the range you used last (7 days the first time). Dragging sections no longer jumps back and forth.",
+    "Achievements start easier. After each prestige they reset to a harder round that pays more XP, and levels need 25% more XP.",
+    "Friends and community challenges get harder after a win and easier after a miss, with a leaderboard of who's helping.",
+    "34 new, harder titles (100 in all), and some older titles take more to unlock.",
+    "Computer: smaller cards with bigger, easier-to-read text. Open a card to see the full card.",
+    "iPhone: tap a dot on a card's “Offers from this pickup” graph to preview that offer, then tap it again to open it with a smooth transition.",
     "DasherDex is in Pre-Alpha. Older cards are tagged Prototype and new cards are tagged Pre-Alpha.",
     "Simpler welcome tour, with no map or screenshot of anyone's location.",
     "Stats: Accepts first, then Verdicts, then the general numbers. The estimates warning only shows when a card is marked CHECK. Reorder or hide sections with Customize.",
@@ -5818,7 +5828,7 @@ let xpFXq=0,xpFXt=0,xpFXwhy="";
 function xpFX(n,why){xpFXq+=n;if(why)xpFXwhy=why;clearTimeout(xpFXt);xpFXt=setTimeout(()=>{const g=xpFXq,w=xpFXwhy;xpFXq=0;xpFXwhy="";showXP(g,w)},250)}
 function showXP(gain,why){
   if(!(gain>0))return;
-  const after=myXP(),before=Math.max(0,after-gain),L0=levelOf(before),L1=levelOf(after),pc=(x,L)=>Math.max(0,Math.min(100,(x-lvlStart(L))/Math.max(1,lvlStart(L+1)-lvlStart(L))*100));
+  const after=myXP(),before=Math.max(0,after-gain/(+prog().prm||1)),L0=levelOf(before),L1=levelOf(after),pc=(x,L)=>Math.max(0,Math.min(100,(x-lvlStart(L))/Math.max(1,lvlStart(L+1)-lvlStart(L))*100));
   let el=$("xpFx");if(el)el.remove();el=document.createElement("div");el.id="xpFx";el.className="xpfx";el.setAttribute("role","status");
   el.innerHTML=`<div class="xf-top"><b>⭐ +${gain.toLocaleString()} XP</b><span>${esc(why||"Bonus XP")}</span></div><div class="xf-bar"><i style="width:${pc(before,L0)}%"></i></div><div class="xf-l"><span id="xfL">Level ${L0}</span><span>${(after-lvlStart(L1)).toLocaleString()} / ${(lvlStart(L1+1)-lvlStart(L1)).toLocaleString()}</span></div>`;
   document.body.appendChild(el);const bar=el.querySelector(".xf-bar i");
@@ -5864,8 +5874,8 @@ function applyMeter(cards){
 
 /* ---------- levels shown after prestige: prestige at level 50 starts the count again ---------- */
 const PRESTIGE_AT=50;
-const myLevel=()=>levelOf(Math.max(0,totalXP()-(+prog().prx||0)));
-const myXP=()=>Math.max(0,totalXP()-(+prog().prx||0));
+const myLevel=()=>levelOf(Math.max(0,totalXP()-(+prog().prx||0))/(+prog().prm||1));
+const myXP=()=>Math.floor(Math.max(0,totalXP()-(+prog().prx||0))/(+prog().prm||1));
 const prBadge=()=>{const n=+prog().pr||0;return n?`<span class="prb" title="Prestige ${n}">★${n>1?n:""}</span>`:""};
 
 /* ---------- the 7-day login calendar ---------- */
@@ -6107,7 +6117,7 @@ function scrapSheet(){
 function prestigeHTML(){
   const L=myLevel(),pr=+prog().pr||0;
   if(L<PRESTIGE_AT)return `<p class="msg prmsg">${pr?`${prBadge()} Prestige ${pr} · +${5*pr}% luck for good. `:""}At level ${PRESTIGE_AT} you prestige automatically: back to level 1 as Prestige ${pr+1}.</p>`;
-  return `<div class="sbox prestige"><h3>★ Prestige ${pr+1} is ready</h3><p class="msg">You hit level ${PRESTIGE_AT}! Prestige to start again at level 1 with a ★ next to your name, +5% luck for good, 2 Gold Chests and the level rewards all over again. You keep your cards, items and luck.</p><button class="btn" id="prGo">Prestige</button></div>`;
+  return `<div class="sbox prestige"><h3>★ Prestige ${pr+1} is ready</h3><p class="msg">You hit level ${PRESTIGE_AT}! Prestige to start again at level 1 with a ★ next to your name, +5% luck for good, 2 Gold Chests and the level rewards all over again. You keep your cards, items, stats and luck. Each prestige, levels need 25% more XP, and your achievements start a new, harder round that pays more XP.</p><button class="btn" id="prGo">Prestige</button></div>`;
 }
 function doPrestige(){
   const p=prog();if(myLevel()<PRESTIGE_AT)return;
@@ -7126,6 +7136,101 @@ html[data-glass="1"] .paedit.on{background:var(--tx)}
 #statsBody.stedit>[data-sk]{margin-top:6px}
 
 @media (max-width:359px){.pachip{display:none}}
+
+/* ===== Pre-Alpha 3 ===== */
+#statsBody{position:relative}
+/* search */
+.pasrchbtn svg{width:21px;height:21px;color:var(--tx)}
+.pasrchbtn.on{background:var(--tx)}.pasrchbtn.on svg{color:var(--bg)}
+.pasrch{display:grid;grid-template-columns:1fr auto;gap:8px 10px;align-items:center;margin:0 0 12px;opacity:0;transform:translateY(-6px);transition:opacity .2s,transform .2s}
+.pasrch.on{opacity:1;transform:none}
+.pasrin{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg2);border-radius:14px;padding:0 10px;min-height:44px}
+.pasrin svg{width:18px;height:18px;color:var(--mut);flex:none}
+.pasrin input{flex:1;min-width:0;border:0;background:none;color:var(--tx);font:500 16px var(--f-body);outline:none;padding:10px 0}
+.pasrin input::-webkit-search-cancel-button{display:none}
+.pasrx{border:0;background:var(--track);color:var(--mut);width:24px;height:24px;border-radius:99px;font-size:.7rem;cursor:pointer;flex:none}
+.pasrcancel{border:0;background:none;color:var(--tx);font:600 .95rem var(--f-body);cursor:pointer;padding:6px 2px}
+.pasrn{grid-column:1/-1;font:600 .75rem var(--f-mono);color:var(--mut);letter-spacing:.04em}
+.pasrn:empty{display:none}
+html[data-glass="1"] .pasrin{background:color-mix(in srgb,var(--panel) 55%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 1px 0 var(--gl-hi)}
+/* auto recycle + free note */
+.paar{display:grid;gap:6px;margin:4px 0 10px}.paar small{color:var(--mut);font-size:.8rem;line-height:1.35}
+.paar .ntags{display:flex;flex-wrap:wrap;gap:6px}
+.paarg{grid-template-columns:repeat(2,minmax(0,1fr))}
+.paarg .card.picked{outline:3px solid var(--accept,#3ddc84);outline-offset:3px;border-radius:5.5cqw}
+.pafree{border-style:dashed}.pafree .msg{font-size:.84rem;line-height:1.45}
+/* leaderboards */
+.palb{margin-top:10px;display:grid;gap:5px;text-align:left}
+.palbh{display:flex;justify-content:space-between;align-items:baseline;font:700 .82rem var(--f-body)}.palbh small{font:500 .7rem var(--f-mono);color:var(--mut)}
+.palbr{display:grid;grid-template-columns:18px minmax(0,7.5em) 1fr auto;gap:8px;align-items:center;font-size:.8rem}
+.palbr.me{color:var(--gold)}
+.palbn{font:700 .72rem var(--f-mono);color:var(--mut);text-align:right}
+.palbname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.palbbar{height:6px;border-radius:9px;background:var(--track);overflow:hidden}.palbbar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--t-rare),var(--t-epic))}
+.palbr b{font:700 .78rem var(--f-mono)}
+/* welcome example: a question mark that cycles through the rarity colors */
+.ishot.mock .mkmap.mkq{background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--qc,#5f8dff) 28%,transparent),transparent 62%),repeating-linear-gradient(45deg,#161b28 0 10px,#131826 10px 20px);gap:1cqw;animation:mkqc 7s linear infinite}
+.mkq b{font:800 24cqw/1 var(--f-display);color:var(--qc,#5f8dff);text-shadow:0 0 6cqw color-mix(in srgb,var(--qc,#5f8dff) 70%,transparent);animation:mkqp 1.75s ease-in-out infinite}
+.mkq small{font:600 3.2cqw var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#8d97b3}
+@property --qc{syntax:"<color>";inherits:true;initial-value:#5f8dff}
+@keyframes mkqc{0%{--qc:#9a8a74}14%{--qc:#c9ccd6}28%{--qc:#4cc9a6}42%{--qc:#5f8dff}56%{--qc:#22d3ee}70%{--qc:#b27dff}84%{--qc:#f3c55a}100%{--qc:#ff4d8d}}
+@keyframes mkqp{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.ishot.mock .mkmap.mkq,.mkq b{animation:none}}
+.pasrch{grid-template-columns:minmax(0,1fr) auto}.pasrcancel{white-space:nowrap}
+/* phones: the PRE-ALPHA chip tucks under the name so the top bar fits the search button */
+@media (max-width:480px){
+  #vDex .logo{position:relative}
+  #vDex .logo .pachip{position:absolute;left:42px;bottom:-11px;margin:0;font-size:.42rem;padding:2px 4px;border-radius:4px}
+  #vDex .hright{gap:6px}
+  #vDex #countBox{display:none!important}
+}
+@media (max-width:359px){#vDex .logo .pachip{display:none}}
+/* ===== Pre-Alpha 4 ===== */
+/* computer: smaller cards that don't stretch, with text big enough to read */
+@media (min-width:1000px) and (hover:hover) and (pointer:fine){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(var(--cmin,205px),calc(var(--cmin,205px) * 1.08)));justify-content:start}
+  .sumgrid{grid-template-columns:repeat(auto-fill,minmax(calc(var(--cmin,205px) - 15px),calc(var(--cmin,205px) * 1.08)));justify-content:start}
+  :is(.grid,.sumgrid) .card .c-top{flex-wrap:wrap;row-gap:5px}
+  :is(.grid,.sumgrid) .card .ctl{flex-wrap:wrap;row-gap:4px}
+  :is(.grid,.sumgrid) .card .pill{font-size:max(3.1cqw,9.5px);letter-spacing:.08em}
+  :is(.grid,.sumgrid) .card .patag{font-size:max(2.3cqw,8px)}
+  :is(.grid,.sumgrid) .card .rate{font-size:max(4.4cqw,12px)}
+  :is(.grid,.sumgrid) .card .rate small{font-size:max(2.6cqw,8px)}
+  :is(.grid,.sumgrid) .card .c-name{font-size:max(6.4cqw,15px)}
+  :is(.grid,.sumgrid) .card .art .no,:is(.grid,.sumgrid) .card .art .fin{font-size:max(2.6cqw,9px)}
+  :is(.grid,.sumgrid) .card .strip{font-size:max(2.9cqw,10.5px)}
+  :is(.grid,.sumgrid) .card .val{overflow:hidden;padding-left:max(3.2cqw,7px);padding-right:max(3.2cqw,7px)}
+  :is(.grid,.sumgrid) .card .val span{font-size:max(2.2cqw,7.5px);letter-spacing:.08em;white-space:nowrap}
+  :is(.grid,.sumgrid) .card .val b{white-space:nowrap}
+  :is(.grid,.sumgrid) .card .val b{font-size:max(6.4cqw,14px)}
+  :is(.grid,.sumgrid) .card .val.wp>div:first-child b{font-size:max(5.6cqw,12.5px)}
+  :is(.grid,.sumgrid) .card .val.wp .pf b{font-size:max(5.2cqw,11.5px)}
+  :is(.grid,.sumgrid) .card .val .r b,:is(.grid,.sumgrid) .card .val.wp .r b{font-size:max(3.6cqw,9px);white-space:normal;line-height:1.05}
+  :is(.grid,.sumgrid) .card .specs span{font-size:max(2.2cqw,8.5px)}
+  :is(.grid,.sumgrid) .card .specs b{font-size:max(3.3cqw,11px)}
+  /* the card's full page still shows the quote and the footer */
+  :is(.grid,.sumgrid) .card .quote,:is(.grid,.sumgrid) .card .c-foot{display:none}
+}
+/* phone: the "offers from this pickup" graph previews a dot before opening it */
+.tg-dot{transition:stroke-width .2s,transform .25s cubic-bezier(.2,.9,.25,1.3);transform-box:fill-box;transform-origin:center}
+.tg-dot.pv{stroke:#fff;stroke-width:2.5;transform:scale(1.6)}
+.tg-sel{stroke:var(--tx);stroke-width:1;stroke-dasharray:3 3;opacity:0;transition:opacity .2s}
+.tgpv{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;margin:6px 0 4px;padding:10px 12px;border-radius:14px;border:1px solid color-mix(in srgb,var(--c,var(--line)) 55%,var(--line));
+  background:color-mix(in srgb,var(--c,var(--panel)) 12%,var(--bg2));cursor:pointer;animation:tgpvIn .28s cubic-bezier(.2,.9,.25,1.15)}
+.tgpv[hidden]{display:none}
+.tgpv-dot{width:12px;height:12px;border-radius:99px;flex:none;background:var(--c);box-shadow:0 0 10px var(--c)}
+.tgpv-main{flex:1;min-width:0;display:grid;gap:2px}.tgpv-main b{font-size:.92rem}.tgpv-main small{color:var(--mut);font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tgpv-go{flex:none;font:700 .8rem var(--f-body);color:var(--tx);padding:6px 10px;border-radius:10px;background:var(--raise,#2a2e3a)}
+.tgpv.cur .tgpv-go,.tgpv.old .tgpv-go{background:none;color:var(--mut);font-weight:600}
+.tgpv::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--c,var(--tx))}
+.tgpv.loading::after{width:100%;transition:width .3s ease-in}
+@keyframes tgpvIn{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+#detail.tg-leave{opacity:0;transform:translateY(10px) scale(.985);transition:opacity .18s ease-in,transform .18s ease-in}
+#detail.tg-enter{animation:tgEnter .42s cubic-bezier(.2,.9,.25,1)}
+#detail.tg-enter>.card{animation:tgCard .5s cubic-bezier(.2,.9,.25,1.12)}
+@keyframes tgEnter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes tgCard{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#detail.tg-enter,#detail.tg-enter>.card,.tgpv{animation:none}#detail.tg-leave{transition:none}}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -7247,7 +7352,7 @@ function paPrivacySheet(first){
     <div class="sbox"><h3>Needed to run the app <small>always on</small></h3>
       <p class="msg"><b>Reading your screenshot.</b> The pay, miles, minutes, stops and store name are read on your phone. They're used to work out the verdict, grade and card rarity.</p>
       <p class="msg"><b>A fingerprint (hash) of each screenshot</b> is saved so the same screenshot can't be scanned twice. It can't be turned back into the picture.</p>
-      ${signed?`<p class="msg"><b>Your account:</b> Google email, name and your username, plus the numbers on your cards (pay, miles, minutes, grade), your stats and friends. Needed to sync and use the community.</p>`:""}</div>
+      ${signed?`<p class="msg"><b>Your account:</b> Google email, name and your username, plus the numbers on your DasherDex cards (pay, miles, minutes, grade), your stats and friends. Needed to sync and use the community. “Cards” here means your offer cards in the app. DasherDex never asks for or sees bank, credit or debit card details.</p>`:""}</div>
     <div class="sbox"><h3>Optional <small>off unless you turn it on</small></h3>
       ${sw("pcPhoto",SET.cPhoto===true,"Keep my offer picture on the server","Off: your screenshot is used once to scan and never kept online. Cards show the average dollar amount instead of the picture. On: the picture is kept with your card and you can download it from the card.")}
       ${sw("pcAddr",!!SET.addr,"Save pickup addresses","Off: addresses are skipped when scanning. Public posts never show maps or addresses either way.")}
@@ -7518,7 +7623,7 @@ paTry("welcome",()=>{
   window.exShotHTML=function(k,id,beam){const e=EXS[k],o=e.o;
     return `<div class="ishot mock${beam?"":" still"}"${id?` id="${id}"`:""}>
       <span class="mkt" style="top:2.2%;left:8.4%;font-size:5cqw;font-weight:600">9:41</span>
-      <div class="mkmap">Offer screen<br><small>(example, made up)</small></div>
+      <div class="mkmap mkq"><b>?</b><small>example offer</small></div>
       <span class="mkt" style="top:52.8%;left:3.4%;font-size:9cqw;font-weight:800">$${(+o.pay).toFixed(2)}</span>
       <span class="mkt" style="top:58.8%;left:3.6%;font-size:4cqw">${o.minutes} min (${o.miles} mi) total</span>
       ${e.rc?`<span class="mkt mkred" style="top:63.6%;left:3%;font-size:3.6cqw">Red Card order</span>`:""}
@@ -7564,21 +7669,21 @@ const PA_T2={
   lv100:["Centurion","mythic","Reach level 100 (prestige counts)","🏛️","#a88a3f","#2e2410",1],
   pr3:["Triple Crown","legendary","Prestige 3 times","👑","#c9a227","#3a2a00",1],
   /* offers */
-  accept25:["Cherry Picker","uncommon","25 offers the app said to Accept","🍒","#a02c3f","#2e0a10"],
-  accept100:["Sharp Eye","rare","100 Accept offers","🎯","#2c7a5a","#0a2a1e"],
-  decline50:["Picky Eater","uncommon","50 Decline offers","🙅","#7a3a2c","#2a120d"],
+  accept25:["Cherry Picker","uncommon","75 offers the app said to Accept","🍒","#a02c3f","#2e0a10"],
+  accept100:["Sharp Eye","rare","150 Accept offers","🎯","#2c7a5a","#0a2a1e"],
+  decline50:["Picky Eater","uncommon","100 Decline offers","🙅","#7a3a2c","#2a120d"],
   pay50:["Fifty Club","rare","Scan an offer that pays $50 or more","💵","#2f7a3a","#0c2a12"],
   pay100:["Hundred Club","legendary","Scan an offer that pays $100 or more","💰","#3f8a2c","#0f2a08",1],
-  rc10:["Red Carder","uncommon","Scan 10 Red Card orders","🟥","#a82c2c","#2e0808"],
-  stack10:["Stack Master","rare","Scan 10 offers with 3 or more stops","🥞","#a8742c","#2e1e08"],
-  alc5:["Last Call","uncommon","Scan 5 alcohol orders","🍺","#a8862c","#2e2408"],
+  rc10:["Red Carder","uncommon","Scan 20 Red Card orders","🟥","#a82c2c","#2e0808"],
+  stack10:["Stack Master","rare","Scan 20 offers with 3 or more stops","🥞","#a8742c","#2e1e08"],
+  alc5:["Last Call","uncommon","Scan 15 alcohol orders","🍺","#a8862c","#2e2408"],
   short:["Short and Sweet","rare","An Accept offer under 3 miles","🤏","#5a2c8a","#180a2a"],
-  lunch:["Lunch Rush","uncommon","25 offers between 11 AM and 2 PM","🥪","#a8682c","#2e1a08"],
-  dinner:["Dinner Rush","uncommon","25 offers between 5 and 9 PM","🍝","#8a3a2c","#2a0e08"],
-  weekend:["Weekend Warrior","rare","50 offers on Saturdays and Sundays","🗓️","#2c5a8a","#0a1a2e"],
-  stores25:["Store Hopper","uncommon","Offers from 25 different stores","🏪","#3a6a5a","#0e221c"],
+  lunch:["Lunch Rush","uncommon","60 offers between 11 AM and 2 PM","🥪","#a8682c","#2e1a08"],
+  dinner:["Dinner Rush","uncommon","60 offers between 5 and 9 PM","🍝","#8a3a2c","#2a0e08"],
+  weekend:["Weekend Warrior","rare","100 offers on Saturdays and Sundays","🗓️","#2c5a8a","#0a1a2e"],
+  stores25:["Store Hopper","uncommon","Offers from 40 different stores","🏪","#3a6a5a","#0e221c"],
   stores75:["Food Critic","epic","Offers from 75 different stores","🧑‍🍳","#7a5a3a","#2a1c0e"],
-  trash100:["Trash King","rare","Collect 100 Trash cards","🗑️","#4a5a4a","#141a14"],
+  trash100:["Trash King","rare","Collect 200 Trash cards","🗑️","#4a5a4a","#141a14"],
   /* cards */
   epic1:["Epic Find","rare","Pull an Epic card","💜","#6a2c9a","#1c0a2e"],
   leg1:["Legend Spotter","epic","Pull a Legendary card","🧡","#c2661f","#331805",1],
@@ -7590,7 +7695,7 @@ const PA_T2={
   f_all:["Frame Master","legendary","Get all 5 frames","🖼️","#c94f8a","#33081e",1],
   /* game */
   cal7:["Regular","uncommon","Claim all 7 days of the login calendar","📅","#2c6a7a","#0a1e24"],
-  scrap:["Scrap Baron","rare","Earn 2,500 scrap","🔩","#5a5a6a","#18181e"],
+  scrap:["Scrap Baron","rare","Earn 5,000 scrap","🔩","#5a5a6a","#18181e"],
   pass30:["Pass Completer","epic","Finish every tier of a season pass","🎟️","#a82c6a","#2e0a1e",1],
   /* only from Title Crates */
   x_midnight:["Midnight Snack","rare","Title Crate only","🌮","#3a2c7a","#0e0a24"],
@@ -7603,7 +7708,7 @@ const PA_T2={
   x_chef:["Chef's Kiss","rare","Title Crate only","🤌","#a83a5a","#2a0a14"]
 };
 const PA_B2={
-  diamond:["Diamond","epic","Scan 1,000 offers",1],rainbow:["Rainbow","legendary","Get all 5 frames",1],redline:["Red Line","uncommon","Scan 10 Red Card orders"],
+  diamond:["Diamond","epic","Scan 1,000 offers",1],rainbow:["Rainbow","legendary","Get all 5 frames",1],redline:["Red Line","uncommon","Scan 20 Red Card orders"],
   checker:["Checkered Flag","rare","50 weekend offers"],cash:["Cash Stack","legendary","Scan a $100 offer",1],royal:["Royal Purple","epic","Reach level 75 (prestige counts)",1],
   x_ice:["Ice","rare","Border Crate only"],x_toxic:["Toxic","epic","Border Crate only",1],x_lava:["Lava","legendary","Border Crate only",1],x_galaxy:["Galaxy","mythic","Border Crate only",1],x_mint:["Mint","rare","Border Crate only"]
 };
@@ -7659,21 +7764,21 @@ paTry("more",()=>{
       if(all.reduce((a,c)=>a+(+c.miles||0),0)>=5000)T("miles5k");
       if(L>=75){T("lv75");B("royal")}if(L>=100)T("lv100");if(pr>=3)T("pr3");
       const v=id=>cs.filter(c=>{try{return vOf(c).id===id}catch(e){return false}}).length;
-      const acc=v("accept");if(acc>=25)T("accept25");if(acc>=100)T("accept100");if(v("decline")>=50)T("decline50");
+      const acc=v("accept");if(acc>=75)T("accept25");if(acc>=150)T("accept100");if(v("decline")>=100)T("decline50");
       if(cs.some(c=>+c.pay>=50))T("pay50");if(cs.some(c=>+c.pay>=100)){T("pay100");B("cash")}
-      if(cs.filter(c=>c.rc).length>=10){T("rc10");B("redline")}
-      if(cs.filter(c=>(+c.stops||2)>=3).length>=10)T("stack10");if(cs.filter(c=>c.alc).length>=5)T("alc5");
+      if(cs.filter(c=>c.rc).length>=20){T("rc10");B("redline")}
+      if(cs.filter(c=>(+c.stops||2)>=3).length>=20)T("stack10");if(cs.filter(c=>c.alc).length>=15)T("alc5");
       if(cs.some(c=>+c.miles>0&&+c.miles<3&&vOf(c).id==="accept"))T("short");
-      if(cs.filter(c=>{const h=hr(c);return h>=11&&h<14}).length>=25)T("lunch");
-      if(cs.filter(c=>{const h=hr(c);return h>=17&&h<21}).length>=25)T("dinner");
-      if(cs.filter(c=>dw(c)===0||dw(c)===6).length>=50){T("weekend");B("checker")}
-      const st=new Set(all.map(c=>String(c.store||"").toLowerCase().replace(/[^a-z0-9]/g,"")).filter(Boolean));if(st.size>=25)T("stores25");if(st.size>=75)T("stores75");
-      if(cs.filter(c=>c.tier==="trash").length>=100)T("trash100");
+      if(cs.filter(c=>{const h=hr(c);return h>=11&&h<14}).length>=60)T("lunch");
+      if(cs.filter(c=>{const h=hr(c);return h>=17&&h<21}).length>=60)T("dinner");
+      if(cs.filter(c=>dw(c)===0||dw(c)===6).length>=100){T("weekend");B("checker")}
+      const st=new Set(all.map(c=>String(c.store||"").toLowerCase().replace(/[^a-z0-9]/g,"")).filter(Boolean));if(st.size>=40)T("stores25");if(st.size>=75)T("stores75");
+      if(cs.filter(c=>c.tier==="trash").length>=200)T("trash100");
       if(cs.some(c=>c.tier==="epic"))T("epic1");if(cs.some(c=>c.tier==="legendary"))T("leg1");
       const fr=new Set(cs.map(c=>c.finish).filter(f=>f&&f!=="standard"));for(const f of ["carbon","inverted","neon","gold","holo"])if(fr.has(f))T("f_"+f);
       if(["carbon","inverted","neon","gold","holo"].every(f=>fr.has(f))){T("f_all");B("rainbow")}
       const c7=prog().cal;if(c7&&+c7.n>=7)T("cal7");
-      let sc=0;for(const e of Object.values(gEv()))if(+e.scrap>0)sc+=+e.scrap;if(sc>=2500)T("scrap");
+      let sc=0;for(const e of Object.values(gEv()))if(+e.scrap>0)sc+=+e.scrap;if(sc>=5000)T("scrap");
       const s=passState();if(s&&s.tier>=PASS_TIERS)T("pass30");
     }catch(e){console.warn(e)}};
 });
@@ -7775,14 +7880,14 @@ window.show=function(v){if(v!=="vStats"&&paSE)paStatEdit(false);const r=_paShow.
     try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}
     const loop=()=>{if(!drag)return;const m=88;if(lastY<m)scrollBy(0,-Math.ceil((m-lastY)/6));else if(lastY>innerHeight-m-60)scrollBy(0,Math.ceil((lastY-(innerHeight-m-60))/6));move();raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop);
   }
+  /* positions come from the layout (offsetTop), not from the screen, so cards that are still sliding can't make the order flip back and forth */
   function move(){
-    const el=drag.el,target=lastY-drag.grab;
-    let r=el.getBoundingClientRect(),base=r.top-drag.tx;
-    const p=sib(el,-1),n=sib(el,1);
-    if(p){const pr=p.getBoundingClientRect();if(target<pr.top+pr.height/2){body.insertBefore(el,p);flip(p,pr)}}
-    if(n&&el.nextElementSibling!==null){const nr=n.getBoundingClientRect();if(target+r.height>nr.top+nr.height/2){body.insertBefore(el,n.nextSibling);flip(n,nr)}}
-    el.style.transform="none";base=el.getBoundingClientRect().top;
-    drag.tx=target-base;el.style.transform=`translateY(${drag.tx}px) scale(1.02)`;
+    const el=drag.el,top=lastY-drag.grab-body.getBoundingClientRect().top,h=el.offsetHeight;
+    let p=sib(el,-1),g=0;
+    while(p&&g++<20&&top<p.offsetTop+p.offsetHeight/2){const pr=p.getBoundingClientRect();body.insertBefore(el,p);flip(p,pr);p=sib(el,-1)}
+    let n=sib(el,1);
+    while(n&&g++<40&&top+h>n.offsetTop+n.offsetHeight/2){const nr=n.getBoundingClientRect();body.insertBefore(el,n.nextSibling);flip(n,nr);n=sib(el,1)}
+    drag.tx=top-el.offsetTop;el.style.transform=`translateY(${drag.tx}px) scale(1.02)`;
   }
   function end(){
     clearTimeout(timer);timer=0;if(!drag)return;cancelAnimationFrame(raf);
@@ -7812,13 +7917,13 @@ window.show=function(v){if(v!=="vStats"&&paSE)paStatEdit(false);const r=_paShow.
 
 /* ---------- desktop: card size and zoom ---------- */
 const paDesk=()=>matchMedia("(min-width:1000px) and (hover:hover) and (pointer:fine)").matches;
-function paCSize(){const v=+SET.dcard||250;document.documentElement.style.setProperty("--cmin",Math.max(180,Math.min(420,v))+"px")}
+function paCSize(){const v=[180,205,240].includes(+SET.dcard)?+SET.dcard:205;document.documentElement.style.setProperty("--cmin",Math.max(180,Math.min(420,v))+"px")}
 paCSize();
 paTry("desk-dex",()=>{
   const rd=window.renderDex;
   window.renderDex=function(){rd.apply(this,arguments);
-    try{const s=$("sortBy");if(!s||$("paCSize"))return;const v=+SET.dcard||250;
-      s.insertAdjacentHTML("beforeend",`<span class="dskonly pacsize" id="paCSize" role="group" aria-label="Card size">${[["S",200],["M",250],["L",330]].map(([n,w])=>`<button class="mini ghost${v===w?" on":""}" data-cs="${w}" aria-label="Card size ${n}">${n}</button>`).join("")}</span>`);
+    try{const s=$("sortBy");if(!s||$("paCSize"))return;const v=[180,205,240].includes(+SET.dcard)?+SET.dcard:205;
+      s.insertAdjacentHTML("beforeend",`<span class="dskonly pacsize" id="paCSize" role="group" aria-label="Card size">${[["S",180],["M",205],["L",240]].map(([n,w])=>`<button class="mini ghost${v===w?" on":""}" data-cs="${w}" aria-label="Card size ${n}">${n}</button>`).join("")}</span>`);
       s.querySelectorAll("[data-cs]").forEach(b=>b.onclick=()=>{SET.dcard=+b.dataset.cs;saveSet();paCSize();s.querySelectorAll("[data-cs]").forEach(x=>x.classList.toggle("on",x===b))});
     }catch(e){console.warn(e)}};
 });
@@ -7866,5 +7971,347 @@ paTry("desk-detail",()=>{
   window.openCard=function(){const r=oc.apply(this,arguments);
     try{if(paDesk()){const c=document.querySelector("#detail>.card");if(c){c.classList.add("pazoomable");c.title="Click to zoom";c.addEventListener("click",()=>paZoom(c))}}}catch(e){}
     return r};
+});
+
+/* ===================== Pre-Alpha 3 ===================== */
+
+/* ---------- Stats: 7 days by default, and remember what was picked ---------- */
+paTry("srange",()=>{
+  const ok=["today","7","30","all"],r=ok.includes(SET.srange)?SET.srange:"7";range=r;
+  const seg=$("range");if(!seg)return;
+  seg.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x.dataset.r===r)));
+  seg.addEventListener("click",e=>{const b=e.target.closest("button");if(b&&ok.includes(b.dataset.r)){SET.srange=b.dataset.r;saveSet()}});
+});
+
+/* ---------- Dex: rarity filter goes back to All when you leave the tab (sort stays) ---------- */
+paTry("filt",()=>{
+  filter="all";filterInit=true;if(SET.filter&&SET.filter!=="all"){SET.filter="all";saveSet()}
+  const sh=window.show;
+  window.show=function(v){
+    try{if(v!=="vDex"&&view==="vDex"){if(filter!=="all"){filter="all";SET.filter="all";saveSet()}if(paQ)paSearchClose(true)}}catch(e){}
+    return sh.apply(this,arguments)};
+});
+
+/* ---------- Dex search: a magnifier next to Settings ---------- */
+let paQ="";
+function paHay(c){
+  const t=TIERS.find(x=>x.id===c.tier);let d="";try{d=dayName(dayKey(c.ts)).join(" ")}catch(e){}
+  return [c.store,t&&t.name,c.platform,c.addr,money(c.pay),"$"+Math.round(+c.pay),c.pay,c.miles+" mi",c.minutes+" min",special(c)?FINISHES[c.finish]:"",c.fav?"favorite fav":"",d,vOf(c).label,"#"+c.no].join(" ").toLowerCase();
+}
+function paMatch(c,toks){const h=paHay(c);return toks.every(t=>h.includes(t))}
+function paSearchBtn(){
+  const hr=document.querySelector("#vDex .hright");if(!hr||$("paSrchBtn"))return;
+  const g=hr.querySelector("[data-set]");
+  const h=`<button class="pfbtn gearbtn pasrchbtn" id="paSrchBtn" aria-label="Search your cards"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button>`;
+  if(g)g.insertAdjacentHTML("beforebegin",h);else hr.insertAdjacentHTML("beforeend",h);
+  $("paSrchBtn").onclick=()=>{const s=$("paSearch");if(s&&!s.hidden)paSearchClose();else paSearchOpen()};
+}
+function paSearchOpen(){
+  let s=$("paSearch");
+  if(!s){const hd=document.querySelector("#vDex header.appbar");if(!hd)return;
+    hd.insertAdjacentHTML("afterend",`<div class="pasrch" id="paSearch" hidden><div class="pasrin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+      <input id="paSrchIn" type="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search store, pay, rarity, day…" aria-label="Search your cards"><button class="pasrx" id="paSrchX" aria-label="Clear">✕</button></div>
+      <button class="pasrcancel" id="paSrchCancel">Cancel</button><div class="pasrn" id="paSrchN"></div></div>`);
+    s=$("paSearch");let tm=0;
+    $("paSrchIn").addEventListener("input",e=>{clearTimeout(tm);tm=setTimeout(()=>{paQ=e.target.value.trim();renderDex()},120)});
+    $("paSrchIn").addEventListener("keydown",e=>{if(e.key==="Enter")e.target.blur();if(e.key==="Escape")paSearchClose()});
+    $("paSrchX").onclick=()=>{$("paSrchIn").value="";paQ="";renderDex();$("paSrchIn").focus()};
+    $("paSrchCancel").onclick=()=>paSearchClose();
+  }
+  s.hidden=false;requestAnimationFrame(()=>s.classList.add("on"));scrollTo({top:0,behavior:"smooth"});
+  $("paSrchBtn").classList.add("on");setTimeout(()=>{try{$("paSrchIn").focus()}catch(e){}},60);
+}
+function paSearchClose(quiet){
+  const s=$("paSearch");if(s){s.classList.remove("on");s.hidden=true;const i=$("paSrchIn");if(i)i.value=""}
+  const b=$("paSrchBtn");if(b)b.classList.remove("on");
+  const had=!!paQ;paQ="";if(had&&!quiet)renderDex();
+}
+paTry("search",()=>{
+  paSearchBtn();
+  const rd=window.renderDex;
+  window.renderDex=function(){
+    const on=!!paQ;if(on){collapsed.has=()=>true;collapsed.get=()=>false}
+    try{rd.apply(this,arguments)}finally{if(on){delete collapsed.has;delete collapsed.get}}
+    try{paSearchBtn();if(!paQ){const n=$("paSrchN");if(n)n.textContent="";return}
+      const ql=paQ.toLowerCase(),phrase=/\s/.test(ql)&&store.cards.some(c=>paHay(c).includes(ql)),toks=phrase?[ql]:ql.split(/\s+/).filter(Boolean),byId=new Map(store.cards.map(c=>[c.id,c]));let hits=0;
+      $("days").querySelectorAll("section.day").forEach(sec=>{let k=0;
+        sec.querySelectorAll(".card").forEach(el=>{const c=byId.get(el.dataset.id);if(c&&paMatch(c,toks)){k++;hits++}else el.remove()});
+        if(!k)sec.remove();else{const ds=sec.querySelector(".ds");if(ds)ds.textContent=`${k} match${k>1?"es":""}`}});
+      if(!hits)$("days").innerHTML=`<div class="none">No cards match “${esc(paQ)}”. Try a store name, a pay amount like $15, or a rarity.</div>`;
+      const n=$("paSrchN");if(n)n.textContent=hits?`${hits} card${hits>1?"s":""} found`:"";
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- hold a card: go straight to picking cards to recycle (no quick menu) ---------- */
+window.quickMenu=function(id){if(!store.cards.some(c=>c.id===id))return;startSelect([id])};
+
+/* ---------- auto recycle new cards of the rarities you pick (stats are kept) ---------- */
+const PA_AR=[["","Off"],["trash","Trash"],["common","Common and below"],["uncommon","Uncommon and below"],["rare","Rare and below"]];
+let paARq=[];
+paTry("autorc",()=>{
+  const fs=window.finishSave;
+  window.finishSave=function(cards){const r=fs.apply(this,arguments);try{if(SET.autoRc&&Array.isArray(cards))paARq.push(...cards.map(c=>c.id))}catch(e){}return r};
+  const cs=window.closeSheet;
+  window.closeSheet=function(){const r=cs.apply(this,arguments);if(paARq.length)setTimeout(paAutoRecycle,400);return r};
+});
+function paQuietRecycle(cards){
+  cards=cards.filter(scrapOK);if(!cards.length)return 0;
+  const gone=new Set(cards.map(c=>c.id)),p=prog();
+  if(showIds().some(id=>gone.has(id)))p.sc={...(p.sc||{}),ids:showIds().filter(id=>!gone.has(id)),upd:Date.now()};
+  const n=addScrap(cards,"Auto recycle"),wins=[];for(const c of cards){const w=recycleBonus(c.tier);if(w)wins.push(w)}
+  deleteCards([...gone],{quiet:true,hist:true});for(const w of wins)grant("rc:"+rid(),w,"Lucky recycle");
+  save();checkLevel();GAME_NEW=[];
+  const tally={};for(const w of wins)for(const [k,v] of Object.entries(w))tally[k]=(tally[k]||0)+v;
+  toast(`♻️ Auto recycled ${cards.length} card${cards.length>1?"s":""} for ${n} scrap${wins.length?" · Lucky: "+lootText(tally):""}`);
+  try{if(view==="vDex")renderDex()}catch(e){}
+  return n;
+}
+function paAutoRecycle(){
+  const lim=SET.autoRc&&RANK[SET.autoRc]!=null?RANK[SET.autoRc]:-1;const ids=new Set(paARq);paARq=[];if(lim<0)return;
+  if(!$("sheet").hidden){paARq=[...ids];return}
+  const cs=store.cards.filter(c=>ids.has(c.id)&&scrapOK(c)&&!c.fav&&RANK[c.tier]<=lim);
+  const normal=cs.filter(c=>!special(c)&&!c.stk),spec=cs.filter(c=>special(c)||c.stk);
+  if(normal.length)paQuietRecycle(normal);
+  if(spec.length)setTimeout(()=>paAskSpecial(spec),normal.length?900:0);
+}
+function paAskSpecial(list){
+  const pick=new Set();
+  const draw=()=>{qrSheet(`<div class="qrcard wide"><h2>Special frame${list.length>1?"s":""}</h2>
+    <p class="msg">Auto recycle never recycles special frames or stickers on its own. Tap the cards you want to recycle anyway, or keep them all.</p>
+    <div class="grid paarg">${list.map(cardHTML).join("")}</div>
+    <button class="btn" id="paArGo" ${pick.size?"":"disabled"}>${pick.size?`Recycle ${pick.size} card${pick.size>1?"s":""}`:"Tap cards to pick them"}</button>
+    <button class="btn ghost" id="paArKeep">Keep ${list.length>1?"them all":"it"}</button></div>`);
+    document.querySelectorAll(".paarg .card").forEach(el=>{el.classList.toggle("picked",pick.has(el.dataset.id));
+      el.onclick=()=>{const id=el.dataset.id;if(pick.has(id))pick.delete(id);else pick.add(id);draw()}});
+    let armed=false;$("paArGo").onclick=e=>{if(!pick.size)return;if(!armed){armed=true;e.target.textContent="Tap again to confirm";return}
+      closeQR();paQuietRecycle(store.cards.filter(c=>pick.has(c.id)))};
+    $("paArKeep").onclick=()=>closeQR();
+  };draw();
+}
+
+/* ---------- Settings: auto recycle, plus the "free app" note at the very bottom ---------- */
+const PA_FREE=`<b>DasherDex is free, and I want to keep it that way.</b> If you ever want to support me, check out my other projects. There's no paid version, subscription or paid perks. If anyone asks you to pay, says they're a developer, or offers items, levels or perks for money, it's a scam. Report them to staff in the app and in the Discord.`;
+paTry("set6",()=>{
+  const rs=window.renderSettings;
+  window.renderSettings=function(){rs.apply(this,arguments);
+    try{const box=$("paBox");if(box&&!$("paArRow")){const cur=SET.autoRc||"";
+        box.querySelector("h3").insertAdjacentHTML("afterend",`<div id="paArRow" class="paar"><b>Auto recycle new cards</b><small>New cards of the rarity you pick are recycled for scrap right after you close the pack. Their numbers stay in your stats. Special frames and stickers are never recycled unless you say so.</small>
+          <div class="ntags">${PA_AR.map(([k,n])=>`<button class="ntag" data-ar="${k}" aria-pressed="${cur===k}" style="--c:${k?TC[k]:"var(--mut)"}">${n}</button>`).join("")}</div></div>`);
+        box.querySelectorAll("[data-ar]").forEach(b=>b.onclick=()=>{SET.autoRc=b.dataset.ar;saveSet();box.querySelectorAll("[data-ar]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));
+          toast(SET.autoRc?"Auto recycle: "+PA_AR.find(x=>x[0]===SET.autoRc)[1]:"Auto recycle off")})}
+      const b=$("settingsBody");if(b&&!$("paFree"))b.insertAdjacentHTML("beforeend",`<div class="sbox pafree" id="paFree"><p class="msg">${PA_FREE}</p></div>`);
+    }catch(e){console.warn(e)}};
+  const ps=window.paPrivacySheet;
+  window.paPrivacySheet=function(){const r=ps.apply(this,arguments);
+    try{const q=document.querySelector("#qrSheet .privc");if(q&&!q.querySelector(".pafree"))q.insertAdjacentHTML("beforeend",`<div class="sbox pafree"><p class="msg">${PA_FREE}</p></div>`)}catch(e){}return r};
+});
+
+/* ---------- achievements: easier at the start, then reset and get harder (with more XP) each prestige ---------- */
+const PA_EASY={"On a Roll":3,"Road Warrior":250,"Trash Collector":5,"Good Eye":5,"Grinder":50};
+const PA_RUN=[
+  ["Scanner","Scan {n} offers",50,100,"#5f8dff",cs=>cs.length],
+  ["Rare Finds","Find {n} Rare or better",10,100,"#5f8dff",cs=>cs.filter(c=>RANK[c.tier]>=RANK.rare).length],
+  ["Epic Pulls","Get {n} Epic or better",3,150,"#b27dff",cs=>cs.filter(c=>RANK[c.tier]>=RANK.epic).length],
+  ["Legend Hunt","Get {n} Legendary or better",1,200,"#f3c55a",cs=>cs.filter(c=>RANK[c.tier]>=RANK.legendary).length],
+  ["Shiny Run","Pull {n} special frames",2,200,"#c44fff",cs=>cs.filter(special).length],
+  ["Good Eye","Find {n} offers worth accepting",15,100,"#3ddc84",cs=>cs.filter(isAccept).length],
+  ["Big Payday","Scan {n} offers paying $20+",5,100,"#3ddc84",cs=>cs.filter(c=>+c.pay>=20).length],
+  ["Road Warrior","Scan {n} miles of offers",300,150,"#f5b83d",cs=>Math.round(cs.reduce((a,c)=>a+(+c.miles||0),0))],
+  ["Store Hopper","Offers from {n} different stores",15,100,"#a9b2c3",cs=>new Set(cs.map(c=>skey(c.store))).size],
+  ["Perfect Run","Score 95 or more {n} times",3,200,"#f3c55a",cs=>cs.filter(c=>+c.score>=95).length],
+  ["Busy Days","Scan on {n} different days",5,150,"#f5b83d",cs=>new Set(cs.map(c=>dayKey(c.ts))).size]
+];
+const paRun=()=>+prog().ar||0;
+const paRunMul=r=>1+0.6*r;
+const paRunName=(n,r)=>`${n} ★${r}`;
+for(let r=1;r<=40;r++)for(const [n,,,xp] of PA_RUN)ACH_XP[paRunName(n,r)]=Math.round(xp*(1+0.5*r)/5)*5;
+paTry("ach",()=>{
+  const a0=window.achievements;
+  window.achievements=function(){
+    const r=paRun();
+    if(!r)return a0.apply(this,arguments).map(a=>{const nd=PA_EASY[a.name];if(!nd||a.done)return a;return {...a,desc:paNum(a.desc,nd),need:nd,have:Math.min(a.have,nd),done:a.have>=nd}});
+    const t=+prog().prt||0,cs=store.cards.filter(trusted).filter(c=>+new Date(c.added||c.ts)>=t).concat(histList().map(histCard).filter(c=>+new Date(c.ts)>=t)),k=paRunMul(r),A=prog().ach||{};
+    return PA_RUN.map(([n,d,base,,col,f])=>{const name=paRunName(n,r),need=Math.max(1,Math.round(base*k)),kept=!!A[name];let have=0;try{have=f(cs)}catch(e){}
+      return {name,desc:d.replace("{n}",need.toLocaleString()),have:kept?need:Math.min(have,need),need,col,done:kept||have>=need}});
+  };
+  const dp=window.doPrestige;
+  window.doPrestige=function(){const p=prog(),before=+p.pr||0;const r=dp.apply(this,arguments);if((+p.pr||0)>before){paOnPrestige(p);save()}return r};
+});
+/* each prestige: a new round of achievements, and levels need 25% more XP */
+function paOnPrestige(p){p.ar=(+p.ar||0)+1;p.prt=Date.now();p.prm=1+0.25*p.ar}
+
+/* ---------- friends and community challenges: get harder when finished, easier when missed. Who helped, and a leaderboard ---------- */
+const paPrevWk=wk=>{const d=new Date(wk+"T12:00:00");d.setDate(d.getDate()-7);return dayKey(d)};
+function paFNeed(ch,wk){
+  const p=prog(),m=p.fch&&typeof p.fch==="object"?p.fch:(p.fch={}),key=wk+":"+ch.id;if(+m[key]>0)return +m[key];
+  const prev=Object.keys(m).filter(k=>k.endsWith(":"+ch.id)&&k<key).sort().pop();let need=ch.need;
+  if(prev){const pw=prev.split(":")[0],done=!!gEv()["fc:"+pw];need=done?Math.round(m[prev]*1.35):Math.max(Math.ceil(ch.need*0.5),Math.round(m[prev]*0.85))}
+  m[key]=Math.min(100000,need);const ks=Object.keys(m).sort();if(ks.length>40)for(const k of ks.slice(0,ks.length-40))delete m[k];
+  return m[key];
+}
+const paNum=(t,n)=>t.replace(/\d[\d,]*/,n.toLocaleString());
+paTry("fch",()=>{
+  window.friendProgress=function(wk,prev){
+    const ch=pickWk(FRIEND_CH,wk),mine=prev?weekStatsFor(new Date(wk+"T12:00:00")):weekStats(),need=paFNeed(ch,wk),me=+mine[ch.k]||0;
+    let have=me;const who=[],board=[{n:"You",v:me,me:1}];
+    for(const f of ((typeof Cloud!=="undefined"&&Cloud.friends)||[]).filter(f=>f.accepted&&f.p)){const w=prev?f.p.pw:f.p.week,v=w&&w.wk===wk?+w[ch.k]||0:0,nm=f.name||(f.p&&f.p.name)||"Friend";
+      if(v>0){have+=v;who.push(nm)}board.push({n:nm,v})}
+    board.sort((a,b)=>b.v-a.v);
+    return {...ch,t:paNum(ch.t,need),need,wk,have:Math.min(need,have),done:have>=need,who,board};
+  };
+  const gh=window.groupChallengeHTML;
+  window.groupChallengeHTML=function(aud){const h=gh.apply(this,arguments);if(aud!=="friends"||!h)return h;
+    try{const f=friendProgress(weekKey(),false),helped=f.board.filter(x=>x.v>0).length;
+      return h.replace(/<\/div>\s*$/,`${paBoardHTML(f.board.slice(0,6),`${helped} of ${f.board.length} taking part`)}</div>`)}catch(e){return h}};
+});
+function paBoardHTML(rows,sub){
+  if(!rows.length)return "";const mx=Math.max(1,...rows.map(r=>r.v));
+  return `<div class="palb"><div class="palbh"><span>🏆 Leaderboard</span><small>${esc(sub||"")}</small></div>${rows.map((r,i)=>`<div class="palbr${r.me?" me":""}"><span class="palbn">${i+1}</span><span class="palbname">${esc(r.n)}</span><span class="palbbar"><i style="width:${r.v/mx*100}%"></i></span><b>${r.v.toLocaleString()}</b></div>`).join("")}</div>`;
+}
+async function paCommNeeds(wk){
+  const pw=paPrevWk(wk);let d0=null;try{d0=await Cloud.community(pw)}catch(e){}
+  const out={};for(const ch of COMM_CH){const nk=ch.k==="scans"?"ns":"nr",base=ch.need;let n=d0&&+d0[nk]>0?+d0[nk]:base;
+    if(d0&&pickWk(COMM_CH,pw).id===ch.id){const done=(+d0[ch.k]||0)>=n;n=done?Math.round(n*1.4):Math.max(Math.round(base*0.5),Math.round(n*0.8))}
+    out[nk]=Math.min(100000,Math.max(Math.round(base*0.5),n))}
+  return out;
+}
+paTry("cch",()=>{
+  window.commProgress=async function(wk){
+    const ch=pickWk(COMM_CH,wk),nk=ch.k==="scans"?"ns":"nr";let d=null;try{d=await Cloud.community(wk)}catch(e){}
+    let need=d&&+d[nk]>0?+d[nk]:0;
+    if(!need){try{const ns=await paCommNeeds(wk);need=ns[nk];
+      if(Cloud.user&&wk===weekKey()&&!(d&&(d.ns||d.nr)))Cloud.db.collection("community").doc(wk).set(ns,{merge:true}).catch(()=>{})}catch(e){need=ch.need}}
+    const have=d?+d[ch.k]||0:0;
+    return {...ch,t:paNum(ch.t,need),need,wk,have:Math.min(need,have),done:have>=need,who:d?+d.who||0:0};
+  };
+  window.fillCommunity=async function(){
+    const el=$("commCh");if(!el)return;const c=await commProgress(weekKey());if(!$("commCh"))return;
+    el.innerHTML=`<span class="gch-t">🌎 Community challenge · this week</span><b>${esc(c.t)}</b><span class="gm-bar"><i style="width:${c.have/c.need*100}%"></i></span><small>${c.have.toLocaleString()} of ${c.need.toLocaleString()}${c.done?" · Done! Everyone gets "+esc(lootText(COMM_REWARD)):" · Reward for everyone: "+esc(lootText(COMM_REWARD))}</small><div id="paCommLb"></div>`;
+    try{const f=c.k==="scans"?"n":"r",q=await Cloud.db.collection("community").doc(weekKey()).collection("by").orderBy(f,"desc").limit(10).get();
+      const me=Cloud.user&&Cloud.user.uid,rows=q.docs.map(x=>({n:x.id===me?"You":String(x.data().name||"Driver"),v:+x.data()[f]||0,me:x.id===me})).filter(r=>r.v>0);
+      const lb=$("paCommLb");if(lb&&rows.length)lb.innerHTML=paBoardHTML(rows,c.who?`${c.who.toLocaleString()} driver${c.who>1?"s":""} taking part`:"");
+    }catch(e){}
+  };
+  const bc=Cloud.bumpCommunity;
+  Cloud.bumpCommunity=async function(n,rare){
+    const r=await bc.apply(this,arguments);
+    try{if(!this.user||!n)return r;const inc=firebase.firestore.FieldValue.increment,wk=weekKey(),p=prog();
+      const nm=String((this.profile&&this.profile.username)||myName()||"Driver").slice(0,24);
+      await this.db.collection("community").doc(wk).collection("by").doc(this.user.uid).set({n:inc(Math.min(30,n)),r:inc(Math.min(30,rare||0)),name:nm,upd:Date.now()},{merge:true});
+      if(p.cw!==wk){await this.db.collection("community").doc(wk).set({who:inc(1)},{merge:true});p.cw=wk;save()}
+    }catch(e){}
+    return r};
+});
+
+/* ---------- 34 more titles, and harder ones ---------- */
+const PA_T3={
+  c5000:["Offer Oracle","mythic","Scan 5,000 offers","🔮","#5a2c8a","#140626",1],
+  miles10k:["Ten-K Road","legendary","Scan 10,000 miles of offers","🛣️","#3a5a7a","#0a1622",1],
+  acc250:["Accept Ace","epic","250 offers the app said to Accept","🃏","#2c7a5a","#08221a"],
+  acc500:["The Closer","legendary","500 Accept offers","🤝","#2c8a6a","#062018",1],
+  myth3:["Myth Hunter","legendary","Pull 3 Mythic cards","🦄","#c2367a","#2e0618",1],
+  myth10:["Mythmaker","mythic","Pull 10 Mythic cards","🐉","#d63a6a","#33040f",1],
+  leg10:["Legend Collector","epic","Pull 10 Legendary or better cards","🏺","#c2661f","#2e1404"],
+  holo3:["Prism Keeper","legendary","Own 3 Holographic cards at once","🔷","#7a4fc9","#180a33",1],
+  gold3:["Gold Vault","legendary","Own 3 Gold Foil cards at once","🏦","#c9a227","#2e2402",1],
+  perf3:["Flawless","legendary","Score a perfect 100 three times","💯","#c9a227","#2a1e02",1],
+  pay75:["Big Ticket","epic","Scan an offer that pays $75 or more","🎫","#3f8a2c","#0c2206"],
+  ppm4:["Mile Maximizer","epic","10 offers paying $4 or more per mile","📏","#2c7a8a","#062026"],
+  pph60:["Sixty an Hour","epic","10 offers at $60 an hour or more","⏱️","#8a6a2c","#261c06"],
+  st14:["Three-Week Streak","epic","Scan 21 days in a row","📆","#a8742c","#2a1a04"],
+  st30:["Iron Dasher","legendary","Scan 30 days in a row","🦾","#6a7a8a","#121820",1],
+  d60:["Sixty Days","epic","Scan on 60 different days","🍂","#a85a2c","#2a1206"],
+  d180:["Half-Year Hero","legendary","Scan on 180 different days","🏅","#c98a27","#2e1c02",1],
+  night50:["Night Shift","epic","50 offers between midnight and 5 AM","🌙","#2c3a8a","#060a26"],
+  early50:["Dawn Patrol","rare","50 offers between 5 and 9 AM","🐦","#c9a83a","#2a2206"],
+  st150:["Food Atlas","legendary","Offers from 150 different stores","🗺️","#4a7a3a","#0e1e0a",1],
+  rc50:["Red Card Royalty","epic","Scan 50 Red Card orders","♦️","#c22c2c","#2e0404"],
+  stk50:["Stack Overflow","epic","50 offers with 3 or more stops","🗼","#a8742c","#2a1804"],
+  day25:["Marathon Day","epic","Scan 25 offers in one day","🏃","#2c8a5a","#06200e"],
+  day50:["No Sleep","legendary","Scan 50 offers in one day","☕","#7a4a2c","#1e0e06",1],
+  wk150:["Power Week","epic","Scan 150 offers in one week","⚡","#c9b82c","#2a2602"],
+  rcy500:["Recycler","rare","Recycle or auto-delete 500 cards","♻️","#2c8a4a","#06200c"],
+  scr25k:["Scrap Tycoon","legendary","Earn 25,000 scrap","🏗️","#6a6a7a","#16161e",1],
+  lv150:["Ascended","mythic","Reach level 150 (prestige counts)","🪽","#c9c9e6","#1e1e33",1],
+  pr5:["Five Star","mythic","Prestige 5 times","🌠","#c9a227","#221a02",1],
+  chal10:["Team Player","epic","Finish 10 friends or community challenges","🫂","#2c6a8a","#061a26"],
+  t50:["Title Hoarder","legendary","Own 50 titles","📛","#a82c6a","#2a0618",1],
+  b15:["Border Patrol","epic","Own 15 profile borders","🛂","#3a6a9a","#0a1a2e"],
+  spec3:["Rainbow Dex","legendary","Own 3 cards of every rarity at once","🎨","#c94f8a","#2a0a1e",1],
+  hol3:["Holiday Hero","epic","Scan on 3 holidays (New Year's, July 4th, Thanksgiving, Christmas)","🎄","#2c8a3a","#06200a"]
+};
+paTry("t3",()=>{
+  for(const [k,[n,r,how,e,a,b,an]] of Object.entries(PA_T3)){ETITLES[k]={n,r,how};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:how};PA_TART[k]=[e,a,b,an?1:0]}
+  const ct=window.checkTitles;
+  window.checkTitles=function(){ct.apply(this,arguments);
+    try{const all=allOffers(),cs=store.cards.filter(c=>trusted(c)&&!c.noxp&&!c.dev),T=k=>{if(invOf("t_"+k)<1)giveTitle(k)},hr=c=>new Date(c.ts).getHours();
+      const L=myLevel()+50*(+prog().pr||0),pr=+prog().pr||0,at=t=>all.filter(c=>RANK[c.tier]>=RANK[t]).length;
+      if(all.length>=5000)T("c5000");if(all.reduce((a,c)=>a+(+c.miles||0),0)>=10000)T("miles10k");
+      const acc=all.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}).length;if(acc>=250)T("acc250");if(acc>=500)T("acc500");
+      const my=all.filter(c=>c.tier==="mythic").length;if(my>=3)T("myth3");if(my>=10)T("myth10");if(at("legendary")>=10)T("leg10");
+      if(cs.filter(c=>c.finish==="holo").length>=3)T("holo3");if(cs.filter(c=>c.finish==="gold").length>=3)T("gold3");
+      if(all.filter(c=>+c.score>=100).length>=3)T("perf3");if(all.some(c=>+c.pay>=75))T("pay75");
+      if(all.filter(c=>+c.ppm>=4).length>=10)T("ppm4");if(all.filter(c=>+c.pph>=60).length>=10)T("pph60");
+      const ls=typeof longestStreak==="function"?longestStreak():0;if(ls>=21)T("st14");if(ls>=30)T("st30");
+      const days=new Map();for(const c of all){const k=dayKey(c.ts);days.set(k,(days.get(k)||0)+1)}
+      if(days.size>=60)T("d60");if(days.size>=180)T("d180");const mxd=Math.max(0,...days.values());if(mxd>=25)T("day25");if(mxd>=50)T("day50");
+      const wks=new Map();for(const [k,v] of days){const d=new Date(k+"T12:00:00");d.setDate(d.getDate()-((d.getDay()+6)%7));const w=dayKey(d);wks.set(w,(wks.get(w)||0)+v)}
+      if(Math.max(0,...wks.values())>=150)T("wk150");
+      if(all.filter(c=>hr(c)<5).length>=50)T("night50");if(all.filter(c=>{const h=hr(c);return h>=5&&h<9}).length>=50)T("early50");
+      if(new Set(all.map(c=>skey(c.store))).size>=150)T("st150");if(all.filter(c=>c.rc).length>=50)T("rc50");if(all.filter(c=>(+c.stops||2)>=3).length>=50)T("stk50");
+      if(histList().length>=500)T("rcy500");
+      let sc=0;for(const e of Object.values(gEv()))if(+e.scrap>0)sc+=+e.scrap;if(sc>=25000)T("scr25k");
+      if(L>=150)T("lv150");if(pr>=5)T("pr5");
+      if(Object.keys(gEv()).filter(k=>/^(fc|cc):/.test(k)).length>=10)T("chal10");
+      if(Object.keys(ETITLES).filter(k=>invOf("t_"+k)>0).length>=50)T("t50");
+      if(Object.keys(PA_BORDERS).filter(k=>invOf("b_"+k)>0).length>=15)T("b15");
+      if(TIERS.every(t=>cs.filter(c=>c.tier===t.id).length>=3))T("spec3");
+      const hol=new Set();for(const k of days.keys()){const d=new Date(k+"T12:00:00"),m=d.getMonth(),dd=d.getDate();
+        if(m===0&&dd===1)hol.add("ny"+k);else if(m===6&&dd===4)hol.add("j4"+k);else if(m===11&&dd===25)hol.add("xm"+k);else if(m===10&&d.getDay()===4&&dd>=22&&dd<=28)hol.add("tg"+k)}
+      if(hol.size>=3)T("hol3");
+    }catch(e){console.warn(e)}};
+});
+
+/* ===================== Pre-Alpha 4: graph preview on phones ===================== */
+function paTgOpen(p){
+  if(!p)return;if(p._h){toast("That card was recycled. Only its numbers are kept.");return}
+  const pv=$("tgPv");if(pv)pv.classList.add("loading");
+  setTimeout(()=>{const det=$("detail");det.classList.add("tg-leave");
+    setTimeout(()=>{openDetail(p.id);const d=$("detail");d.classList.remove("tg-leave");void d.offsetWidth;d.classList.add("tg-enter");
+      try{scrollTo({top:0})}catch(e){}setTimeout(()=>d.classList.remove("tg-enter"),520)},180)},300);
+}
+paTry("trend-pv",()=>{
+  const wt=window.wireTrend;
+  window.wireTrend=function(){
+    if(paDesk())return wt.apply(this,arguments);
+    try{
+      const svg=document.querySelector("#detail .tg"),on=svg&&svg.querySelector(".tg-dot.on"),c=on&&store.cards.find(x=>x.id===on.dataset.tid);
+      if(!c)return wt.apply(this,arguments);
+      const pts=sameSpot(c).list.slice().sort((a,b)=>new Date(a.ts)-new Date(b.ts)),dots=[...svg.querySelectorAll(".tg-dot")];
+      if(dots.length!==pts.length)return wt.apply(this,arguments);
+      const note=document.querySelector("#detail .tg-note");
+      if(note){note.innerHTML=note.innerHTML.replace("Tap a dot to open that offer.","Tap a dot to preview it, then tap it again to open it.");note.insertAdjacentHTML("beforebegin",`<div class="tgpv" id="tgPv" hidden></div>`)}
+      const ns="http://www.w3.org/2000/svg",ln=document.createElementNS(ns,"line");ln.setAttribute("class","tg-sel");ln.setAttribute("y1","8");ln.setAttribute("y2","128");svg.insertBefore(ln,dots[0]);
+      let sel=-1;
+      const pick=i=>{sel=i;const p=pts[i],d=dots[i],cur=p.id===c.id,t=TIERS.find(x=>x.id===p.tier)||TIERS[0];
+        dots.forEach((x,k)=>x.classList.toggle("pv",k===i));ln.setAttribute("x1",d.getAttribute("cx"));ln.setAttribute("x2",d.getAttribute("cx"));ln.style.opacity=1;
+        const pv=$("tgPv");if(!pv)return;
+        const day=new Date(p.ts).toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"})+" "+clock(p.ts);
+        pv.className="tgpv"+(cur?" cur":"")+(p._h?" old":"");pv.style.setProperty("--c",TC[p.tier]);
+        pv.innerHTML=`<span class="tgpv-dot"></span><span class="tgpv-main"><b>${money(p.pay)} · ${esc(t.name)} ${gradeOf(p)}</b><small>${esc(day)} · ${p.miles} mi · ${p.minutes} min · ${money(p.pph)}/hr</small></span><span class="tgpv-go">${cur?"This card":p._h?"Recycled":"Open ›"}</span>`;
+        pv.hidden=false;pv.style.animation="none";void pv.offsetWidth;pv.style.animation="";
+        pv.onclick=()=>{if(!cur)paTgOpen(p)};
+      };
+      dots.forEach(d=>{d.onclick=null});
+      svg.style.cursor="pointer";
+      svg.addEventListener("click",e=>{
+        const r=svg.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*320;let best=-1,bd=1e9;
+        dots.forEach((d,i)=>{const dx=Math.abs(+d.getAttribute("cx")-x);if(dx<bd){bd=dx;best=i}});
+        if(best<0||bd>40)return;
+        if(best===sel&&pts[best].id!==c.id)return paTgOpen(pts[best]);
+        pick(best);
+      });
+    }catch(e){console.warn(e);try{wt.apply(this,arguments)}catch(x){}}
+  };
 });
 </script>

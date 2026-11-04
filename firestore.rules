@@ -232,12 +232,31 @@ service cloud.firestore {
     // the weekly community challenge counter: anyone signed in can add a little (one upload at a time), nobody can lower it
     match /community/{wk} {
       allow read: if signedIn();
-      allow create: if signedIn() && wk.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') && request.resource.data.keys().hasOnly(['scans','rare','upd'])
+      // scans/rare: a little at a time, never lowered. ns/nr: this week's goals, set once and never changed. who: drivers taking part, +1 at a time
+      allow create: if signedIn() && wk.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$') && request.resource.data.keys().hasOnly(['scans','rare','upd','ns','nr','who'])
         && request.resource.data.get('scans', 0) is int && request.resource.data.get('scans', 0) <= 30
-        && request.resource.data.get('rare', 0) is int && request.resource.data.get('rare', 0) <= 30;
-      allow update: if signedIn() && request.resource.data.keys().hasOnly(['scans','rare','upd'])
+        && request.resource.data.get('rare', 0) is int && request.resource.data.get('rare', 0) <= 30
+        && request.resource.data.get('who', 0) is int && request.resource.data.get('who', 0) <= 1
+        && request.resource.data.get('ns', 150) is int && request.resource.data.get('ns', 150) >= 150 && request.resource.data.get('ns', 150) <= 100000
+        && request.resource.data.get('nr', 30) is int && request.resource.data.get('nr', 30) >= 30 && request.resource.data.get('nr', 30) <= 100000;
+      allow update: if signedIn() && request.resource.data.keys().hasOnly(['scans','rare','upd','ns','nr','who'])
         && request.resource.data.get('scans', 0) >= resource.data.get('scans', 0) && request.resource.data.get('scans', 0) <= resource.data.get('scans', 0) + 30
-        && request.resource.data.get('rare', 0) >= resource.data.get('rare', 0) && request.resource.data.get('rare', 0) <= resource.data.get('rare', 0) + 30;
+        && request.resource.data.get('rare', 0) >= resource.data.get('rare', 0) && request.resource.data.get('rare', 0) <= resource.data.get('rare', 0) + 30
+        && request.resource.data.get('who', 0) >= resource.data.get('who', 0) && request.resource.data.get('who', 0) <= resource.data.get('who', 0) + 1
+        && (('ns' in resource.data) ? request.resource.data.get('ns', 0) == resource.data.ns : (request.resource.data.get('ns', 150) is int && request.resource.data.get('ns', 150) >= 150 && request.resource.data.get('ns', 150) <= 100000))
+        && (('nr' in resource.data) ? request.resource.data.get('nr', 0) == resource.data.nr : (request.resource.data.get('nr', 30) is int && request.resource.data.get('nr', 30) >= 30 && request.resource.data.get('nr', 30) <= 100000));
+      // the weekly leaderboard: each driver's own count, a little at a time, never lowered
+      match /by/{uid} {
+        allow read: if signedIn();
+        allow create: if isMe(uid) && request.resource.data.keys().hasOnly(['n','r','name','upd'])
+          && request.resource.data.n is int && request.resource.data.n >= 0 && request.resource.data.n <= 30
+          && request.resource.data.r is int && request.resource.data.r >= 0 && request.resource.data.r <= 30
+          && smallString(request.resource.data.name, 24) && noSlur(request.resource.data.name);
+        allow update: if isMe(uid) && request.resource.data.keys().hasOnly(['n','r','name','upd'])
+          && request.resource.data.n is int && request.resource.data.n >= resource.data.n && request.resource.data.n <= resource.data.n + 30
+          && request.resource.data.r is int && request.resource.data.r >= resource.data.r && request.resource.data.r <= resource.data.r + 30
+          && smallString(request.resource.data.name, 24) && noSlur(request.resource.data.name);
+      }
     }
 
     // moderators: only the head moderator can add or remove them. A driver can check whether they're a moderator.
