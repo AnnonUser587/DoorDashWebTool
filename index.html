@@ -5616,6 +5616,12 @@ const WHATS_NEW=[
     "34 new, harder titles (100 in all), and some older titles take more to unlock.",
     "Computer: smaller cards with bigger, easier-to-read text. Open a card to see the full card.",
     "iPhone: tap a dot on a card's “Offers from this pickup” graph to preview that offer, then tap it again to open it with a smooth transition.",
+    "Chests, boxes and crates open one tap at a time, and Open all in the Bag opens every one at once. Items you use one at a time sit in their own section.",
+    "Your border now goes around your profile picture and the whole top box of your profile.",
+    "Season pass now has 100 tiers (300 XP each), with new titles at tiers 50, 75 and 100.",
+    "Pull down on the Dex to refresh. Smoother tab changes and Friends/Global switching. Taps give a small click on supported phones.",
+    "Usernames are locked once picked. The day summary button moved to the top bar.",
+    "Computer: press S to scan, / to search, 1 to 4 for tabs, and the arrow keys to move between cards in zoom.",
     "DasherDex is in Pre-Alpha. Older cards are tagged Prototype and new cards are tagged Pre-Alpha.",
     "Simpler welcome tour, with no map or screenshot of anyone's location.",
     "Stats: Accepts first, then Verdicts, then the general numbers. The estimates warning only shows when a card is marked CHECK. Reorder or hide sections with Customize.",
@@ -5902,7 +5908,7 @@ function seasonsList(){
   return L;
 }
 const seasonNow=()=>{const k=dayKey(today());return seasonsList().find(s=>k>=s.from&&k<=s.to)||null};
-const PASS_XP=400,PASS_TIERS=30;
+const PASS_XP=300,PASS_TIERS=100;
 const PASS=[{xp_s:1},{charm:1},{chest_b:1},{dx15:1},{chest_s:1},{swap:1},{charm:1},{chest_b:1},{dx30:1},{chest_g:1},
   {xp_s:1,swap:1},{scans:1},{charm2:1},{chest_b:1},{reroll:1},{dx30:1},{chest_s:1},{saver:1},{charm2:1},{chest_g:1},
   {xp_l:1},{dx60:1},{chest_s:1},{reroll:1},{charm2:1,chest_s:1},{dx60:1},{chest_g:1},{xp_l:1},{reroll:1},{frame:1,chest_g:1}];
@@ -7231,6 +7237,78 @@ html[data-glass="1"] .pasrin{background:color-mix(in srgb,var(--panel) 55%,trans
 @keyframes tgEnter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes tgCard{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){#detail.tg-enter,#detail.tg-enter>.card,.tgpv{animation:none}#detail.tg-leave{transition:none}}
+/* ===== Pre-Alpha 5 ===== */
+/* press feedback everywhere */
+.btn,.mini,.ntab,.nscan,.fchip,.pfbtn,.bagit,.ntag,.seg button,.sbox.passrow,.gmeter,.gpass,.linkbtn{transition:transform .14s cubic-bezier(.2,.9,.3,1.2),filter .14s}
+:is(.btn,.mini,.ntab,.nscan,.fchip,.pfbtn,.bagit,.ntag,.seg button,.gmeter,.gpass):active{transform:scale(.95);filter:brightness(1.08)}
+.grid .card:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){:is(.btn,.mini,.ntab,.nscan,.fchip,.pfbtn,.bagit,.ntag,.seg button):active{transform:none}}
+/* tab changes */
+.pa-vin{animation:paVin .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes paVin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* feed tabs: a pill that slides, and no jumping */
+#feedTabs{position:relative;isolation:isolate}
+#feedTabs::before{content:"";position:absolute;z-index:-1;top:4px;bottom:4px;left:4px;width:calc(50% - 6px);border-radius:10px;background:var(--raise);transition:transform .3s cubic-bezier(.3,.9,.3,1)}
+#feedTabs:has(button[data-a="global"][aria-pressed="true"])::before{transform:translateX(calc(100% + 4px))}
+#feedTabs button[aria-pressed="true"]{background:none}
+#feedTabs button{transition:color .2s}
+#feedBody{transition:opacity .18s}
+#feedBody.pa-fswap{opacity:.35}
+#feedBody.pa-fin{animation:paVin .28s cubic-bezier(.2,.8,.2,1)}
+/* welcome example: the two buttons sit centered */
+.expick button{justify-content:center;min-height:44px}
+/* the ? loops smoothly back to the start color */
+@keyframes mkqc{0%{--qc:#9a8a74}12.5%{--qc:#c9ccd6}25%{--qc:#4cc9a6}37.5%{--qc:#5f8dff}50%{--qc:#22d3ee}62.5%{--qc:#b27dff}75%{--qc:#f3c55a}87.5%{--qc:#ff4d8d}100%{--qc:#9a8a74}}
+.ishot.mock .mkmap.mkq{animation-duration:8s}
+/* card page: liquid glass top bar */
+html[data-glass="1"] .detail>.topbar{background:color-mix(in srgb,var(--bg) 62%,transparent);backdrop-filter:blur(22px) saturate(175%);-webkit-backdrop-filter:blur(22px) saturate(175%);border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}
+html[data-glass="1"] .detail>.topbar :is(.close,button){background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.02)),var(--gl-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--gl-edge);box-shadow:inset 0 1px 0 var(--gl-hi)}
+html[data-glass="1"] .detail .panel{background:color-mix(in srgb,var(--panel) 82%,transparent)}
+/* the day summary moved to the top bar */
+#sortBy [data-pa="sum"]{display:none}
+/* profile: the border around the whole top box too */
+.phero.pa-hbd{border-radius:22px}
+/* chests, boxes and crates */
+.crwrap{text-align:center;display:grid;gap:10px}
+.cr-stage{position:relative;height:260px;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.cr-stage::before{content:"";position:absolute;inset:10% 15%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 45%,transparent),transparent 65%);filter:blur(10px);animation:crGlow 2.4s ease-in-out infinite}
+.cr-chest{position:relative;font-size:86px;line-height:1;animation:crBob 1.6s ease-in-out infinite;filter:drop-shadow(0 12px 18px #000a);transition:transform .2s,opacity .3s}
+.cr-chest.cr-pop{animation:crPop .42s cubic-bezier(.2,1.4,.4,1)}
+.cr-left{position:absolute;right:-14px;top:-8px;min-width:30px;height:30px;padding:0 8px;border-radius:99px;background:var(--decline);color:#fff;font:800 .95rem/30px var(--f-body);box-shadow:0 4px 10px #0008}
+.cr-left[hidden]{display:none}
+.cr-slot{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.cr-slot:not(:empty)~*{opacity:0}
+.cr-slot:not(:empty)+.cr-chest,.cr-stage:has(.cr-slot:not(:empty)) .cr-chest{transform:translateY(70px) scale(.55);opacity:.55}
+.cr-item{display:grid;justify-items:center;gap:6px;padding:16px 22px;min-width:180px;border-radius:20px;border:1.5px solid color-mix(in srgb,var(--c) 70%,transparent);
+  background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--c) 30%,var(--bg2)),var(--bg2));box-shadow:0 0 34px color-mix(in srgb,var(--c) 45%,transparent),0 16px 30px -12px #000c}
+.cr-slot .cr-item{animation:crOut .5s cubic-bezier(.2,1.3,.35,1) both}
+.cr-ic{font-size:54px;line-height:1}
+.cr-item b{font:700 1.02rem var(--f-display)}.cr-item small{font:700 .7rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.cr-bd{width:64px;height:64px;font-size:1.6rem;animation:crSpin .9s cubic-bezier(.2,1.2,.3,1) both}
+.cr-bd img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.cr-hint{margin:0;color:var(--mut);font-size:.88rem;animation:crBlink 1.6s ease-in-out infinite}
+.cr-sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.cr-sum .cr-item{min-width:0;padding:12px 10px;animation:crOut .4s both}
+.cr-sum .cr-ic{font-size:36px}.cr-sum .cr-item b{font-size:.88rem}
+@keyframes crBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+@keyframes crPop{0%{transform:scale(1)}30%{transform:scale(1.25,.8)}60%{transform:scale(.9,1.15) rotate(-6deg)}100%{transform:scale(1)}}
+@keyframes crOut{0%{opacity:0;transform:translateY(60px) scale(.3) rotate(-8deg)}70%{opacity:1;transform:translateY(-8px) scale(1.06)}100%{transform:none}}
+@keyframes crGlow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
+@keyframes crSpin{from{transform:rotate(-200deg) scale(.2)}to{transform:none}}
+@keyframes crBlink{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.cr-chest,.cr-stage::before,.cr-hint,.cr-slot .cr-item,.cr-bd{animation:none}}
+.baghead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 -2px}.baghead small{color:var(--mut);font-size:.75rem}.baghead .btn{width:auto;padding-inline:16px}
+/* pull to refresh */
+.paptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 6px);z-index:45;width:38px;height:38px;border-radius:99px;display:grid;place-items:center;opacity:0;transform:translate(-50%,0);
+  background:var(--bg2);border:1px solid var(--line);box-shadow:0 6px 18px -6px #000a;color:var(--mut);pointer-events:none}
+.paptr svg{width:20px;height:20px}.paptr.ready{color:var(--tx)}
+.paptr.spin svg{animation:paSpin .7s linear infinite}
+@keyframes paSpin{to{transform:rotate(360deg)}}
+html[data-glass="1"] .paptr{background:var(--gl-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+/* zoom: slide between cards */
+.pz-in-r{animation:pzR .28s cubic-bezier(.2,.8,.2,1)}.pz-in-l{animation:pzL .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes pzR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes pzL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -8312,6 +8390,224 @@ paTry("trend-pv",()=>{
         pick(best);
       });
     }catch(e){console.warn(e);try{wt.apply(this,arguments)}catch(x){}}
+  };
+});
+
+/* ===================== Pre-Alpha 5 ===================== */
+
+/* ---------- a light "haptic" tap: a real tick on Android, the switch trick on iPhone (iOS 18+) ---------- */
+let paHapEl=null;
+function paHaptic(){
+  try{if(navigator.vibrate){navigator.vibrate(8);return}
+    if(!paHapEl){const l=document.createElement("label"),i=document.createElement("input");i.type="checkbox";i.setAttribute("switch","");l.appendChild(i);
+      l.style.cssText="position:fixed;left:-99px;top:0;width:1px;height:1px;opacity:0;pointer-events:none";l.setAttribute("aria-hidden","true");document.body.appendChild(l);paHapEl=l}
+    paHapEl.click()}catch(e){}
+}
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest(".ntab,.nscan,#paSrchBtn,#paDsBtn,.fchip,#feedTabs button,#range button"))paHaptic()},{capture:true,passive:true});
+
+/* ---------- smooth tab changes ---------- */
+paTry("tabs",()=>{
+  const sh=window.show,TABS=["vDex","vFeed","vStats","vProfile","vSettings"];
+  window.show=function(v){const was=view,r=sh.apply(this,arguments);
+    try{if(v!==was&&TABS.includes(v)&&!RM){const el=$(v);el.classList.remove("pa-vin");void el.offsetWidth;el.classList.add("pa-vin");setTimeout(()=>el.classList.remove("pa-vin"),360)}}catch(e){}
+    return r};
+});
+
+/* ---------- feed: no jumping when switching Friends and Global, and the other list loads in the background ---------- */
+paTry("feed",()=>{
+  const rf=window.renderFeed;
+  window.renderFeed=async function(){
+    const box=$("feedBody");if(box&&box.offsetHeight>80){box.style.minHeight=box.offsetHeight+"px";box.classList.add("pa-fswap")}
+    try{return await rf.apply(this,arguments)}
+    finally{if(box)requestAnimationFrame(()=>{box.classList.remove("pa-fswap");box.classList.add("pa-fin");setTimeout(()=>{box.classList.remove("pa-fin");box.style.minHeight=""},280)});
+      try{if(Cloud.user){const o=feedAud==="friends"?"global":"friends";if(!feedCache[o]&&(o==="global"||hasFriends()))setTimeout(()=>{if(feedCache[o])return;(o==="friends"?Cloud.feedFriends():Cloud.feedGlobal()).then(r=>{feedCache[o]=r;feedAt[o]=Date.now()}).catch(()=>{})},1200)}}catch(e){}}
+  };
+});
+
+/* ---------- usernames are locked once picked ---------- */
+paTry("uname",()=>{
+  const us=window.usernameSheet;
+  window.usernameSheet=function(required){
+    try{if(!required&&typeof Cloud!=="undefined"&&Cloud.username()){toast("Usernames are locked once picked.");return Promise.resolve()}}catch(e){}
+    return us.apply(this,arguments)};
+});
+
+/* ---------- a card's page: grade in its rarity color, Accept green / Decline red, and the Dex button for the day summary ---------- */
+paTry("detail8",()=>{
+  const oc=window.openCard;
+  window.openCard=function(c){const r=oc.apply(this,arguments);
+    try{const h=[...document.querySelectorAll("#detail h2")].find(x=>/^Grade \d+/.test(x.textContent.trim()));
+      if(h&&c){const v=vOf(c),col=v.id==="accept"?"var(--accept)":v.id==="decline"?"var(--decline)":"var(--consider)";
+        h.innerHTML=`<span style="color:${TC[c.tier]}">Grade ${gradeOf(c)}</span> · <span style="color:${col}">${esc(v.label)}</span>`}}catch(e){}
+    return r};
+});
+function paDsBtn(){
+  const hr=document.querySelector("#vDex .hright");if(!hr||$("paDsBtn"))return;
+  const s=$("paSrchBtn"),h=`<button class="pfbtn gearbtn pasrchbtn" id="paDsBtn" aria-label="Day summary settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M3.5 9.5h17M8 2.8v3.4M16 2.8v3.4M8 14h3M8 17h6"/></svg></button>`;
+  if(s)s.insertAdjacentHTML("beforebegin",h);else hr.insertAdjacentHTML("beforeend",h);
+  $("paDsBtn").onclick=()=>paDsumSheet();
+}
+paTry("dsbtn",()=>{const rd=window.renderDex;window.renderDex=function(){rd.apply(this,arguments);try{paDsBtn()}catch(e){}}});
+
+/* ---------- profile: your border goes around your picture and the whole top box ---------- */
+paTry("hero",()=>{
+  const rp=window.renderProfile;
+  window.renderProfile=function(){rp.apply(this,arguments);
+    try{const h=document.querySelector("#profHero .phero");if(!h)return;const b=prog().bsel||"",B=PA_BORDERS[b];
+      [...h.classList].filter(x=>x.startsWith("bd-")).forEach(x=>h.classList.remove(x));h.classList.remove("bdanim","pa-hbd");
+      if(b){h.classList.add("bd-"+b,"pa-hbd");if(B&&B[3])h.classList.add("bdanim")}
+      const u=$("pUname");if(u)u.remove();
+      const bag=$("paOpenAll");if(bag)bag.onclick=paOpenAll;
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- opening chests, boxes and crates: tap, tap, tap ---------- */
+const PA_OPEN=["chest_d","chest_g","chest_s","chest_b","mystery","crate","tcrate","bcrate"];
+let paBatch=null;
+const paIt=(x,n)=>{const it=ITEMS[x]||{i:"🎁",n:x,r:"common"};return {ic:it.i,n:it.n+(n>1?" ×"+n:""),col:TC[it.r]||TC.common,sub:(TIERS.find(t=>t.id===it.r)||{name:""}).name,rk:RANK[it.r]||0}};
+function paLootList(loot){
+  const L=Object.entries(loot).filter(([x])=>x!=="xp"&&ITEMS[x]).map(([x,n])=>paIt(x,n)).sort((a,b)=>a.rk-b.rk);
+  if(+loot.xp>0)L.unshift({ic:"⭐",n:`+${(+loot.xp).toLocaleString()} XP`,col:"var(--gold)",sub:"Bonus XP",rk:-1});
+  return L;
+}
+window.openChest=function(k){
+  const loot=rollLoot(k);xpDrops(loot);gEv()["o:"+rid()]={[k]:-1,...loot};save();checkLevel();
+  const L=paLootList(loot);
+  if(paBatch){paBatch.items.push(...L);paBatch.xp+=+loot.xp||0;paBatch.n++;return}
+  paChestShow(ITEMS[k].n,ITEMS[k].i,ITEMS[k].r,L,()=>{if(+loot.xp>0)xpFX(+loot.xp,ITEMS[k].n)});
+};
+paTry("reveal",()=>{
+  const pr=window.paReveal;
+  window.paReveal=function(head,line,col,sub){
+    try{const m=String(line).match(/^(\S+)\s+(.*)$/),ic=m?m[1]:"🎁",nm=m?m[2]:String(line);
+      let bd="";const bm=nm.match(/^Border: (.+)$/);if(bm){for(const [k,v] of Object.entries(PA_BORDERS))if(v[0]===bm[1])bd=k}
+      const it={ic,n:nm,col,sub:sub||"",bd,rk:9};
+      if(paBatch){paBatch.items.push(it);paBatch.n++;return}
+      const hm=String(head).match(/^(\S+)\s+(.*)$/);
+      paChestShow(hm?hm[2]:head,hm?hm[1]:"🎁","epic",[it],null);
+    }catch(e){return pr.apply(this,arguments)}};
+});
+function paItemHTML(it){
+  const icon=it.bd?`<span class="avatar big bd-${it.bd}${PA_BORDERS[it.bd]&&PA_BORDERS[it.bd][3]?" bdanim":""} cr-bd">${SET.pfp?`<img src="${SET.pfp}" alt="">`:esc((myName().trim()[0]||"D").toUpperCase())}</span>`:`<span class="cr-ic">${it.ic}</span>`;
+  return `<div class="cr-item" style="--c:${it.col}">${icon}<b>${esc(it.n)}</b>${it.sub?`<small>${esc(it.sub)}</small>`:""}</div>`;
+}
+function paChestShow(title,icon,rar,list,after){
+  let i=-1,done=false;
+  qrSheet(`<div class="qrcard crwrap" style="--c:${TC[rar]||TC.epic}"><h2>${esc(title)}</h2>
+    <div class="cr-stage" id="crStage" role="button" tabindex="0" aria-label="Tap to open"><div class="cr-chest" id="crChest">${icon}<span class="cr-left" id="crLeft">${list.length}</span></div><div class="cr-slot" id="crSlot"></div></div>
+    <p class="cr-hint" id="crHint">Tap to open</p><button class="linkbtn" id="crSkip">${list.length>1?"Show all":""}</button></div>`);
+  const stage=$("crStage"),slot=$("crSlot"),chest=$("crChest");
+  const finish=()=>{if(done)return;done=true;
+    const q=document.querySelector("#qrSheet .crwrap");if(!q)return;
+    q.innerHTML=`<h2>${esc(title)}</h2><div class="cr-sum">${list.map(paItemHTML).join("")}</div><button class="btn" id="crDone">Nice!</button>`;
+    $("crDone").onclick=()=>{closeQR();try{if(view==="vProfile")renderProfile();if(view==="vDex")renderDex();renderGameBar()}catch(e){}};
+    if(after)after()};
+  const next=()=>{if(done)return;paHaptic();i++;
+    if(i>=list.length)return finish();
+    chest.classList.remove("cr-pop");void chest.offsetWidth;chest.classList.add("cr-pop");
+    $("crLeft").textContent=list.length-i-1;if(list.length-i-1<=0)$("crLeft").hidden=true;
+    slot.innerHTML=paItemHTML(list[i]);
+    $("crHint").textContent=i<list.length-1?`Tap for the next one · ${list.length-i-1} left`:"Tap to finish";
+  };
+  stage.onclick=next;stage.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();next()}};
+  const sk=$("crSkip");if(sk)sk.onclick=finish;
+}
+function paOpenAll(){
+  const ks=PA_OPEN.filter(k=>invOf(k)>0);if(!ks.length)return;
+  paBatch={items:[],xp:0,n:0};const xf=window.xpFX;window.xpFX=()=>{};
+  try{for(let pass=0;pass<4;pass++){const ks2=PA_OPEN.filter(k=>invOf(k)>0);if(!ks2.length)break;for(const k of ks2){let g=0;while(invOf(k)>0&&g++<200)window.useItem(k)}}}finally{window.xpFX=xf}
+  const b=paBatch;paBatch=null;
+  const m=new Map();for(const it of b.items){const key=it.n.replace(/ ×\d+$/,"")+"|"+(it.bd||"");const c=m.get(key);
+    if(c&&!it.bd&&!it.n.startsWith("+")){c.k+=(+((it.n.match(/×(\d+)$/)||[])[1])||1)}else if(c&&it.n.startsWith("+")){c.x+=+(it.n.replace(/[^\d]/g,""))||0}else m.set(key,{...it,k:+((it.n.match(/×(\d+)$/)||[])[1])||1,x:it.n.startsWith("+")?+(it.n.replace(/[^\d]/g,""))||0:0})}
+  const list=[...m.values()].map(it=>({...it,n:it.x?`+${it.x.toLocaleString()} XP`:it.n.replace(/ ×\d+$/,"")+(it.k>1?" ×"+it.k:"")})).sort((a,b)=>a.rk-b.rk);
+  paChestShow(`Opened ${b.n}`,"🎁","legendary",list,()=>{if(b.xp>0)xf(b.xp,"Open all")});
+}
+/* the Bag: things to open first (with Open all), then items you use once */
+window.bagHTML=function(){
+  const have=ITEM_ORDER.concat(Object.keys(ITEMS).filter(k=>!ITEM_ORDER.includes(k))).filter((k,i,a)=>a.indexOf(k)===i&&invOf(k)>0&&ITEMS[k]&&!ITEMS[k].hide&&k!=="scrap");
+  const op=have.filter(k=>PA_OPEN.includes(k)),us=have.filter(k=>!PA_OPEN.includes(k)),scrap=invOf("scrap"),f=fx(),act=[];
+  if(f.charm)act.push(`🍀 +${f.charm}% luck on your next upload`);if(f.frame)act.push("✨ Frame Booster on your next upload");if(dxLeft())act.push(`⚡ Double XP · ${paLeft(dxLeft())} left`);
+  const btn=k=>`<button class="bagit" data-item="${k}" style="--c:${TC[ITEMS[k].r]}"><span class="li">${ITEMS[k].i}</span><b>${esc(ITEMS[k].n)}</b><small>×${invOf(k)}</small></button>`;
+  const nOpen=op.reduce((a,k)=>a+invOf(k),0);
+  return `<div class="sbox bag"><h3>🎒 Bag <small>${have.reduce((a,k)=>a+invOf(k),0)} items</small></h3>
+    ${act.length?`<div class="bagact">${act.map(t=>`<span>${esc(t)}</span>`).join("")}</div>`:""}
+    ${op.length?`<div class="baghead"><b>To open</b><button class="btn sm" id="paOpenAll">Open all (${nOpen})</button></div><div class="bagitems">${op.map(btn).join("")}</div>`:""}
+    ${us.length?`<div class="baghead"><b>Items</b><small>Used one at a time</small></div><div class="bagitems">${us.map(btn).join("")}</div>`:""}
+    ${have.length?"":`<p class="msg">Earn items from the daily login, challenges, level milestones and the season pass.</p>`}
+    <div class="scrapbox"><div><b>🔩 Scrap: ${scrap.toLocaleString()}</b><small>Scrap Trash to Rare cards (1, 2, 4 or 10 each). Crafting takes a lot.</small></div><button class="btn ghost sm" id="scrapGo">Scrap &amp; craft</button></div>
+  </div>`;
+};
+
+/* ---------- season pass: 100 tiers ---------- */
+const PA_T4={s1_50:["Halfway Hero","epic","Reach tier 50 of the Season 1 pass","🎖️","#2c6a8a","#06182a",0],s1_75:["Pass Grinder","legendary","Reach tier 75 of the Season 1 pass","⚙️","#a8742c","#2a1804",1],s1_100:["Season 1 Centurion","mythic","Reach tier 100 of the Season 1 pass","🏆","#c9a227","#2a1e02",1]};
+paTry("pass100",()=>{
+  for(const [k,[n,r,how,e,a,b,an]] of Object.entries(PA_T4)){ETITLES[k]={n,r,how};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:how};PA_TART[k]=[e,a,b,an?1:0]}
+  const cyc=[{xp_m:1,chest_b:1},{pouch:1,dx60:1},{chest_s:1},{xp_l:1,swap3:1},{mcharge:1,crate:1},{dxd:1,xp_s:1},{chest_s:1,xp_m:1},{reroll:1},{mystery:1,pouch:1}];
+  for(let t=PASS.length+1;t<=100;t++){
+    let r={...cyc[t%cyc.length]};
+    if(t%5===0)r.mystery=(r.mystery||0)+1;
+    if(t%10===0)r={...r,chest_g:1,xp_l:1};
+    if(t%25===0)r={...r,chest_d:1,[t%50===0?"tcrate":"bcrate"]:1};
+    if(t===50)r.t_s1_50=1;if(t===75)r.t_s1_75=1;
+    if(t===100)r={chest_d:2,tcrate:1,bcrate:1,mystery:3,t_s1_100:1};
+    PASS.push(r);
+  }
+});
+
+/* ---------- Dex: pull down to refresh ---------- */
+(function(){
+  let y0=null,dy=0,busy=false,el=null;
+  const ok=()=>view==="vDex"&&!busy&&!SEL&&$("sheet").hidden&&!document.querySelector("#qrSheet:not([hidden])")&&scrollY<=0;
+  const ind=()=>{if(!el){el=document.createElement("div");el.className="paptr";el.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg>`;document.body.appendChild(el)}return el};
+  addEventListener("touchstart",e=>{if(e.touches.length!==1||!ok()||e.target.closest(".card,.qrsheet,#qrSheet,input,textarea"))return;y0=e.touches[0].clientY;dy=0},{passive:true});
+  addEventListener("touchmove",e=>{if(y0==null)return;dy=e.touches[0].clientY-y0;if(dy<=0||scrollY>0){dy=0;if(el)el.style.opacity=0;return}
+    const d=Math.min(110,dy*0.5),i=ind();i.style.opacity=Math.min(1,d/50);i.style.transform=`translate(-50%,${d}px) rotate(${d*3.2}deg)`;i.classList.toggle("ready",d>=62)},{passive:true});
+  addEventListener("touchend",async()=>{if(y0==null)return;const d=Math.min(110,dy*0.5);y0=null;dy=0;if(!el)return;
+    if(d<62){el.style.transition="transform .25s,opacity .25s";el.style.opacity=0;el.style.transform="translate(-50%,0)";setTimeout(()=>{if(el)el.style.transition=""},260);return}
+    busy=true;paHaptic();el.classList.add("spin");el.style.transform="translate(-50%,64px)";
+    const t0=Date.now();try{if(typeof Cloud!=="undefined"&&Cloud.user&&!Cloud.busy)await Promise.race([Cloud.fullSync(),new Promise(r=>setTimeout(r,6000))])}catch(e){}
+    try{renderDex()}catch(e){}
+    setTimeout(()=>{el.classList.remove("spin","ready");el.style.transition="transform .3s,opacity .3s";el.style.opacity=0;el.style.transform="translate(-50%,0)";
+      setTimeout(()=>{if(el)el.style.transition="";busy=false},320);toast(Cloud&&Cloud.user?"Up to date":"Refreshed")},Math.max(0,600-(Date.now()-t0)));
+  });
+})();
+
+/* ---------- computer: keyboard shortcuts ---------- */
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;const t=e.target;if(t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)))return;
+  const z=document.querySelector(".pazoom");
+  if(z&&(e.key==="ArrowRight"||e.key==="ArrowLeft")){e.preventDefault();paZoomStep(e.key==="ArrowRight"?1:-1);return}
+  if(z||!$("sheet").hidden||document.querySelector("#qrSheet:not([hidden])"))return;
+  const k=e.key.toLowerCase();
+  if(k==="s"){e.preventDefault();$("file").click()}
+  else if(k==="/"){e.preventDefault();show("vDex");paSearchOpen()}
+  else if(["1","2","3","4"].includes(k)){show(["vDex","vFeed","vStats","vProfile"][+k-1]);toTop()}
+});
+let paZList=[],paZi=-1;
+paTry("zoomnav",()=>{
+  const z0=window.paZoom;
+  window.paZoom=function(card){
+    const box=card&&card.closest("#days,.show3,.sumgrid,.detail");paZList=box&&box.id==="days"?[...box.querySelectorAll(".card")]:[card];paZi=Math.max(0,paZList.indexOf(card));
+    const r=z0.apply(this,arguments);
+    try{const bar=document.querySelector(".pazoom .pzbar");if(bar&&paZList.length>1){bar.insertAdjacentHTML("afterbegin",`<button class="mini ghost" id="pzPrev" aria-label="Previous card">‹</button>`);bar.insertAdjacentHTML("beforeend",`<button class="mini ghost" id="pzNext" aria-label="Next card">›</button>`);
+      $("pzPrev").onclick=()=>paZoomStep(-1);$("pzNext").onclick=()=>paZoomStep(1)}
+      const h=document.querySelector(".pazoom .pzhelp");if(h&&paZList.length>1)h.textContent="Scroll to zoom · drag to move · ← → next card · Esc to close"}catch(e){}
+    return r};
+});
+function paZoomStep(d){
+  const pc=document.querySelector(".pazoom .pzcard");if(!pc||paZList.length<2)return;
+  paZi=(paZi+d+paZList.length)%paZList.length;const cl=paZList[paZi].cloneNode(true);cl.classList.remove("new","holding","sel","picked");cl.removeAttribute("tabindex");
+  pc.classList.remove("pz-in-l","pz-in-r");void pc.offsetWidth;pc.innerHTML="";pc.appendChild(cl);pc.classList.add(d>0?"pz-in-r":"pz-in-l");
+}
+
+/* ---------- scanning many screenshots: let the phone breathe between them, and free the reader when idle ---------- */
+paTry("ocr",()=>{
+  const ri=window.readImage;let idle=0;
+  window.readImage=async function(){
+    clearTimeout(idle);
+    await new Promise(r=>requestAnimationFrame(()=>setTimeout(r,0)));
+    try{return await ri.apply(this,arguments)}
+    finally{clearTimeout(idle);idle=setTimeout(()=>{try{if(worker&&!busy){const w=worker;worker=null;w.terminate()}}catch(e){}},90000)}
   };
 });
 </script>

@@ -60,7 +60,9 @@ service cloud.firestore {
       allow list: if false;
       allow create, update: if isMe(uid)
         && request.resource.data.keys().hasOnly(['name','username','code','xp','level','pr','cards','specials','pph','ppm','streak','best','week','pw','share','shareLoc','since','updated','cpm','gpo'])
-        && smallString(request.resource.data.name, 24);
+        && smallString(request.resource.data.name, 24)
+        // usernames are locked: once set, it can't be changed
+        && (resource == null || resource.data.get('username', '') == '' || request.resource.data.get('username', '') == resource.data.username);
       allow delete: if isMe(uid);
 
       // cards without anything location-related
