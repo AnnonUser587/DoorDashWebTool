@@ -1494,15 +1494,21 @@ html[data-od="light"] #paSplash{background:#f2f3f7;color:#151821}
    * Uber Eats ("$8.50 incl. expected tip / 22 min (6.8 mi) total") layouts.
    * Every field may come back null; the UI asks the user to fill those in.
    */
+  function fixPayText(t) {
+    return t.replace(/(^|[\s(])[S§]\s?(\d{1,3})(?:[ .,](\d{2}))?(?=\s*(?:incl|guarant))/gm, (m, a, d, c) => a + "$" + d + (c ? "." + c : ""))
+      .replace(/\$(\d{1,3}) (\d{2})(?=\s*(?:incl|guarant))/g, "$$$1.$2");
+  }
+  // "Guaranteed (incl. tips)" offers: no trip line, just "6.7 mi" and "Deliver by 1:51 PM"
+  const isGuar = t => /guarante/i.test(t) && /deliver\s*by\s*\d{1,2}[:.]\d{2}/i.test(t) && /(^|\n)\W{0,3}\d{1,3}(?:[.,]\d)?\s*mi\b/im.test(t);
   function parseOfferText(raw) {
-    const text = normalize(raw);
+    const text = fixPayText(normalize(raw));
     const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
     const out = { pay: null, minutes: null, miles: null, stops: null, store: null, platform: null };
 
     // Pay: prefer an amount next to "incl"/"tip"/"guaranteed"; otherwise the largest $ amount.
     const pays = [];
     lines.forEach((l, i) => {
-      const re = /\$(\d{1,3}(?:\.\d{1,2})?)/g;
+      const re = /\$(\d{1,4}(?:\.\d{1,2})?)(?!\d)/g;
       let m;
       while ((m = re.exec(l))) {
         const v = num(m[1]);
@@ -1517,7 +1523,9 @@ html[data-od="light"] #paSplash{background:#f2f3f7;color:#151821}
     // A real trip line ("2 stops (7.0 mi) • 23 min" / "22 min (6.8 mi) total") is preferred over any other mi+min text.
     const tripIdx = lines.findIndex(l => isTripLine(l));
     const looseIdx = lines.findIndex(l => /\bmi\b|\bmiles?\b/i.test(l) && /\bmin/i.test(l));
-    const tIdx = tripIdx >= 0 ? tripIdx : looseIdx;
+    const guar = tripIdx < 0 && looseIdx < 0 && isGuar(text);
+    const gIdx = guar ? lines.findIndex(l => /^\W{0,3}\d{1,3}(?:[.,]\d)?\s*mi\b/i.test(l)) : -1;
+    const tIdx = tripIdx >= 0 ? tripIdx : looseIdx >= 0 ? looseIdx : gIdx;
     const tripLine = tIdx >= 0 ? lines[tIdx] : text;
 
     // Pay: the amount printed just above the trip line (DoorDash and Uber both put it there).
@@ -1576,7 +1584,7 @@ html[data-od="light"] #paSplash{background:#f2f3f7;color:#151821}
         const l = after[j];
         if (/customer\s*drop|multiple\s*drop|^\W*accept\b/i.test(l)) break;
         const clean = cleanStore(l);
-        if (!clean || /^\d+\s/.test(clean) || /customer|drop\s*-?\s*off|pick\s*-?\s*up|view items|\baccept\b|\bdecline\b|\bincl\b/i.test(clean) || /^\W*total\b|\btotal\s*(pay|earn|\$|\d)|\)\s*total\b/i.test(l)) continue;
+        if (!clean || /^\d+\s/.test(clean) || /customer|drop\s*-?\s*off|pick\s*-?\s*up|view items|\baccept\b|\bdecline\b|\bincl\b|deliver\s*by/i.test(clean) || /^\W*total\b|\btotal\s*(pay|earn|\$|\d)|\)\s*total\b/i.test(l)) continue;
         // chips DoorDash puts between the trip line and the store ("Red Card", "Alcohol, age 21+ · ID check", "Busy")
         if (isChip(clean)) continue;
         // the rest of a wrapped address ("Fulshear, 77441 TX")
@@ -1618,6 +1626,7 @@ html[data-od="light"] #paSplash{background:#f2f3f7;color:#151821}
     const md = text.match(/multiple\s*drop\s*-?\s*offs?\s*\(?\s*(\d)\s*stops?/i);
     out.dropoffs = md ? num(md[1]) : (out.stops ? Math.max(1, out.stops - Math.max(1, stores.length)) : null);
     out.pickups = out.stops && out.dropoffs ? Math.max(1, out.stops - out.dropoffs) : Math.max(1, stores.length || 1);
+    if (guar) { const db = text.match(/deliver\s*by\s*(\d{1,2})[:.](\d{2})\s*([ap])?/i); if (db) out.dby = { h: +db[1], m: +db[2], pm: db[3] ? /p/i.test(db[3]) : null }; out.guar = true; if (!out.stops) out.stops = 2; }
     return out;
   }
 
@@ -1641,6 +1650,7 @@ html[data-od="light"] #paSplash{background:#f2f3f7;color:#151821}
     const dex = new Set((text.match(DEX_WORDS) || []).map(w => w.toLowerCase().replace(/\d+/g, "#")));
     if (dex.size >= 2) return { ok: false, why: "dex" };
     const trips = lines.filter(isTripLine).map(l => l.replace(/\s+/g, "").toLowerCase());
+    if (!trips.length && isGuar(text) && (text.match(/guarante/gi) || []).length === 1) return { ok: true, why: "" };
     if (!trips.length) return { ok: false, why: "none" };
     if (new Set(trips).size > 1 || trips.length > 2) return { ok: false, why: "multi" };
     const incl = new Set((text.match(/\$\s?\d{1,3}[.,]\d{2}\s*incl/gi) || []).map(x => x.replace(/\D/g, "")));
@@ -2927,7 +2937,10 @@ async function readImage(file,pool,onStep){
           else if(Math.abs(v-p.pay)>0.004){
             /* the two reads disagree. A one-digit slip ($6.70 vs $8.70) can't be settled here, so ask;
                a dropped decimal point ($67.0 / $670) is the strip's call */
-            if(Math.abs(v*10-p.pay)<0.01||Math.abs(v*100-p.pay)<0.01)p.pay=v;else check.add("pay");
+            const dg=x=>(+x).toFixed(2).replace(/\D/g,"").replace(/^0+|0+$/g,""),sane=x=>x>=2&&x<=150&&(!(p.miles>0)||x/p.miles<=12);
+            if(Math.abs(v*10-p.pay)<0.01||Math.abs(v*100-p.pay)<0.01)p.pay=v;else if(dg(v)===dg(p.pay)&&sane(v))p.pay=v;
+            /* the strip sometimes reads the "$" as a 4 ($8.85 becomes $48.85): keep the clear first read */
+            else if(Math.abs(v-40-p.pay)<0.01&&pl&&pl.confidence>=65){}else check.add("pay");
           }
         }}
       catch(e){console.warn(e)}
@@ -2942,6 +2955,9 @@ async function readImage(file,pool,onStep){
       if(ck)out.ts=C.offerTime(ck,out.base)}
     catch(e){console.warn(e)}
     finally{try{await w.setParameters({tessedit_char_whitelist:""})}catch(e){}}
+    if(!(p.minutes>0)&&p.dby){try{const d=new Date(out.ts),b=p.dby.h%12,hs=p.dby.pm===true?[b+12]:p.dby.pm===false?[b]:[b,b+12];let best=null;
+      for(const add of [0,1])for(const h of hs){const t=new Date(d);t.setDate(t.getDate()+add);t.setHours(h,p.dby.m,0,0);const mn=(t-d)/6e4;if(mn>=-5&&(best==null||mn<best))best=mn}
+      if(best!=null){const mn=Math.round(best);if(mn>=3&&mn<=180){p.minutes=mn;check.add("trip")}}}catch(e){}}
     out.art=SET.maps!==false?artFrom(bm,payY):"";
     /* Red Card / Order & Pay: the driver has to order and wait in the store */
     out.rc=SET.redCard!==false&&C.detectRedCard(out.raw)?1:0;
@@ -5609,6 +5625,7 @@ const WHATS_NEW=[
     "Border Crates: the new border spins in around your picture, and you can wear it right away.",
     "Friends and Global switch is back to its normal size.",
     "Lighter and faster: the app is about 18% smaller to download, with old unused code and example pictures removed.",
+    "Scanner: reads pay with a missing decimal point ($1710 is $17.10), “S21 45” as $21.45, and “Guaranteed (incl. tips)” offers (minutes come from the “Deliver by” time).",
     "DasherDex is in Pre-Alpha. Older cards are tagged Prototype and new cards are tagged Pre-Alpha.",
     "Simpler welcome tour, with no map or screenshot of anyone's location.",
     "Stats: Accepts first, then Verdicts, then the general numbers. The estimates warning only shows when a card is marked CHECK. Reorder or hide sections with Customize.",
