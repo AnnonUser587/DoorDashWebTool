@@ -7291,6 +7291,9 @@ html[data-glass="1"] .paptr{background:var(--gl-bg);backdrop-filter:blur(14px);-
 @keyframes crBdIn{0%{transform:scale(.3) rotate(-200deg);opacity:0}70%{transform:scale(1.08) rotate(8deg);opacity:1}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){.cr-slot .cr-bd{animation:none}}
 .cr-sum:has(>.cr-item:only-child){display:flex;justify-content:center}
+/* tab changes: only the page content slides in; the top bar stays put (moving its parent made it jump in size) */
+.pa-vin{animation:none}
+.pa-vin>:not(.appbar):not(header):not(.topbar){animation:paVin .3s cubic-bezier(.2,.8,.2,1)}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
