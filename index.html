@@ -7170,26 +7170,28 @@ html[data-glass="1"] .pasrin{background:color-mix(in srgb,var(--panel) 55%,trans
 @media (min-width:1000px) and (hover:hover) and (pointer:fine){
   .grid{grid-template-columns:repeat(auto-fill,minmax(var(--cmin,205px),calc(var(--cmin,205px) * 1.08)));justify-content:start}
   .sumgrid{grid-template-columns:repeat(auto-fill,minmax(calc(var(--cmin,205px) - 15px),calc(var(--cmin,205px) * 1.08)));justify-content:start}
-  :is(.grid,.sumgrid) .card .c-top{flex-wrap:wrap;row-gap:5px}
-  :is(.grid,.sumgrid) .card .ctl{flex-wrap:wrap;row-gap:4px}
-  :is(.grid,.sumgrid) .card .pill{font-size:max(3.1cqw,9.5px);letter-spacing:.08em}
-  :is(.grid,.sumgrid) .card .patag{font-size:max(2.3cqw,8px)}
-  :is(.grid,.sumgrid) .card .rate{font-size:max(4.4cqw,12px)}
-  :is(.grid,.sumgrid) .card .rate small{font-size:max(2.6cqw,8px)}
-  :is(.grid,.sumgrid) .card .c-name{font-size:max(6.4cqw,15px)}
-  :is(.grid,.sumgrid) .card .art .no,:is(.grid,.sumgrid) .card .art .fin{font-size:max(2.6cqw,9px)}
-  :is(.grid,.sumgrid) .card .strip{font-size:max(2.9cqw,10.5px)}
-  :is(.grid,.sumgrid) .card .val{overflow:hidden;padding-left:max(3.2cqw,7px);padding-right:max(3.2cqw,7px)}
-  :is(.grid,.sumgrid) .card .val span{font-size:max(2.2cqw,7.5px);letter-spacing:.08em;white-space:nowrap}
-  :is(.grid,.sumgrid) .card .val b{white-space:nowrap}
-  :is(.grid,.sumgrid) .card .val b{font-size:max(6.4cqw,14px)}
-  :is(.grid,.sumgrid) .card .val.wp>div:first-child b{font-size:max(5.6cqw,12.5px)}
-  :is(.grid,.sumgrid) .card .val.wp .pf b{font-size:max(5.2cqw,11.5px)}
-  :is(.grid,.sumgrid) .card .val .r b,:is(.grid,.sumgrid) .card .val.wp .r b{font-size:max(3.6cqw,9px);white-space:normal;line-height:1.05}
-  :is(.grid,.sumgrid) .card .specs span{font-size:max(2.2cqw,8.5px)}
-  :is(.grid,.sumgrid) .card .specs b{font-size:max(3.3cqw,11px)}
+  :is(.grid,.sumgrid,.pcard) .card .c-top{flex-wrap:wrap;row-gap:5px}
+  :is(.grid,.sumgrid,.pcard) .card .ctl{flex-wrap:wrap;row-gap:4px}
+  :is(.grid,.sumgrid,.pcard) .card .pill{font-size:max(3.1cqw,9.5px);letter-spacing:.08em}
+  :is(.grid,.sumgrid,.pcard) .card .patag{font-size:max(2.3cqw,8px)}
+  :is(.grid,.sumgrid,.pcard) .card .rate{font-size:max(4.4cqw,12px)}
+  :is(.grid,.sumgrid,.pcard) .card .rate small{font-size:max(2.6cqw,8px)}
+  :is(.grid,.sumgrid,.pcard) .card .c-name{font-size:max(6.4cqw,15px)}
+  :is(.grid,.sumgrid,.pcard) .card .art .no,:is(.grid,.sumgrid,.pcard) .card .art .fin{font-size:max(2.6cqw,9px)}
+  :is(.grid,.sumgrid,.pcard) .card .strip{font-size:max(2.9cqw,10.5px)}
+  :is(.grid,.sumgrid,.pcard) .card .val{overflow:hidden;padding-left:max(3.2cqw,7px);padding-right:max(3.2cqw,7px)}
+  :is(.grid,.sumgrid,.pcard) .card .val span{font-size:max(2.2cqw,7.5px);letter-spacing:.08em;white-space:nowrap}
+  :is(.grid,.sumgrid,.pcard) .card .val b{white-space:nowrap}
+  :is(.grid,.sumgrid,.pcard) .card .val b{font-size:max(6.4cqw,14px)}
+  :is(.grid,.sumgrid,.pcard) .card .val.wp>div:first-child b{font-size:max(5.6cqw,12.5px)}
+  :is(.grid,.sumgrid,.pcard) .card .val.wp .pf b{font-size:max(5.2cqw,11.5px)}
+  :is(.grid,.sumgrid,.pcard) .card .val .r b,:is(.grid,.sumgrid,.pcard) .card .val.wp .r b{font-size:max(3.6cqw,9px);white-space:normal;line-height:1.05}
+  :is(.grid,.sumgrid,.pcard) .card .specs span{font-size:max(2.2cqw,8.5px)}
+  :is(.grid,.sumgrid,.pcard) .card .specs b{font-size:max(3.3cqw,11px)}
+  .posts{grid-template-columns:repeat(auto-fill,minmax(320px,400px));justify-content:start}
+  .pcard{width:min(260px,100%)}
   /* the card's full page still shows the quote and the footer */
-  :is(.grid,.sumgrid) .card .quote,:is(.grid,.sumgrid) .card .c-foot{display:none}
+  :is(.grid,.sumgrid,.pcard) .card .quote,:is(.grid,.sumgrid,.pcard) .card .c-foot{display:none}
 }
 /* phone: the "offers from this pickup" graph previews a dot before opening it */
 .tg-dot{transition:stroke-width .2s,transform .25s cubic-bezier(.2,.9,.25,1.3);transform-box:fill-box;transform-origin:center}
