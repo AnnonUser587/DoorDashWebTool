@@ -1845,10 +1845,10 @@ html[data-od="light"] #paSplash{background:#f2f3f7;color:#151821}
   // Chance of each special finish by tier. Trash almost never gets one; Legendary usually does.
   // v4: rarer again, spread over eight tiers. Holo is the rarest finish at every tier.
   // v5: rarer again, and five frames. Holo and Gold Foil are the rarest at every tier.
-  const SPLIT = { holo: 0.14, gold: 0.14, neon: 0.2, carbon: 0.26, inverted: 0.26 };
+  const SPLIT = { carbon: 0.26, inverted: 0.18, neon: 0.14, chrome: 0.12, ruby: 0.09, gold: 0.07, lava: 0.05, holo: 0.04, galaxy: 0.03, prism: 0.02 };
   const TOTAL = { trash: 0.0012, common: 0.0023, uncommon: 0.0046, rare: 0.0092, superrare: 0.017, epic: 0.029, legendary: 0.069, mythic: 0.17 };
   const FINISH_ODDS = Object.fromEntries(Object.entries(TOTAL).map(([t, v]) => [t, Object.fromEntries(Object.entries(SPLIT).map(([k, f]) => [k, v * f]))]));
-  const FINISHES = { holo: "Holographic", gold: "Gold Foil", neon: "Neon", carbon: "Carbon Fiber", inverted: "Inverted" };
+  const FINISHES = { holo: "Holographic", gold: "Gold Foil", neon: "Neon", carbon: "Carbon Fiber", inverted: "Inverted", chrome: "Chrome", ruby: "Ruby", lava: "Molten", galaxy: "Galaxy", prism: "Prismatic" };
   const FINISH_KEYS = Object.keys(SPLIT);
   /**
    * roll: a number in [0,1). Pass one derived from the image hash so the same screenshot
@@ -2175,7 +2175,7 @@ function setNote(c,text,tags){const k=placeKey(c);if(!k)return;text=String(text|
 const ordinal=n=>n+(["th","st","nd","rd"][(n%100>10&&n%100<14)?0:n%10<4?n%10:0]||"th");
 const stars=t=>"★".repeat(Math.max(0,(RANK[t]||1)-1));
 function serial(c){const d=new Date(c.ts);return "DD-"+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+String(c.no).padStart(3,"0")}
-const FIN_SHORT={holo:"HOLO",gold:"GOLD",neon:"NEON",carbon:"CARBON",inverted:"INVERTED"};
+const FIN_SHORT={holo:"HOLO",gold:"GOLD",neon:"NEON",carbon:"CARBON",inverted:"INVERTED",chrome:"CHROME",ruby:"RUBY",lava:"MOLTEN",galaxy:"GALAXY",prism:"PRISMATIC"};
 const clock=d=>new Date(d).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
 function cardHTML(c){
   const t=TIERS.find(x=>x.id===c.tier),f=special(c)?c.finish:"",art=artOf(c);
@@ -5590,7 +5590,7 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="2.0 Alpha";
+const APP_VER="2.1 Alpha";
 const SUPPORT_EMAIL="supportdasherdex@gmail.com";
 /* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
 const DISCORD_DEFAULT="";
@@ -5599,6 +5599,17 @@ const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.
 const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["2.1 Alpha","November 2026",[
+    "5 new frames: Chrome, Ruby, Molten, Galaxy and Prismatic, for 10 in all.",
+    "Frame rarity rebalanced so the flashy ones are rarest: Carbon 26%, Inverted 18%, Neon 14%, Chrome 12%, Ruby 9%, Gold 7%, Molten 5%, Holo 4%, Galaxy 3%, Prismatic 2% (share of all frames).",
+    "Stacked frames are now dependable: 4% per frame, and a sure one if you go 30 frames without. Re-rolls can stack too.",
+    "Season 0 · Genesis: a fresh 100-tier pass. Titles, 4 borders and the Genesis Chest are only in Season 0.",
+    "Winter Event, all of December: snow, Holiday packs, and a free present under the tree every day (bigger on the 7th, 14th, 21st, Christmas Eve, Christmas Day and New Year's Eve).",
+    "Winter-only: Winter Chest, Snow Globe, Hot Cocoa, 5 borders and 8 titles.",
+    "Frame titles for the 5 new frames, plus Frame Legend for owning all 10.",
+    "Feed challenges fold up to just the progress. Tap one to see the whole thing.",
+    "Red accents across the app, and your account is at the top of Settings.",
+  ]],
   ["2.0 Alpha","November 2026",[
     "DasherDex is officially in Alpha! Thanks to everyone who tested the Pre-Alpha. Your cards, levels and items all carried over.",
     "Stacked frames: a very small chance a frame comes with a second one (like Inverted + Holo).",
@@ -7397,6 +7408,110 @@ html[data-eco="1"] .pa-vin>*{animation:none!important}
   #vDex .logo{font-size:.82em;gap:6px}#vDex .logo .mark{width:30px;height:30px}
   #vDex .hright{gap:4px}#vDex .hright .pfbtn{width:36px;height:36px;min-width:36px}
 }
+
+/* ===== 2.1 Alpha ===== */
+:root{--red:#e8402f;--red2:#ff5a3c}
+/* ---- red accents (black and red theme) ---- */
+.ntab[aria-current="page"] svg{color:var(--red2)}
+.nav .nscan{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--red) 70%,transparent),0 8px 24px -8px color-mix(in srgb,var(--red) 65%,transparent)!important}
+.sw input:checked+i{background:var(--red);border-color:var(--red)}
+.seg button[aria-pressed="true"]{box-shadow:inset 0 -2px 0 var(--red)}
+.fchip[aria-pressed="true"],.sortby button[aria-pressed="true"]{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--red) 55%,transparent)}
+.sbox>h3:first-child::before{content:"";display:inline-block;width:4px;height:.9em;border-radius:2px;background:var(--red);margin-right:8px;vertical-align:-1px}
+.pbar i,.paload-bar i,#paSplash .psbar i{background:linear-gradient(90deg,var(--red),var(--red2))!important}
+a,.linkbtn{color:var(--red2)}
+:focus-visible{outline-color:var(--red2)}
+.pasrchbtn.on{background:var(--red)}.pasrchbtn.on svg{color:#fff}
+.paedit.on{background:var(--red);border-color:var(--red);color:#fff}
+/* ---- 5 new frames ---- */
+/* Chrome: polished mirror metal */
+.card[data-f="chrome"]{background:linear-gradient(135deg,#f4f6fa,#8e95a3 22%,#e9edf3 40%,#5d6370 58%,#d7dce4 76%,#a2a8b4);box-shadow:0 0 0 1px #fff8,0 0 0 2.5px var(--c),0 14px 34px -12px #000}
+.card[data-f="chrome"] .in::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;background:linear-gradient(115deg,transparent 35%,#ffffff40 48%,transparent 60%);background-size:260% 100%;animation:foil 3.2s ease-in-out infinite}
+.card[data-f="chrome"] .art .fin{background:linear-gradient(90deg,#f4f6fa,#9aa1ad,#f4f6fa);color:#111}
+/* Ruby: deep red gem facets */
+.card[data-f="ruby"]{background:conic-gradient(from 30deg at 50% 50%,#ff2a46,#7a0016,#ff5a6e,#4a000c,#e8102e,#9c0020,#ff2a46);box-shadow:0 0 0 1px #ff8a9a88,0 0 26px -6px #ff1f3dcc,0 14px 36px -14px #000}
+.card[data-f="ruby"] .in::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;mix-blend-mode:screen;opacity:.5;
+  background:linear-gradient(60deg,transparent 40%,#ff9aa866 50%,transparent 60%),linear-gradient(-60deg,transparent 42%,#ff4a5e44 50%,transparent 58%);background-size:240% 240%;animation:holo 5s linear infinite}
+.card[data-f="ruby"] .art .fin{background:linear-gradient(90deg,#ff2a46,#9c0020);color:#fff}
+/* Molten: glowing lava cracks */
+.card[data-f="lava"]{background:radial-gradient(120% 80% at 50% 110%,#ff8a1f,#d42a00 35%,#2a0600 70%),#1a0400;box-shadow:0 0 0 1px #ffb05a88,0 0 30px -6px #ff5a1fcc,0 14px 36px -14px #000}
+.card[data-f="lava"] .in::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;mix-blend-mode:screen;opacity:.55;
+  background:repeating-linear-gradient(72deg,transparent 0 9%,#ff6a1f33 9.5% 10.5%,transparent 11% 21%),radial-gradient(circle at 30% 100%,#ffb04a55,transparent 50%);background-size:200% 200%,100% 100%;animation:paLava 7s ease-in-out infinite alternate}
+.card[data-f="lava"] .art .fin{background:linear-gradient(90deg,#ffb04a,#ff3d00);color:#1a0400}
+@keyframes paLava{to{background-position:100% 100%,0 0}}
+/* Galaxy: deep space with twinkling stars */
+.card[data-f="galaxy"]{background:radial-gradient(60% 50% at 30% 30%,#6a4cff99,transparent),radial-gradient(50% 40% at 75% 70%,#ff4fa088,transparent),#07061a;box-shadow:0 0 0 1px #9a7dff88,0 0 30px -6px #6a4cffcc,0 14px 36px -14px #000}
+.card[data-f="galaxy"] .in::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;opacity:.85;
+  background-image:radial-gradient(1.2px 1.2px at 12% 18%,#fff,transparent),radial-gradient(1px 1px at 72% 12%,#fff,transparent),radial-gradient(1.4px 1.4px at 44% 62%,#fff,transparent),radial-gradient(1px 1px at 86% 78%,#fff,transparent),radial-gradient(1.2px 1.2px at 22% 84%,#fff,transparent),radial-gradient(1px 1px at 58% 34%,#cfe0ff,transparent);animation:paTw 3.2s ease-in-out infinite alternate}
+.card[data-f="galaxy"] .art .fin{background:linear-gradient(90deg,#6a4cff,#ff4fa0);color:#fff}
+@keyframes paTw{from{opacity:.35}to{opacity:.95}}
+/* Prismatic: the rarest. Shifting light and sparkles */
+.card[data-f="prism"]{background:conic-gradient(from var(--pa-pr,0deg),#ff6bd5,#ffd84f,#6bffb8,#6bc5ff,#b36bff,#ff6bd5);box-shadow:0 0 0 1.5px #fff,0 0 34px -4px #ff6bd5cc,0 0 60px -14px #6bc5ffcc,0 14px 40px -14px #000;animation:paPrism 5s linear infinite}
+.card[data-f="prism"] .in::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;border-radius:inherit;mix-blend-mode:color-dodge;opacity:.6;
+  background:radial-gradient(1.5px 1.5px at 20% 25%,#fff,transparent),radial-gradient(2px 2px at 70% 35%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 75%,#fff,transparent),
+    repeating-linear-gradient(115deg,#ff6bd544 0,#ffd84f44 5%,#6bffb844 10%,#6bc5ff44 15%,#b36bff44 20%,#ff6bd544 25%);background-size:100% 100%,100% 100%,100% 100%,300% 300%;animation:holo 4s linear infinite}
+.card[data-f="prism"] .art .fin{background:linear-gradient(90deg,#ff6bd5,#ffd84f,#6bffb8,#6bc5ff,#b36bff);color:#111}
+@property --pa-pr{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes paPrism{to{--pa-pr:360deg}}
+/* stacked: second shine for the new frames */
+.card[data-f2="chrome"] .paf2{background:linear-gradient(115deg,transparent 35%,#ffffff55 48%,transparent 60%);background-size:260% 100%;animation:paF2g 3s ease-in-out infinite}
+.card[data-f2="ruby"] .paf2{box-shadow:inset 0 0 0 2px #ff2a46,0 0 18px #ff1f3daa;background:linear-gradient(60deg,transparent 40%,#ff4a5e33 50%,transparent 60%)}
+.card[data-f2="lava"] .paf2{background:radial-gradient(circle at 50% 110%,#ff6a1f66,transparent 60%);box-shadow:inset 0 0 0 2px #ff6a1f}
+.card[data-f2="galaxy"] .paf2{background-image:radial-gradient(1.2px 1.2px at 15% 20%,#fff,transparent),radial-gradient(1px 1px at 70% 15%,#fff,transparent),radial-gradient(1.4px 1.4px at 45% 65%,#fff,transparent),radial-gradient(1px 1px at 85% 80%,#fff,transparent);box-shadow:inset 0 0 0 2px #9a7dff;animation:paTw 3s ease-in-out infinite alternate}
+.card[data-f2="prism"] .paf2{background:conic-gradient(from 0deg,#ff6bd555,#ffd84f55,#6bffb855,#6bc5ff55,#b36bff55,#ff6bd555);mix-blend-mode:color-dodge;opacity:.6;animation:paF2 4s linear infinite}
+html[data-eco="1"] .card[data-f="prism"]{animation:none}
+/* ---- feed challenges: folded by default, tap to open ---- */
+.gch{cursor:pointer;position:relative;padding-right:34px}
+.gch::after{content:"";position:absolute;right:14px;top:18px;width:8px;height:8px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg);transition:transform .2s}
+html[data-gch-f="1"] .gch:not(#commCh)::after,html[data-gch-c="1"] #commCh::after{transform:rotate(-135deg);top:22px}
+html:not([data-gch-f="1"]) .gch:not(#commCh) .palb,html:not([data-gch-c="1"]) #commCh #paCommLb{display:none}
+html:not([data-gch-f="1"]) .gch:not(#commCh) small,html:not([data-gch-c="1"]) #commCh small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* ---- Season 0 borders ---- */
+.bd-z0a{box-shadow:0 0 0 3px #e8402f,0 0 0 5px #ffffff22,0 0 14px #e8402f88}
+.bd-z0b{box-shadow:0 0 0 2px #fff,0 0 0 5px #e8402f,0 0 16px #e8402faa}
+.bd-z0c{box-shadow:0 0 0 3px #ff5a3c,0 0 0 6px #1a0606,0 0 0 8px #ff5a3c,0 0 24px #ff3d00cc}
+.bd-z0d{box-shadow:0 0 0 3px #8b0000,0 0 0 5px #e8402f,0 0 0 7px #ffd84f88,0 0 28px #e8402fee}
+/* ---- Winter Event ---- */
+.bd-w_snowfall{box-shadow:0 0 0 3px #e8f6ff,0 0 0 5px #9fdcff88,0 0 18px #cfefffcc}
+.bd-w_candy{box-shadow:0 0 0 3px #fff,0 0 0 6px #e8402f,0 0 0 8px #fff}
+.bd-w_ginger{box-shadow:0 0 0 3px #b8742c,0 0 0 5px #fff4,0 0 12px #b8742c99}
+.bd-w_lights{box-shadow:0 0 0 3px #3fbf5a,0 0 0 5px #e8402f,0 0 0 7px #ffd84f,0 0 22px #ffd84faa}
+.bd-w_north{box-shadow:0 0 0 3px #4fffc1,0 0 0 6px #6a4cff,0 0 26px #4fffc1cc}
+.pawb{display:flex;align-items:center;gap:12px;width:100%;margin:0 0 14px;padding:12px 14px;border-radius:18px;cursor:pointer;text-align:left;color:var(--tx);
+  border:1px solid color-mix(in srgb,var(--red) 55%,transparent);background:linear-gradient(120deg,color-mix(in srgb,var(--red) 22%,var(--bg2)),color-mix(in srgb,#3fbf5a 14%,var(--bg2)))}
+.pawb.done{opacity:.8}
+.pawb-tree{font-size:2rem;filter:drop-shadow(0 0 10px #3fbf5a88)}
+.pawb-tx{flex:1;display:grid;gap:2px}.pawb-tx small{color:var(--mut);font-size:.78rem}
+.pawb-gift{font-size:1.6rem;animation:paGift 1.6s ease-in-out infinite}
+.pawb.done .pawb-gift{animation:none;font-size:1.1rem;color:var(--accept)}
+@keyframes paGift{0%,100%{transform:rotate(0)}15%{transform:rotate(-12deg) scale(1.08)}30%{transform:rotate(10deg)}45%{transform:rotate(0)}}
+.wtree{text-align:center}
+.wt-scene{position:relative;height:200px;margin:0 auto 6px;width:220px}
+.wt-tree{position:absolute;left:50%;top:6px;width:150px;height:170px;transform:translateX(-50%)}
+.wt-tree span{position:absolute;left:50%;transform:translateX(-50%);width:0;height:0;border-left:solid transparent;border-right:solid transparent;border-bottom:solid #1f8a3a;filter:drop-shadow(0 4px 6px #0008)}
+.wt-tree .wt-t1{top:14px;border-width:0 38px 50px}.wt-tree .wt-t2{top:44px;border-width:0 54px 62px}.wt-tree .wt-t3{top:82px;border-width:0 72px 72px;border-bottom-color:#187030}
+.wt-trunk{position:absolute;left:50%;bottom:-6px;width:20px;height:22px;transform:translateX(-50%);background:#6b3e1f;border-radius:3px}
+.wt-star{position:absolute;left:50%;top:-4px;transform:translateX(-50%);font-style:normal;font-size:1.5rem;filter:drop-shadow(0 0 10px #ffd84f);animation:paTw 1.6s ease-in-out infinite alternate}
+.wt-orn{position:absolute;z-index:2;width:11px;height:11px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);animation:paTw 1.8s ease-in-out infinite alternate}
+.wt-orn:nth-child(odd){animation-delay:-.9s}
+.wt-gift{position:absolute;right:6px;bottom:0;font-size:2.6rem;border:0;background:none;cursor:pointer;animation:paGift 1.6s ease-in-out infinite;filter:drop-shadow(0 6px 10px #e8402f88)}
+.wt-gift.done{animation:none;opacity:.4;cursor:default}
+.wcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin:12px 0 6px}
+.wcal{display:grid;place-items:center;aspect-ratio:1;border-radius:10px;font:700 .78rem var(--f-mono);background:var(--bg2);border:1px solid var(--line);color:var(--mut)}
+.wcal.got{background:color-mix(in srgb,#3fbf5a 22%,var(--bg2));border-color:#3fbf5a;color:#3fbf5a}
+.wcal.now{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 0 14px var(--red)}
+.wcal.miss{opacity:.45}
+.wcal.xmas{border-color:#ffd84f}
+.wt-ex{font-size:.78rem}
+#paSnow{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+#paSnow i{position:absolute;top:-20px;color:#fff;opacity:.75;font-style:normal;animation:paSnow linear infinite;text-shadow:0 0 6px #fff8}
+@keyframes paSnow{0%{transform:translate(0,-20px)}50%{transform:translate(18px,50vh)}100%{transform:translate(-8px,105vh)}}
+html[data-eco="1"] #paSnow,html.calm #paSnow{display:none}
+@media (prefers-reduced-motion:reduce){#paSnow{display:none}}
+/* Feed: comments only */
+.pfoot .rxrow{display:none}
+.pfoot{justify-content:flex-end}
+.pfoot:not(:has(.cmbtn)){display:none}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -7751,7 +7866,7 @@ window.passSheet=function(){
 
 /* ---------- 11. Sticker packs fold up; a Frames pack lists every frame, most common first ---------- */
 paTry("packs",()=>{
-  const ORDER=["carbon","inverted","neon","gold","holo"];
+  const ORDER=["carbon","inverted","neon","chrome","ruby","gold","lava","holo","galaxy","prism"];
   const framePack=()=>{
     const split={holo:.14,gold:.14,neon:.2,carbon:.26,inverted:.26},own={};for(const c of store.cards)if(c.finish&&c.finish!=="standard")own[c.finish]=(own[c.finish]||0)+1;
     const have=ORDER.filter(k=>own[k]).length;
@@ -8981,4 +9096,220 @@ window.paAlphaNotice=function(){
     <button class="btn" id="alGo">Let's go</button>`);
   $("alGo").onclick=closeQR;
 };
+
+/* ===================== 2.1 Alpha: 10 frames, Season 0, Winter Event ===================== */
+
+/* ---------- stacked frames you can count on: a 4% chance, and a sure one after 30 frames without ---------- */
+const PA_STACK_PITY=30;
+paTry("stack2",()=>{
+  Object.assign(PA_SPLIT,{chrome:.12,ruby:.09,lava:.05,galaxy:.03,prism:.02},{holo:.04,gold:.07,neon:.14,carbon:.26,inverted:.18});
+  window.paStack=function(c){
+    if(!c||!special(c)||c.f2||c.noxp||c.dev||c._st)return;c._st=1;
+    if(typeof rngCal==="function"&&rngCal())return;
+    const p=prog(),n=(+p.stp||0)+1;
+    if(Math.random()>=PA_STACK&&n<PA_STACK_PITY){p.stp=n;return}
+    p.stp=0;const ks=Object.keys(PA_SPLIT).filter(k=>k!==c.finish);let r=Math.random()*ks.reduce((a,k)=>a+PA_SPLIT[k],0);
+    for(const k of ks){if((r-=PA_SPLIT[k])<0){c.f2=k;break}}if(!c.f2)c.f2=ks[0];
+  };
+  const rr=window.rerollCard;
+  window.rerollCard=function(c){const before=c&&c.finish;const r=rr.apply(this,arguments);
+    try{const x=store.cards.find(y=>y.id===(c&&c.id));if(x&&special(x)&&x.finish!==before&&!x.f2){delete x._st;paStack(x);delete x._st;if(x.f2){save();toast("✦✦ Stacked frames! "+FINISHES[x.finish]+" + "+FINISHES[x.f2]);try{paRefreshPost(x)}catch(e){}}}}catch(e){}
+    return r};
+  for(const [k,n] of [["chrome","Chrome"],["ruby","Ruby"],["lava","Molten"],["galaxy","Galaxy"],["prism","Prismatic"]])if(!ETITLES["f_"+k]){
+    const r={chrome:"rare",ruby:"epic",lava:"epic",galaxy:"legendary",prism:"mythic"}[k];
+    ETITLES["f_"+k]={n:n+" Hunter",r,how:"Own a card with the "+n+" frame"};ITEMS["t_f_"+k]={n:"Title: "+n+" Hunter",r,i:"🏷️",hide:1,title:1,d:"Own a card with the "+n+" frame"};
+    PA_TART["f_"+k]=[{chrome:"🪞",ruby:"💎",lava:"🌋",galaxy:"🌌",prism:"🔮"}[k],{chrome:"#c9ced8",ruby:"#e8243c",lava:"#ff5a1f",galaxy:"#6a4cff",prism:"#ff6bd5"}[k],"#111318",1]}
+  ETITLES.f_all10={n:"Frame Legend",r:"mythic",how:"Own all 10 frames at once"};ITEMS.t_f_all10={n:"Title: Frame Legend",r:"mythic",i:"🏷️",hide:1,title:1,d:"Own all 10 frames at once"};PA_TART.f_all10=["🌈","#ff6bd5","#14061e",1];
+  const ct=window.checkTitles;
+  window.checkTitles=function(){ct.apply(this,arguments);
+    try{const fr=new Set(store.cards.filter(c=>trusted(c)&&special(c)).flatMap(c=>[c.finish,c.f2].filter(Boolean)));
+      for(const k of ["chrome","ruby","lava","galaxy","prism"])if(fr.has(k)&&invOf("t_f_"+k)<1)giveTitle("f_"+k);
+      if(C.FINISH_KEYS.every(k=>fr.has(k))&&invOf("t_f_all10")<1)giveTitle("f_all10");
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- feed: challenges start folded (just the progress); tap to see everything ---------- */
+function paGch(){const r=document.documentElement;r.dataset.gchF=SET.gchF?"1":"0";r.dataset.gchC=SET.gchC?"1":"0"}
+paGch();
+document.addEventListener("click",e=>{
+  const g=e.target.closest&&e.target.closest(".gch");if(!g||e.target.closest("button,a,.palbr"))return;
+  if(g.id==="commCh")SET.gchC=!SET.gchC;else SET.gchF=!SET.gchF;saveSet();paGch();
+});
+
+/* ---------- Season 0: a fresh pass with titles, borders and a chest you can only get this season ---------- */
+const PA_S0T={z0a:["Ground Zero","common",5,"🟥"],z0b:["First Wave","uncommon",10,"🌊"],z0c:["Origin Runner","rare",20,"🧭"],z0d:["Day One Dasher","rare",25,"📍"],
+  z0e:["Founder","epic",30,"🏛️"],z0f:["Zero Hero","epic",40,"0️⃣"],z0g:["Genesis Legend","legendary",50,"🌋"],z0h:["Season Zero Elite","legendary",75,"🎖️"],z0i:["The First","mythic",100,"🥇"]};
+const PA_S0B={z0a:["Static","rare",15,1],z0b:["Zero Point","epic",35],z0c:["Genesis","legendary",60,1],z0d:["Founder's Crimson","mythic",100,1]};
+paTry("s0",()=>{
+  window.seasonsList=function(){
+    const L=[{id:"z0",name:"Season 0 · Genesis",from:"2026-11-08",to:"2027-01-31"}];
+    for(let i=0;i<12;i++){const st=new Date(2027,1+i*3,1),en=new Date(2027,1+i*3+3,0);
+      L.push({id:"z"+(i+1),name:"Season "+(i+1),from:dayKey(st),to:dayKey(en)})}
+    return L};
+  for(const [k,[n,r,t,e]] of Object.entries(PA_S0T)){ETITLES[k]={n,r,how:`Season 0 pass, tier ${t} (only this season)`};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:ETITLES[k].how};PA_TART[k]=[e,"#e8402f","#1a0606",RANK[r]>=RANK.legendary?1:0]}
+  for(const [k,[n,r,t,an]] of Object.entries(PA_S0B)){const v=[n,r,`Season 0 pass, tier ${t} (only this season)`,an];PA_BORDERS[k]=v;ITEMS["b_"+k]={n:"Border: "+n,r,i:"🖼️",hide:1,d:v[2]}}
+  ITEMS.chest_z0={n:"Genesis Chest",r:"legendary",i:"🟥",chest:1,d:"Season 0 only. 4 random items with great odds and a big pile of XP."};
+  CHEST.chest_z0={rolls:4,xp:[300,600],t:[["xp_l",12],["dx3d",6],["dxd",8],["chest_g",8],["chest_e",8],["pouch_l",10],["mystery",8],["reroll",6],["frame",4],["tcrate",4],["bcrate",4],["saver",3],["xp_x",2],["chest_d",1.5]]};
+  if(!PA_OPEN.includes("chest_z0"))PA_OPEN.push("chest_z0");if(!ITEM_ORDER.includes("chest_z0"))ITEM_ORDER.unshift("chest_z0");
+  /* swap the old season's exclusives for Season 0's */
+  const drop=k=>/^t_s1|^b_s1/.test(k);
+  PASS.forEach((r,i)=>{for(const k of Object.keys(r))if(drop(k))delete r[k]});
+  for(const [k,[,,t]] of Object.entries(PA_S0T))PASS[t-1]["t_"+k]=1;
+  for(const [k,[,,t]] of Object.entries(PA_S0B))PASS[t-1]["b_"+k]=1;
+  for(const t of [15,45,70,85,100])PASS[t-1].chest_z0=(PASS[t-1].chest_z0||0)+1;
+});
+
+/* ---------- Winter Event: all of December. Snow, Holiday packs, and a present under the tree every day ---------- */
+const PA_W_T={w_snow:["Snow Day","uncommon","Open your first present under the tree","❄️","#9fdcff","#06182a",0],w_jolly:["Jolly Dasher","rare","Open 10 presents in one December","🎅","#e8402f","#2a0606",0],
+  w_ginger:["Gingerbread Hero","epic","Open 15 presents in one December","🍪","#c98a4a","#2a1606",0],w_legend:["Winter Legend","legendary","Open 25 presents in one December","🏔️","#cfefff","#0a1a2e",1],
+  w_cocoa:["Cocoa Club","rare","Open the Christmas Day present","☕","#a8743c","#1e1006",0],w_frost:["Frostbite","epic","Scan 50 offers in December","🥶","#7fd6ff","#041a26",1],
+  w_elf:["Santa's Helper","rare","Scan an offer on Christmas Eve or Christmas Day","🧝","#3fbf5a","#06200c",0],w_ny:["Midnight Dasher","epic","Open the New Year's Eve present","🎆","#ffd84f","#22180a",1]};
+const PA_W_B={w_snowfall:["Snowfall","rare","Day 7 present",1],w_candy:["Candy Cane","epic","Day 14 present"],w_ginger:["Gingerbread","epic","Day 21 present"],w_lights:["Holiday Lights","legendary","Christmas Day present",1],w_north:["Northern Lights","mythic","Open all 31 presents in one December",1]};
+paTry("winter-def",()=>{
+  const ev=EVENTS.find(e=>e.id==="christmas");if(ev){ev.name="Winter";ev.blurb="Snow, Holiday packs and a present under the tree every day.";ev.dates=y=>[new Date(y,11,1),new Date(y,11,29)]}
+  for(const [k,[n,r,how,e,a,b,an]] of Object.entries(PA_W_T)){ETITLES[k]={n,r,how};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:how};PA_TART[k]=[e,a,b,an]}
+  for(const [k,v] of Object.entries(PA_W_B)){PA_BORDERS[k]=v;ITEMS["b_"+k]={n:"Border: "+v[0],r:v[1],i:"🖼️",hide:1,d:v[2]}}
+  Object.assign(ITEMS,{
+    snowg:{n:"Snow Globe",r:"rare",i:"🔮",d:"Shake it open for a winter surprise."},
+    cocoa:{n:"Hot Cocoa",r:"uncommon",i:"☕",min:120,d:"Cards you scan earn double XP for 2 hours."},
+    chest_w:{n:"Winter Chest",r:"epic",i:"🎁",chest:1,d:"3 random items, snowy odds, and a good pile of XP."}
+  });
+  CHEST.chest_w={rolls:3,xp:[200,400],t:[["cocoa",14],["snowg",12],["xp_m",12],["xp_l",8],["dxd",6],["chest_s",8],["chest_e",5],["pouch_l",8],["mystery",7],["reroll",4],["frame",2],["bcrate",2],["tcrate",2]]};
+  for(const k of ["chest_w","snowg"])if(!PA_OPEN.includes(k))PA_OPEN.push(k);ITEM_ORDER.push("chest_w","snowg","cocoa");
+});
+const PA_SNOWG=[["cocoa",30],["xp_m",22],["pouch",18],["dx60",12],["mspark",10],["chest_w",4],["reroll",2],["tcrate",1],["bcrate",1]];
+const paWinterOn=()=>today().getMonth()===11||SET.devEvent==="christmas";
+const paWKey=d=>"wp:"+dayKey(d||today());
+function paWOpened(y){const E=gEv(),pre="wp:"+y+"-12-";return Object.keys(E).filter(k=>k.startsWith(pre)).length}
+function paWLoot(day){
+  const pk=T=>{let r=Math.random()*T.reduce((a,x)=>a+x[1],0);for(const [k,w] of T){if((r-=w)<0)return k}return T[0][0]};
+  const base=[["xp_m",20],["cocoa",16],["pouch",16],["snowg",14],["xp_s",12],["mspark",10],["dx60",6],["chest_b",4],["chest_s",2]];
+  const L={};const add=(k,n=1)=>L[k]=(L[k]||0)+n;
+  add(pk(base));add(pk(base));
+  if(day%7===0)add("chest_w");
+  if(day===7)add("b_w_snowfall");if(day===14)add("b_w_candy");if(day===21)add("b_w_ginger");
+  if(day===24){add("chest_g");add("snowg")}
+  if(day===25){add("chest_d");add("b_w_lights");add("t_w_cocoa");add("chest_w")}
+  if(day===31){add("chest_g");add("t_w_ny");add("xp_l")}
+  if(Math.random()<0.03)add("frame");
+  return L;
+}
+function paOpenPresent(){
+  const d=today();if(d.getMonth()!==11){toast("Presents open in December 🎄");return}
+  const key=paWKey(d),E=gEv();if(E[key]){toast("You've opened today's present. Come back tomorrow!");return}
+  const day=d.getDate(),loot=paWLoot(day);
+  for(const k of Object.keys(loot))if(/^[tb]_/.test(k)&&invOf(k)>0)delete loot[k];
+  xpDrops(loot);E[key]={...loot};
+  const n=paWOpened(d.getFullYear()),T=k=>{if(invOf("t_"+k)<1)giveTitle(k)};
+  if(n>=1)T("w_snow");if(n>=10)T("w_jolly");if(n>=15)T("w_ginger");if(n>=25)T("w_legend");
+  if(n>=31&&invOf("b_w_north")<1)grant("bd:w_north"+d.getFullYear(),{b_w_north:1},"Opened every present");
+  save();checkLevel();
+  const rar=day===25?"mythic":day===24||day===31?"legendary":day%7===0?"epic":"rare";
+  paChestShow(`December ${day} present`,day===25?"🎄":"🎁",rar,paLootList(loot),()=>{if(+loot.xp>0)xpFX(+loot.xp,"Winter present");try{paTreeRefresh()}catch(e){}});
+}
+function paTreeSheet(){
+  const d=today(),y=d.getFullYear(),dec=d.getMonth()===11,E=gEv(),opened=paWOpened(y),todayDone=!!E[paWKey(d)];
+  const cells=Array.from({length:31},(_,i)=>{const dd=i+1,k="wp:"+y+"-12-"+String(dd).padStart(2,"0"),got=!!E[k],isT=dec&&d.getDate()===dd,past=dec&&dd<d.getDate();
+    return `<span class="wcal${got?" got":isT?" now":past?" miss":""}${dd===25?" xmas":""}">${got?"✓":dd===25?"🎄":dd}</span>`}).join("");
+  qrSheet(`<div class="qrcard wtree"><div class="wt-scene"><div class="wt-tree"><i class="wt-star">⭐</i><span class="wt-t1"></span><span class="wt-t2"></span><span class="wt-t3"></span><b class="wt-trunk"></b>
+      ${[["#e8402f",30,58],["#ffd84f",58,44],["#4fb5ff",42,72],["#e8402f",64,76],["#c44fff",50,30],["#3fbf5a",36,40]].map(([c,x,yy])=>`<i class="wt-orn" style="--c:${c};left:${x}%;top:${yy}%"></i>`).join("")}</div>
+      <button class="wt-gift${todayDone||!dec?" done":""}" id="wtGift" aria-label="Open today's present">🎁</button></div>
+    <h2>${dec?(todayDone?"See you tomorrow!":"A present is waiting"):"The Winter Event starts December 1"}</h2>
+    <p class="msg">${dec?`One free present under the tree every day in December. Christmas Day and New Year's Eve are extra big. You've opened <b>${opened}</b>.`:"Every day in December you'll get a free present here, plus snow and Holiday packs."}</p>
+    <div class="wcal-grid">${cells}</div>
+    <p class="msg wt-ex">Only in December: Winter Chests, Snow Globes, Hot Cocoa, 5 winter borders and 8 winter titles.</p></div>
+    <button class="btn" id="wtOpen" ${dec&&!todayDone?"":"disabled"}>${dec&&!todayDone?"Open today's present":"Come back "+(dec?"tomorrow":"in December")}</button>`);
+  const go=()=>{if(dec&&!todayDone){closeQR();setTimeout(paOpenPresent,180)}};
+  $("wtOpen").onclick=go;$("wtGift").onclick=go;
+}
+function paTreeRefresh(){try{if(view==="vDex")renderDex()}catch(e){}}
+paTry("winter-ui",()=>{
+  const rd=window.renderDex;
+  window.renderDex=function(){rd.apply(this,arguments);
+    try{const old=$("paWB");if(old)old.remove();if(!paWinterOn())return;const days=$("days");if(!days)return;
+      const done=!!gEv()[paWKey()],dec=today().getMonth()===11;
+      days.insertAdjacentHTML("beforebegin",`<button class="pawb${done?" done":""}" id="paWB"><span class="pawb-tree">🎄</span><span class="pawb-tx"><b>${dec?(done?"Present opened":"A present is under the tree!"):"Winter Event"}</b><small>${dec?(done?"Come back tomorrow for another one":"Tap to open today's free gift"):"Presents start December 1"}</small></span><span class="pawb-gift">${done?"✓":"🎁"}</span></button>`);
+      $("paWB").onclick=paTreeSheet;
+    }catch(e){console.warn(e)}};
+  /* snow while the Winter Event is on (not in Efficient mode) */
+  const snow=()=>{const on=paWinterOn()&&SET.eco!==1&&SET.motion!==false;let s=$("paSnow");
+    if(on&&!s){s=document.createElement("div");s.id="paSnow";s.setAttribute("aria-hidden","true");
+      s.innerHTML=Array.from({length:26},(_,i)=>`<i style="left:${(i*37)%100}%;animation-delay:${-(i*1.7)%14}s;animation-duration:${9+(i*7)%9}s;font-size:${8+(i*5)%9}px">❄</i>`).join("");document.body.appendChild(s)}
+    else if(!on&&s)s.remove()};
+  snow();setInterval(snow,60000);
+  const ct=window.checkTitles;
+  window.checkTitles=function(){ct.apply(this,arguments);
+    try{const all=allOffers(),y=today().getFullYear(),dec=all.filter(c=>{const d=new Date(c.ts);return d.getMonth()===11&&d.getFullYear()===y});
+      if(dec.length>=50&&invOf("t_w_frost")<1)giveTitle("w_frost");
+      if(dec.some(c=>{const dd=new Date(c.ts).getDate();return dd===24||dd===25})&&invOf("t_w_elf")<1)giveTitle("w_elf");
+    }catch(e){}};
+  const ui=window.useItem;
+  window.useItem=function(k){
+    if(k==="snowg"&&invOf("snowg")>0){const T=PA_SNOWG;let r=Math.random()*T.reduce((a,x)=>a+x[1],0),g=T[0][0];for(const [kk,w] of T){if((r-=w)<0){g=kk;break}}
+      const loot={[g]:1};xpDrops(loot);gEv()["u:"+rid()]={snowg:-1,...loot};save();checkLevel();
+      const L=paLootList(loot);if(paBatch){paBatch.items.push(...L);paBatch.xp+=+loot.xp||0;paBatch.n++;return true}
+      paChestShow("Snow Globe","🔮","rare",L,()=>{if(+loot.xp>0)xpFX(+loot.xp,"Snow Globe")});return true}
+    return ui.apply(this,arguments)};
+});
+
+/* ---------- Settings: your account is always the first thing ---------- */
+paTry("acct-top",()=>{
+  const rs=window.renderSettings;
+  window.renderSettings=function(){rs.apply(this,arguments);
+    try{const b=$("settingsBody");if(!b)return;const a=[...b.children].find(x=>x.classList.contains("sbox")&&/^Account/.test((x.querySelector("h3")||{}).textContent||""));
+      if(a&&b.firstElementChild!==a)b.prepend(a)}catch(e){}};
+});
+
+/* ---------- patch notes for this update ---------- */
+window.paAlphaNotice=function(){
+  if(SET.paSeen===APP_VER)return;const fresh=!store.cards.length;SET.paSeen=APP_VER;saveSet();if(fresh)return;
+  qrSheet(`<div class="qrcard alpha2"><div class="al-badge">ALPHA 2.1</div><h2>Season 0 and 10 frames</h2>
+    <ul class="al-list">
+      <li>🖼️ <b>5 new frames</b>: Chrome, Ruby, Molten, Galaxy and Prismatic (10 in all). The flashy ones are rarer now, and Carbon is easier to get</li>
+      <li>✦✦ Stacked frames you can count on: a sure one after 30 frames without</li>
+      <li>🟥 <b>Season 0 · Genesis</b>: a fresh 100-tier pass with titles, borders and a Genesis Chest you can only get this season</li>
+      <li>🎄 <b>Winter Event</b> all December: snow, Holiday packs and a free present under the tree every day</li>
+      <li>🤝 Feed challenges fold up to just the progress. Tap one to see everything</li>
+    </ul></div><button class="btn" id="alGo">Let's go</button>`);
+  $("alGo").onclick=closeQR;
+};
+
+/* ---------- Feed: no emoji reactions, just comments ---------- */
+window.rxHTML=function(){return ""};
+
+/* ---------- comments on friends' posts too (stored under the friend's post, only friends can see them) ---------- */
+let paCmP=null;
+const paPostRef=p=>p&&p.aud==="friends"?Cloud.db.collection("users").doc(p.uid).collection("posts").doc(String(p.id)):Cloud.db.collection("posts").doc(p.id);
+paTry("fcm",()=>{
+  const cs=window.commentSheet;
+  window.commentSheet=function(p){paCmP=p;return cs.apply(this,arguments)};
+  const c0=Cloud.comments,a0=Cloud.addComment,d0=Cloud.delComment;
+  Cloud.comments=async function(pid){
+    const p=paCmP&&paCmP.id===pid?paCmP:null;if(!p||p.aud!=="friends")return c0.apply(this,arguments);
+    const out=[];(await paPostRef(p).collection("comments").orderBy("at","asc").limit(100).get()).forEach(d=>{const v=d.data()||{};
+      out.push({id:d.id,uid:String(v.uid||""),name:String(v.name||"Driver").slice(0,24),title:typeof v.title==="string"?v.title.slice(0,30):"",text:String(v.text||"").slice(0,COMMENT_MAX),at:num0(v.at)})});
+    return out};
+  Cloud.addComment=async function(p,text){
+    if(!p||p.aud!=="friends")return a0.apply(this,arguments);
+    if(!this.user)throw new Error("Sign in to comment.");
+    text=String(text||"").replace(/\s+/g," ").trim().slice(0,COMMENT_MAX);if(!text)throw new Error("Write something first.");
+    const m=modCheck(text);if(!m.ok)throw new Error(m.why);
+    if(Date.now()-(+SET.lastCm||0)<8000&&!this.isMod)throw new Error("Slow down a little, then try again.");
+    const doc={uid:this.user.uid,name:myName(),text,at:Date.now()};{const t=myTitle();if(t)doc.title=titleName(t).slice(0,30)}
+    const ref=paPostRef(p);await ref.collection("comments").doc(this.user.uid+"_"+Date.now().toString(36)).set(doc);
+    try{await ref.update({cc:firebase.firestore.FieldValue.increment(1)})}catch(e){}
+    SET.lastCm=Date.now();saveSet();feedCache.friends=null};
+  Cloud.delComment=async function(p,c){
+    if(!p||p.aud!=="friends")return d0.apply(this,arguments);
+    const ref=paPostRef(p);await ref.collection("comments").doc(c.id).delete();try{await ref.update({cc:firebase.firestore.FieldValue.increment(-1)})}catch(e){}feedCache.friends=null};
+  const rf=window.renderFeed;
+  window.renderFeed=async function(){const r=await rf.apply(this,arguments);
+    try{if(feedAud!=="friends"||!Cloud.user)return r;const list=feedCache.friends||[];
+      document.querySelectorAll("#feedBody .post").forEach(a=>{const f=a.querySelector(".pfoot");if(!f||f.querySelector(".cmbtn"))return;
+        const p=list.find(x=>x.id===a.dataset.pid);if(!p)return;
+        f.insertAdjacentHTML("beforeend",`<button class="cmbtn" data-fcm="${esc(p.id)}">💬 ${p.cc?p.cc+" comment"+(p.cc>1?"s":""):"Comment"}</button>`);
+        f.querySelector("[data-fcm]").onclick=()=>commentSheet(p)});
+    }catch(e){console.warn(e)}
+    return r};
+});
 </script>
