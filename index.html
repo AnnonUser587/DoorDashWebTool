@@ -1846,7 +1846,7 @@ html[data-od="light"] #paSplash{background:#f2f3f7;color:#151821}
   // v4: rarer again, spread over eight tiers. Holo is the rarest finish at every tier.
   // v5: rarer again, and five frames. Holo and Gold Foil are the rarest at every tier.
   const SPLIT = { holo: 0.14, gold: 0.14, neon: 0.2, carbon: 0.26, inverted: 0.26 };
-  const TOTAL = { trash: 0.001, common: 0.002, uncommon: 0.004, rare: 0.008, superrare: 0.015, epic: 0.025, legendary: 0.06, mythic: 0.15 };
+  const TOTAL = { trash: 0.0012, common: 0.0023, uncommon: 0.0046, rare: 0.0092, superrare: 0.017, epic: 0.029, legendary: 0.069, mythic: 0.17 };
   const FINISH_ODDS = Object.fromEntries(Object.entries(TOTAL).map(([t, v]) => [t, Object.fromEntries(Object.entries(SPLIT).map(([k, f]) => [k, v * f]))]));
   const FINISHES = { holo: "Holographic", gold: "Gold Foil", neon: "Neon", carbon: "Carbon Fiber", inverted: "Inverted" };
   const FINISH_KEYS = Object.keys(SPLIT);
@@ -5590,7 +5590,7 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="1.9 Pre-Alpha";
+const APP_VER="2.0 Alpha";
 const SUPPORT_EMAIL="supportdasherdex@gmail.com";
 /* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
 const DISCORD_DEFAULT="";
@@ -5599,6 +5599,20 @@ const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.
 const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["2.0 Alpha","November 2026",[
+    "DasherDex is officially in Alpha! Thanks to everyone who tested the Pre-Alpha. Your cards, levels and items all carried over.",
+    "Stacked frames: a very small chance a frame comes with a second one (like Inverted + Holo).",
+    "Frame meter: when it's full, each upload has a much bigger chance at a frame. It fills a bit slower, and Meter Charge and Meter Fill give less. Frames are a little more common everywhere.",
+    "New: Emerald Chest, Gift Box, Big Scrap Pouch, Meter Spark, Double XP 6 hours and Mega Bonus XP. Scrap Pouches open with Open all.",
+    "10 new profile borders and 20 new titles, including Alpha Tester and the Alpha border for scanning during the Alpha.",
+    "Tap a driver's name to add them as a friend, report them or block them.",
+    "Profiles show a loading bar, with Try again if your signal is slow.",
+    "Search: quick picks, and searches like $20+, under 5 mi, today or accept.",
+    "Your profile is tidier on iPhone, and you pick what it shows (the sliders button at the top).",
+    "Settings › Performance: Efficient mode turns off animations, shine and glass for older phones.",
+    "The top bar stays the same size on every tab, with the DasherDex logo, and tab changes are smoother.",
+    "A clearer rarity guide for new drivers: rarest at the top, with the frame chance next to each.",
+  ]],
   ["1.9 Pre-Alpha","November 2026",[
     "A short loading screen when the app opens, so your cards don't pop in a moment later.",
     "Pre-Alpha and Prototype tags now sit next to the card's rarity instead of on the picture.",
@@ -5866,17 +5880,18 @@ const prestigeLuck=()=>5*(+prog().pr||0);
    The bar looks fast at first (square root) but the real bonus is small until it's full.
    Full: each upload's best card has a 1 in 4 chance at a special frame. It empties when you get one. */
 const METER_FULL=60;
+function paMP(){const p=+meter().p||0;let L=99;try{L=myLevel()+50*(+prog().pr||0)}catch(e){}return Math.min(METER_FULL,p+(L<5?12:0))}
 const meter=()=>{const p=prog();if(!p.pm||typeof p.pm!=="object")p.pm={p:0,r:0};return p.pm};
-const meterPct=()=>Math.round(100*Math.sqrt(Math.min(METER_FULL,+meter().p||0)/METER_FULL));
-const meterFull=()=>(+meter().p||0)>=METER_FULL;
+const meterPct=()=>meterFull()?100:Math.round(100*Math.sqrt(Math.min(METER_FULL,+meter().p||0)/METER_FULL));
+const meterFull=()=>paMP()>=METER_FULL;
 /* extra special-frame odds for every card in the next upload */
-const frameMult=()=>(fx().frame?1.6:1)*(1+0.5*Math.min(1,(+meter().p||0)/METER_FULL));
+const frameMult=()=>(fx().frame?1.6:1)*(1+0.6*Math.min(1,paMP()/METER_FULL));
 const METER_FRAMES=[["carbon",35],["inverted",30],["neon",20],["gold",8],["holo",7]];
 /* full meter: a 1 in 4 chance for the best new card (called while a scan is built) */
 function applyMeter(cards){
   const ok=cards.filter(c=>!c.noxp&&trusted(c)&&!c.dev);if(!ok.length||!meterFull()||typeof rngCal==="function"&&rngCal())return false;
   if(ok.some(special))return false;
-  if(Math.random()>=0.25)return false;
+  if(Math.random()>=0.6)return false;
   const best=ok.slice().sort((a,b)=>a.score-b.score||a.pph-b.pph)[ok.length-1];
   let r=Math.random()*100,f="carbon";for(const [k,w] of METER_FRAMES){if((r-=w)<0){f=k;break}}
   best.finish=f;delete best.finish0;best.meter=1;return true;
@@ -5991,7 +6006,7 @@ function gameAfterScan(cards){
   /* the frame meter */
   if(real.length){const m=meter();
     if(real.some(special)){if(m.p>0)GAME_NEW.push(real.some(c=>c.meter)?"Frame meter paid off!":"Frame meter reset: you got a frame");m.p=0;m.r=(+m.r||0)+1}
-    else{const was=meterFull();m.p=Math.min(METER_FULL,(+m.p||0)+(real.length>=2?0.3*real.length:0.3));if(!was&&meterFull())GAME_NEW.push("Frame meter is FULL")}}
+    else{const was=meterFull();m.p=Math.min(METER_FULL,(+m.p||0)+(real.length>=2?0.22*real.length:0.22));if(!was&&meterFull())GAME_NEW.push("Frame meter is FULL")}}
   gameMilestones();
   if(real.length){try{checkBoss()}catch(e){console.warn(e)}try{checkTitles()}catch(e){}try{bigPullOut(real)}catch(e){}}
   if(typeof Cloud!=="undefined"&&Cloud.user&&real.length)Cloud.bumpCommunity(real.length,real.filter(c=>RANK[c.tier]>=RANK.rare).length).catch(()=>{});
@@ -7296,6 +7311,92 @@ html[data-glass="1"] .paptr{background:var(--gl-bg);backdrop-filter:blur(14px);-
 /* tab changes: only the page content slides in; the top bar stays put (moving its parent made it jump in size) */
 .pa-vin{animation:none}
 .pa-vin>:not(.appbar):not(header):not(.topbar){animation:paVin .3s cubic-bezier(.2,.8,.2,1)}
+
+/* ===== 2.0 Alpha ===== */
+/* brand: the logo on every tab's top bar */
+.pagehead h1{display:flex;align-items:center;gap:9px}
+.hmark{width:28px;height:28px;border-radius:8px;flex:none;box-shadow:0 2px 8px -2px #0008}
+.pachip{background:linear-gradient(135deg,#ff5a3c,#e8402f)!important;color:#fff!important;border-color:transparent!important}
+/* iPhone: every tab's top bar is one row of the same height; the switches sit just under it */
+@media (max-width:999px){
+  html.pa-phonebar .wrap>.appbar{box-sizing:border-box;height:72px;padding-top:10px!important;padding-bottom:8px!important}
+  html.pa-phonebar .wrap>.appbar>.pagehead{height:100%;padding-block:0!important;align-items:center}
+  html.pa-phonebar .wrap>.appbar.top{display:flex;flex-direction:row;align-items:center;justify-content:space-between}
+  html.pa-phonebar .pagehead .phr>span:not([class]),html.pa-phonebar #statSpan,html.pa-phonebar #feedSub,html.pa-phonebar #profSince{max-width:34vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.72rem}
+  .paunder{margin:10px 0 12px}
+}
+#feedTabs{position:relative}
+/* smoother tab changes: a quick fade, nothing jumps */
+.pa-vin>:not(.appbar):not(header):not(.topbar){animation:paFade .22s ease-out}
+@keyframes paFade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* welcome rarity guide */
+.ladder .rl-lead{margin:0 0 10px;font-size:.95rem;text-align:center;color:var(--tx)}
+.rl-head{display:flex;justify-content:space-between;font:600 .66rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:0 2px 6px}
+.rl-row{display:grid;grid-template-columns:minmax(0,1fr) 48px;align-items:center;gap:8px;margin:0 0 6px}
+.rl-bar{width:fit-content;min-width:var(--w);max-width:100%;box-sizing:border-box;display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:11px;white-space:nowrap;overflow:hidden;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--c) 34%,transparent),color-mix(in srgb,var(--c) 10%,transparent));border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.rl-bar b{font-size:.9rem}.rl-bar small{font:500 .72rem var(--f-mono);color:var(--mut)}
+.rl-bar em{font:700 .6rem var(--f-mono);font-style:normal;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:6px;background:var(--c);color:#111;margin-left:auto}
+.rl-bar em.lo{background:var(--track);color:var(--mut)}
+.rl-odds{text-align:right;white-space:nowrap;font:700 .82rem var(--f-mono);color:var(--c)}
+.rl-foot{margin:10px 2px 0;font-size:.8rem;color:var(--mut);line-height:1.4}
+/* profile actions and loading */
+.paload{display:grid;gap:8px;justify-items:center;padding:18px 0}
+.paload-bar{width:70%;height:5px;border-radius:9px;background:var(--track);overflow:hidden}
+.paload-bar i{display:block;width:35%;height:100%;border-radius:9px;background:linear-gradient(90deg,#ff5a3c,#c44fff);animation:paLoad 1.1s ease-in-out infinite}
+.paload-bar.stuck i{background:var(--mut)}
+.paload small{color:var(--mut)}
+@keyframes paLoad{from{transform:translateX(-110%)}to{transform:translateX(300%)}}
+.paua{display:grid;gap:8px;margin-top:14px}.paua2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+/* stacked frames: a second shine on top of the first */
+.card[data-f2]{position:relative}
+.paf2{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3}
+.card[data-f2="holo"] .paf2{background:conic-gradient(from 0deg,#ff4fa055,#ffd84f55,#4fffc155,#4fb5ff55,#c44fff55,#ff4fa055);mix-blend-mode:color-dodge;opacity:.55;animation:paF2 6s linear infinite}
+.card[data-f2="gold"] .paf2{background:linear-gradient(120deg,transparent 30%,#ffe9a080 45%,#fff4c8a0 50%,#ffe9a080 55%,transparent 70%);background-size:250% 100%;mix-blend-mode:soft-light;animation:paF2g 3.5s ease-in-out infinite}
+.card[data-f2="neon"] .paf2{box-shadow:inset 0 0 0 2px #39f5ff,0 0 18px #39f5ffaa,inset 0 0 22px #39f5ff55}
+.card[data-f2="carbon"] .paf2{background:repeating-linear-gradient(45deg,#ffffff10 0 3px,transparent 3px 6px),repeating-linear-gradient(-45deg,#00000030 0 3px,transparent 3px 6px);mix-blend-mode:overlay}
+.card[data-f2="inverted"] .art img{filter:invert(1) hue-rotate(180deg)}
+.card[data-f2="inverted"] .paf2{box-shadow:inset 0 0 0 2px #fff8}
+@keyframes paF2{to{filter:hue-rotate(360deg)}}
+@keyframes paF2g{0%,100%{background-position:100% 0}50%{background-position:0 0}}
+/* Alpha card tag */
+.patag.al{background:linear-gradient(135deg,#ff5a3c,#e8402f);color:#fff}
+/* search quick picks */
+.pasug{grid-column:1/-1;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.pasug::-webkit-scrollbar{display:none}
+.pasug button{flex:none;border:1px solid var(--line);background:var(--bg2);color:var(--tx);font:600 .78rem var(--f-body);padding:7px 11px;border-radius:99px;cursor:pointer;white-space:nowrap}
+/* profile: hidden and folding sections */
+.pahid{display:none!important}
+.pafold-h{cursor:pointer;position:relative;padding-right:26px}
+.pafold-h::after{content:"";position:absolute;right:4px;top:50%;width:8px;height:8px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:translateY(-70%) rotate(45deg);transition:transform .2s}
+.pafold.shut .pafold-h::after{transform:translateY(-30%) rotate(-45deg)}
+.pafold.shut>:not(.pafold-h){display:none!important}
+.papsl{display:grid;gap:2px;margin-top:6px}
+/* presets */
+.papre{display:grid;gap:6px;margin:4px 0 12px}.papre small{color:var(--mut);font-size:.8rem;line-height:1.35}
+/* Efficient mode: no glass, no shine, no motion */
+html[data-eco="1"] *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html[data-eco="1"] .card *,html[data-eco="1"] .card::before,html[data-eco="1"] .card::after,html[data-eco="1"] .bdanim,html[data-eco="1"] .paf2,html[data-eco="1"] .ttl.art.anim::after,html[data-eco="1"] #paSplash *{animation:none!important}
+html[data-eco="1"] .pa-vin>*{animation:none!important}
+/* new borders */
+.bd-aurora{box-shadow:0 0 0 3px #4fffc1,0 0 0 5px #9a7dff,0 0 22px #4fffc1aa}
+.bd-sunset{box-shadow:0 0 0 3px #ff8a3d,0 0 0 5px #ff4d8d66,0 0 14px #ff8a3d88}
+.bd-ocean{box-shadow:0 0 0 3px #1fa2ff,0 0 0 5px #12d8fa55,0 0 14px #1fa2ff88}
+.bd-ember{box-shadow:0 0 0 3px #ff4d1f,0 0 0 5px #ffb03b66,0 0 20px #ff4d1faa}
+.bd-frost{box-shadow:0 0 0 3px #cfefff,0 0 12px #9fdcffaa}
+.bd-jade{box-shadow:0 0 0 3px #00a86b,0 0 0 5px #7fffd455,0 0 14px #00a86b99}
+.bd-stacked{box-shadow:0 0 0 3px #ffd84f,0 0 0 6px #c44fff,0 0 24px #c44fffcc}
+.bd-alpha{box-shadow:0 0 0 3px #ff5a3c,0 0 0 5px #fff3,0 0 18px #e8402fcc}
+.bd-x_neonpink{box-shadow:0 0 0 3px #ff2bd6,0 0 22px #ff2bd6,inset 0 0 8px #ff2bd666}
+.bd-x_obsidian{box-shadow:0 0 0 3px #1a1a22,0 0 0 5px #6a5acd88,0 0 16px #000}
+/* patch notes */
+.al-badge{display:inline-block;font:800 .72rem var(--f-mono);letter-spacing:.2em;padding:5px 12px;border-radius:99px;background:linear-gradient(135deg,#ff5a3c,#e8402f);color:#fff;margin-bottom:8px}
+.alpha2{text-align:center}.al-list{text-align:left;margin:10px 0;padding-left:4px;list-style:none;display:grid;gap:8px;font-size:.9rem}
+
+@media (max-width:359px){
+  #vDex .logo{font-size:.82em;gap:6px}#vDex .logo .mark{width:30px;height:30px}
+  #vDex .hright{gap:4px}#vDex .hright .pfbtn{width:36px;height:36px;min-width:36px}
+}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -7326,7 +7427,7 @@ paTry("items",()=>{
     scans:{n:"+10 Scans",r:"rare",i:"📸",d:"Scan 10 more offers today, past the daily limit. You can use one every 24 hours."},
     xp_m:{n:"Medium Bonus XP",r:"uncommon",i:"💫",hide:1,d:"Random XP (100 to 500), added the moment it drops."},
     pouch:{n:"Scrap Pouch",r:"common",i:"👝",d:"Open it for 150 to 600 scrap."},
-    mcharge:{n:"Meter Charge",r:"uncommon",i:"🔋",d:"Adds a big chunk to your frame meter (+6 of 60)."}
+    mcharge:{n:"Meter Charge",r:"uncommon",i:"🔋",d:"Adds to your frame meter (+3 of 60)."}
   });delete ITEMS.dx60old;
   XP_ROLL.xp_m=[[100,34],[150,30],[200,18],[300,10],[400,5],[500,3]];
   ITEM_ORDER.length=0;ITEM_ORDER.push("chest_g","chest_s","chest_b","frame","reroll","dxw","dx3d","dxd","dx60","dx30","dx15","dx5","saver","scans","mcharge","pouch","swap","charm2","charm");
@@ -7344,7 +7445,7 @@ paTry("items",()=>{
     const it=ITEMS[k];if(!it||invOf(k)<1)return false;const E=gEv(),id="u:"+rid();
     if(k==="charm"||k==="charm2"){const x=k==="charm"?40:100;E[id]={[k]:-1,xp:x};save();checkLevel();xpFX(x,"Retired charm");return true}
     if(k==="pouch"){const n=150+Math.floor(Math.random()*451);E[id]={pouch:-1,scrap:n};save();toast(`👝 +${n} scrap`);return true}
-    if(k==="mcharge"){const m=meter();m.p=Math.min(METER_FULL,(+m.p||0)+6);E[id]={mcharge:-1};save();toast("🔋 Frame meter +6");return true}
+    if(k==="mcharge"){const m=meter();m.p=Math.min(METER_FULL,(+m.p||0)+3);E[id]={mcharge:-1};save();toast("🔋 Frame meter +3");return true}
     if(k==="scans"){const last=+fx().scansAt||0,left=PA_SCANS_COOLDOWN-(realNow()-last);
       if(left>0){toast(`+10 Scans works once every 24 hours. Ready again in ${paLeft(left)}.`);return false}
       const ok=use0(k);if(ok){fx().scansAt=realNow();saveSet()}return ok}
@@ -7379,7 +7480,7 @@ paTry("tags",()=>{
 });
 /* a Pre-Alpha chip next to the logo, and a one-time heads-up */
 paTry("chip",()=>{
-  const lg=document.querySelector(".top .logo");if(lg&&!lg.querySelector(".pachip")){const s=document.createElement("span");s.className="pachip";s.textContent="PRE-ALPHA";s.title="DasherDex is in Pre-Alpha: things change often";lg.appendChild(s)}
+  const lg=document.querySelector(".top .logo");if(lg&&!lg.querySelector(".pachip")){const s=document.createElement("span");s.className="pachip";s.textContent="ALPHA";s.title="DasherDex Alpha";lg.appendChild(s)}
 });
 function paAlphaNotice(){
   if(SET.paSeen===APP_VER)return;SET.paSeen=APP_VER;saveSet();
@@ -7768,7 +7869,7 @@ paTry("more",()=>{
     xp_h:{n:"Huge Bonus XP",r:"epic",i:"🌠",hide:1,d:"Random XP (1,000 to 3,000), added the moment it drops."},
     chest_d:{n:"Diamond Chest",r:"legendary",i:"💎",chest:1,d:"5 random items, the best odds, and a big pile of XP."},
     mystery:{n:"Mystery Box",r:"rare",i:"❔",d:"Opens into one random item. Could be anything, even a Diamond Chest."},
-    mfill:{n:"Meter Fill",r:"legendary",i:"🔆",d:"Fills your frame meter all the way."},
+    mfill:{n:"Meter Fill",r:"legendary",i:"🔆",d:"Fills half of your frame meter."},
     crate:{n:"Scrap Crate",r:"rare",i:"🧰",d:"Open it for 1,000 to 3,000 scrap."},
     ticket:{n:"Season Ticket",r:"epic",i:"🎫",d:"+400 XP: one whole season pass tier."},
     tcrate:{n:"Title Crate",r:"epic",i:"🎁",d:"Unlocks a random crate-only title you don't have yet (or 500 XP if you have them all)."},
@@ -7795,7 +7896,7 @@ paTry("more",()=>{
     if(k==="mystery"){const got=pick(MYST),items={[got]:1};const xs=xpDrops(items);E[id]={mystery:-1,...items};save();checkLevel();if(xs.length)xpFX(items.xp,"Mystery Box");
       paReveal("❔ Mystery Box",got.startsWith("xp_")?`⭐ +${items.xp} XP`:`${ITEMS[got].i} ${ITEMS[got].n}`,TC[got.startsWith("xp_")?"rare":ITEMS[got].r]);return true}
     if(k==="crate"){const n=1000+Math.floor(Math.random()*2001);E[id]={crate:-1,scrap:n};save();paReveal("🧰 Scrap Crate",`🔩 +${n.toLocaleString()} scrap`,TC.rare);return true}
-    if(k==="mfill"){const m=meter();m.p=METER_FULL;E[id]={mfill:-1};save();toast("🔆 Frame meter is FULL");return true}
+    if(k==="mfill"){const m=meter();m.p=Math.min(METER_FULL,(+m.p||0)+METER_FULL/2);E[id]={mfill:-1};save();toast("🔆 Frame meter +50%");return true}
     if(k==="ticket"){E[id]={ticket:-1,xp:400};save();checkLevel();xpFX(400,"Season Ticket");return true}
     if(k==="swap3"){const d=dayKey(today());fx().swaps={d,n:fxToday("swaps")+3};E[id]={swap3:-1};saveSet();save();toast("🔁 Three more swaps today");return true}
     if(k==="tcrate"||k==="bcrate"){const T=k==="tcrate",pool=Object.keys(T?PA_T2:PA_B2).filter(x=>x.startsWith("x_")),got=crate(pool,T?"t_":"b_");
@@ -8594,4 +8695,290 @@ paTry("bdwear",()=>{
           $("crWear").onclick=()=>{prog().bsel=bd;save();try{pushPubSoon()}catch(e){}closeQR();try{if(view==="vProfile")renderProfile()}catch(e){}toast("Border set")}}}}
     })};
 });
+
+/* ===================== 2.0 Alpha ===================== */
+const paPhone=()=>!paDesk();
+
+/* ---------- performance presets: Performance (default) or Efficient for older phones ---------- */
+function paEco(){const on=SET.eco===1;document.documentElement.dataset.eco=on?"1":"0";if(on)document.documentElement.classList.add("calm")}
+paEco();
+function paSetPreset(eco){
+  if(eco){SET.eco=1;SET.glass=false;SET.motion=false}else{SET.eco=0;SET.glass=true;SET.motion=true}
+  saveSet();paGlass();document.documentElement.classList.toggle("calm",!SET.motion);paEco();
+  toast(eco?"🔋 Efficient mode: animations and glass off":"⚡ Performance mode: everything on");
+}
+
+/* ---------- top bar: the logo on every tab, one row on iPhone so it never changes size ---------- */
+function paBars(){
+  const src=logoSrc();
+  document.querySelectorAll(".wrap>.appbar .pagehead h1").forEach(h=>{if(src&&!h.querySelector(".hmark")){h.insertAdjacentHTML("afterbegin",`<img class="hmark" src="${src}" alt="">`)}});
+  if(paPhone()){
+    for(const id of ["range","feedTabs"]){const s=$(id);if(s&&s.closest(".appbar")){const bar=s.closest(".appbar");s.classList.add("paunder");bar.insertAdjacentElement("afterend",s)}}
+    document.documentElement.classList.add("pa-phonebar");
+  }
+  const pf=document.querySelector("#vProfile .phr");
+  if(pf&&!$("paPEdit")){const g=pf.querySelector(".gearbtn");const h=`<button class="pfbtn gearbtn" id="paPEdit" aria-label="Choose what your profile shows"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>`;
+    if(g)g.insertAdjacentHTML("beforebegin",h);else pf.insertAdjacentHTML("beforeend",h);$("paPEdit").onclick=paProfSheet}
+}
+paTry("bars",paBars);
+
+/* ---------- welcome: rarity at a glance (rarest at the top, longest bar) ---------- */
+window.renderLadder=function(){
+  const el=$("ladder");if(!el)return;
+  const pct=t=>{const v=Object.values(FINISH_ODDS[t]).reduce((a,b)=>a+b,0)*100;return v<1?v.toFixed(1):Math.round(v)};
+  const T=TIERS.slice().sort((a,b)=>RANK[b.id]-RANK[a.id]),n=T.length;
+  el.innerHTML=`<p class="rl-lead">Better pay = higher grade = <b>rarer card</b>.</p>
+    <div class="rl-head"><span>Rarity · grade</span><span>✦ Frame chance</span></div>
+    ${T.map((t,i)=>`<div class="rl-row" style="--c:${TC[t.id]};--w:${Math.round(100-(i/(n-1))*50)}%"><span class="rl-bar"><b>${t.name}</b><small>${t.min}–${t.max}</small>${i===0?`<em>Rarest</em>`:i===n-1?`<em class="lo">Most common</em>`:""}</span><span class="rl-odds">${pct(t.id)}%</span></div>`).join("")}
+    <p class="rl-foot">✦ A <b>frame</b> is a shiny special finish (Holo, Gold, Neon…). Rarer cards get one more often.</p>`;
+};
+
+/* ---------- other drivers' profiles: a loading bar, plus Add friend, Report and Block ---------- */
+paTry("puser",()=>{
+  const ou=window.openUser;
+  window.openUser=function(uid,nameHint,back){
+    const tok={};paPU=tok;
+    const pr=ou.apply(this,arguments);
+    try{const m=document.querySelector("#qrSheet .pubp .msg");if(m&&/Loading/.test(m.textContent))m.outerHTML=`<div class="paload" id="paLoad"><span class="paload-bar"><i></i></span><small>Loading profile…</small></div>`}catch(e){}
+    const slow=setTimeout(()=>{if(paPU!==tok)return;const l=$("paLoad");if(l)l.innerHTML=`<span class="paload-bar stuck"><i></i></span><small>This is taking longer than usual. Check your signal.</small><button class="btn ghost sm" id="paLoadRetry">Try again</button>`;
+      const r=$("paLoadRetry");if(r)r.onclick=()=>window.openUser(uid,nameHint,back)},8000);
+    Promise.resolve(pr).then(()=>{clearTimeout(slow);if(paPU!==tok)return;paUserActions(uid,nameHint)}).catch(()=>clearTimeout(slow));
+    return pr};
+});
+let paPU=null;
+function paUserActions(uid,nameHint){
+  const box=document.querySelector("#qrSheet .pubp");if(!box||$("paUA")||!Cloud.user||uid===Cloud.user.uid)return;
+  const nm=(box.querySelector("h2")||{}).textContent||nameHint||"this driver";
+  const fr=(Cloud.friends||[]).find(f=>f.id===uid),pend=fr&&!fr.accepted,blocked=hiddenSet("hideUsers").has(uid);
+  box.insertAdjacentHTML("beforeend",`<div class="paua" id="paUA">
+    <button class="btn" id="paUAdd" ${fr?"disabled":""}>${fr?(pend?"Request sent":"Friends"):"＋ Add friend"}</button>
+    <div class="paua2"><button class="btn ghost sm" id="paURep">Report</button><button class="btn ghost sm danger" id="paUBlk">${blocked?"Unblock":"Block"}</button></div></div>`);
+  $("paUAdd").onclick=()=>{if(fr)return;paConfirm("Add "+nm+"?","They'll get a friend request with your name. Once they accept, you can see each other's Dex.","Send request",async()=>{
+    try{toast(await Cloud.addByUid(uid,nm))}catch(e){toast(e.message||"Couldn't send the request")}})};
+  $("paURep").onclick=()=>paReportUser(uid,nm);
+  $("paUBlk").onclick=()=>{if(blocked){SET.hideUsers=[...hiddenSet("hideUsers")].filter(x=>x!==uid);saveSet();closeQR();toast("Unblocked");try{renderFeed()}catch(e){}return}
+    paConfirm("Block "+nm+"?","They won't be notified. You won't see their posts, and if you're friends, they're removed.","Block",async()=>{
+      SET.hideUsers=[...hiddenSet("hideUsers"),uid].slice(-200);saveSet();try{if(fr)await Cloud.remove(uid)}catch(e){}closeQR();toast("Blocked "+nm);try{renderFeed()}catch(e){}})};
+}
+function paConfirm(title,msg,go,fn){
+  qrSheet(`<div class="qrcard"><h2>${esc(title)}</h2><p class="msg">${esc(msg)}</p></div><button class="btn" id="paCfGo">${esc(go)}</button><button class="btn ghost" id="paCfNo">Cancel</button>`);
+  $("paCfGo").onclick=async()=>{$("paCfGo").disabled=true;await fn();closeQR()};$("paCfNo").onclick=closeQR;
+}
+function paReportUser(uid,nm){
+  qrSheet(`<div class="qrcard"><h2>Report ${esc(nm)}?</h2><p class="msg">They won't be notified and won't know who reported them. The DasherDex team will take a look.</p></div>
+    <div class="btnrow">${REPORT_WHY.map(w=>`<button class="btn ghost" data-rw="${esc(w)}">${esc(w)}</button>`).join("")}</div>`);
+  document.querySelectorAll("#qrSheet [data-rw]").forEach(b=>b.onclick=async()=>{try{await Cloud.report({id:"profile_"+uid,aud:"profile",uid,name:nm,card:null},b.dataset.rw);closeQR();toast("Thanks. Report sent.")}catch(e){toast(e.message||"Couldn't send the report")}});
+}
+paTry("addbyuid",()=>{
+  Cloud.addByUid=async function(fid,name){
+    if(!this.user)throw new Error("Sign in to add friends.");if(fid===this.user.uid)throw new Error("That's you!");
+    if(this.friends.some(f=>f.id===fid))throw new Error("You've already added "+name+".");
+    if(this.requests.some(r=>r.id===fid))return this.accept(fid,name);
+    await this.me().collection("friends").doc(fid).set({name:String(name||"Driver").replace(/^@/,"").slice(0,24),accepted:false,close:false,at:Date.now()});
+    await this.db.collection("users").doc(fid).collection("requests").doc(this.user.uid).set({name:myName(),at:Date.now()}).catch(e=>{if(!/permission/i.test(e.code||""))throw e});
+    await this.loadFriends();return "Request sent to "+String(name).replace(/^@/,"");
+  };
+});
+
+/* ---------- stacked frames: a very small chance a frame comes with a second one ---------- */
+const PA_STACK=0.04,PA_SPLIT={holo:.14,gold:.14,neon:.2,carbon:.26,inverted:.26};
+function paStack(c){
+  if(!c||!special(c)||c.f2||c.noxp||c.dev||c._st)return;c._st=1;
+  if(typeof rngCal==="function"&&rngCal())return;if(Math.random()>=PA_STACK)return;
+  const ks=Object.keys(PA_SPLIT).filter(k=>k!==c.finish);let r=Math.random()*ks.reduce((a,k)=>a+PA_SPLIT[k],0);
+  for(const k of ks){if((r-=PA_SPLIT[k])<0){c.f2=k;break}}
+}
+paTry("alcards",()=>{
+  if(PUB_FIELDS.indexOf("al")<0)PUB_FIELDS.push("al");if(PUB_FIELDS.indexOf("f2")<0)PUB_FIELDS.push("f2");
+  const fs=window.finishSave;
+  window.finishSave=function(cards){const st=[];try{if(Array.isArray(cards))for(const c of cards){c.al=1;delete c.pa;paStack(c);delete c._st;if(c.f2)st.push(c)}}catch(e){}
+    const r=fs.apply(this,arguments);for(const c of st)setTimeout(()=>toast("✦✦ Stacked frames! "+FINISHES[c.finish]+" + "+FINISHES[c.f2]),2500);return r};
+  const ch=window.cardHTML;
+  window.cardHTML=function(c){let h=ch.apply(this,arguments);
+    try{if(c&&c._example)h=h.replace(/<span class="patag [a-z]+">[^<]*<\/span>/,"");
+      else if(c&&c.al)h=h.replace(/<span class="patag (?:pa|pt)">[^<]*<\/span>/,'<span class="patag al">Alpha</span>');
+      if(c&&c.f2&&special(c)&&c.f2!==c.finish&&FINISHES[c.f2]){
+        h=h.replace('<article class="card"',`<article class="card" data-f2="${c.f2}"`).replace(/(<span class="fin">)([^<]*)(<\/span>)/,(m,a,b,d)=>`${a}${b} + ${FIN_SHORT[c.f2]||c.f2}${d}`);
+        h=h.replace(/<\/article>\s*$/,'<i class="paf2" aria-hidden="true"></i></article>')}}catch(e){}
+    return h};
+});
+
+/* ---------- search: easier to use (quick picks, $20+, under 5 mi, ignores dashes and apostrophes) ---------- */
+const paNorm=s=>String(s||"").toLowerCase().replace(/['’`]/g,"").replace(/[^a-z0-9$.+<>/ -]+/g," ").replace(/-/g," ").replace(/\s+/g," ").trim();
+window.paHay=function(c){
+  const t=TIERS.find(x=>x.id===c.tier);let d="";try{d=dayName(dayKey(c.ts)).join(" ")}catch(e){}
+  const k=dayKey(c.ts),td=dayKey(today()),yd=(()=>{const x=today();x.setDate(x.getDate()-1);return dayKey(x)})();
+  const v=(()=>{try{return vOf(c).label}catch(e){return ""}})();
+  const raw=[c.store,(c.stores||[]).join(" "),t&&t.name,c.platform,c.addr,c.city,money(c.pay),c.miles+" mi",c.minutes+" min",special(c)?FINISHES[c.finish]+" frame special":"",c.f2?FINISHES[c.f2]+" stacked":"",c.fav?"favorite fav":"",d,v,"#"+c.no,k===td?"today":"",k===yd?"yesterday":"",c.rc?"red card":""].join(" ");
+  const n=paNorm(raw);return n+" "+n.replace(/ /g,"");
+};
+function paNumF(q){
+  const f=[];let rest=" "+q+" ";
+  const add=(re,fn)=>{rest=rest.replace(re,(...m)=>{f.push(fn(m));return " "})};
+  add(/\$?(\d+(?:\.\d+)?)\s*\/\s*hr\s*\+/g,m=>c=>+c.pph>=+m[1]);
+  add(/\$(\d+(?:\.\d+)?)\s*-\s*\$?(\d+(?:\.\d+)?)/g,m=>c=>+c.pay>=+m[1]&&+c.pay<=+m[2]);
+  add(/(?:\$(\d+(?:\.\d+)?)\s*\+|>\s*\$?(\d+(?:\.\d+)?)|over \$?(\d+(?:\.\d+)?)(?! ?mi))/g,m=>c=>+c.pay>=+(m[1]||m[2]||m[3]));
+  add(/(?:<\s*|under )(\d+(?:\.\d+)?)\s*mi(?:les?)?\b/g,m=>c=>+c.miles<=+m[1]);
+  add(/(?:<\s*\$?|under \$)(\d+(?:\.\d+)?)/g,m=>c=>+c.pay<+m[1]);
+  return {f,rest:rest.trim()};
+}
+window.paMatch=function(c,toks){
+  const q=paNorm(toks.join(" ")),{f,rest}=paNumF(q);
+  if(f.some(fn=>!fn(c)))return false;
+  const h=paHay(c);
+  return rest.split(" ").filter(Boolean).every(t=>h.includes(t)||(t.length>3&&h.includes(t.slice(0,-1))));
+};
+paTry("srch2",()=>{
+  const so=window.paSearchOpen;
+  window.paSearchOpen=function(){so.apply(this,arguments);
+    try{const s=$("paSearch");if(!s||$("paSug"))return;
+      const st=new Map();for(const c of store.cards){const k=String(c.store||"").trim();if(k)st.set(k,(st.get(k)||0)+1)}
+      const top=[...st.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4).map(x=>x[0]);
+      const picks=[["Accept","accept"],["$20+","$20+"],["Today","today"],["Frames","frame"],["Under 5 mi","under 5 mi"],...top.map(x=>[x,x])];
+      s.insertAdjacentHTML("beforeend",`<div class="pasug" id="paSug">${picks.map(([l,q])=>`<button data-q="${esc(q)}">${esc(l)}</button>`).join("")}</div>`);
+      s.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const i=$("paSrchIn");i.value=b.dataset.q;paQ=b.dataset.q;renderDex();i.focus()});
+      const i=$("paSrchIn");if(i)i.placeholder="Store, $20+, mythic, today…";
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- profile: cleaner on iPhone (long sections fold up) and you pick what it shows ---------- */
+const PA_PSEC=[["quests","Challenges"],["gamebar","Daily login, frame meter and pass"],["boss","Weekly boss"],["showcase","Showcase"],["bag","Bag"],["pass","Season pass"],["frames","Frames packs"],["best","Best pull"],["ach","Achievements"],["coll","Collections"],["fcol","Frame collection"],["about","About"]];
+const PA_PFOLD=["ach","coll","fcol","boss","frames"];
+function paPKey(el){
+  if(!el||el.nodeType!==1)return "";if(el.id==="quests")return "quests";if(el.id==="gamebar")return "gamebar";if(el.id==="prPass")return "pass";
+  const c=el.className||"";if(/\bboss\b/.test(c))return "boss";if(/\bshowbox\b/.test(c))return "showcase";if(/\bbag\b/.test(c))return "bag";if(/\babout\b/.test(c))return "about";
+  const h=((el.querySelector("h3,summary,.flabel")||{}).textContent||"").toLowerCase();
+  if(/^🎞️|frames\b/.test(h)&&/\bcdet\b/.test(c))return "frames";if(h.startsWith("best pull"))return "best";if(h.startsWith("achievements"))return "ach";
+  if(h.startsWith("collections"))return "coll";if(h.startsWith("frame collection"))return "fcol";return "";
+}
+const paPHide=()=>Array.isArray(SET.phide)?SET.phide:[];
+const paPOpen=()=>SET.popen&&typeof SET.popen==="object"?SET.popen:(SET.popen={});
+paTry("prof",()=>{
+  const rp=window.renderProfile;
+  window.renderProfile=function(){rp.apply(this,arguments);
+    try{paBars();const hide=paPHide(),open=paPOpen();
+      const els=[$("quests"),$("gamebar"),...(($("profileBody")||{}).children||[])];
+      for(const el of els){const k=paPKey(el);if(!k)continue;el.dataset.pk=k;
+        el.classList.toggle("pahid",hide.includes(k));
+        if(paPhone()&&PA_PFOLD.includes(k)&&el.classList.contains("sbox")&&!el.classList.contains("cdet")){
+          const hd=el.querySelector(":scope>h3,:scope>.flabel,:scope>div:first-child");if(!hd)continue;
+          el.classList.add("pafold");hd.classList.add("pafold-h");el.classList.toggle("shut",!open[k]);
+          hd.onclick=e=>{if(e.target.closest("button,a,input"))return;const s=!el.classList.contains("shut");el.classList.toggle("shut",s);paPOpen()[k]=!s;saveSet()}}
+      }
+    }catch(e){console.warn(e)}};
+});
+function paProfSheet(){
+  const hide=new Set(paPHide());
+  qrSheet(`<div class="qrcard"><h2>Your profile</h2><p class="msg">Pick what shows on your Profile tab. Hidden sections still count, they're just tucked away.</p>
+    <div class="papsl">${PA_PSEC.map(([k,n])=>`<label class="sw"><span><b>${esc(n)}</b></span><input type="checkbox" data-pk="${k}" ${hide.has(k)?"":"checked"}><i></i></label>`).join("")}</div></div>
+    <button class="btn" id="paPDone">Done</button><button class="btn ghost" id="paPAll">Show everything</button>`);
+  document.querySelectorAll("#qrSheet [data-pk]").forEach(x=>x.onchange=()=>{const k=x.dataset.pk;if(x.checked)hide.delete(k);else hide.add(k);SET.phide=[...hide];saveSet();renderProfile()});
+  $("paPDone").onclick=closeQR;$("paPAll").onclick=()=>{SET.phide=[];saveSet();closeQR();renderProfile()};
+}
+
+/* ---------- Settings: the presets ---------- */
+paTry("set10",()=>{
+  const rs=window.renderSettings;
+  window.renderSettings=function(){rs.apply(this,arguments);
+    try{const box=$("paBox");if(box&&!$("paPreset")){const eco=SET.eco===1;
+        box.querySelector("h3").insertAdjacentHTML("afterend",`<div class="papre" id="paPreset"><b>Performance</b><small>Running DoorDash at the same time on an older phone? Efficient turns off animations, holo shine and liquid glass to save battery.</small>
+          <div class="seg seg2"><button data-pre="0" aria-pressed="${!eco}">⚡ Full</button><button data-pre="1" aria-pressed="${eco}">🔋 Efficient</button></div></div>`);
+        box.querySelectorAll("[data-pre]").forEach(b=>b.onclick=()=>{paSetPreset(b.dataset.pre==="1");renderSettings()});}
+      const h=box&&box.querySelector("h3");if(h&&/Pre-Alpha/.test(h.textContent))h.textContent="Alpha options";
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- more items: openables (Scrap Pouches open with Open all too) ---------- */
+paTry("items10",()=>{
+  Object.assign(ITEMS,{
+    pouch_l:{n:"Big Scrap Pouch",r:"rare",i:"💰",d:"Open it for 800 to 2,000 scrap."},
+    gift:{n:"Gift Box",r:"uncommon",i:"🎀",d:"Opens into 3 small surprises."},
+    chest_e:{n:"Emerald Chest",r:"epic",i:"🟩",chest:1,d:"3 random items with better odds than Silver, and a good pile of XP."},
+    mspark:{n:"Meter Spark",r:"common",i:"✨",d:"A tiny push for your frame meter (+1 of 60)."},
+    dx6h:{n:"Double XP · 6 hours",r:"rare",i:"⚡",min:360,d:"Cards you scan earn double XP for 6 hours."},
+    xp_x:{n:"Mega Bonus XP",r:"legendary",i:"🌌",hide:1,d:"Random XP (3,000 to 6,000), added the moment it drops."}
+  });
+  XP_ROLL.xp_x=[[3000,45],[4000,30],[5000,17],[6000,8]];
+  CHEST.chest_e={rolls:3,xp:[150,300],t:[["xp_m",14],["xp_l",8],["dx6h",10],["dxd",6],["pouch_l",10],["gift",12],["mcharge",5],["mspark",10],["mystery",6],["crate",4],["chest_s",8],["reroll",3],["tcrate",1.5],["bcrate",1.5],["frame",1]]};
+  CHEST.chest_b.t.push(["mspark",8],["gift",4]);CHEST.chest_s.t.push(["mspark",8],["gift",6],["pouch_l",4],["chest_e",3]);
+  CHEST.chest_g.t.push(["chest_e",8],["pouch_l",6],["dx6h",5],["xp_x",1]);CHEST.chest_d.t.push(["chest_e",8],["xp_x",4],["dx6h",6]);
+  for(const k of ["chest_e","pouch_l","gift","pouch"])if(!PA_OPEN.includes(k))PA_OPEN.push(k);
+  const ord=["chest_d","chest_g","chest_e"];const rest=ITEM_ORDER.filter(k=>!ord.includes(k));ITEM_ORDER.length=0;ITEM_ORDER.push(...ord,...rest,"pouch_l","gift","dx6h","mspark");
+  RECIPES.push(["chest_e",8000],["pouch_l",1500]);
+  const xd=window.xpDrops;window.xpDrops=function(items){const out=xd(items);const n=+items.xp_x||0;if(n>0){const g=[];for(let i=0;i<n;i++)g.push(rollXP("xp_x"));out.push(...g);delete items.xp_x;items.xp=(+items.xp||0)+g.reduce((a,b)=>a+b,0)}return out};
+  const GIFT=[["xp_s",22],["pouch",18],["dx60",14],["mspark",14],["xp_m",12],["swap",8],["chest_b",6],["mcharge",3],["scans",2],["reroll",1]];
+  const pick=T=>{let r=Math.random()*T.reduce((a,x)=>a+x[1],0);for(const [k,w] of T){if((r-=w)<0)return k}return T[0][0]};
+  const u=window.useItem;
+  window.useItem=function(k){
+    const it=ITEMS[k];if(!it||invOf(k)<1)return u.apply(this,arguments);const E=gEv(),id="u:"+rid();
+    if(k==="pouch"||k==="pouch_l"){const n=k==="pouch"?150+Math.floor(Math.random()*451):800+Math.floor(Math.random()*1201);E[id]={[k]:-1,scrap:n};save();
+      paReveal(`${it.i} ${it.n}`,`🔩 Scrap ×${n}`,TC[it.r]);return true}
+    if(k==="gift"){const loot={};for(let i=0;i<3;i++){const g=pick(GIFT);loot[g]=(loot[g]||0)+1}xpDrops(loot);E[id]={gift:-1,...loot};save();checkLevel();
+      const L=paLootList(loot);if(paBatch){paBatch.items.push(...L);paBatch.xp+=+loot.xp||0;paBatch.n++;return true}
+      paChestShow("Gift Box","🎀","uncommon",L,()=>{if(+loot.xp>0)xpFX(+loot.xp,"Gift Box")});return true}
+    if(k==="mspark"){const m=meter();m.p=Math.min(METER_FULL,(+m.p||0)+1);E[id]={mspark:-1};save();toast("✨ Frame meter +1");return true}
+    return u.apply(this,arguments)};
+});
+
+/* ---------- 10 new borders and 20 new titles ---------- */
+const PA_B4={
+  aurora:["Aurora","legendary","Reach level 100 (prestige counts)",1],sunset:["Sunset","rare","Scan 300 offers"],ocean:["Ocean","rare","Scan on 30 different days"],
+  ember:["Ember","epic","Pull 5 Legendary or better cards",1],frost:["Frost","uncommon","Recycle 100 cards"],jade:["Jade","epic","Own 75 titles"],
+  stacked:["Double Frame","mythic","Pull a card with stacked frames",1],alpha:["Alpha","epic","Scan a card during the Alpha",1],
+  x_neonpink:["Neon Pink","epic","Border Crate only",1],x_obsidian:["Obsidian","legendary","Border Crate only"]
+};
+const PA_T5={
+  alpha1:["Alpha Tester","rare","Scan a card during the Alpha","🅰️","#e8402f","#2a0806",1],stack1:["Double Trouble","legendary","Pull a card with stacked frames","✦","#c44fff","#1e0633",1],
+  c10000:["Ten Thousand","mythic","Scan 10,000 offers","🏔️","#7ab8ff","#081a33",1],acc1000:["Accept Legend","mythic","1,000 Accept offers","👑","#3ddc84","#04200e",1],
+  myth25:["Myth Lord","mythic","Pull 25 Mythic cards","🐲","#ff4d8d","#2e0414",1],st60:["Unbreakable","mythic","Scan 60 days in a row","⛓️","#a9b2c3","#141820",1],
+  d365:["Year-Round","mythic","Scan on 365 different days","📅","#f5b83d","#2a1a02",1],fifty25:["Fifty Club","legendary","25 offers paying $50 or more","💵","#3fbf5a","#06200c",1],
+  ppm5:["Mile Monster","legendary","10 offers paying $5 or more per mile","👹","#ff7a3d","#2a0e02",1],night200:["Vampire","legendary","200 offers between midnight and 5 AM","🧛","#8a2c4a","#1a0410",1],
+  st300:["Food Encyclopedia","mythic","Offers from 300 different stores","📚","#c9a227","#221a02",1],lv200:["Transcendent","mythic","Reach level 200 (prestige counts)","🌌","#9a7dff","#0e0626",1],
+  pr10:["Ten Star","mythic","Prestige 10 times","💫","#ffd84f","#2a2202",1],open100:["Chest Cracker","epic","Open 100 chests, boxes, crates or pouches","🗝️","#c98a27","#2a1a04"],
+  rc100:["Red Card Regent","legendary","Scan 100 Red Card orders","🟥","#e8402f","#2a0604",1],b30:["Border Collector","legendary","Own 30 profile borders","🖼️","#5fb4ff","#061a2e",1],
+  x_phantom:["Phantom Dasher","legendary","Title Crate only","👻","#c9ccd6","#14161e",1],x_comet:["Comet","epic","Title Crate only","☄️","#ff9a3d","#2a1204",1],
+  x_crown:["Crowned","mythic","Title Crate only","👑","#ffd84f","#2e2402",1],x_lucky7:["Lucky Seven","epic","Title Crate only","🎰","#3ddc84","#042012",1]
+};
+paTry("t4b3",()=>{
+  for(const [k,v] of Object.entries(PA_B4)){PA_BORDERS[k]=v;PA_B2[k]=v;ITEMS["b_"+k]={n:"Border: "+v[0],r:v[1],i:"🖼️",hide:1,d:v[2]}}
+  for(const [k,[n,r,how,e,a,b,an]] of Object.entries(PA_T5)){ETITLES[k]={n,r,how};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:how};PA_TART[k]=[e,a,b,an?1:0];PA_T2[k]=[n,r,how,e,a,b,an]}
+  const ct=window.checkTitles;
+  window.checkTitles=function(){ct.apply(this,arguments);
+    try{const all=allOffers(),cs=store.cards.filter(c=>trusted(c)&&!c.noxp&&!c.dev),T=k=>{if(invOf("t_"+k)<1)giveTitle(k)},B=k=>{if(invOf("b_"+k)<1)grant("bd:"+k,{["b_"+k]:1},"New border")};
+      const L=myLevel()+50*(+prog().pr||0),pr=+prog().pr||0,ev=gEv();
+      if(cs.some(c=>c.al)){T("alpha1");B("alpha")}if(cs.some(c=>c.f2&&special(c))){T("stack1");B("stacked")}
+      if(all.length>=300)B("sunset");if(all.length>=10000)T("c10000");
+      const days=new Set(all.map(c=>dayKey(c.ts)));if(days.size>=30)B("ocean");if(days.size>=365)T("d365");
+      if(all.filter(c=>RANK[c.tier]>=RANK.legendary).length>=5)B("ember");if(histList().length>=100)B("frost");
+      if(L>=100)B("aurora");if(L>=200)T("lv200");if(pr>=10)T("pr10");
+      const acc=all.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}).length;if(acc>=1000)T("acc1000");
+      if(all.filter(c=>c.tier==="mythic").length>=25)T("myth25");if(typeof longestStreak==="function"&&longestStreak()>=60)T("st60");
+      if(all.filter(c=>+c.pay>=50).length>=25)T("fifty25");if(all.filter(c=>+c.ppm>=5).length>=10)T("ppm5");
+      if(all.filter(c=>new Date(c.ts).getHours()<5).length>=200)T("night200");if(new Set(all.map(c=>skey(c.store))).size>=300)T("st300");
+      if(all.filter(c=>c.rc).length>=100)T("rc100");
+      let op=0;for(const e of Object.values(ev))for(const [k,v] of Object.entries(e||{}))if(+v<0&&(ITEMS[k]&&(ITEMS[k].chest||PA_OPEN.includes(k))))op+=-v;if(op>=100)T("open100");
+      const nt=Object.keys(ETITLES).filter(k=>invOf("t_"+k)>0).length;if(nt>=75)B("jade");
+      if(Object.keys(PA_BORDERS).filter(k=>invOf("b_"+k)>0).length>=30)T("b30");
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- the Alpha: chip, patch notes ---------- */
+paTry("alpha",()=>{
+  const ch=document.querySelector(".pachip");if(ch){ch.textContent="ALPHA";ch.title="DasherDex Alpha"}
+});
+window.paAlphaNotice=function(){
+  if(SET.paSeen===APP_VER)return;const fresh=!store.cards.length;SET.paSeen=APP_VER;saveSet();if(fresh)return;
+  qrSheet(`<div class="qrcard alpha2"><div class="al-badge">ALPHA</div><h2>DasherDex 2.0 is here</h2>
+    <p class="msg">We're out of Pre-Alpha. Thanks for testing. Here's what's new:</p>
+    <ul class="al-list">
+      <li>✦✦ <b>Stacked frames</b>: a tiny chance a frame comes with a second one</li>
+      <li>✨ Frame meter: <b>much better odds when full</b>, frames a little more common</li>
+      <li>🎒 <b>6 new items</b>, Emerald Chest and Gift Box, and pouches open with Open all</li>
+      <li>🖼️ <b>10 new borders</b> and <b>20 new titles</b></li>
+      <li>👋 Add, report or block drivers from their profile</li>
+      <li>🔍 Easier search, 🔋 Efficient mode for older phones</li>
+    </ul><p class="msg">Your cards, levels and items all carried over. New cards get an Alpha tag.</p></div>
+    <button class="btn" id="alGo">Let's go</button>`);
+  $("alGo").onclick=closeQR;
+};
 </script>
