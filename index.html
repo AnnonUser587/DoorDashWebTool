@@ -5601,7 +5601,7 @@ const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="tr
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
   ["2.2 Alpha","November 2026",[
-    "New Map tab: your offers pinned by store, stacked like cards, with the count. Tap a store and the map shrinks while its offers show below. Tap the map to make it big again. Needs Save store addresses in Settings.",
+    "New Map tab: your offers pinned by store, stacked like cards, with the count. Tap a store and the map shrinks while its offers show below. Tap the map to make it big again. Stores close together share one pin (it says how many); tap it to zoom in or see them all. Filter by days and rarity at the top. Needs Save store addresses in Settings.",
     "Stats moved into Profile (Your week, near the top). Tap it for all your stats.",
     "Profit you can read: each card shows its profit and %, each day in the Dex shows profit and % of the pay, and Stats has a Profit section with a 7-day chart.",
     "Day summary: Profit is on by default and pay per hour is optional (⚙ Day summary).",
@@ -7656,6 +7656,15 @@ html:not([data-od="light"]) .card .val.wp .pf b{color:#1a9a50}
 .mpin.sel{z-index:5}
 .ms-head>div{min-width:0;flex:1}.ms-head .btn{flex:none;width:auto;white-space:nowrap;margin:0}
 #mapBody.mapmin .leaflet-control-zoom{display:none}
+
+/* map filters in the top bar */
+.mapf{display:flex!important;gap:6px;margin-right:6px;min-width:0}
+.mfsel{position:relative;display:block;min-width:0}
+.mfsel select{appearance:none;-webkit-appearance:none;height:40px;max-width:118px;padding:0 24px 0 11px;border-radius:13px;border:1px solid var(--line);background:var(--bg2);color:var(--tx);font:700 .78rem var(--f-body);text-overflow:ellipsis;cursor:pointer}
+.mfsel::after{content:"";position:absolute;right:10px;top:50%;width:6px;height:6px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:translateY(-70%) rotate(45deg);pointer-events:none}
+@media (max-width:380px){.mfsel select{max-width:96px;font-size:.72rem}}
+.mp-st{position:absolute;left:50%;top:-18px;transform:translateX(-50%);white-space:nowrap;font:800 .58rem var(--f-mono);padding:2px 6px;border-radius:6px;background:var(--red);color:#fff;box-shadow:0 2px 8px #0008}
+.ms-st{margin:16px 0 8px;font-size:1rem}.ms-st small{font:500 .74rem var(--f-body);color:var(--mut);display:block}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -9693,37 +9702,68 @@ const paAddrKey=c=>String((c.addr||"")+"|"+(c.city||"")).toLowerCase().replace(/
 function paGeocode(key,q){
   return new Promise(res=>{paGeoQ.push({key,q,res});paGeoRun()});
 }
+/* addresses read off a screenshot can be messy: try OpenStreetMap, then Photon, then a cleaned-up address */
+const paGeoClean=q=>String(q).replace(/\b(ste|suite|unit|bldg|building|apt)\.?\s*[#\w-]+/gi,"").replace(/#\s*\w+/g,"").replace(/\bF\.?M\.?\s*(\d+)/gi,"FM $1").replace(/\bRd\b\.?/gi,"Road").replace(/\s+,/g,",").replace(/\s{2,}/g," ").trim();
+async function paGeoTry(q){
+  try{const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}});const j=await r.json();if(j&&j[0])return [+(+j[0].lat).toFixed(5),+(+j[0].lon).toFixed(5)]}catch(e){}
+  try{let u="https://photon.komoot.io/api/?limit=1&q="+encodeURIComponent(q);if(paPts.length){const a=paPts.reduce((s,p)=>[s[0]+p[0],s[1]+p[1]],[0,0]);u+=`&lat=${(a[0]/paPts.length).toFixed(3)}&lon=${(a[1]/paPts.length).toFixed(3)}`}
+    const r=await fetch(u);const j=await r.json();const f=j&&j.features&&j.features[0];if(f&&f.geometry)return [+(+f.geometry.coordinates[1]).toFixed(5),+(+f.geometry.coordinates[0]).toFixed(5)]}catch(e){}
+  return null;
+}
+const paGeoOk=v=>Array.isArray(v);
+const paGeoDue=v=>v===undefined||v===0||(v&&v.f&&Date.now()-v.f>3*864e5);
 async function paGeoRun(){
   if(paGeoBusy)return;paGeoBusy=true;
-  while(paGeoQ.length){const {key,q,res}=paGeoQ.shift();if(paGeo[key]!==undefined){res(paGeo[key]);continue}
-    let v=0;try{const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}});const j=await r.json();if(j&&j[0])v=[+(+j[0].lat).toFixed(5),+(+j[0].lon).toFixed(5)]}catch(e){v=null}
-    if(v!==null){paGeo[key]=v;paGeoSave()}res(v);await new Promise(r=>setTimeout(r,1100))}
+  while(paGeoQ.length){const {key,q,res}=paGeoQ.shift();if(!paGeoDue(paGeo[key])){res(paGeo[key]);continue}
+    let v=await paGeoTry(q);
+    if(!v){const c=paGeoClean(q);if(c!==q){await new Promise(r=>setTimeout(r,1100));v=await paGeoTry(c)}}
+    if(!v){const s=q.split(",")[0];if(s&&s!==q){await new Promise(r=>setTimeout(r,1100));v=await paGeoTry(paGeoClean(s)+", TX")}}
+    paGeo[key]=v||{f:Date.now()};paGeoSave();res(v||null);await new Promise(r=>setTimeout(r,1100))}
   paGeoBusy=false;
 }
+/* the filters in the Map's top bar */
+const PA_MT=[["today","Today"],["7","7 days"],["30","30 days"],["all","All time"]];
+function paMapCards(){
+  const t=SET.mapT||"all",r=SET.mapR||"all",now=realNow(),td=dayKey(today());
+  return store.cards.filter(c=>{
+    if(t==="today"&&dayKey(c.ts)!==td)return false;if((t==="7"||t==="30")&&+new Date(c.ts)<now-(+t)*864e5)return false;
+    if(r==="special")return special(c);if(r==="accept"){try{return vOf(c).id==="accept"}catch(e){return false}}
+    if(r.endsWith("+"))return RANK[c.tier]>=RANK[r.slice(0,-1)];if(r!=="all")return c.tier===r;return true});
+}
 function paMapGroups(){
-  const m=new Map();for(const c of store.cards){if(!c.addr)continue;const k=paAddrKey(c);if(!m.has(k))m.set(k,{k,addr:c.addr,city:c.city||"",store:c.store,cards:[]});m.get(k).cards.push(c)}
+  const m=new Map();for(const c of paMapCards()){if(!c.addr)continue;const k=paAddrKey(c);if(!m.has(k))m.set(k,{k,addr:c.addr,city:c.city||"",store:c.store,cards:[]});m.get(k).cards.push(c)}
   return [...m.values()].sort((a,b)=>b.cards.length-a.cards.length);
 }
-function paMarkerHTML(g){
-  const cs=g.cards.slice().sort((a,b)=>b.score-a.score),top=cs[0],n=cs.length,art=artOf(top);
-  const sz=Math.min(1.35,0.9+Math.log10(n+1)*0.3);
-  return `<div class="mpin" style="--c:${TC[top.tier]};--s:${sz}">${n>1?`<span class="mp-back" style="--c2:${TC[(cs[1]||top).tier]}"></span>`:""}<span class="mp-card">${art?`<img src="${art}" alt="">`:`<b>$${Math.round(+top.pay)}</b>`}</span>${n>1?`<span class="mp-n">${n}</span>`:""}<i class="mp-stem"></i></div>`;
+function paMapBar(){
+  const ph=document.querySelector("#vMap .phr");if(!ph||$("paMapF"))return;const g=ph.querySelector(".gearbtn");
+  const ro=[["all","All rarities"],["accept","Accept only"],["special","Frames only"],["legendary+","Legendary +"],["epic+","Epic +"],["rare+","Rare +"],...TIERS.slice().sort((a,b)=>RANK[b.id]-RANK[a.id]).map(t=>[t.id,t.name])];
+  g.insertAdjacentHTML("beforebegin",`<div class="mapf" id="paMapF"><label class="mfsel"><select id="mapT" aria-label="Which days">${PA_MT.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></label><label class="mfsel"><select id="mapR" aria-label="Which cards">${ro.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></label></div>`);
+  $("mapT").value=SET.mapT||"all";$("mapR").value=SET.mapR||"all";
+  $("mapT").onchange=e=>{SET.mapT=e.target.value;saveSet();if(paMapMin)paMapExpand();renderMap()};
+  $("mapR").onchange=e=>{SET.mapR=e.target.value;saveSet();if(paMapMin)paMapExpand();renderMap()};
 }
-let paMapMin=false,paMapSel=null,paPts=[];
+function paMarkerHTML(g){
+  const cs=g.cards.slice().sort((a,b)=>b.score-a.score),top=cs[0],n=cs.length,art=artOf(top),ns=g.parts?g.parts.length:1;
+  const sz=Math.min(1.35,0.9+Math.log10(n+1)*0.3);
+  return `<div class="mpin${ns>1?" multi":""}" data-k="${esc(g.k)}" style="--c:${TC[top.tier]};--s:${sz}">${n>1?`<span class="mp-back" style="--c2:${TC[(cs[1]||top).tier]}"></span>`:""}<span class="mp-card">${art?`<img src="${art}" alt="">`:`<b>$${Math.round(+top.pay)}</b>`}</span>${n>1?`<span class="mp-n">${n}</span>`:""}${ns>1?`<span class="mp-st">${ns} stores</span>`:""}<i class="mp-stem"></i></div>`;
+}
+let paMapMin=false,paMapSel=null,paPts=[],paLL=[];
 function paMapInteract(on){if(!paMap)return;for(const h of ["dragging","touchZoom","doubleClickZoom","scrollWheelZoom","boxZoom","keyboard"])if(paMap[h])on?paMap[h].enable():paMap[h].disable()}
 function paStoreSheet(g){
   const body=$("mapBody"),panel=$("mapStore");if(!body||!panel)return;
   paMapSel=g.k;paMapMin=true;body.classList.add("mapmin");paMapInteract(false);
   document.querySelectorAll(".mpin").forEach(x=>x.classList.toggle("sel",x.dataset.k===g.k));
   const cs=g.cards.slice().sort((a,b)=>b.score-a.score),a=agg(cs),acc=cs.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}).length,P=paProfitOf(cs);
-  panel.innerHTML=`<div class="ms-head"><div><h2>${esc(g.store||"Store")}</h2><p class="msg">${esc(g.addr)}${g.city?", "+esc(g.city):""}</p></div><button class="btn ghost sm" id="msMap">⤢ Map</button></div>
+  const parts=g.parts&&g.parts.length>1?g.parts.slice().sort((x,y)=>y.cards.length-x.cards.length):null;
+  panel.innerHTML=`<div class="ms-head"><div><h2>${parts?`${parts.length} stores here`:esc(g.store||"Store")}</h2><p class="msg">${parts?esc(parts.map(x=>x.store).filter((v,i,ar)=>v&&ar.indexOf(v)===i).slice(0,4).join(", ")+(parts.length>4?"…":"")):esc(g.addr)+(g.city?", "+esc(g.city):"")}</p></div><button class="btn ghost sm" id="msMap">⤢ Map</button></div>
     <div class="mkpis"><span><b>${cs.length}</b><small>offers</small></span><span><b>${acc}</b><small>Accept</small></span><span><b>$${a.rate.toFixed(0)}</b><small>avg /hr</small></span><span><b>${a.best}</b><small>best grade</small></span></div>
     ${profitOn()?`<p class="msg">Average profit ${money(P.pr/cs.length)} per offer (${P.pct}% of the pay).</p>`:""}
-    <div class="grid mgrid">${cs.map(cardHTML).join("")}</div>`;
+    ${parts?parts.map(x=>{const xs=x.cards.slice().sort((p,q)=>q.score-p.score);return `<h3 class="ms-st">${esc(x.store||"Store")} <small>${xs.length} offer${xs.length>1?"s":""} · ${esc(x.addr)}</small></h3><div class="grid mgrid">${xs.map(cardHTML).join("")}</div>`}).join("")
+      :`<div class="grid mgrid">${cs.map(cardHTML).join("")}</div>`}`;
   panel.hidden=false;
   $("msMap").onclick=paMapExpand;
   panel.querySelectorAll(".mgrid .card").forEach(el=>el.onclick=()=>openDetail(el.dataset.id));
-  setTimeout(()=>{try{paMap.invalidateSize();const ll=paGeo[g.k];if(Array.isArray(ll))paMap.setView(ll,Math.max(paMap.getZoom(),13),{animate:false})}catch(e){}scrollTo({top:0,behavior:"smooth"})},330);
+  setTimeout(()=>{try{paMap.invalidateSize();if(g.ll)paMap.setView(g.ll,Math.max(paMap.getZoom(),13),{animate:false})}catch(e){}scrollTo({top:0,behavior:"smooth"})},330);
 }
 function paMapExpand(){
   const body=$("mapBody");if(!body)return;paMapMin=false;body.classList.remove("mapmin");paMapInteract(true);
@@ -9731,29 +9771,48 @@ function paMapExpand(){
   document.querySelectorAll(".mpin.sel").forEach(x=>x.classList.remove("sel"));
   setTimeout(()=>{try{paMap.invalidateSize();if(paPts.length>1)paMap.fitBounds(window.L.latLngBounds(paPts).pad(0.25),{maxZoom:15});else if(paPts.length)paMap.setView(paPts[0],13)}catch(e){}},330);
 }
+/* stores close together on screen join into one pin; zoom in and they split apart */
+function paDraw(){
+  if(!paMap||!paMk)return;const L=window.L;paMk.clearLayers();
+  const P=paLL.map(it=>paMap.latLngToLayerPoint(it.ll)),used=new Array(paLL.length).fill(false);
+  for(let i=0;i<paLL.length;i++){if(used[i])continue;used[i]=true;const cl=[i];
+    for(let j=i+1;j<paLL.length;j++)if(!used[j]&&P[i].distanceTo(P[j])<46){used[j]=true;cl.push(j)}
+    const parts=cl.map(x=>paLL[x].g),lls=cl.map(x=>paLL[x].ll);
+    const g=parts.length===1?{...parts[0],ll:lls[0]}:{k:"c:"+parts.map(x=>x.k).join("~"),store:parts.length+" stores",addr:"",cards:parts.flatMap(x=>x.cards),parts,ll:[lls.reduce((a,p)=>a+p[0],0)/lls.length,lls.reduce((a,p)=>a+p[1],0)/lls.length],lls};
+    const m=L.marker(g.ll,{icon:L.divIcon({className:"mpwrap",html:paMarkerHTML(g),iconSize:[52,74],iconAnchor:[26,72]}),zIndexOffset:g.cards.length});
+    m.on("click",e=>{if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
+      if(paMapMin&&paMapSel===g.k){paMapExpand();return}
+      if(g.parts&&!paMapMin){const b=L.latLngBounds(g.lls);const spread=paMap.distance(b.getSouthWest(),b.getNorthEast());
+        if(spread>40&&paMap.getZoom()<16){paMap.flyToBounds(b.pad(0.6),{maxZoom:17,duration:.5});return}}
+      paStoreSheet(g)});
+    paMk.addLayer(m)}
+}
 async function renderMap(){
-  const body=$("mapBody");if(!body)return;
+  const body=$("mapBody");if(!body)return;paMapBar();
   if(!SET.addr){body.innerHTML=`<div class="mapoff"><div class="mo-art">🗺️</div><h2>See where your offers come from</h2><p class="msg">Turn on <b>Save store addresses</b> in Settings. Every offer you scan after that shows up on your map, so you can see where the good ones are.</p><button class="btn" id="mapOn">Open Settings</button></div>`;
-    $("mapOn").onclick=()=>show("vSettings");return}
-  const groups=paMapGroups();
-  if(!groups.length){body.innerHTML=`<div class="mapoff"><div class="mo-art">📍</div><h2>Your map is ready</h2><p class="msg">Scan a few offers and their stores will pop up here. Only offers scanned with store addresses on can be placed.</p></div>`;return}
+    $("mapOn").onclick=()=>show("vSettings");paMap=null;return}
+  const groups=paMapGroups(),noAddr=paMapCards().filter(c=>!c.addr).length;
+  if(!groups.length){body.innerHTML=`<div class="mapoff"><div class="mo-art">📍</div><h2>${store.cards.some(c=>c.addr)?"No offers match":"Your map is ready"}</h2><p class="msg">${store.cards.some(c=>c.addr)?"Try a different day range or rarity at the top.":"Scan a few offers and their stores will pop up here. Only offers scanned with store addresses on can be placed."}</p></div>`;paMap=null;return}
   if(!$("paMapEl")){body.innerHTML=`<div class="mapbox"><div id="paMapEl" class="mapel"></div><button class="mapexp" id="mapExp" aria-label="Make the map big again">⤢ Tap to expand map</button></div><div class="mapnote" id="mapNote"></div><div id="mapStore" class="mapstore" hidden></div>`;paMap=null;paMapMin=false;$("mapExp").onclick=e=>{e.stopPropagation();paMapExpand()}}
   let L;try{L=await paLoadLeaflet()}catch(e){body.innerHTML=`<div class="mapoff"><h2>The map couldn't load</h2><p class="msg">Check your connection and try again.</p><button class="btn" id="mapRetry">Try again</button></div>`;$("mapRetry").onclick=renderMap;return}
   if(!paMap){const light=document.documentElement.dataset.od==="light";
     paMap=L.map("paMapEl",{zoomControl:false,attributionControl:true}).setView([29.78,-95.8],11);
     const E="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/",th=light?"World_Light_Gray":"World_Dark_Gray";
-    L.tileLayer(E+th+"_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,attribution:"Esri, HERE, Garmin, © OpenStreetMap"}).addTo(paMap);
-    L.tileLayer(E+th+"_Reference/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,pane:"overlayPane"}).addTo(paMap);
-    paMap.on("click",()=>{if(paMapMin)paMapExpand()});
+    L.tileLayer(E+th+"_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,maxNativeZoom:16,attribution:"Esri, HERE, Garmin, © OpenStreetMap"}).addTo(paMap);
+    L.tileLayer(E+th+"_Reference/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,maxNativeZoom:16,pane:"overlayPane"}).addTo(paMap);
+    paMap.setMaxZoom(18);
+    paMap.on("click",()=>{if(paMapMin)paMapExpand()});paMap.on("zoomend",paDraw);
     L.control.zoom({position:"bottomright"}).addTo(paMap);paMk=L.layerGroup().addTo(paMap)}
   setTimeout(()=>paMap.invalidateSize(),50);
-  paMk.clearLayers();const pts=[];paPts=pts;let todo=0;
-  const place=(g,ll)=>{if(!ll)return;pts.push(ll);const m=L.marker(ll,{icon:L.divIcon({className:"mpwrap",html:paMarkerHTML(g).replace('<div class="mpin"',`<div class="mpin" data-k="${esc(g.k)}"`),iconSize:[52,74],iconAnchor:[26,72]})});m.on("click",e=>{if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);if(paMapMin&&paMapSel===g.k){paMapExpand();return}paStoreSheet(g)});paMk.addLayer(m)};
-  for(const g of groups){const v=paGeo[g.k];if(Array.isArray(v))place(g,v);else if(v===undefined)todo++}
-  if(pts.length)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:15});
-  const note=$("mapNote");if(note)note.textContent=todo?`Finding ${todo} more store${todo>1?"s":""}…`:`${groups.length} store${groups.length>1?"s":""} · tap one to see its offers`;
-  for(const g of groups){if(paGeo[g.k]!==undefined)continue;
-    paGeocode(g.k,g.addr+(g.city?", "+g.city:"")).then(ll=>{if(view!=="vMap")return;if(Array.isArray(ll)){place(g,ll);if(pts.length===1)paMap.setView(ll,13)}todo--;if(todo<=0&&pts.length>1)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:15});const n=$("mapNote");if(n)n.textContent=todo>0?`Finding ${todo} more store${todo>1?"s":""}…`:`${groups.length} store${groups.length>1?"s":""} · tap one to see its offers`})}
+  paLL=[];paPts=[];let todo=0,fail=0;
+  for(const g of groups){const v=paGeo[g.k];if(paGeoOk(v)){paLL.push({g,ll:v});paPts.push(v)}else if(paGeoDue(v))todo++;else fail++}
+  const fit=()=>{if(paPts.length>1)paMap.fitBounds(L.latLngBounds(paPts).pad(0.25),{maxZoom:15});else if(paPts.length)paMap.setView(paPts[0],14)};
+  fit();paDraw();
+  const say=()=>{const n=$("mapNote");if(!n)return;const parts=[todo>0?`Finding ${todo} more store${todo>1?"s":""}…`:`${paLL.length} store${paLL.length===1?"":"s"} on the map · tap a pin to see its offers`];
+    if(fail)parts.push(`${fail} address${fail>1?"es":""} couldn't be found`);if(noAddr)parts.push(`${noAddr} offer${noAddr>1?"s have":" has"} no saved address`);n.textContent=parts.join(" · ")};
+  say();
+  for(const g of groups){if(!paGeoDue(paGeo[g.k]))continue;
+    paGeocode(g.k,g.addr+(g.city?", "+g.city:"")).then(ll=>{if(view!=="vMap")return;if(paGeoOk(ll)){paLL.push({g,ll});paPts.push(ll);paDraw()}else fail++;todo--;if(todo<=0)fit();say()})}
 }
 paTry("maptab",()=>{
   if(!$("vMap")){$("vStats").insertAdjacentHTML("afterend",`<div class="wrap" id="vMap" hidden><header class="appbar"><div class="pagehead"><h1>Map</h1><div class="phr"><button class="pfbtn gearbtn" data-set="1" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></div></header><div id="mapBody"></div></div>`)}
