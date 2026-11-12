@@ -2895,11 +2895,11 @@ async function readImage(file,pool,onStep){
     /* when the screenshot was taken: the photo's own date if it has one, else the file date */
     try{const pd=C.photoDate(new Uint8Array(await file.slice(0,262144).arrayBuffer()));if(pd&&pd<=Date.now()+6e5){out.base=+pd;out.ts=new Date(out.base);out.dated=true}}catch(e){}
     if(!out.base)out.base=file.lastModified||Date.now();
-    const d=isGod()?null:sameImage(out.sha,out.ph,pool);
+    const d=isGod()?null:sameImage(out.sha,null,pool);
     if(d){out.status="dup";out.dupOf=d;out.why="You've already scanned this screenshot.";out.img=true;return out}
     if(modBlocked(out.sha,out.ph,null)){out.status="locked";out.why="A moderator removed this offer from your Dex, so it can't be added again.";return out}
     {const lk=lockLeft(out.sha,out.ph,null);if(lk){out.status="locked";out.why=`You deleted this offer recently. You can scan it again in ${fmtLeft(lk)}.`;return out}}
-    if(!isGod()&&seenHit(out.sha,out.ph)){out.status="dup";out.why="You scanned this screenshot before. Each screenshot can only become one card.";out.img=true;return out}
+    if(!isGod()&&seenHit(out.sha,null)){out.status="dup";out.why="You scanned this screenshot before. Each screenshot can only become one card.";out.img=true;return out}
     let phase=0;
     progressHook=m=>{if(!onStep)return;if(m.status==="recognizing text")onStep(0.35+0.55*((phase+m.progress)/3),"Reading the offer");else if(/load|initializ/.test(m.status))onStep(0.06+0.28*(m.progress||0),"Loading the reader (first scan only)")};
     const w=await getWorker();
@@ -2974,6 +2974,7 @@ async function readImage(file,pool,onStep){
     {const lk=lockLeft(null,null,C.offerKey(o));if(lk){out.status="locked";out.why=`You deleted this offer recently. You can scan it again in ${fmtLeft(lk)}.`;return out}}
     const d2=isGod()?null:sameOffer(o,pool);
     if(d2){out.status="dup";out.dupOf=d2;out.why="Same pay, time, miles and store as a card you already have.";return out}
+    {const d3=typeof paNearDup==="function"?paNearDup(out,p,pool):null;if(d3){out.status="dup";out.dupOf=d3.id?d3:null;out.why=d3.id?"Same screenshot and same offer as a card you already have.":"Same screenshot and same offer as a card you recycled.";out.img=true;return out}}
     out.status="ok";return out;
   }catch(e){console.error(e);out.status="error";out.error=e&&e.message||String(e);return out}
   finally{progressHook=null;freeBm(bm)}
@@ -5590,7 +5591,7 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="2.1 Alpha";
+const APP_VER="2.2 Alpha";
 const SUPPORT_EMAIL="supportdasherdex@gmail.com";
 /* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
 const DISCORD_DEFAULT="";
@@ -5599,6 +5600,21 @@ const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.
 const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["2.2 Alpha","November 2026",[
+    "New Map tab: your offers pinned by store, stacked like cards, with the count. Tap a store to see its offers. Needs Save store addresses in Settings.",
+    "Stats moved into Profile (Your week, near the top). Tap it for all your stats.",
+    "Profit you can read: each card shows its profit and %, each day in the Dex shows profit and % of the pay, and Stats has a Profit section with a 7-day chart.",
+    "Day summary: Profit is on by default and pay per hour is optional (⚙ Day summary).",
+    "Pick what you drive (bike, e-bike, motorcycle, small car, car, SUV or truck) and fine-tune your cost per mile with a slider.",
+    "Back-to-back offers from the same store no longer count as duplicates. Only the exact same screenshot, or a look-alike with the exact same offer, does.",
+    "Global and friends posts show each driver's profile picture and border.",
+    "Feed: the friends and community challenges are rings in the top bar. Tap one to see it all.",
+    "Season pass is now a road with milestones, rewards you can see, and how far the next big one is.",
+    "Chests and pouches that drop from a chest open right after it.",
+    "Auto recycle can wait first: right away, 1 day, 3 days, 1 week or 1 month.",
+    "Computer: every card is the same size and you pick how many per row (3 to 8).",
+    "Card page: a Where the money goes bar. Refined black and red look.",
+  ]],
   ["2.1 Alpha","November 2026",[
     "5 new frames: Chrome, Ruby, Molten, Galaxy and Prismatic, for 10 in all.",
     "Frame rarity rebalanced so the flashy ones are rarest: Carbon 26%, Inverted 18%, Neon 14%, Chrome 12%, Ruby 9%, Gold 7%, Molten 5%, Holo 4%, Galaxy 3%, Prismatic 2% (share of all frames).",
@@ -7512,6 +7528,120 @@ html[data-eco="1"] #paSnow,html.calm #paSnow{display:none}
 .pfoot .rxrow{display:none}
 .pfoot{justify-content:flex-end}
 .pfoot:not(:has(.cmbtn)){display:none}
+
+/* ===== 2.2 Alpha ===== */
+/* ---- refined black and red ---- */
+html:not([data-od="light"]){--bg:#070709;--bg2:#111115;--panel:#15151a;--line:#26262e;--track:#1d1d23}
+html:not([data-od="light"]) body{background:radial-gradient(1100px 420px at 50% -160px,rgba(232,64,47,.13),transparent 70%) fixed,var(--bg)}
+.btn:not(.ghost):not(.danger):not([disabled]){background:linear-gradient(180deg,#ff4d3a,#d92c1c);color:#fff;border-color:transparent;box-shadow:0 10px 24px -12px #e8402fcc,inset 0 1px 0 #ffffff3a}
+.btn:not(.ghost):not(.danger):not([disabled]):active{filter:brightness(.92)}
+.nav .nscan{background:linear-gradient(180deg,#ff4d3a,#d92c1c)!important;color:#fff!important}
+.nav .nscan svg{color:#fff}
+.ntab[aria-current="page"]{background:linear-gradient(180deg,rgba(232,64,47,.20),rgba(232,64,47,.08))!important;box-shadow:inset 0 0 0 1px rgba(232,64,47,.28)!important}
+.ntab[aria-current="page"] svg{color:#ff5a46}
+.sbox>h3:first-child::before{width:6px!important;height:6px!important;border-radius:50%;vertical-align:2px!important;box-shadow:0 0 8px var(--red)}
+html:not([data-od="light"]) .sbox,html:not([data-od="light"]) .panel{border-color:color-mix(in srgb,var(--line) 88%,#e8402f)}
+.seg button[aria-pressed="true"]{color:#fff}
+.pachip{box-shadow:0 0 12px -2px #e8402faa}
+/* ---- profit ---- */
+.paprofit{color:#3ddc84;font-weight:700}
+.card .paprof{display:block;font:700 2.6cqw/1.2 var(--f-mono);color:#1f9d55;margin-top:.6cqw;letter-spacing:.02em}
+.card .val.wp .paprof,.card .val .paprof{color:inherit;opacity:.8}
+@media (min-width:1000px) and (hover:hover) and (pointer:fine){:is(.grid,.sumgrid,.pcard) .card .paprof{font-size:max(2.6cqw,9px)}}
+.pfrow{display:grid;gap:8px;margin:6px 0 14px}.pfrow.dim{opacity:.75}
+.pfrow b{font:700 1.35rem var(--f-display)}.pfrow b em{font:500 .85rem var(--f-body);color:var(--mut);font-style:normal}
+.pfrow small{display:block;color:var(--mut);font-size:.8rem;margin-top:2px}
+.pfl{display:block;font:600 .66rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+.pfbar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--track)}
+.pfbar i{display:block;height:100%}.pfbar .pk{background:linear-gradient(90deg,#27c56a,#3ddc84)}.pfbar .pc{background:repeating-linear-gradient(135deg,#e8402f55 0 6px,#e8402f33 6px 12px)}
+.pfbar.big{height:30px;border-radius:12px}.pfbar.big .pk{display:flex;align-items:center;padding-left:10px;min-width:max-content}.pfbar.big .pk span{font:700 .8rem var(--f-body);color:#04200e;white-space:nowrap}
+.pfweek{margin-top:4px}
+.pfcols{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:110px;align-items:end;margin:8px 0 6px}
+.pfc{display:grid;grid-template-rows:1fr auto;height:100%;gap:4px;text-align:center}.pfc small{color:var(--mut);font:600 .7rem var(--f-mono)}
+.pfcol{align-self:end;display:flex;flex-direction:column;justify-content:flex-end;border-radius:7px 7px 3px 3px;overflow:hidden;min-height:3px;background:repeating-linear-gradient(135deg,#e8402f55 0 5px,#e8402f30 5px 10px)}
+.pfcol i{display:block;width:100%;background:linear-gradient(180deg,#3ddc84,#1f9d55)}
+.pfkey{display:flex;gap:14px;font-size:.75rem;color:var(--mut)}.pfkey i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.pfkey .pk{background:#3ddc84}.pfkey .pc{background:#e8402f88}
+/* ---- vehicle ---- */
+.vehs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0 10px}
+.veh{display:grid;justify-items:center;gap:2px;padding:9px 4px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);color:var(--tx);cursor:pointer}
+.veh span{font-size:1.35rem}.veh b{font-size:.74rem;text-align:center;line-height:1.15}.veh small{font:600 .68rem var(--f-mono);color:var(--mut)}
+.veh[aria-pressed="true"]{border-color:var(--red);background:color-mix(in srgb,var(--red) 14%,var(--bg2));box-shadow:0 0 0 1px var(--red) inset}
+.vehfine{display:flex;align-items:center;gap:12px;margin:2px 0 10px}.vehfine input{flex:1;accent-color:var(--red)}.vehfine output{font:700 .85rem var(--f-mono);min-width:76px;text-align:right}
+/* ---- desktop: same size cards, N per row ---- */
+@media (min-width:1000px) and (hover:hover) and (pointer:fine){
+  .grid{grid-template-columns:repeat(var(--dcols,5),minmax(0,1fr))!important;justify-content:stretch!important}
+  .sumgrid{grid-template-columns:repeat(var(--dcols,5),minmax(0,1fr))!important}
+  .posts{grid-template-columns:repeat(max(2,calc(var(--dcols,5) - 1)),minmax(0,1fr))!important;align-items:start}
+  .pcard{width:100%!important}
+  .pacsize small{font:600 .7rem var(--f-mono);color:var(--mut);margin-right:4px;align-self:center;text-transform:uppercase;letter-spacing:.08em}
+}
+/* ---- feed: avatars and challenges in the top bar ---- */
+.avatar.hasav{background-size:cover!important;background-position:center!important;color:transparent}
+.pachal{display:flex;gap:6px;margin-right:6px}
+.chb{position:relative;width:46px;height:46px;border-radius:14px;border:1px solid var(--line);background:var(--bg2);display:grid;place-items:center;cursor:pointer;padding:0;color:var(--tx)}
+.chb svg{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);transform:rotate(-90deg)}
+.chb .rg0{fill:none;stroke:var(--track);stroke-width:3.2}.chb .rg1{fill:none;stroke:url(#none);stroke:#ff5a46;stroke-width:3.2;stroke-linecap:round;transition:stroke-dashoffset .6s}
+.chb.done .rg1{stroke:#3ddc84}
+.chb .chi{font-size:.95rem;line-height:1;margin-top:-6px}.chb .chl{position:absolute;bottom:4px;font:700 .55rem var(--f-mono);color:var(--mut)}
+.chsheet .gch{cursor:default;padding-right:0}.chsheet .gch::after{display:none}
+.chsheet .gch .palb,.chsheet #paCommLb{display:grid!important}.chsheet .gch small{white-space:normal!important}
+/* ---- season road ---- */
+.pass2 .p2-head{text-align:center;position:sticky;top:-1px;z-index:2;background:var(--panel);padding-bottom:10px;margin:0 -4px;border-bottom:1px solid var(--line)}
+.p2-badge{display:inline-block;font:800 .7rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;padding:5px 12px;border-radius:99px;background:linear-gradient(135deg,#ff4d3a,#a8170d);color:#fff}
+.pass2 h2{margin:8px 0 6px}.pass2 h2 small{font-size:.9rem;color:var(--mut)}
+.p2-bar{height:10px;border-radius:99px;background:var(--track);overflow:hidden;margin:4px 6px}.p2-bar i{display:block;height:100%;background:linear-gradient(90deg,#ff4d3a,#ffb03b);border-radius:99px}
+.p2-next{display:grid;gap:1px;margin:8px auto 0;padding:8px 12px;border-radius:14px;border:1px dashed #ffb03b88;background:color-mix(in srgb,#ffb03b 8%,transparent);max-width:300px}
+.p2-next span{font:700 .62rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#ffb03b}.p2-next small{color:var(--mut)}
+.road{position:relative;display:grid;gap:10px;padding:16px 0 10px;max-height:56vh;overflow:auto;scroll-behavior:smooth}
+.road::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;border-radius:9px;background:var(--track)}
+.rd{position:relative;display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;min-height:56px}
+.rd-n{grid-column:3;grid-row:1;font:700 .72rem var(--f-mono);color:var(--mut);padding-left:12px}
+.rd.r .rd-n{grid-column:1;text-align:right;padding:0 12px 0 0}
+.rd-dot{grid-column:2;grid-row:1;justify-self:center;z-index:1;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--bg2);border:3px solid var(--track);font:800 .8rem var(--f-body);color:#fff}
+.rd.done .rd-dot{background:#27c56a;border-color:#27c56a}
+.rd.now .rd-dot{width:38px;height:38px;border-color:#ff5a46;box-shadow:0 0 0 5px #ff5a4630,0 0 22px #ff5a46aa;animation:paGift 2.2s ease-in-out infinite}
+.rd.now .rd-dot i{width:100%;height:100%;border-radius:50%;background:conic-gradient(#ff5a46 var(--p),transparent 0)}
+.rd-card{grid-column:1;grid-row:1;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:14px;border:1px solid color-mix(in srgb,var(--c) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--c) 16%,var(--bg2)),var(--bg2));margin-right:8px;min-width:0;position:relative}
+.rd.r .rd-card{grid-column:3;margin:0 0 0 8px}
+.rd-ic{font-size:1.4rem;flex:none}.rd-tx{display:grid;min-width:0}.rd-tx b{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rd-tx small{font-size:.68rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rd-card em{position:absolute;top:-8px;right:8px;font:800 .55rem var(--f-mono);font-style:normal;letter-spacing:.12em;padding:2px 6px;border-radius:6px;background:var(--c);color:#111}
+.rd.mile .rd-card{padding:12px 12px;box-shadow:0 0 20px -8px var(--c)}.rd.mile .rd-ic{font-size:1.9rem}
+.rd.mile .rd-dot{width:36px;height:36px;border-color:var(--c)}
+.rd.done .rd-card{opacity:.55}
+.rd.done .rd-card::after{content:"✓ Claimed";position:absolute;bottom:-7px;right:8px;font:700 .55rem var(--f-mono);padding:1px 5px;border-radius:5px;background:#27c56a;color:#04200e}
+.avatar.xs{width:26px;height:26px;border-radius:8px;font-size:.7rem;display:inline-grid;place-items:center;background:var(--bg2)}
+/* ---- map ---- */
+#vMap .appbar{position:relative;z-index:3}
+.mapel{height:calc(100dvh - 72px - 112px - env(safe-area-inset-bottom,0px));min-height:380px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0c0d10}
+@media (min-width:1000px){.mapel{height:calc(100dvh - 130px)}}
+.mapnote{text-align:center;font-size:.78rem;color:var(--mut);margin:8px 0}
+.mapoff{text-align:center;padding:40px 16px}.mo-art{font-size:3.4rem;margin-bottom:6px;filter:drop-shadow(0 6px 18px #e8402f66)}
+.mpwrap{background:none!important;border:0!important}
+.mpin{position:relative;width:52px;height:74px;transform:scale(var(--s,1));transform-origin:50% 100%}
+.mp-card,.mp-back{position:absolute;left:8px;top:4px;width:36px;height:50px;border-radius:8px;border:2.5px solid var(--c);background:#16171c;overflow:hidden;display:grid;place-items:center;box-shadow:0 6px 14px -4px #000c}
+.mp-back{transform:rotate(-12deg) translate(-4px,2px);border-color:var(--c2);opacity:.85}
+.mp-card img{width:100%;height:100%;object-fit:cover}
+.mp-card b{font:800 .62rem var(--f-mono);color:var(--c)}
+.mp-n{position:absolute;right:0;top:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#111;color:#fff;font:800 .68rem var(--f-mono);display:grid;place-items:center;border:1.5px solid #fff3}
+.mp-stem{position:absolute;left:25px;top:54px;width:2px;height:12px;background:#fff8}
+.mp-stem::after{content:"";position:absolute;left:-3px;bottom:-5px;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
+.mkpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.mkpis span{display:grid;justify-items:center;padding:8px 2px;border-radius:12px;background:var(--bg2)}
+.mkpis b{font:700 1.05rem var(--f-display)}.mkpis small{font-size:.66rem;color:var(--mut)}
+.mgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.leaflet-container{background:#0c0d10;font-family:var(--f-body)}
+.leaflet-control-attribution{background:#0008!important;color:#aaa!important;font-size:9px!important}.leaflet-control-attribution a{color:#ccc!important}
+/* ---- profile: your week ---- */
+.pstats{display:grid;gap:10px;width:100%;text-align:left;color:var(--tx);cursor:pointer;font:inherit}
+.ps-h{display:flex;justify-content:space-between;align-items:baseline}.ps-h small{color:#ff5a46;font-weight:700}
+.ps-k{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.ps-k span{display:grid}.ps-k b{font:700 1.3rem var(--f-display)}.ps-k small{font-size:.7rem;color:var(--mut)}
+.ps-sp{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;height:34px;align-items:end}.ps-sp i{display:block;border-radius:4px 4px 2px 2px;background:linear-gradient(180deg,#ff5a46,#a8170d)}
+
+/* the card's Profit box stands out: green, with the % you keep */
+.card .val.wp .pf b{color:#27c56a}
+html:not([data-od="light"]) .card .val.wp .pf b{color:#1a9a50}
+.card .pfpct{display:block;font:700 2.3cqw/1.1 var(--f-mono);font-style:normal;color:#1a7a40;margin-top:.4cqw}
+@media (min-width:1000px) and (hover:hover) and (pointer:fine){:is(.grid,.sumgrid,.pcard) .card .pfpct{font-size:max(2.3cqw,8px)}}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -9312,4 +9442,345 @@ paTry("fcm",()=>{
     }catch(e){console.warn(e)}
     return r};
 });
+
+/* ===================== 2.2 Alpha: profit you can read, the Map tab, a new pass road ===================== */
+const paPct=(a,b)=>b>0?Math.round(a/b*100):0;
+const paProfitOf=cs=>{let pay=0,pr=0,cost=0;const k=cpmOf();for(const c of cs){const p=profitOf(c,k);pay+=+c.pay||0;pr+=p.profit;cost+=p.cost}return {pay,pr,cost,pct:paPct(pr,pay)}};
+const paM0=v=>"$"+Math.round(v).toLocaleString();
+
+/* ---------- Dex day summary: Profit ($ and % of the pay) by default; pay per hour is optional ---------- */
+window.paDsum=function(){const d=SET.dsum&&typeof SET.dsum==="object"?SET.dsum:{};return {offers:d.offers!==false,rate:d.rate===true,profit:d.profit!==false,best:!!d.best,accepts:!!d.accepts,mode:d.mode==="all"?"all":"accept"}};
+window.paDsumSheet=function(){
+  const D=paDsum(),sw=(id,k,t,s)=>`<label class="sw"><span><b>${t}</b>${s?`<small>${s}</small>`:""}</span><input type="checkbox" id="${id}" ${D[k]?"checked":""}><i></i></label>`;
+  qrSheet(`<div class="qrcard"><h2>Day summary</h2><p class="msg">Pick what shows under each day in the Dex.</p>
+    ${sw("dsO","offers","Number of offers")}${sw("dsP","profit","Profit","What you keep after gas and wear, and the % of the pay")}${sw("dsR","rate","Pay per hour")}${sw("dsA","accepts","Number of Accepts")}${sw("dsB","best","Best grade")}
+    <p class="msg" style="margin-top:10px"><b>Profit and pay per hour are from:</b></p>
+    <div class="seg seg2" role="group"><button id="dsM1" aria-pressed="${D.mode==="accept"}">Accepted offers</button><button id="dsM2" aria-pressed="${D.mode==="all"}">All offers</button></div></div><button class="btn" id="dsOk">Done</button>`);
+  const cur={...D};const save=()=>{SET.dsum={...cur};saveSet()};
+  [["dsO","offers"],["dsP","profit"],["dsR","rate"],["dsA","accepts"],["dsB","best"]].forEach(([id,k])=>$(id).onchange=e=>{cur[k]=e.target.checked;save()});
+  $("dsM1").onclick=()=>{cur.mode="accept";save();$("dsM1").setAttribute("aria-pressed",true);$("dsM2").setAttribute("aria-pressed",false)};
+  $("dsM2").onclick=()=>{cur.mode="all";save();$("dsM2").setAttribute("aria-pressed",true);$("dsM1").setAttribute("aria-pressed",false)};
+  $("dsOk").onclick=()=>{closeQR();renderDex()};
+};
+paTry("dsum2",()=>{
+  const rd=window.renderDex;
+  window.renderDex=function(){rd.apply(this,arguments);
+    try{if(paQ||(SET.group||"day")!=="day")return;const D=paDsum();
+      document.querySelectorAll("#days section.day").forEach(sec=>{const k=sec.dataset.day,ds=sec.querySelector(".ds");if(!ds)return;
+        const list=store.cards.filter(c=>dayKey(c.ts)===k&&(filter==="all"||(filter==="special"?special(c):c.tier===filter)));
+        const acc=list.filter(c=>vOf(c).id==="accept"),a=agg(list),src=D.mode==="accept"?acc:list,ra=agg(src),p=[];
+        p.push(paEsc(dayName(k)[1]));
+        if(D.offers)p.push(`${a.n} offer${a.n>1?"s":""}`);
+        if(D.accepts)p.push(`${acc.length} Accept`);
+        if(D.profit&&profitOn()){if(src.length){const P=paProfitOf(src);p.push(`<b class="paprofit">${paM0(P.pr)} profit</b> (${P.pct}%)${D.mode==="accept"?" on Accepts":""}`)}else p.push("no Accepts")}
+        if(D.rate)p.push(src.length?`$${ra.rate.toFixed(0)}/hr${D.mode==="accept"?" on Accepts":""}`:"");
+        if(D.best)p.push(`best ${a.best}`);
+        ds.innerHTML=p.filter(Boolean).join(" · ")});
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- each card shows its profit under the payout ---------- */
+paTry("cardprofit",()=>{
+  const ch=window.cardHTML;
+  window.cardHTML=function(c){let h=ch.apply(this,arguments);
+    try{const k=cardCpm(c);if(k==null||!(+c.pay>0)||c._example)return h;const p=profitOf(c,k);
+      h=h.replace(/(<div class="pf"><span>[^<]*<\/span><b>[^<]*<\/b>)/,`$1<em class="pfpct">${paPct(p.profit,+c.pay)}% kept</em>`)}catch(e){}
+    return h};
+});
+
+/* ---------- Stats: a Profit section with a simple picture of where the money goes ---------- */
+paTry("statprofit",()=>{
+  if(!PA_SECS.some(s=>s[0]==="profit"))PA_SECS.splice(1,0,["profit","Profit"]);
+  const sk=window.paSecKey;window.paSecKey=function(el){if(el&&el.id==="paProfit")return "profit";return sk.apply(this,arguments)};
+  const rs=window.renderStats;
+  window.renderStats=function(){rs.apply(this,arguments);
+    try{const body=$("statsBody");if(!body||!profitOn()||body.querySelector(".sempty"))return;
+      const cs=allOffers().filter(inRange),acc=cs.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}});
+      const A=paProfitOf(acc),L=paProfitOf(cs);
+      const days=[];for(let i=6;i>=0;i--){const d=today();d.setDate(d.getDate()-i);const k=dayKey(d),x=allOffers().filter(c=>dayKey(c.ts)===k&&(()=>{try{return vOf(c).id==="accept"}catch(e){return false}})());const P=paProfitOf(x);days.push({k,l:d.toLocaleDateString([],{weekday:"narrow"}),pay:P.pay,pr:Math.max(0,P.pr)})}
+      const mx=Math.max(1,...days.map(d=>d.pay));
+      const bar=P=>`<div class="pfbar"><i class="pk" style="width:${Math.max(0,Math.min(100,P.pct))}%"></i><i class="pc" style="width:${Math.max(0,100-Math.max(0,P.pct))}%"></i></div>`;
+      const el=`<section class="sbox" id="paProfit" data-sk="profit"><h3>Profit <small>${esc(range==="today"?"today":range==="all"?"all time":"last "+range+" days")}</small></h3>
+        <div class="pfrow"><div><span class="pfl">Accepted offers</span><b>${paM0(A.pr)} <em>of ${paM0(A.pay)}</em></b><small>You keep <b>${A.pct}%</b> · ${paM0(A.cost)} goes to your ${esc(paVeh().n.toLowerCase())}</small></div>${bar(A)}</div>
+        <div class="pfrow dim"><div><span class="pfl">All offers you scanned</span><b>${paM0(L.pr)} <em>of ${paM0(L.pay)}</em></b><small>${L.pct}% kept if you'd taken them all</small></div>${bar(L)}</div>
+        <div class="pfweek"><span class="pfl">Profit on Accepts, last 7 days</span><div class="pfcols">${days.map(d=>`<div class="pfc" title="${d.k}: ${money(d.pr)} of ${money(d.pay)}"><span class="pfcol" style="height:${d.pay/mx*100}%"><i style="height:${d.pay?d.pr/d.pay*100:0}%"></i></span><small>${d.l}</small></div>`).join("")}</div>
+          <div class="pfkey"><span><i class="pk"></i>Profit</span><span><i class="pc"></i>Gas and wear (${money(cpmOf())}/mi)</span></div></div>
+        <button class="sthide" aria-label="Hide this section">−</button><span class="sthandle" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 8h14M5 12h14M5 16h14"/></svg></span></section>`;
+      const old=$("paProfit");if(old)old.remove();
+      const first=body.querySelector("[data-sk]");if(first)first.insertAdjacentHTML("beforebegin",el);else body.insertAdjacentHTML("beforeend",el);
+      const cfg=paStatCfg();
+      const secs=[...body.children].filter(x=>x.dataset&&x.dataset.sk);const anchor=secs[0];
+      const sorted=secs.slice().sort((a,b)=>cfg.order.indexOf(a.dataset.sk)-cfg.order.indexOf(b.dataset.sk));
+      const ph=document.createComment("s");anchor.before(ph);for(const s of sorted)ph.before(s);ph.remove();
+      const p=$("paProfit");if(cfg.hide.includes("profit"))p.remove();else p.querySelector(".sthide").onclick=e=>{e.stopPropagation();const c2=paStatCfg();if(!c2.hide.includes("profit"))c2.hide.push("profit");SET.statsCfg={order:c2.order,hide:c2.hide};saveSet();renderStats()};
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- what you drive: cost per mile presets plus fine tuning ---------- */
+const PA_VEH=[["bike","🚲","Bike",0.03],["ebike","🛵","E-bike or scooter",0.08],["moped","🏍️","Motorcycle",0.25],["econ","🚗","Small car",0.45],["car","🚙","Car",0.65],["suv","🛻","SUV or truck",0.9]];
+const paVeh=()=>{const f=PA_VEH.find(v=>v[0]===SET.veh);return f?{k:f[0],i:f[1],n:f[2],c:f[3]}:{k:"",i:"🚗",n:"Vehicle",c:cpmOf()}};
+paTry("veh",()=>{
+  const rs=window.renderSettings;
+  window.renderSettings=function(){rs.apply(this,arguments);
+    try{const inp=$("setCpm");if(!inp||$("paVeh"))return;const row=inp.closest(".zrow");if(!row)return;const cur=cpmOf();
+      row.insertAdjacentHTML("beforebegin",`<div id="paVeh"><p class="msg" style="margin:6px 0"><b>What do you deliver with?</b> Each sets a typical cost per mile. Fine-tune it below.</p>
+        <div class="vehs">${PA_VEH.map(([k,i,n,c])=>`<button class="veh" data-veh="${k}" aria-pressed="${SET.veh===k}"><span>${i}</span><b>${n}</b><small>${money(c)}/mi</small></button>`).join("")}</div>
+        <div class="vehfine"><input type="range" id="paCpmR" min="0" max="1.5" step="0.01" value="${cur}" aria-label="Cost per mile"><output id="paCpmO">${money(cur)}/mi</output></div></div>`);
+      const set=(v,silent)=>{v=Math.round(Math.max(0,Math.min(3,v))*100)/100;SET.cpm=v;saveSet();inp.value=v.toFixed(2);$("paCpmO").textContent=money(v)+"/mi";$("paCpmR").value=v;if(!silent)toast("Cost per mile: "+money(v));try{if(Cloud.user)Cloud.pushProfile().catch(()=>{})}catch(e){}};
+      document.querySelectorAll("[data-veh]").forEach(b=>b.onclick=()=>{SET.veh=b.dataset.veh;const v=PA_VEH.find(x=>x[0]===SET.veh)[3];set(v);document.querySelectorAll("[data-veh]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)))});
+      $("paCpmR").oninput=e=>{$("paCpmO").textContent=money(+e.target.value)+"/mi"};
+      $("paCpmR").onchange=e=>set(+e.target.value);
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- duplicates: the exact same file is always a duplicate; a look-alike only if it's the same offer ---------- */
+function paNearDup(out,p,pool){
+  if(!out.ph||isGod())return null;
+  const near=(pool||store.cards).find(c=>c.ph&&c.ph.length===out.ph.length&&hamming(c.ph,out.ph)<=24&&Math.abs((+c.pay||0)-(+p.pay||0))<0.01&&Math.abs((+c.miles||0)-(+p.miles||0))<0.06&&(+c.minutes||0)===(+p.minutes||0));
+  if(near)return near;
+  if(seenHit(null,out.ph)&&histList().some(h=>Math.abs((+h.pay||0)-(+p.pay||0))<0.01&&Math.abs((+h.miles||0)-(+p.miles||0))<0.06&&(+h.minutes||0)===(+p.minutes||0)))return {store:"a card you recycled"};
+  return null;
+}
+
+/* ---------- chests: chests and pouches that come out of a chest open right away ---------- */
+function paOpenNested(loot){
+  const want={};for(const [k,v] of Object.entries(loot||{}))if(PA_OPEN.includes(k)&&+v>0&&invOf(k)>0)want[k]=Math.min(+v,invOf(k));
+  if(!Object.keys(want).length)return;
+  paBatch={items:[],xp:0,n:0};const xf=window.xpFX;window.xpFX=()=>{};
+  try{let q={...want},guard=0;
+    while(Object.keys(q).length&&guard++<6){const snap=Object.fromEntries(PA_OPEN.map(k=>[k,invOf(k)])),opened={};
+      for(const [k,n] of Object.entries(q))for(let i=0;i<n&&invOf(k)>0;i++){window.useItem(k);opened[k]=(opened[k]||0)+1}
+      q={};for(const k of PA_OPEN){const d=invOf(k)-(snap[k]-(opened[k]||0));if(d>0)q[k]=d}}
+  }finally{window.xpFX=xf}
+  const b=paBatch;paBatch=null;if(!b||!b.n)return;
+  const m=new Map();for(const it of b.items){const key=it.n.replace(/ ×\d+$/,"")+"|"+(it.bd||"");const c=m.get(key);
+    if(c&&!it.bd&&!it.n.startsWith("+")){c.k+=(+((it.n.match(/×(\d+)$/)||[])[1])||1)}else if(c&&it.n.startsWith("+")){c.x+=+(it.n.replace(/[^\d]/g,""))||0}else m.set(key,{...it,k:+((it.n.match(/×(\d+)$/)||[])[1])||1,x:it.n.startsWith("+")?+(it.n.replace(/[^\d]/g,""))||0:0})}
+  const list=[...m.values()].map(it=>({...it,n:it.x?`+${it.x.toLocaleString()} XP`:it.n.replace(/ ×\d+$/,"")+(it.k>1?" ×"+it.k:"")})).sort((a,c)=>a.rk-c.rk);
+  paChestShow(`Bonus! ${b.n} more opened`,"🎁","epic",list,()=>{if(b.xp>0)xf(b.xp,"Bonus")});
+}
+window.openChest=function(k){
+  const loot=rollLoot(k);xpDrops(loot);gEv()["o:"+rid()]={[k]:-1,...loot};save();checkLevel();
+  const L=paLootList(loot);
+  if(paBatch){paBatch.items.push(...L);paBatch.xp+=+loot.xp||0;paBatch.n++;return}
+  paChestShow(ITEMS[k].n,ITEMS[k].i,ITEMS[k].r,L,()=>{if(+loot.xp>0)xpFX(+loot.xp,ITEMS[k].n);if(Object.keys(loot).some(x=>PA_OPEN.includes(x)))setTimeout(()=>{closeQR();setTimeout(()=>paOpenNested(loot),260)},900)});
+};
+
+/* ---------- auto recycle: pick a rarity and how long to wait first ---------- */
+const PA_ARAGE=[[0,"Right away"],[1,"After 1 day"],[3,"After 3 days"],[7,"After 1 week"],[30,"After 1 month"]];
+function paAgedRecycle(){
+  const lim=SET.autoRc&&RANK[SET.autoRc]!=null?RANK[SET.autoRc]:-1,days=+SET.autoRcAge||0;if(lim<0||!days)return;
+  const cut=realNow()-days*864e5,show=new Set(showIds());
+  const list=store.cards.filter(c=>scrapOK(c)&&!c.fav&&!c.stk&&!special(c)&&!show.has(c.id)&&RANK[c.tier]<=lim&&+new Date(c.added||c.ts)<cut);
+  if(list.length)paQuietRecycle(list);
+}
+paTry("arage",()=>{
+  const ar=window.paAutoRecycle;window.paAutoRecycle=function(){if(+SET.autoRcAge>0){paARq=[];paAgedRecycle();return}return ar.apply(this,arguments)};
+  const rs=window.renderSettings;
+  window.renderSettings=function(){rs.apply(this,arguments);
+    try{const row=$("paArRow");if(!row||$("paArAge"))return;const cur=+SET.autoRcAge||0;
+      row.insertAdjacentHTML("beforeend",`<div id="paArAge"><small style="display:block;margin-top:6px"><b>When:</b> wait a while first so you can still look at new cards. Their numbers always stay in your stats and on each store's offer chart.</small><div class="ntags">${PA_ARAGE.map(([d,n])=>`<button class="ntag" data-arage="${d}" aria-pressed="${cur===d}">${n}</button>`).join("")}</div></div>`);
+      row.querySelectorAll("[data-arage]").forEach(b=>b.onclick=()=>{SET.autoRcAge=+b.dataset.arage;saveSet();row.querySelectorAll("[data-arage]").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));toast("Auto recycle: "+PA_ARAGE.find(x=>x[0]===SET.autoRcAge)[1].toLowerCase());paAgedRecycle()});
+    }catch(e){console.warn(e)}};
+  setTimeout(paAgedRecycle,6000);setInterval(paAgedRecycle,30*60000);
+});
+
+/* ---------- desktop: every card the same size; you pick how many per row ---------- */
+paTry("deskcols",()=>{
+  const apply=()=>{const n=Math.max(3,Math.min(8,+SET.dcols||5));document.documentElement.style.setProperty("--dcols",n)};apply();
+  const rd=window.renderDex;
+  window.renderDex=function(){rd.apply(this,arguments);
+    try{const s=$("paCSize");if(!s||s.dataset.cols)return;s.dataset.cols=1;const n=Math.max(3,Math.min(8,+SET.dcols||5));
+      s.innerHTML=`<small>Per row</small>`+[3,4,5,6,7,8].map(k=>`<button class="mini ghost${k===n?" on":""}" data-dc="${k}">${k}</button>`).join("");
+      s.querySelectorAll("[data-dc]").forEach(b=>b.onclick=()=>{SET.dcols=+b.dataset.dc;saveSet();apply();s.querySelectorAll("[data-dc]").forEach(x=>x.classList.toggle("on",x===b))});
+    }catch(e){}};
+});
+
+/* ---------- Feed: profile pictures on posts, and the challenges live in the top bar ---------- */
+const paAvC=new Map();
+async function paAvOf(uid){
+  const c=paAvC.get(uid);if(c&&Date.now()-c.t<6e5)return c;
+  let v={av:"",bd:"",t:Date.now()};paAvC.set(uid,v);
+  try{const d=await Cloud.pubOf(uid);if(d){v.av=typeof d.av==="string"&&/^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(d.av)?d.av:"";v.bd=typeof d.bd==="string"&&/^[a-z0-9_]{1,24}$/.test(d.bd)?d.bd:""}}catch(e){}
+  return v;
+}
+function paPaintAv(el,v){if(!el||!v)return;if(v.av){el.style.backgroundImage=`url("${v.av}")`;el.classList.add("hasav");el.textContent=""}if(v.bd&&PA_BORDERS[v.bd])el.classList.add("bd-"+v.bd)}
+async function paFeedAvatars(){
+  const me=Cloud.user&&Cloud.user.uid;
+  const posts=[...document.querySelectorAll("#feedBody .post")];const uids=new Set();
+  for(const a of posts){const who=a.querySelector(".pn[data-who]");const uid=who?who.dataset.who:me;if(uid)uids.add(uid);a.dataset.uid=uid||""}
+  for(const uid of uids){if(uid===me&&typeof SET.pfp==="string"&&SET.pfp){paAvC.set(uid,{av:SET.pfp,bd:prog().bsel||"",t:Date.now()});}
+    const v=await paAvOf(uid);document.querySelectorAll(`#feedBody .post[data-uid="${CSS.escape(uid)}"] header .avatar`).forEach(el=>paPaintAv(el,v))}
+}
+let paChal={f:null,c:null};
+function paRing(pc,ic,lab){const r=15,C2=2*Math.PI*r;return `<svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="${r}" class="rg0"/><circle cx="18" cy="18" r="${r}" class="rg1" style="stroke-dasharray:${C2};stroke-dashoffset:${C2*(1-Math.min(1,pc))}"/></svg><span class="chi">${ic}</span><span class="chl">${lab}</span>`}
+async function paFeedBar(){
+  const ph=document.querySelector("#vFeed .phr");if(!ph)return;let box=$("paChalBar");
+  if(!Cloud.user){if(box)box.remove();return}
+  if(!box){const g=ph.querySelector(".gearbtn");g.insertAdjacentHTML("beforebegin",`<div class="pachal" id="paChalBar"></div>`);box=$("paChalBar")}
+  let f=null,c=null;try{if(hasFriends())f=friendProgress(weekKey(),false)}catch(e){}try{c=await commProgress(weekKey())}catch(e){}
+  paChal={f,c};const btn=(k,x,ic)=>x?`<button class="chb${x.done?" done":""}" data-chal="${k}" aria-label="${esc(x.t)}">${paRing(x.have/x.need,x.done?"✓":ic,Math.round(x.have/x.need*100)+"%")}</button>`:"";
+  box.innerHTML=btn("f",f,"🤝")+btn("c",c,"🌎");
+  box.querySelectorAll("[data-chal]").forEach(b=>b.onclick=()=>paChalSheet(b.dataset.chal));
+}
+function paChalSheet(k){
+  const x=paChal[k];if(!x)return;
+  if(k==="f"){qrSheet(`<div class="qrcard chsheet">${groupChallengeHTML("friends")}</div><button class="btn ghost" id="chOk">Close</button>`)}
+  else{qrSheet(`<div class="qrcard chsheet"><div class="gch" id="commCh"></div></div><button class="btn ghost" id="chOk">Close</button>`);fillCommunity()}
+  $("chOk").onclick=closeQR;
+}
+paTry("feedbar",()=>{
+  const rf=window.renderFeed;
+  window.renderFeed=async function(){const r=await rf.apply(this,arguments);
+    try{document.querySelectorAll("#feedBody .gch").forEach(g=>g.remove());paFeedBar();paFeedAvatars()}catch(e){console.warn(e)}
+    return r};
+  const fc=window.fillCommunity;window.fillCommunity=async function(){if(!document.querySelector("#qrSheet #commCh")&&!document.querySelector("#feedBody #commCh"))return;return fc.apply(this,arguments)};
+});
+
+/* ---------- Season pass: a road with milestones, like a trophy road ---------- */
+function paRewardBits(r){
+  const out=[];for(const [k,v] of Object.entries(r||{})){
+    if(k==="xp"){out.push({i:"✨",n:`${(+v).toLocaleString()} XP`,r:"common"});continue}
+    if(/^t_/.test(k)){const t=ETITLES[k.slice(2)];if(t)out.push({i:"🏷️",n:t.n,r:t.r,big:1});continue}
+    if(/^b_/.test(k)){const b=PA_BORDERS[k.slice(2)];if(b)out.push({i:"🖼️",n:b[0],r:b[1],big:1,bd:k.slice(2)});continue}
+    const it=ITEMS[k];if(it)out.push({i:it.i,n:it.n+(+v>1?" ×"+v:""),r:it.r,big:!!it.chest})}
+  return out;
+}
+window.passSheet=function(){
+  const s=passState();if(!s){toast("No season right now");return}
+  const T=PASS.length,cur=s.tier,pct=Math.round(s.into/PASS_XP*100);
+  const mile=i=>(i+1)%10===0||(i+1)===5||paRewardBits(PASS[i]).some(b=>b.big&&RANK[b.r]>=RANK.legendary);
+  const next=PASS.findIndex((r,i)=>i>=cur&&mile(i));
+  const nodes=PASS.map((r,i)=>{const t=i+1,done=t<=cur,now=t===cur+1,bits=paRewardBits(r),top=bits.slice().sort((a,b)=>RANK[b.r]-RANK[a.r])[0]||{i:"🎁",n:"",r:"common"},m=mile(i);
+    return `<div class="rd${done?" done":""}${now?" now":""}${m?" mile":""}${i%2?" r":""}" id="rd${t}" style="--c:${TC[top.r]||"#888"}">
+      <span class="rd-n">${t}</span><span class="rd-dot">${done?"✓":now?`<i style="--p:${pct}%"></i>`:""}</span>
+      <div class="rd-card"><span class="rd-ic">${top.bd?`<span class="avatar xs bd-${top.bd}">D</span>`:top.i}</span><span class="rd-tx"><b>${esc(top.n)}</b>${bits.length>1?`<small>+ ${bits.slice(1).map(b=>esc(b.n)).join(" · ")}</small>`:""}</span>${m?`<em>${t%10===0?"MILESTONE":"BIG"}</em>`:""}</div></div>`}).join("");
+  qrSheet(`<div class="qrcard pass2"><div class="p2-head"><span class="p2-badge">${esc(s.name)}</span><h2>Tier ${cur} <small>of ${T}</small></h2>
+      <div class="p2-bar"><i style="width:${pct}%"></i></div><p class="msg">${(PASS_XP-s.into).toLocaleString()} XP to tier ${Math.min(T,cur+1)} · ends in ${s.left} day${s.left===1?"":"s"}</p>
+      ${next>=0?`<div class="p2-next"><span>Next milestone</span><b>Tier ${next+1}: ${esc((paRewardBits(PASS[next]).sort((a,b)=>RANK[b.r]-RANK[a.r])[0]||{n:""}).n)}</b><small>${((next+1-cur-1)*PASS_XP+(PASS_XP-s.into)).toLocaleString()} XP away</small></div>`:""}</div>
+    <div class="road">${nodes}</div><p class="msg">Free for everyone. Every ${PASS_XP} XP unlocks the next tier, and rewards go straight to your Bag.</p></div>
+    <button class="btn" id="p2Ok">Keep going</button>`);
+  $("p2Ok").onclick=closeQR;
+  setTimeout(()=>{const n=$("rd"+Math.min(T,cur+1));if(n)n.scrollIntoView({block:"center",behavior:"smooth"})},250);
+};
+
+/* ---------- the Map tab (Stats moves into Profile) ---------- */
+const paGeoKey="dd.geo1";
+let paGeo={};try{paGeo=JSON.parse(localStorage.getItem(paGeoKey)||"{}")||{}}catch(e){paGeo={}}
+const paGeoSave=()=>{try{const ks=Object.keys(paGeo);if(ks.length>800)for(const k of ks.slice(0,ks.length-800))delete paGeo[k];localStorage.setItem(paGeoKey,JSON.stringify(paGeo))}catch(e){}};
+let paLeaf=null,paMap=null,paMk=null,paGeoQ=[],paGeoBusy=false;
+function paLoadLeaflet(){
+  if(paLeaf)return paLeaf;
+  paLeaf=new Promise((res,rej)=>{
+    fetch("https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css").then(r=>r.text()).then(t=>{const st=document.createElement("style");st.textContent=t;document.head.appendChild(st)}).catch(()=>{});
+    const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>res(window.L);s.onerror=()=>{paLeaf=null;rej(new Error("Couldn't load the map"))};document.head.appendChild(s)});
+  return paLeaf;
+}
+const paAddrKey=c=>String((c.addr||"")+"|"+(c.city||"")).toLowerCase().replace(/\s+/g," ").trim();
+function paGeocode(key,q){
+  return new Promise(res=>{paGeoQ.push({key,q,res});paGeoRun()});
+}
+async function paGeoRun(){
+  if(paGeoBusy)return;paGeoBusy=true;
+  while(paGeoQ.length){const {key,q,res}=paGeoQ.shift();if(paGeo[key]!==undefined){res(paGeo[key]);continue}
+    let v=0;try{const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}});const j=await r.json();if(j&&j[0])v=[+(+j[0].lat).toFixed(5),+(+j[0].lon).toFixed(5)]}catch(e){v=null}
+    if(v!==null){paGeo[key]=v;paGeoSave()}res(v);await new Promise(r=>setTimeout(r,1100))}
+  paGeoBusy=false;
+}
+function paMapGroups(){
+  const m=new Map();for(const c of store.cards){if(!c.addr)continue;const k=paAddrKey(c);if(!m.has(k))m.set(k,{k,addr:c.addr,city:c.city||"",store:c.store,cards:[]});m.get(k).cards.push(c)}
+  return [...m.values()].sort((a,b)=>b.cards.length-a.cards.length);
+}
+function paMarkerHTML(g){
+  const cs=g.cards.slice().sort((a,b)=>b.score-a.score),top=cs[0],n=cs.length,art=artOf(top);
+  const sz=Math.min(1.35,0.9+Math.log10(n+1)*0.3);
+  return `<div class="mpin" style="--c:${TC[top.tier]};--s:${sz}">${n>1?`<span class="mp-back" style="--c2:${TC[(cs[1]||top).tier]}"></span>`:""}<span class="mp-card">${art?`<img src="${art}" alt="">`:`<b>$${Math.round(+top.pay)}</b>`}</span>${n>1?`<span class="mp-n">${n}</span>`:""}<i class="mp-stem"></i></div>`;
+}
+function paStoreSheet(g){
+  const cs=g.cards.slice().sort((a,b)=>b.score-a.score),a=agg(cs),acc=cs.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}).length,P=paProfitOf(cs);
+  qrSheet(`<div class="qrcard"><h2>${esc(g.store||"Store")}</h2><p class="msg">${esc(g.addr)}${g.city?", "+esc(g.city):""}</p>
+    <div class="mkpis"><span><b>${cs.length}</b><small>offers</small></span><span><b>${acc}</b><small>Accept</small></span><span><b>$${a.rate.toFixed(0)}</b><small>avg /hr</small></span><span><b>${a.best}</b><small>best grade</small></span></div>
+    ${profitOn()?`<p class="msg">Average profit ${money(P.pr/cs.length)} per offer (${P.pct}% of the pay).</p>`:""}
+    <div class="grid mgrid">${cs.slice(0,6).map(cardHTML).join("")}</div></div><button class="btn ghost" id="mOk">Close</button>`);
+  $("mOk").onclick=closeQR;document.querySelectorAll("#qrSheet .mgrid .card").forEach(el=>el.onclick=()=>{closeQR();openDetail(el.dataset.id)});
+}
+async function renderMap(){
+  const body=$("mapBody");if(!body)return;
+  if(!SET.addr){body.innerHTML=`<div class="mapoff"><div class="mo-art">🗺️</div><h2>See where your offers come from</h2><p class="msg">Turn on <b>Save store addresses</b> in Settings. Every offer you scan after that shows up on your map, so you can see where the good ones are.</p><button class="btn" id="mapOn">Open Settings</button></div>`;
+    $("mapOn").onclick=()=>show("vSettings");return}
+  const groups=paMapGroups();
+  if(!groups.length){body.innerHTML=`<div class="mapoff"><div class="mo-art">📍</div><h2>Your map is ready</h2><p class="msg">Scan a few offers and their stores will pop up here. Only offers scanned with store addresses on can be placed.</p></div>`;return}
+  if(!$("paMapEl")){body.innerHTML=`<div id="paMapEl" class="mapel"></div><div class="mapnote" id="mapNote"></div>`;paMap=null}
+  let L;try{L=await paLoadLeaflet()}catch(e){body.innerHTML=`<div class="mapoff"><h2>The map couldn't load</h2><p class="msg">Check your connection and try again.</p><button class="btn" id="mapRetry">Try again</button></div>`;$("mapRetry").onclick=renderMap;return}
+  if(!paMap){const light=document.documentElement.dataset.od==="light";
+    paMap=L.map("paMapEl",{zoomControl:false,attributionControl:true}).setView([29.78,-95.8],11);
+    L.tileLayer(`https://{s}.basemaps.cartocdn.com/${light?"light_all":"dark_all"}/{z}/{x}/{y}{r}.png`,{maxZoom:19,subdomains:"abcd",attribution:'© OpenStreetMap © CARTO'}).addTo(paMap);
+    L.control.zoom({position:"bottomright"}).addTo(paMap);paMk=L.layerGroup().addTo(paMap)}
+  setTimeout(()=>paMap.invalidateSize(),50);
+  paMk.clearLayers();const pts=[];let todo=0;
+  const place=(g,ll)=>{if(!ll)return;pts.push(ll);const m=L.marker(ll,{icon:L.divIcon({className:"mpwrap",html:paMarkerHTML(g),iconSize:[52,74],iconAnchor:[26,72]})});m.on("click",()=>paStoreSheet(g));paMk.addLayer(m)};
+  for(const g of groups){const v=paGeo[g.k];if(Array.isArray(v))place(g,v);else if(v===undefined)todo++}
+  if(pts.length)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:14});
+  const note=$("mapNote");if(note)note.textContent=todo?`Finding ${todo} more store${todo>1?"s":""}…`:`${groups.length} store${groups.length>1?"s":""} · tap one to see its offers`;
+  for(const g of groups){if(paGeo[g.k]!==undefined)continue;
+    paGeocode(g.k,g.addr+(g.city?", "+g.city:"")).then(ll=>{if(view!=="vMap")return;if(Array.isArray(ll)){place(g,ll);if(pts.length===1)paMap.setView(ll,13)}todo--;if(todo<=0&&pts.length>1)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:14});const n=$("mapNote");if(n)n.textContent=todo>0?`Finding ${todo} more store${todo>1?"s":""}…`:`${groups.length} store${groups.length>1?"s":""} · tap one to see its offers`})}
+}
+paTry("maptab",()=>{
+  if(!$("vMap")){$("vStats").insertAdjacentHTML("afterend",`<div class="wrap" id="vMap" hidden><header class="appbar"><div class="pagehead"><h1>Map</h1><div class="phr"><button class="pfbtn gearbtn" data-set="1" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></div></header><div id="mapBody"></div></div>`)}
+  if(!VIEWS.includes("vMap"))VIEWS.push("vMap");
+  const t=document.querySelector('.ntab[data-v="vStats"]');
+  if(t){t.dataset.v="vMap";t.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>Map`}
+  document.querySelectorAll('#vMap [data-set]').forEach(b=>b.onclick=()=>show("vSettings"));
+  /* Stats keeps its page; it opens from Profile and has a back button */
+  const sh=document.querySelector("#vStats .pagehead h1");if(sh&&!$("paStBack"))sh.insertAdjacentHTML("beforebegin",`<button class="close" id="paStBack" aria-label="Back to Profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>`);
+  if($("paStBack"))$("paStBack").onclick=()=>show("vProfile");
+  const sw=window.show;
+  window.show=function(v){const r=sw.apply(this,arguments);
+    try{if(v==="vMap"){paBars();renderMap()}if(v==="vStats")document.querySelectorAll('.ntab[data-v="vProfile"]').forEach(x=>x.setAttribute("aria-current","page"))}catch(e){console.warn(e)}
+    return r};
+  paBars();
+});
+/* Profile: your stats near the top */
+paTry("profstats",()=>{
+  if(!PA_PSEC.some(s=>s[0]==="stats"))PA_PSEC.unshift(["stats","Stats"]);
+  const pk=window.paPKey;window.paPKey=function(el){if(el&&el.id==="paPStats")return "stats";return pk.apply(this,arguments)};
+  const rp=window.renderProfile;
+  window.renderProfile=function(){rp.apply(this,arguments);
+    try{const pb=$("profileBody");if(!pb)return;const old=$("paPStats");if(old)old.remove();if(paPHide().includes("stats"))return;
+      const all=allOffers();const wk=all.filter(c=>+new Date(c.ts)>realNow()-7*864e5),acc=wk.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}),a=agg(wk),P=paProfitOf(acc);
+      const days=[];for(let i=6;i>=0;i--){const d=today();d.setDate(d.getDate()-i);const k=dayKey(d);days.push(all.filter(c=>dayKey(c.ts)===k).length)}const mx=Math.max(1,...days);
+      const hero=$("profHero"),pos=hero?["afterend",hero]:["afterbegin",pb];
+      pos[1].insertAdjacentHTML(pos[0],`<button class="sbox pstats" id="paPStats" data-pk="stats"><span class="ps-h"><b>Your week</b><small>All stats ›</small></span>
+        <span class="ps-k"><span><b>${wk.length}</b><small>offers</small></span><span><b>${acc.length}</b><small>Accept</small></span>${profitOn()?`<span><b>${paM0(P.pr)}</b><small>profit on Accepts</small></span>`:`<span><b>$${a.rate.toFixed(0)}</b><small>avg /hr</small></span>`}</span>
+        <span class="ps-sp">${days.map(n=>`<i style="height:${Math.max(6,n/mx*100)}%"></i>`).join("")}</span></button>`);
+      $("paPStats").onclick=()=>show("vStats");
+    }catch(e){console.warn(e)}};
+});
+
+/* ---------- card page: where the money goes ---------- */
+paTry("moneybar",()=>{
+  const oc=window.openCard;
+  window.openCard=function(){const r=oc.apply(this,arguments);
+    try{const id=arguments[0],c=store.cards.find(x=>x.id===id)||(typeof id==="object"?id:null);if(!c||!profitOn()||$("paMoney"))return r;
+      const p=profitOf(c,cpmOf()),pk=Math.max(0,Math.min(100,paPct(p.profit,+c.pay)));
+      const tg=document.querySelector("#detail .tg");const host=tg?tg.closest(".panel,.sbox"):null;
+      const html=`<div class="panel" id="paMoney"><h2>Where the money goes</h2><div class="pfbar big"><i class="pk" style="width:${pk}%"><span>${money(p.profit)} you keep</span></i><i class="pc" style="width:${100-pk}%"></i></div>
+        <p class="msg">${money(+c.pay)} payout · ${money(p.cost)} on ${c.miles} mi of ${esc(paVeh().n.toLowerCase())} costs (${money(p.cpm)}/mi) · you keep <b>${pk}%</b>.</p></div>`;
+      if(host)host.insertAdjacentHTML("beforebegin",html);else{const d=$("detail");if(d)d.insertAdjacentHTML("beforeend",html)}
+    }catch(e){console.warn(e)}
+    return r};
+});
+
+window.paAlphaNotice=function(){
+  if(SET.paSeen===APP_VER)return;const fresh=!store.cards.length;SET.paSeen=APP_VER;saveSet();if(fresh)return;
+  qrSheet(`<div class="qrcard alpha2"><div class="al-badge">ALPHA 2.2</div><h2>The Map is here</h2>
+    <ul class="al-list">
+      <li>🗺️ <b>Map tab</b>: your offers pinned on a map by store (turn on Save store addresses). Stats moved into Profile</li>
+      <li>💵 <b>Profit you can read</b>: on every card, under each day, and a new Profit section in Stats</li>
+      <li>🚲 Pick what you drive (bike, e-bike, car, truck…) and fine-tune your cost per mile</li>
+      <li>🏆 A new Season road with milestones</li>
+      <li>🎁 Chests inside chests now open on their own</li>
+      <li>♻️ Auto recycle can wait a day, a week or a month first</li>
+    </ul></div><button class="btn" id="alGo">Let's go</button>`);
+  $("alGo").onclick=closeQR;
+};
 </script>
