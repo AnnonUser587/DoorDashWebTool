@@ -5601,7 +5601,7 @@ const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="tr
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
   ["2.2 Alpha","November 2026",[
-    "New Map tab: your offers pinned by store, stacked like cards, with the count. Tap a store to see its offers. Needs Save store addresses in Settings.",
+    "New Map tab: your offers pinned by store, stacked like cards, with the count. Tap a store and the map shrinks while its offers show below. Tap the map to make it big again. Needs Save store addresses in Settings.",
     "Stats moved into Profile (Your week, near the top). Tap it for all your stats.",
     "Profit you can read: each card shows its profit and %, each day in the Dex shows profit and % of the pay, and Stats has a Profit section with a 7-day chart.",
     "Day summary: Profit is on by default and pay per hour is optional (⚙ Day summary).",
@@ -7642,6 +7642,20 @@ html:not([data-od="light"]) .sbox,html:not([data-od="light"]) .panel{border-colo
 html:not([data-od="light"]) .card .val.wp .pf b{color:#1a9a50}
 .card .pfpct{display:block;font:700 2.3cqw/1.1 var(--f-mono);font-style:normal;color:#1a7a40;margin-top:.4cqw}
 @media (min-width:1000px) and (hover:hover) and (pointer:fine){:is(.grid,.sumgrid,.pcard) .card .pfpct{font-size:max(2.3cqw,8px)}}
+
+/* map: never covers pop-ups; shrinks when you pick a store */
+.mapbox{position:relative;isolation:isolate;z-index:0}
+.mapel{transition:height .3s ease}
+#mapBody.mapmin .mapel{height:190px!important;min-height:0}
+.mapexp{display:none;position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:800;border:1px solid #fff3;background:rgba(10,10,14,.78);color:#fff;font:700 .8rem var(--f-body);padding:8px 14px;border-radius:99px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer}
+#mapBody.mapmin .mapexp{display:block}
+#mapBody.mapmin .mapnote{display:none}
+.mapstore{margin-top:12px;animation:paFade .25s ease-out}
+.ms-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.ms-head h2{margin:0}.ms-head .msg{margin:2px 0 0}
+.mpin.sel .mp-card{box-shadow:0 0 0 3px #fff,0 0 18px var(--c)}
+.mpin.sel{z-index:5}
+.ms-head>div{min-width:0;flex:1}.ms-head .btn{flex:none;width:auto;white-space:nowrap;margin:0}
+#mapBody.mapmin .leaflet-control-zoom{display:none}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -9695,13 +9709,27 @@ function paMarkerHTML(g){
   const sz=Math.min(1.35,0.9+Math.log10(n+1)*0.3);
   return `<div class="mpin" style="--c:${TC[top.tier]};--s:${sz}">${n>1?`<span class="mp-back" style="--c2:${TC[(cs[1]||top).tier]}"></span>`:""}<span class="mp-card">${art?`<img src="${art}" alt="">`:`<b>$${Math.round(+top.pay)}</b>`}</span>${n>1?`<span class="mp-n">${n}</span>`:""}<i class="mp-stem"></i></div>`;
 }
+let paMapMin=false,paMapSel=null,paPts=[];
+function paMapInteract(on){if(!paMap)return;for(const h of ["dragging","touchZoom","doubleClickZoom","scrollWheelZoom","boxZoom","keyboard"])if(paMap[h])on?paMap[h].enable():paMap[h].disable()}
 function paStoreSheet(g){
+  const body=$("mapBody"),panel=$("mapStore");if(!body||!panel)return;
+  paMapSel=g.k;paMapMin=true;body.classList.add("mapmin");paMapInteract(false);
+  document.querySelectorAll(".mpin").forEach(x=>x.classList.toggle("sel",x.dataset.k===g.k));
   const cs=g.cards.slice().sort((a,b)=>b.score-a.score),a=agg(cs),acc=cs.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}).length,P=paProfitOf(cs);
-  qrSheet(`<div class="qrcard"><h2>${esc(g.store||"Store")}</h2><p class="msg">${esc(g.addr)}${g.city?", "+esc(g.city):""}</p>
+  panel.innerHTML=`<div class="ms-head"><div><h2>${esc(g.store||"Store")}</h2><p class="msg">${esc(g.addr)}${g.city?", "+esc(g.city):""}</p></div><button class="btn ghost sm" id="msMap">⤢ Map</button></div>
     <div class="mkpis"><span><b>${cs.length}</b><small>offers</small></span><span><b>${acc}</b><small>Accept</small></span><span><b>$${a.rate.toFixed(0)}</b><small>avg /hr</small></span><span><b>${a.best}</b><small>best grade</small></span></div>
     ${profitOn()?`<p class="msg">Average profit ${money(P.pr/cs.length)} per offer (${P.pct}% of the pay).</p>`:""}
-    <div class="grid mgrid">${cs.slice(0,6).map(cardHTML).join("")}</div></div><button class="btn ghost" id="mOk">Close</button>`);
-  $("mOk").onclick=closeQR;document.querySelectorAll("#qrSheet .mgrid .card").forEach(el=>el.onclick=()=>{closeQR();openDetail(el.dataset.id)});
+    <div class="grid mgrid">${cs.map(cardHTML).join("")}</div>`;
+  panel.hidden=false;
+  $("msMap").onclick=paMapExpand;
+  panel.querySelectorAll(".mgrid .card").forEach(el=>el.onclick=()=>openDetail(el.dataset.id));
+  setTimeout(()=>{try{paMap.invalidateSize();const ll=paGeo[g.k];if(Array.isArray(ll))paMap.setView(ll,Math.max(paMap.getZoom(),13),{animate:false})}catch(e){}scrollTo({top:0,behavior:"smooth"})},330);
+}
+function paMapExpand(){
+  const body=$("mapBody");if(!body)return;paMapMin=false;body.classList.remove("mapmin");paMapInteract(true);
+  const panel=$("mapStore");if(panel){panel.hidden=true;panel.innerHTML=""}
+  document.querySelectorAll(".mpin.sel").forEach(x=>x.classList.remove("sel"));
+  setTimeout(()=>{try{paMap.invalidateSize();if(paPts.length>1)paMap.fitBounds(window.L.latLngBounds(paPts).pad(0.25),{maxZoom:15});else if(paPts.length)paMap.setView(paPts[0],13)}catch(e){}},330);
 }
 async function renderMap(){
   const body=$("mapBody");if(!body)return;
@@ -9709,20 +9737,23 @@ async function renderMap(){
     $("mapOn").onclick=()=>show("vSettings");return}
   const groups=paMapGroups();
   if(!groups.length){body.innerHTML=`<div class="mapoff"><div class="mo-art">📍</div><h2>Your map is ready</h2><p class="msg">Scan a few offers and their stores will pop up here. Only offers scanned with store addresses on can be placed.</p></div>`;return}
-  if(!$("paMapEl")){body.innerHTML=`<div id="paMapEl" class="mapel"></div><div class="mapnote" id="mapNote"></div>`;paMap=null}
+  if(!$("paMapEl")){body.innerHTML=`<div class="mapbox"><div id="paMapEl" class="mapel"></div><button class="mapexp" id="mapExp" aria-label="Make the map big again">⤢ Tap to expand map</button></div><div class="mapnote" id="mapNote"></div><div id="mapStore" class="mapstore" hidden></div>`;paMap=null;paMapMin=false;$("mapExp").onclick=e=>{e.stopPropagation();paMapExpand()}}
   let L;try{L=await paLoadLeaflet()}catch(e){body.innerHTML=`<div class="mapoff"><h2>The map couldn't load</h2><p class="msg">Check your connection and try again.</p><button class="btn" id="mapRetry">Try again</button></div>`;$("mapRetry").onclick=renderMap;return}
   if(!paMap){const light=document.documentElement.dataset.od==="light";
     paMap=L.map("paMapEl",{zoomControl:false,attributionControl:true}).setView([29.78,-95.8],11);
-    L.tileLayer(`https://{s}.basemaps.cartocdn.com/${light?"light_all":"dark_all"}/{z}/{x}/{y}{r}.png`,{maxZoom:19,subdomains:"abcd",attribution:'© OpenStreetMap © CARTO'}).addTo(paMap);
+    const E="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/",th=light?"World_Light_Gray":"World_Dark_Gray";
+    L.tileLayer(E+th+"_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,attribution:"Esri, HERE, Garmin, © OpenStreetMap"}).addTo(paMap);
+    L.tileLayer(E+th+"_Reference/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,pane:"overlayPane"}).addTo(paMap);
+    paMap.on("click",()=>{if(paMapMin)paMapExpand()});
     L.control.zoom({position:"bottomright"}).addTo(paMap);paMk=L.layerGroup().addTo(paMap)}
   setTimeout(()=>paMap.invalidateSize(),50);
-  paMk.clearLayers();const pts=[];let todo=0;
-  const place=(g,ll)=>{if(!ll)return;pts.push(ll);const m=L.marker(ll,{icon:L.divIcon({className:"mpwrap",html:paMarkerHTML(g),iconSize:[52,74],iconAnchor:[26,72]})});m.on("click",()=>paStoreSheet(g));paMk.addLayer(m)};
+  paMk.clearLayers();const pts=[];paPts=pts;let todo=0;
+  const place=(g,ll)=>{if(!ll)return;pts.push(ll);const m=L.marker(ll,{icon:L.divIcon({className:"mpwrap",html:paMarkerHTML(g).replace('<div class="mpin"',`<div class="mpin" data-k="${esc(g.k)}"`),iconSize:[52,74],iconAnchor:[26,72]})});m.on("click",e=>{if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);if(paMapMin&&paMapSel===g.k){paMapExpand();return}paStoreSheet(g)});paMk.addLayer(m)};
   for(const g of groups){const v=paGeo[g.k];if(Array.isArray(v))place(g,v);else if(v===undefined)todo++}
-  if(pts.length)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:14});
+  if(pts.length)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:15});
   const note=$("mapNote");if(note)note.textContent=todo?`Finding ${todo} more store${todo>1?"s":""}…`:`${groups.length} store${groups.length>1?"s":""} · tap one to see its offers`;
   for(const g of groups){if(paGeo[g.k]!==undefined)continue;
-    paGeocode(g.k,g.addr+(g.city?", "+g.city:"")).then(ll=>{if(view!=="vMap")return;if(Array.isArray(ll)){place(g,ll);if(pts.length===1)paMap.setView(ll,13)}todo--;if(todo<=0&&pts.length>1)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:14});const n=$("mapNote");if(n)n.textContent=todo>0?`Finding ${todo} more store${todo>1?"s":""}…`:`${groups.length} store${groups.length>1?"s":""} · tap one to see its offers`})}
+    paGeocode(g.k,g.addr+(g.city?", "+g.city:"")).then(ll=>{if(view!=="vMap")return;if(Array.isArray(ll)){place(g,ll);if(pts.length===1)paMap.setView(ll,13)}todo--;if(todo<=0&&pts.length>1)paMap.fitBounds(L.latLngBounds(pts).pad(0.25),{maxZoom:15});const n=$("mapNote");if(n)n.textContent=todo>0?`Finding ${todo} more store${todo>1?"s":""}…`:`${groups.length} store${groups.length>1?"s":""} · tap one to see its offers`})}
 }
 paTry("maptab",()=>{
   if(!$("vMap")){$("vStats").insertAdjacentHTML("afterend",`<div class="wrap" id="vMap" hidden><header class="appbar"><div class="pagehead"><h1>Map</h1><div class="phr"><button class="pfbtn gearbtn" data-set="1" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></div></header><div id="mapBody"></div></div>`)}
