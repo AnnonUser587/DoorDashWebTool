@@ -5601,8 +5601,6 @@ const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="tr
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
   ["2.2 Alpha","November 2026",[
-    "New Map tab: your offers pinned by store, stacked like cards, with the count. Tap a store and the map shrinks while its offers show below. Tap the map to make it big again. Stores close together share one pin (it says how many); tap it to zoom in or see them all. Filter by days and rarity at the top. Needs Save store addresses in Settings.",
-    "Stats moved into Profile (Your week, near the top). Tap it for all your stats.",
     "Profit you can read: each card shows its profit and %, each day in the Dex shows profit and % of the pay, and Stats has a Profit section with a 7-day chart.",
     "Day summary: Profit is on by default and pay per hour is optional (⚙ Day summary).",
     "Pick what you drive (bike, e-bike, motorcycle, small car, car, SUV or truck) and fine-tune your cost per mile with a slider.",
@@ -7611,26 +7609,7 @@ html:not([data-od="light"]) .sbox,html:not([data-od="light"]) .panel{border-colo
 .rd.done .rd-card{opacity:.55}
 .rd.done .rd-card::after{content:"✓ Claimed";position:absolute;bottom:-7px;right:8px;font:700 .55rem var(--f-mono);padding:1px 5px;border-radius:5px;background:#27c56a;color:#04200e}
 .avatar.xs{width:26px;height:26px;border-radius:8px;font-size:.7rem;display:inline-grid;place-items:center;background:var(--bg2)}
-/* ---- map ---- */
-#vMap .appbar{position:relative;z-index:3}
-.mapel{height:calc(100dvh - 72px - 112px - env(safe-area-inset-bottom,0px));min-height:380px;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0c0d10}
-@media (min-width:1000px){.mapel{height:calc(100dvh - 130px)}}
-.mapnote{text-align:center;font-size:.78rem;color:var(--mut);margin:8px 0}
-.mapoff{text-align:center;padding:40px 16px}.mo-art{font-size:3.4rem;margin-bottom:6px;filter:drop-shadow(0 6px 18px #e8402f66)}
-.mpwrap{background:none!important;border:0!important}
-.mpin{position:relative;width:52px;height:74px;transform:scale(var(--s,1));transform-origin:50% 100%}
-.mp-card,.mp-back{position:absolute;left:8px;top:4px;width:36px;height:50px;border-radius:8px;border:2.5px solid var(--c);background:#16171c;overflow:hidden;display:grid;place-items:center;box-shadow:0 6px 14px -4px #000c}
-.mp-back{transform:rotate(-12deg) translate(-4px,2px);border-color:var(--c2);opacity:.85}
-.mp-card img{width:100%;height:100%;object-fit:cover}
-.mp-card b{font:800 .62rem var(--f-mono);color:var(--c)}
-.mp-n{position:absolute;right:0;top:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:#111;color:#fff;font:800 .68rem var(--f-mono);display:grid;place-items:center;border:1.5px solid #fff3}
-.mp-stem{position:absolute;left:25px;top:54px;width:2px;height:12px;background:#fff8}
-.mp-stem::after{content:"";position:absolute;left:-3px;bottom:-5px;width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c)}
-.mkpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.mkpis span{display:grid;justify-items:center;padding:8px 2px;border-radius:12px;background:var(--bg2)}
-.mkpis b{font:700 1.05rem var(--f-display)}.mkpis small{font-size:.66rem;color:var(--mut)}
-.mgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-.leaflet-container{background:#0c0d10;font-family:var(--f-body)}
-.leaflet-control-attribution{background:#0008!important;color:#aaa!important;font-size:9px!important}.leaflet-control-attribution a{color:#ccc!important}
+/* ---- map styles removed ---- */
 /* ---- profile: your week ---- */
 .pstats{display:grid;gap:10px;width:100%;text-align:left;color:var(--tx);cursor:pointer;font:inherit}
 .ps-h{display:flex;justify-content:space-between;align-items:baseline}.ps-h small{color:#ff5a46;font-weight:700}
@@ -7643,28 +7622,9 @@ html:not([data-od="light"]) .card .val.wp .pf b{color:#1a9a50}
 .card .pfpct{display:block;font:700 2.3cqw/1.1 var(--f-mono);font-style:normal;color:#1a7a40;margin-top:.4cqw}
 @media (min-width:1000px) and (hover:hover) and (pointer:fine){:is(.grid,.sumgrid,.pcard) .card .pfpct{font-size:max(2.3cqw,8px)}}
 
-/* map: never covers pop-ups; shrinks when you pick a store */
-.mapbox{position:relative;isolation:isolate;z-index:0}
-.mapel{transition:height .3s ease}
-#mapBody.mapmin .mapel{height:190px!important;min-height:0}
-.mapexp{display:none;position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:800;border:1px solid #fff3;background:rgba(10,10,14,.78);color:#fff;font:700 .8rem var(--f-body);padding:8px 14px;border-radius:99px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer}
-#mapBody.mapmin .mapexp{display:block}
-#mapBody.mapmin .mapnote{display:none}
-.mapstore{margin-top:12px;animation:paFade .25s ease-out}
-.ms-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.ms-head h2{margin:0}.ms-head .msg{margin:2px 0 0}
-.mpin.sel .mp-card{box-shadow:0 0 0 3px #fff,0 0 18px var(--c)}
-.mpin.sel{z-index:5}
-.ms-head>div{min-width:0;flex:1}.ms-head .btn{flex:none;width:auto;white-space:nowrap;margin:0}
-#mapBody.mapmin .leaflet-control-zoom{display:none}
+/* (map removed) */
 
-/* map filters in the top bar */
-.mapf{display:flex!important;gap:6px;margin-right:6px;min-width:0}
-.mfsel{position:relative;display:block;min-width:0}
-.mfsel select{appearance:none;-webkit-appearance:none;height:40px;max-width:118px;padding:0 24px 0 11px;border-radius:13px;border:1px solid var(--line);background:var(--bg2);color:var(--tx);font:700 .78rem var(--f-body);text-overflow:ellipsis;cursor:pointer}
-.mfsel::after{content:"";position:absolute;right:10px;top:50%;width:6px;height:6px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:translateY(-70%) rotate(45deg);pointer-events:none}
-@media (max-width:380px){.mfsel select{max-width:96px;font-size:.72rem}}
-.mp-st{position:absolute;left:50%;top:-18px;transform:translateX(-50%);white-space:nowrap;font:800 .58rem var(--f-mono);padding:2px 6px;border-radius:6px;background:var(--red);color:#fff;box-shadow:0 2px 8px #0008}
-.ms-st{margin:16px 0 8px;font-size:1rem}.ms-st small{font:500 .74rem var(--f-body);color:var(--mut);display:block}
+/* (map removed) */
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -9686,165 +9646,8 @@ window.passSheet=function(){
   setTimeout(()=>{const n=$("rd"+Math.min(T,cur+1));if(n)n.scrollIntoView({block:"center",behavior:"smooth"})},250);
 };
 
-/* ---------- the Map tab (Stats moves into Profile) ---------- */
-const paGeoKey="dd.geo1";
-let paGeo={};try{paGeo=JSON.parse(localStorage.getItem(paGeoKey)||"{}")||{}}catch(e){paGeo={}}
-const paGeoSave=()=>{try{const ks=Object.keys(paGeo);if(ks.length>800)for(const k of ks.slice(0,ks.length-800))delete paGeo[k];localStorage.setItem(paGeoKey,JSON.stringify(paGeo))}catch(e){}};
-let paLeaf=null,paMap=null,paMk=null,paGeoQ=[],paGeoBusy=false;
-function paLoadLeaflet(){
-  if(paLeaf)return paLeaf;
-  paLeaf=new Promise((res,rej)=>{
-    fetch("https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css").then(r=>r.text()).then(t=>{const st=document.createElement("style");st.textContent=t;document.head.appendChild(st)}).catch(()=>{});
-    const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js";s.onload=()=>res(window.L);s.onerror=()=>{paLeaf=null;rej(new Error("Couldn't load the map"))};document.head.appendChild(s)});
-  return paLeaf;
-}
-const paAddrKey=c=>String((c.addr||"")+"|"+(c.city||"")).toLowerCase().replace(/\s+/g," ").trim();
-function paGeocode(key,q){
-  return new Promise(res=>{paGeoQ.push({key,q,res});paGeoRun()});
-}
-/* addresses read off a screenshot can be messy: try OpenStreetMap, then Photon, then a cleaned-up address */
-const paGeoClean=q=>String(q).replace(/\b(ste|suite|unit|bldg|building|apt)\.?\s*[#\w-]+/gi,"").replace(/#\s*\w+/g,"").replace(/\bF\.?M\.?\s*(\d+)/gi,"FM $1").replace(/\bRd\b\.?/gi,"Road").replace(/\s+,/g,",").replace(/\s{2,}/g," ").trim();
-async function paGeoTry(q){
-  try{const r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q="+encodeURIComponent(q),{headers:{"Accept":"application/json"}});const j=await r.json();if(j&&j[0])return [+(+j[0].lat).toFixed(5),+(+j[0].lon).toFixed(5)]}catch(e){}
-  try{let u="https://photon.komoot.io/api/?limit=1&q="+encodeURIComponent(q);if(paPts.length){const a=paPts.reduce((s,p)=>[s[0]+p[0],s[1]+p[1]],[0,0]);u+=`&lat=${(a[0]/paPts.length).toFixed(3)}&lon=${(a[1]/paPts.length).toFixed(3)}`}
-    const r=await fetch(u);const j=await r.json();const f=j&&j.features&&j.features[0];if(f&&f.geometry)return [+(+f.geometry.coordinates[1]).toFixed(5),+(+f.geometry.coordinates[0]).toFixed(5)]}catch(e){}
-  return null;
-}
-const paGeoOk=v=>Array.isArray(v);
-const paGeoDue=v=>v===undefined||v===0||(v&&v.f&&Date.now()-v.f>3*864e5);
-async function paGeoRun(){
-  if(paGeoBusy)return;paGeoBusy=true;
-  while(paGeoQ.length){const {key,q,res}=paGeoQ.shift();if(!paGeoDue(paGeo[key])){res(paGeo[key]);continue}
-    let v=await paGeoTry(q);
-    if(!v){const c=paGeoClean(q);if(c!==q){await new Promise(r=>setTimeout(r,1100));v=await paGeoTry(c)}}
-    if(!v){const s=q.split(",")[0];if(s&&s!==q){await new Promise(r=>setTimeout(r,1100));v=await paGeoTry(paGeoClean(s)+", TX")}}
-    paGeo[key]=v||{f:Date.now()};paGeoSave();res(v||null);await new Promise(r=>setTimeout(r,1100))}
-  paGeoBusy=false;
-}
-/* the filters in the Map's top bar */
-const PA_MT=[["today","Today"],["7","7 days"],["30","30 days"],["all","All time"]];
-function paMapCards(){
-  const t=SET.mapT||"all",r=SET.mapR||"all",now=realNow(),td=dayKey(today());
-  return store.cards.filter(c=>{
-    if(t==="today"&&dayKey(c.ts)!==td)return false;if((t==="7"||t==="30")&&+new Date(c.ts)<now-(+t)*864e5)return false;
-    if(r==="special")return special(c);if(r==="accept"){try{return vOf(c).id==="accept"}catch(e){return false}}
-    if(r.endsWith("+"))return RANK[c.tier]>=RANK[r.slice(0,-1)];if(r!=="all")return c.tier===r;return true});
-}
-function paMapGroups(){
-  const m=new Map();for(const c of paMapCards()){if(!c.addr)continue;const k=paAddrKey(c);if(!m.has(k))m.set(k,{k,addr:c.addr,city:c.city||"",store:c.store,cards:[]});m.get(k).cards.push(c)}
-  return [...m.values()].sort((a,b)=>b.cards.length-a.cards.length);
-}
-function paMapBar(){
-  const ph=document.querySelector("#vMap .phr");if(!ph||$("paMapF"))return;const g=ph.querySelector(".gearbtn");
-  const ro=[["all","All rarities"],["accept","Accept only"],["special","Frames only"],["legendary+","Legendary +"],["epic+","Epic +"],["rare+","Rare +"],...TIERS.slice().sort((a,b)=>RANK[b.id]-RANK[a.id]).map(t=>[t.id,t.name])];
-  g.insertAdjacentHTML("beforebegin",`<div class="mapf" id="paMapF"><label class="mfsel"><select id="mapT" aria-label="Which days">${PA_MT.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></label><label class="mfsel"><select id="mapR" aria-label="Which cards">${ro.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></label></div>`);
-  $("mapT").value=SET.mapT||"all";$("mapR").value=SET.mapR||"all";
-  $("mapT").onchange=e=>{SET.mapT=e.target.value;saveSet();if(paMapMin)paMapExpand();renderMap()};
-  $("mapR").onchange=e=>{SET.mapR=e.target.value;saveSet();if(paMapMin)paMapExpand();renderMap()};
-}
-function paMarkerHTML(g){
-  const cs=g.cards.slice().sort((a,b)=>b.score-a.score),top=cs[0],n=cs.length,art=artOf(top),ns=g.parts?g.parts.length:1;
-  const sz=Math.min(1.35,0.9+Math.log10(n+1)*0.3);
-  return `<div class="mpin${ns>1?" multi":""}" data-k="${esc(g.k)}" style="--c:${TC[top.tier]};--s:${sz}">${n>1?`<span class="mp-back" style="--c2:${TC[(cs[1]||top).tier]}"></span>`:""}<span class="mp-card">${art?`<img src="${art}" alt="">`:`<b>$${Math.round(+top.pay)}</b>`}</span>${n>1?`<span class="mp-n">${n}</span>`:""}${ns>1?`<span class="mp-st">${ns} stores</span>`:""}<i class="mp-stem"></i></div>`;
-}
-let paMapMin=false,paMapSel=null,paPts=[],paLL=[];
-function paMapInteract(on){if(!paMap)return;for(const h of ["dragging","touchZoom","doubleClickZoom","scrollWheelZoom","boxZoom","keyboard"])if(paMap[h])on?paMap[h].enable():paMap[h].disable()}
-function paStoreSheet(g){
-  const body=$("mapBody"),panel=$("mapStore");if(!body||!panel)return;
-  paMapSel=g.k;paMapMin=true;body.classList.add("mapmin");paMapInteract(false);
-  document.querySelectorAll(".mpin").forEach(x=>x.classList.toggle("sel",x.dataset.k===g.k));
-  const cs=g.cards.slice().sort((a,b)=>b.score-a.score),a=agg(cs),acc=cs.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}).length,P=paProfitOf(cs);
-  const parts=g.parts&&g.parts.length>1?g.parts.slice().sort((x,y)=>y.cards.length-x.cards.length):null;
-  panel.innerHTML=`<div class="ms-head"><div><h2>${parts?`${parts.length} stores here`:esc(g.store||"Store")}</h2><p class="msg">${parts?esc(parts.map(x=>x.store).filter((v,i,ar)=>v&&ar.indexOf(v)===i).slice(0,4).join(", ")+(parts.length>4?"…":"")):esc(g.addr)+(g.city?", "+esc(g.city):"")}</p></div><button class="btn ghost sm" id="msMap">⤢ Map</button></div>
-    <div class="mkpis"><span><b>${cs.length}</b><small>offers</small></span><span><b>${acc}</b><small>Accept</small></span><span><b>$${a.rate.toFixed(0)}</b><small>avg /hr</small></span><span><b>${a.best}</b><small>best grade</small></span></div>
-    ${profitOn()?`<p class="msg">Average profit ${money(P.pr/cs.length)} per offer (${P.pct}% of the pay).</p>`:""}
-    ${parts?parts.map(x=>{const xs=x.cards.slice().sort((p,q)=>q.score-p.score);return `<h3 class="ms-st">${esc(x.store||"Store")} <small>${xs.length} offer${xs.length>1?"s":""} · ${esc(x.addr)}</small></h3><div class="grid mgrid">${xs.map(cardHTML).join("")}</div>`}).join("")
-      :`<div class="grid mgrid">${cs.map(cardHTML).join("")}</div>`}`;
-  panel.hidden=false;
-  $("msMap").onclick=paMapExpand;
-  panel.querySelectorAll(".mgrid .card").forEach(el=>el.onclick=()=>openDetail(el.dataset.id));
-  setTimeout(()=>{try{paMap.invalidateSize();if(g.ll)paMap.setView(g.ll,Math.max(paMap.getZoom(),13),{animate:false})}catch(e){}scrollTo({top:0,behavior:"smooth"})},330);
-}
-function paMapExpand(){
-  const body=$("mapBody");if(!body)return;paMapMin=false;body.classList.remove("mapmin");paMapInteract(true);
-  const panel=$("mapStore");if(panel){panel.hidden=true;panel.innerHTML=""}
-  document.querySelectorAll(".mpin.sel").forEach(x=>x.classList.remove("sel"));
-  setTimeout(()=>{try{paMap.invalidateSize();if(paPts.length>1)paMap.fitBounds(window.L.latLngBounds(paPts).pad(0.25),{maxZoom:15});else if(paPts.length)paMap.setView(paPts[0],13)}catch(e){}},330);
-}
-/* stores close together on screen join into one pin; zoom in and they split apart */
-function paDraw(){
-  if(!paMap||!paMk)return;const L=window.L;paMk.clearLayers();
-  const P=paLL.map(it=>paMap.latLngToLayerPoint(it.ll)),used=new Array(paLL.length).fill(false);
-  for(let i=0;i<paLL.length;i++){if(used[i])continue;used[i]=true;const cl=[i];
-    for(let j=i+1;j<paLL.length;j++)if(!used[j]&&P[i].distanceTo(P[j])<46){used[j]=true;cl.push(j)}
-    const parts=cl.map(x=>paLL[x].g),lls=cl.map(x=>paLL[x].ll);
-    const g=parts.length===1?{...parts[0],ll:lls[0]}:{k:"c:"+parts.map(x=>x.k).join("~"),store:parts.length+" stores",addr:"",cards:parts.flatMap(x=>x.cards),parts,ll:[lls.reduce((a,p)=>a+p[0],0)/lls.length,lls.reduce((a,p)=>a+p[1],0)/lls.length],lls};
-    const m=L.marker(g.ll,{icon:L.divIcon({className:"mpwrap",html:paMarkerHTML(g),iconSize:[52,74],iconAnchor:[26,72]}),zIndexOffset:g.cards.length});
-    m.on("click",e=>{if(e.originalEvent)L.DomEvent.stopPropagation(e.originalEvent);
-      if(paMapMin&&paMapSel===g.k){paMapExpand();return}
-      if(g.parts&&!paMapMin){const b=L.latLngBounds(g.lls);const spread=paMap.distance(b.getSouthWest(),b.getNorthEast());
-        if(spread>40&&paMap.getZoom()<16){paMap.flyToBounds(b.pad(0.6),{maxZoom:17,duration:.5});return}}
-      paStoreSheet(g)});
-    paMk.addLayer(m)}
-}
-async function renderMap(){
-  const body=$("mapBody");if(!body)return;paMapBar();
-  if(!SET.addr){body.innerHTML=`<div class="mapoff"><div class="mo-art">🗺️</div><h2>See where your offers come from</h2><p class="msg">Turn on <b>Save store addresses</b> in Settings. Every offer you scan after that shows up on your map, so you can see where the good ones are.</p><button class="btn" id="mapOn">Open Settings</button></div>`;
-    $("mapOn").onclick=()=>show("vSettings");paMap=null;return}
-  const groups=paMapGroups(),noAddr=paMapCards().filter(c=>!c.addr).length;
-  if(!groups.length){body.innerHTML=`<div class="mapoff"><div class="mo-art">📍</div><h2>${store.cards.some(c=>c.addr)?"No offers match":"Your map is ready"}</h2><p class="msg">${store.cards.some(c=>c.addr)?"Try a different day range or rarity at the top.":"Scan a few offers and their stores will pop up here. Only offers scanned with store addresses on can be placed."}</p></div>`;paMap=null;return}
-  if(!$("paMapEl")){body.innerHTML=`<div class="mapbox"><div id="paMapEl" class="mapel"></div><button class="mapexp" id="mapExp" aria-label="Make the map big again">⤢ Tap to expand map</button></div><div class="mapnote" id="mapNote"></div><div id="mapStore" class="mapstore" hidden></div>`;paMap=null;paMapMin=false;$("mapExp").onclick=e=>{e.stopPropagation();paMapExpand()}}
-  let L;try{L=await paLoadLeaflet()}catch(e){body.innerHTML=`<div class="mapoff"><h2>The map couldn't load</h2><p class="msg">Check your connection and try again.</p><button class="btn" id="mapRetry">Try again</button></div>`;$("mapRetry").onclick=renderMap;return}
-  if(!paMap){const light=document.documentElement.dataset.od==="light";
-    paMap=L.map("paMapEl",{zoomControl:false,attributionControl:true}).setView([29.78,-95.8],11);
-    const E="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/",th=light?"World_Light_Gray":"World_Dark_Gray";
-    L.tileLayer(E+th+"_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,maxNativeZoom:16,attribution:"Esri, HERE, Garmin, © OpenStreetMap"}).addTo(paMap);
-    L.tileLayer(E+th+"_Reference/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,maxNativeZoom:16,pane:"overlayPane"}).addTo(paMap);
-    paMap.setMaxZoom(18);
-    paMap.on("click",()=>{if(paMapMin)paMapExpand()});paMap.on("zoomend",paDraw);
-    L.control.zoom({position:"bottomright"}).addTo(paMap);paMk=L.layerGroup().addTo(paMap)}
-  setTimeout(()=>paMap.invalidateSize(),50);
-  paLL=[];paPts=[];let todo=0,fail=0;
-  for(const g of groups){const v=paGeo[g.k];if(paGeoOk(v)){paLL.push({g,ll:v});paPts.push(v)}else if(paGeoDue(v))todo++;else fail++}
-  const fit=()=>{if(paPts.length>1)paMap.fitBounds(L.latLngBounds(paPts).pad(0.25),{maxZoom:15});else if(paPts.length)paMap.setView(paPts[0],14)};
-  fit();paDraw();
-  const say=()=>{const n=$("mapNote");if(!n)return;const parts=[todo>0?`Finding ${todo} more store${todo>1?"s":""}…`:`${paLL.length} store${paLL.length===1?"":"s"} on the map · tap a pin to see its offers`];
-    if(fail)parts.push(`${fail} address${fail>1?"es":""} couldn't be found`);if(noAddr)parts.push(`${noAddr} offer${noAddr>1?"s have":" has"} no saved address`);n.textContent=parts.join(" · ")};
-  say();
-  for(const g of groups){if(!paGeoDue(paGeo[g.k]))continue;
-    paGeocode(g.k,g.addr+(g.city?", "+g.city:"")).then(ll=>{if(view!=="vMap")return;if(paGeoOk(ll)){paLL.push({g,ll});paPts.push(ll);paDraw()}else fail++;todo--;if(todo<=0)fit();say()})}
-}
-paTry("maptab",()=>{
-  if(!$("vMap")){$("vStats").insertAdjacentHTML("afterend",`<div class="wrap" id="vMap" hidden><header class="appbar"><div class="pagehead"><h1>Map</h1><div class="phr"><button class="pfbtn gearbtn" data-set="1" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button></div></div></header><div id="mapBody"></div></div>`)}
-  if(!VIEWS.includes("vMap"))VIEWS.push("vMap");
-  const t=document.querySelector('.ntab[data-v="vStats"]');
-  if(t){t.dataset.v="vMap";t.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>Map`}
-  document.querySelectorAll('#vMap [data-set]').forEach(b=>b.onclick=()=>show("vSettings"));
-  /* Stats keeps its page; it opens from Profile and has a back button */
-  const sh=document.querySelector("#vStats .pagehead h1");if(sh&&!$("paStBack"))sh.insertAdjacentHTML("beforebegin",`<button class="close" id="paStBack" aria-label="Back to Profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>`);
-  if($("paStBack"))$("paStBack").onclick=()=>show("vProfile");
-  const sw=window.show;
-  window.show=function(v){const r=sw.apply(this,arguments);
-    try{if(v==="vMap"){paBars();renderMap()}if(v==="vStats")document.querySelectorAll('.ntab[data-v="vProfile"]').forEach(x=>x.setAttribute("aria-current","page"))}catch(e){console.warn(e)}
-    return r};
-  paBars();
-});
-/* Profile: your stats near the top */
-paTry("profstats",()=>{
-  if(!PA_PSEC.some(s=>s[0]==="stats"))PA_PSEC.unshift(["stats","Stats"]);
-  const pk=window.paPKey;window.paPKey=function(el){if(el&&el.id==="paPStats")return "stats";return pk.apply(this,arguments)};
-  const rp=window.renderProfile;
-  window.renderProfile=function(){rp.apply(this,arguments);
-    try{const pb=$("profileBody");if(!pb)return;const old=$("paPStats");if(old)old.remove();if(paPHide().includes("stats"))return;
-      const all=allOffers();const wk=all.filter(c=>+new Date(c.ts)>realNow()-7*864e5),acc=wk.filter(c=>{try{return vOf(c).id==="accept"}catch(e){return false}}),a=agg(wk),P=paProfitOf(acc);
-      const days=[];for(let i=6;i>=0;i--){const d=today();d.setDate(d.getDate()-i);const k=dayKey(d);days.push(all.filter(c=>dayKey(c.ts)===k).length)}const mx=Math.max(1,...days);
-      const hero=$("profHero"),pos=hero?["afterend",hero]:["afterbegin",pb];
-      pos[1].insertAdjacentHTML(pos[0],`<button class="sbox pstats" id="paPStats" data-pk="stats"><span class="ps-h"><b>Your week</b><small>All stats ›</small></span>
-        <span class="ps-k"><span><b>${wk.length}</b><small>offers</small></span><span><b>${acc.length}</b><small>Accept</small></span>${profitOn()?`<span><b>${paM0(P.pr)}</b><small>profit on Accepts</small></span>`:`<span><b>$${a.rate.toFixed(0)}</b><small>avg /hr</small></span>`}</span>
-        <span class="ps-sp">${days.map(n=>`<i style="height:${Math.max(6,n/mx*100)}%"></i>`).join("")}</span></button>`);
-      $("paPStats").onclick=()=>show("vStats");
-    }catch(e){console.warn(e)}};
-});
+/* ---------- the Map tab was removed: forget the saved store locations ---------- */
+try{localStorage.removeItem("dd.geo1")}catch(e){}
 
 /* ---------- card page: where the money goes ---------- */
 paTry("moneybar",()=>{
@@ -9862,9 +9665,8 @@ paTry("moneybar",()=>{
 
 window.paAlphaNotice=function(){
   if(SET.paSeen===APP_VER)return;const fresh=!store.cards.length;SET.paSeen=APP_VER;saveSet();if(fresh)return;
-  qrSheet(`<div class="qrcard alpha2"><div class="al-badge">ALPHA 2.2</div><h2>The Map is here</h2>
+  qrSheet(`<div class="qrcard alpha2"><div class="al-badge">ALPHA 2.2</div><h2>Profit, pass road and more</h2>
     <ul class="al-list">
-      <li>🗺️ <b>Map tab</b>: your offers pinned on a map by store (turn on Save store addresses). Stats moved into Profile</li>
       <li>💵 <b>Profit you can read</b>: on every card, under each day, and a new Profit section in Stats</li>
       <li>🚲 Pick what you drive (bike, e-bike, car, truck…) and fine-tune your cost per mile</li>
       <li>🏆 A new Season road with milestones</li>
