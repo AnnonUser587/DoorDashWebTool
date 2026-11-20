@@ -3462,7 +3462,7 @@ const SKEY="offerdex.settings";
 /* fixed targets used by the charts (the same ones the grading is built around) */
 const GOAL_HR=20,GOAL_MI=1.5;
 const SET=Object.assign({scanMode:"auto",redCard:true,theme:"dark",motion:true,clock:true,name:"",avatar:"legendary",addr:false,maps:true,share:true,shareLoc:true},(()=>{try{return JSON.parse(localStorage.getItem(SKEY)||"{}")}catch(e){return {}}})());
-const saveSet=()=>{try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}};
+const saveSet=()=>{if(typeof paStageSave==="function"&&paStageSave())return;try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}};
 const darkMQ=matchMedia("(prefers-color-scheme: dark)");
 function applyTheme(){
   const t=SET.theme==="system"?(darkMQ.matches?"dark":"light"):SET.theme;
@@ -3587,7 +3587,7 @@ const uploadMax=()=>signedIn()?(selfUpMax()||modUpMax()||30):10;
 const modUnlim=()=>!!(store.modState&&store.modState.unlim)||(typeof Cloud!=="undefined"&&Cloud.isHead&&!!SET.devNoLimit);
 const dayLimit=()=>modUnlim()?Infinity:(signedIn()?50:25)+(typeof fxToday==="function"?fxToday("scans"):0);
 const dayLimTxt=()=>Number.isFinite(dayLimit())?String(dayLimit()):"∞";
-const capLimit=()=>signedIn()?300:100;
+const capLimit=()=>signedIn()?500:150;
 const usedToday=()=>store.use&&store.use.d===dayKey(today())?(+store.use.n||0):0;
 function addUse(n){const d=dayKey(today());if(!store.use||store.use.d!==d)store.use={d,n:0};store.use.n+=n}
 const roomLeft=()=>SET.devNoLimit&&typeof Cloud!=="undefined"&&Cloud.isHead?999:Math.max(0,Math.min(isGod()||modUnlim()?999:dayLimit()-usedToday(),capLimit()-store.cards.length));
@@ -3809,6 +3809,7 @@ function migrateProgress(){
 /* ---------- personal accept bar: the middle grade of your recent offers moves the Accept line a little ---------- */
 let barCache=null;
 function myBar(){
+  if(!SET.slowDay)return {bar:51,n:0,tuned:false};
   if(barCache&&barCache.t>Date.now()-5000&&barCache.n===store.cards.length)return barCache.r;
   const since=Date.now()-30*864e5;
   const g=store.cards.filter(c=>trusted(c)&&!c._friend&&+new Date(c.ts)>=since).sort((a,b)=>new Date(a.ts)-new Date(b.ts)).map(gradeOf);
@@ -4811,7 +4812,7 @@ const GLOBAL_CAPTIONS=["Look at this pull!","Worth it?","Easy money","Not worth 
 const POST_EMOJIS=["🔥","💰","🤑","😎","🚗","🍔","🍕","🌮","🏆","💎","✨","👀","😂","😭","💀","🤡","🙏","👍","👎","🎃","🦃","🎄","🥶","😤"];
 const REACTS=["🔥","💰","😂","😮","👎"];
 const POST_FIELDS=["id","no","store","stores","platform","pay","minutes","miles","stops","dropoffs","grade","luck","score","tier","pph","ppm","reasons","parts","finish","ts","boost","verified","rc","vb","stk","dv","alc","sp","sd"];
-const CAPTION_MAX=120,GLOBAL_PER_DAY=10;
+const CAPTION_MAX=50,GLOBAL_PER_DAY=10;
 let feedAud=null,feedCache={friends:null,global:null},feedAt={friends:0,global:0};
 const postCard=c=>{const o={};for(const k of POST_FIELDS)if(c[k]!==undefined&&c[k]!==null)o[k]=c[k];return o};
 const timeAgo=t=>{const s=Math.max(0,Math.round((Date.now()-t)/1000));return s<60?"just now":s<3600?Math.round(s/60)+"m":s<86400?Math.round(s/3600)+"h":Math.round(s/86400)+"d"};
@@ -4932,10 +4933,10 @@ async function renderFeed(force){
   const posts=(feedCache[aud]||[]).filter(p=>!hidP.has(p.id)&&!hidU.has(p.uid));
   const me=Cloud.user?Cloud.user.uid:"";
   /* 3 reports from different drivers hide a Global post until a moderator looks at it */
-  const shown=posts.filter(p=>!(p.aud==="global"&&p.rb>=3&&!p.ok)||Cloud.isMod||p.uid===me);
+  const shown=posts;
   box.innerHTML=(!Cloud.user?`<div class="notice signout"><span class="nt-ic">👋</span><div><b>You're seeing community posts</b><small>Sign in with Google to post, comment, add friends and back up your cards.</small></div><button class="btn sm" id="feedIn2">Sign in</button></div>`:"")+(aud==="friends"?friendRowHTML():"")+(Cloud.user?groupChallengeHTML(aud):"")+`<div class="feedtop"><button class="linkbtn" id="feedRefresh">↻ Refresh</button></div>`+
-    (shown.length?`<div class="posts">${shown.map(p=>`<article class="post${p.rb>=3&&!p.ok?" held":""}" data-pid="${esc(p.id)}">
-      ${p.rb>=3&&!p.ok?`<div class="heldbar">Hidden from everyone: ${p.rb} reports. ${Cloud.isMod?`<button class="mini" data-keep="${esc(p.id)}">Keep it up</button>`:"A moderator will check it."}</div>`:""}
+    (shown.length?`<div class="posts">${shown.map(p=>`<article class="post${p.rb>=3&&!p.ok&&Cloud.isMod?" held":""}" data-pid="${esc(p.id)}">
+      ${p.rb>=3&&!p.ok&&Cloud.isMod?`<div class="heldbar">${p.rb} reports. Still showing to everyone. <button class="mini" data-keep="${esc(p.id)}">Looks fine</button></div>`:""}
       <header><span class="avatar sm" style="--c:${TC[p.card.tier]||"var(--t-rare)"}">${esc((p.name[0]||"D").toUpperCase())}</span>
         <span class="pn"${p.uid!==me?` data-who="${esc(p.uid)}" data-nm="${esc(p.name)}" role="button" tabindex="0"`:""}><b>${p.uid===me?"You":esc(p.name)}</b><small>${p.title?`<span class="ttag">${esc(p.title)}</span> `:""}Level ${p.level} · ${timeAgo(p.at)}${aud==="global"&&p.uid===me?" · Global":""}</small></span>
         ${p.uid===me?`<button class="mini ghost" data-del="${esc(p.id)}">Delete</button>`:aud==="global"?`${Cloud.isMod?`<button class="mini modbtn" data-mod="${esc(p.id)}">Mod</button>`:""}<button class="mini ghost" data-hide="${esc(p.id)}" aria-label="Hide or report this post">•••</button>`:""}</header>
@@ -5591,7 +5592,7 @@ async function syncClock(){
 /* =========================================================
    About: version, what's new, privacy policy and terms (Settings)
    ========================================================= */
-const APP_VER="2.2 Alpha";
+const APP_VER="2.3 Alpha";
 const SUPPORT_EMAIL="supportdasherdex@gmail.com";
 /* the DasherDex Discord: the head moderator sets the invite in the mod menu (no re-upload needed) */
 const DISCORD_DEFAULT="";
@@ -5600,6 +5601,16 @@ const discordLink=()=>{const u=(typeof Cloud!=="undefined"&&Cloud.notice&&Cloud.
 const DISCORD_ICON='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.6 5.2A17 17 0 0 0 15.4 4l-.5 1a15.6 15.6 0 0 0-5.8 0L8.6 4a17 17 0 0 0-4.2 1.3C1.7 9.2 1 13 1.3 16.8a17 17 0 0 0 5.2 2.6l1.1-1.7c-.6-.2-1.2-.5-1.7-.9l.4-.3a12.2 12.2 0 0 0 11.4 0l.4.3c-.5.4-1.1.7-1.7.9l1.1 1.7a17 17 0 0 0 5.2-2.6c.4-4.4-.7-8.2-3.1-11.6zM8.7 14.5c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1zm6.6 0c-1 0-1.9-1-1.9-2.1s.8-2.1 1.9-2.1 1.9 1 1.9 2.1-.8 2.1-1.9 2.1z"/></svg>';
 const discordBtn=id=>discordLink()?`<a class="dcbtn" id="${id}" href="${esc(discordLink())}" target="_blank" rel="noopener noreferrer">${DISCORD_ICON}<span><b>Join the DasherDex Discord</b><small>Patch notes, best pulls and other drivers</small></span><span class="abgo">›</span></a>`:"";
 const WHATS_NEW=[
+  ["2.3 Alpha","November 2026",[
+    "Holiday events start and end on their own: Thanksgiving with falling leaves through November 30, the Winter Event from December 1 with snow and Christmas lights, then New Year confetti from December 30.",
+    "Season 0.1 · Winter starts December 1 with winter-only titles, borders and Winter Chests. Tiers take more XP to climb, and tier 100 holds a Glass of Milk.",
+    "Your Dex holds 500 cards when signed in (150 without), and tells you when it's almost full with a one-tap Recycle pick of your lowest cards.",
+    "Opening items plays a little animation, and chests found inside chests during Open all pop open right after with a shake.",
+    "Driver profiles from the feed show their real profile picture and border.",
+    "Posts: emojis are gone. Add a comment up to 50 characters instead. Reports no longer hide posts on their own; a moderator decides.",
+    "Your Accept line stays fixed at the normal level, so offer scores stay consistent. It only moves when Slow Day is on.",
+    "Settings: changes wait for the Save changes button at the top, and you're asked before leaving with unsaved changes.",
+  ]],
   ["2.2 Alpha","November 2026",[
     "Profit you can read: each card shows its profit and %, each day in the Dex shows profit and % of the pay, and Stats has a Profit section with a 7-day chart.",
     "Day summary: Profit is on by default and pay per hour is optional (⚙ Day summary).",
@@ -5952,7 +5963,7 @@ function seasonsList(){
   return L;
 }
 const seasonNow=()=>{const k=dayKey(today());return seasonsList().find(s=>k>=s.from&&k<=s.to)||null};
-const PASS_XP=300,PASS_TIERS=100;
+let PASS_XP=300;const PASS_TIERS=100;
 const PASS=[{xp_s:1},{charm:1},{chest_b:1},{dx15:1},{chest_s:1},{swap:1},{charm:1},{chest_b:1},{dx30:1},{chest_g:1},
   {xp_s:1,swap:1},{scans:1},{charm2:1},{chest_b:1},{reroll:1},{dx30:1},{chest_s:1},{saver:1},{charm2:1},{chest_g:1},
   {xp_l:1},{dx60:1},{chest_s:1},{reroll:1},{charm2:1,chest_s:1},{dx60:1},{chest_g:1},{xp_l:1},{reroll:1},{frame:1,chest_g:1}];
@@ -6194,7 +6205,7 @@ async function openUser(uid,nameHint,back){
   if($("qrSheet").hidden)return;
   const nm=(pub&&pub.name)||nameHint||"Driver",L=(pub&&+pub.level)||1,ach=pub&&Array.isArray(pub.ach)?pub.ach:[];
   qrSheet(`<div class="qrcard pubp">
-    <div class="drv-head"><span class="avatar${pub&&typeof pub.bd==="string"&&/^[a-z0-9]{2,12}$/i.test(pub.bd)?" bd-"+pub.bd:""}" style="--c:${pub&&pub.best?TC[pub.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${pub&&typeof pub.av==="string"&&/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(pub.av)?`<img src="${pub.av}" alt="">`:esc(nm[0].toUpperCase())}</span>
+    <div class="drv-head"><span class="avatar${pub&&typeof pub.bd==="string"&&/^[a-z0-9_]{2,16}$/i.test(pub.bd)?" bd-"+pub.bd:""}" style="--c:${pub&&pub.best?TC[pub.best.tier]||"var(--t-rare)":"var(--t-rare)"}">${pub&&typeof pub.av==="string"&&/^data:image\/jpeg;base64,[A-Za-z0-9+\/=]+$/.test(pub.av)?`<img src="${pub.av}" alt="">`:esc(nm[0].toUpperCase())}</span>
       <div><h2>${pub&&pub.username?"@"+esc(pub.username):esc(nm)}</h2><small>${pub&&pub.pr?`<span class="prb">★${pub.pr>1?pub.pr:""}</span>`:""}Level ${L} · ${titleOf(L)}${pub&&pub.cards?` · ${pub.cards} cards`:""}</small>${pub&&pub.title?`<div><span class="ttag">${esc(String(pub.title).slice(0,30))}</span></div>`:""}</div></div>
     ${pub&&Array.isArray(pub.show)&&pub.show.length?`<div class="flabel">Showcase</div><div class="show3 pubshow">${pub.show.slice(0,3).map((c,i)=>cardHTML({...cleanCard(c,"sc"+i),_friend:true,_art:""})).join("")}</div>${pub.note?`<p class="shownote">“${esc(String(pub.note).slice(0,80))}”</p>`:""}`:""}
     ${ach.length?`<div class="flabel">Achievements · ${ach.length}</div><div class="pubach">${ach.map(a=>`<span>${esc(a)}</span>`).join("")}</div>`:""}
@@ -7625,6 +7636,76 @@ html:not([data-od="light"]) .card .val.wp .pf b{color:#1a9a50}
 /* (map removed) */
 
 /* (map removed) */
+
+/* ===== 2.3 Alpha ===== */
+/* using an item */
+.pafx-use{position:fixed;inset:0;z-index:300;display:grid;place-items:center;pointer-events:none}
+.pafx-use .pu-ring{position:absolute;width:150px;height:150px;border-radius:50%;border:3px solid var(--c);opacity:0;animation:puRing .9s ease-out forwards}
+.pafx-use .pu-ic{font-size:76px;filter:drop-shadow(0 0 22px var(--c));animation:puPop 1.4s cubic-bezier(.2,1.5,.4,1) forwards}
+.pafx-use .pu-tx{position:absolute;top:calc(50% + 62px);font-weight:800;font-size:1rem;color:#fff;text-shadow:0 2px 10px #000;opacity:0;animation:puTx 1.4s ease forwards}
+@keyframes puPop{0%{transform:scale(.2);opacity:0}25%{transform:scale(1.25);opacity:1}45%{transform:scale(1)}80%{transform:scale(1) translateY(0);opacity:1}100%{transform:scale(.6) translateY(-60px);opacity:0}}
+@keyframes puRing{0%{transform:scale(.3);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+@keyframes puTx{0%,15%{opacity:0;transform:translateY(8px)}35%,80%{opacity:1;transform:none}100%{opacity:0}}
+/* a chest inside a chest */
+.pafx-inside{position:fixed;inset:0;z-index:300;display:grid;place-content:center;justify-items:center;gap:14px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);color:#fff;transition:opacity .25s}
+.pafx-inside.out{opacity:0}
+.pafx-inside .pi-chest{font-size:96px;filter:drop-shadow(0 0 26px #ffb43c);animation:piIn .35s cubic-bezier(.2,1.6,.4,1) both,piShake .5s .35s ease-in-out 2}
+.pafx-inside b{font-size:1.15rem;animation:puTx 1.2s ease both}
+@keyframes piIn{from{transform:scale(.2) translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes piShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg) scale(1.05)}40%{transform:rotate(10deg)}60%{transform:rotate(-8deg) scale(1.08)}80%{transform:rotate(6deg)}}
+/* almost-full Dex */
+.pacap{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 12px;border-radius:16px;border:1px solid color-mix(in srgb,#ffb43c 45%,transparent);background:color-mix(in srgb,#ffb43c 10%,var(--card,#111))}
+.pacap.full{border-color:color-mix(in srgb,#ff453a 60%,transparent);background:color-mix(in srgb,#ff453a 12%,var(--card,#111))}
+.pacap .pc-meter{flex:0 0 38px;height:38px;border-radius:50%;position:relative;overflow:hidden;background:var(--line,#333)}
+.pacap .pc-meter i{position:absolute;left:0;bottom:0;width:100%!important;height:var(--h,90%);background:#ffb43c}
+.pacap .pc-meter{background:conic-gradient(#ffb43c calc(var(--p,90)*1%),var(--line,#333) 0)}
+.pacap .pc-meter i{display:none}
+.pacap .pc-tx{flex:1;min-width:0;display:grid;gap:2px}.pacap .pc-tx small{opacity:.75;font-size:.8rem;line-height:1.3}
+.pacap .btn.sm{flex:none;width:auto;margin:0;padding:8px 14px}
+/* Season 0.1 tier 100: Santa takes the milk */
+.pasanta{position:fixed;inset:0;z-index:400;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 70%,#0e2342,#03070f 75%);color:#fff;overflow:hidden;animation:psFade .4s ease both}
+.pasanta.done{animation:psOut .6s ease forwards}
+.pasanta .ps-scene{position:relative;width:min(92vw,420px);height:220px}
+.pasanta .ps-scene::after{content:"";position:absolute;left:0;right:0;bottom:30px;height:6px;border-radius:3px;background:#5b3b22;box-shadow:0 6px 0 #3a2414}
+.pasanta .ps-milk{position:absolute;left:50%;bottom:36px;font-size:64px;transform:translateX(-50%);transition:transform .5s}
+.pasanta .ps-cookie{position:absolute;left:calc(50% + 46px);bottom:36px;font-size:30px}
+.pasanta .ps-santa{position:absolute;bottom:30px;left:-120px;font-size:84px;line-height:1}
+.pasanta .ps-santa .ps-bag{position:absolute;right:-26px;top:22px;font-size:40px}
+.pasanta .ps-say{position:absolute;left:50%;top:0;transform:translateX(-50%);font-weight:900;font-size:1.4rem;opacity:0}
+.pasanta .ps-msg{position:absolute;bottom:18%;left:0;right:0;text-align:center;font-size:1.1rem;opacity:0;padding:0 16px}
+.pasanta.go .ps-santa{animation:psRun 3.8s cubic-bezier(.45,0,.4,1) forwards}
+.pasanta.go .ps-milk{animation:psGrab 3.8s linear forwards}
+.pasanta.go .ps-say{animation:psSay 3.8s ease forwards}
+.pasanta.go .ps-msg{animation:psMsg 4.2s ease forwards}
+@keyframes psRun{0%{left:-120px;transform:none}38%{left:calc(50% - 110px);transform:none}48%{left:calc(50% - 110px);transform:translateY(-10px)}55%{left:calc(50% - 110px);transform:scaleX(-1)}62%{left:calc(50% - 110px);transform:scaleX(-1) translateY(-6px)}100%{left:-160px;transform:scaleX(-1)}}
+@keyframes psGrab{0%,46%{left:50%;bottom:36px;opacity:1}52%{left:calc(50% - 40px);bottom:90px}100%{left:-80px;bottom:90px;opacity:1}}
+@keyframes psSay{0%,40%{opacity:0;transform:translateX(-50%) scale(.6)}48%,70%{opacity:1;transform:translateX(-50%) scale(1)}85%,100%{opacity:0}}
+@keyframes psMsg{0%,70%{opacity:0;transform:translateY(10px)}82%,100%{opacity:1;transform:none}}
+@keyframes psFade{from{opacity:0}to{opacity:1}}
+@keyframes psOut{to{opacity:0}}
+/* holiday effects: one light layer for falling snow, leaves or confetti, plus Christmas lights in December */
+#paSnow{display:none!important}
+#paFx{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden;contain:strict}
+#paFx i{position:absolute;top:-24px;font-style:normal;color:#fff;opacity:.8;will-change:transform;animation:paFall linear infinite;text-shadow:0 0 6px rgba(255,255,255,.4)}
+#paFx[data-k="fall"] i{opacity:.85;text-shadow:none;animation-name:paLeaf}
+#paFx[data-k="newyear"] i{opacity:.9;text-shadow:0 0 6px currentColor;animation-name:paConf}
+@keyframes paFall{from{transform:translate3d(0,0,0)}50%{transform:translate3d(14px,52vh,0)}to{transform:translate3d(-8px,106vh,0)}}
+@keyframes paLeaf{from{transform:translate3d(0,0,0) rotate(0)}33%{transform:translate3d(26px,35vh,0) rotate(120deg)}66%{transform:translate3d(-20px,70vh,0) rotate(240deg)}to{transform:translate3d(10px,106vh,0) rotate(360deg)}}
+@keyframes paConf{from{transform:translate3d(0,0,0) rotate(0)}to{transform:translate3d(-20px,106vh,0) rotate(720deg)}}
+#paLights{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0);height:22px;z-index:45;pointer-events:none}
+#paLights .pl-wire{position:absolute;inset:0 0 auto 0;width:100%;height:14px}
+#paLights b{position:absolute;top:7px;width:7px;height:11px;margin-left:-3.5px;border-radius:50% 50% 45% 45%;background:var(--c);box-shadow:0 0 8px 2px var(--c);animation:paTwk 1.8s ease-in-out infinite}
+#paLights b::before{content:"";position:absolute;top:-3px;left:1.5px;width:4px;height:4px;border-radius:1px;background:#3a4a3a}
+@keyframes paTwk{0%,100%{opacity:1}50%{opacity:.35;box-shadow:0 0 3px 0 var(--c)}}
+html[data-eco="1"] #paFx,html[data-eco="1"] #paLights,html.calm #paFx,html.calm #paLights{display:none}
+/* Settings save button */
+.pasave{font:inherit;font-weight:700;font-size:.85rem;padding:7px 14px;border-radius:999px;border:1px solid var(--line,#333);background:transparent;color:inherit;opacity:.55;transition:background .2s,color .2s,opacity .2s,box-shadow .2s}
+.pasave.on{opacity:1;background:var(--accent,#e8402f);border-color:transparent;color:#fff;box-shadow:0 0 0 0 color-mix(in srgb,var(--accent,#e8402f) 60%,transparent);animation:psGlow 1.6s ease-in-out infinite}
+@keyframes psGlow{50%{box-shadow:0 0 0 6px transparent}}
+/* post comment */
+.pcapin{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:11px 12px;border-radius:12px;border:1px solid var(--line,#333);background:var(--card2,rgba(255,255,255,.04));color:inherit}
+.qrcard.post label.nlab{display:flex;justify-content:space-between}
+@media (prefers-reduced-motion: reduce){.pafx-use,.pafx-inside .pi-chest{animation:none}}
 </style>
 <script id="pa-js">/* =====================================================================
    DasherDex Pre-Alpha layer. Loads after the app and extends it (items, tags, stats, privacy, battle pass, titles...).
@@ -9536,7 +9617,7 @@ function paOpenNested(loot){
       q={};for(const k of PA_OPEN){const d=invOf(k)-(snap[k]-(opened[k]||0));if(d>0)q[k]=d}}
   }finally{window.xpFX=xf}
   const b=paBatch;paBatch=null;if(!b||!b.n)return;
-  const m=new Map();for(const it of b.items){const key=it.n.replace(/ ×\d+$/,"")+"|"+(it.bd||"");const c=m.get(key);
+  const m=new Map();for(const it of b.items){const key=it.n.startsWith("+")?"+xp":it.n.replace(/ ×\d+$/,"")+"|"+(it.bd||"");const c=m.get(key);
     if(c&&!it.bd&&!it.n.startsWith("+")){c.k+=(+((it.n.match(/×(\d+)$/)||[])[1])||1)}else if(c&&it.n.startsWith("+")){c.x+=+(it.n.replace(/[^\d]/g,""))||0}else m.set(key,{...it,k:+((it.n.match(/×(\d+)$/)||[])[1])||1,x:it.n.startsWith("+")?+(it.n.replace(/[^\d]/g,""))||0:0})}
   const list=[...m.values()].map(it=>({...it,n:it.x?`+${it.x.toLocaleString()} XP`:it.n.replace(/ ×\d+$/,"")+(it.k>1?" ×"+it.k:"")})).sort((a,c)=>a.rk-c.rk);
   paChestShow(`Bonus! ${b.n} more opened`,"🎁","epic",list,()=>{if(b.xp>0)xf(b.xp,"Bonus")});
@@ -9672,6 +9753,207 @@ window.paAlphaNotice=function(){
       <li>🏆 A new Season road with milestones</li>
       <li>🎁 Chests inside chests now open on their own</li>
       <li>♻️ Auto recycle can wait a day, a week or a month first</li>
+    </ul></div><button class="btn" id="alGo">Let's go</button>`);
+  $("alGo").onclick=closeQR;
+};
+
+/* ===================== 2.3 Alpha ===================== */
+
+/* ---------- using an item plays a little animation ---------- */
+function paUseFX(icon,text,col){
+  if(SET.eco===1)return;const o=document.createElement("div");o.className="pafx-use";o.style.setProperty("--c",col||"#ff5a46");
+  o.innerHTML=`<div class="pu-ring"></div><div class="pu-ic">${icon}</div><div class="pu-tx">${esc(text||"")}</div>`;document.body.appendChild(o);setTimeout(()=>o.remove(),1500);
+}
+paTry("usefx",()=>{
+  const u=window.useItem;
+  window.useItem=function(k){
+    const before=invOf(k),it=ITEMS[k];const r=u.apply(this,arguments);
+    try{if(it&&!paBatch&&!PA_OPEN.includes(k)&&!it.chest&&k!=="milk"&&invOf(k)<before)paUseFX(it.i,it.n,TC[it.r])}catch(e){}
+    return r};
+});
+
+/* ---------- Open all: chests that came out of a chest pop open right after, with a quick shake ---------- */
+function paChestInside(icon,n,then){
+  if(SET.eco===1){then();return}
+  const o=document.createElement("div");o.className="pafx-inside";o.innerHTML=`<div class="pi-chest">${icon}</div><b>${n>1?n+" chests were inside!":"A chest was inside!"}</b>`;
+  document.body.appendChild(o);setTimeout(()=>{o.classList.add("out");setTimeout(()=>{o.remove();then()},260)},1050);
+}
+window.paOpenAll=function(){
+  const ks=PA_OPEN.filter(k=>invOf(k)>0);if(!ks.length)return;
+  paBatch={items:[],xp:0,n:0};const xf=window.xpFX;window.xpFX=()=>{};
+  try{for(const k of ks){let g=0,n=invOf(k);while(invOf(k)>0&&g++<n)window.useItem(k)}}finally{window.xpFX=xf}
+  const gained={};for(const k of PA_OPEN){const n=invOf(k);if(n>0)gained[k]=n}
+  const b=paBatch;paBatch=null;
+  const m=new Map();for(const it of b.items){const key=it.n.startsWith("+")?"+xp":it.n.replace(/ ×\d+$/,"")+"|"+(it.bd||"");const c=m.get(key);
+    if(c&&!it.bd&&!it.n.startsWith("+")){c.k+=(+((it.n.match(/×(\d+)$/)||[])[1])||1)}else if(c&&it.n.startsWith("+")){c.x+=+(it.n.replace(/[^\d]/g,""))||0}else m.set(key,{...it,k:+((it.n.match(/×(\d+)$/)||[])[1])||1,x:it.n.startsWith("+")?+(it.n.replace(/[^\d]/g,""))||0:0})}
+  const list=[...m.values()].map(it=>({...it,n:it.x?`+${it.x.toLocaleString()} XP`:it.n.replace(/ ×\d+$/,"")+(it.k>1?" ×"+it.k:"")})).sort((a,c)=>a.rk-c.rk);
+  paChestShow(`Opened ${b.n}`,"🎁","legendary",list,()=>{if(b.xp>0)xf(b.xp,"Open all");
+    const tot=Object.values(gained).reduce((a,v)=>a+v,0);if(!tot)return;
+    const top=Object.keys(gained).sort((a,c)=>RANK[ITEMS[c].r]-RANK[ITEMS[a].r])[0];
+    setTimeout(()=>{closeQR();setTimeout(()=>paChestInside(ITEMS[top].i,tot,()=>paOpenNested(gained)),220)},700)});
+};
+
+/* ---------- driver profiles show their real profile picture and border ---------- */
+function paPaintProfile(uid){
+  let tries=0;const go=async()=>{
+    const els=[...document.querySelectorAll("#qrSheet .drv-head .avatar, .wrap:not([hidden]) .phero .avatar")].filter(e=>e.dataset.paav!==uid&&!e.closest("#vProfile"));
+    if(!els.length){if(tries++<12)setTimeout(go,150);return}
+    const v=await paAvOf(uid);for(const el of els){el.dataset.paav=uid;if(v.av){el.innerHTML=`<img src="${v.av}" alt="">`;el.classList.add("hasav")}if(v.bd&&PA_BORDERS[v.bd])el.classList.add("bd-"+v.bd)}};
+  go();
+}
+paTry("profav",()=>{
+  for(const fn of ["openUser","openFriend","openDriver"]){const f=window[fn];if(typeof f!=="function")continue;
+    window[fn]=function(uid){const r=f.apply(this,arguments);try{if(typeof uid==="string"&&uid)paPaintProfile(uid)}catch(e){}return r}}
+});
+
+/* ---------- a bigger Dex, and a heads-up before it fills ---------- */
+function paNearCap(){const cap=capLimit(),n=store.cards.length;return {cap,n,near:n>=Math.floor(cap*0.9),left:Math.max(0,cap-n)}}
+function paRecycleSuggest(){
+  const pick=store.cards.filter(c=>scrapOK(c)&&!c.fav&&!special(c)&&!c.stk).sort((a,b)=>RANK[a.tier]-RANK[b.tier]||a.score-b.score).slice(0,25).map(c=>c.id);
+  if(!pick.length){toast("Nothing easy to recycle. Pick cards yourself by holding one.");return}
+  show("vDex");setTimeout(()=>{startSelect(pick);toast(`Picked your ${pick.length} lowest cards. Tap any to keep them, then recycle.`)},250);
+}
+paTry("cap",()=>{
+  const rd=window.renderDex;
+  window.renderDex=function(){rd.apply(this,arguments);
+    try{const old=$("paCapB");if(old)old.remove();const s=paNearCap();if(!s.near)return;const days=$("todayStrip")||$("days");if(!days)return;
+      days.insertAdjacentHTML("beforebegin",`<div class="pacap${s.left===0?" full":""}" id="paCapB"><span class="pc-meter" style="--p:${Math.min(100,Math.round(s.n/s.cap*100))}"></span>
+        <span class="pc-tx"><b>${s.left===0?"Your Dex is full":"Your Dex is almost full"}</b><small>${s.n} of ${s.cap} cards. Recycle your lowest cards to make room for new ones.</small></span><button class="btn sm" id="paCapGo">Recycle</button></div>`);
+      $("paCapGo").onclick=paRecycleSuggest;
+    }catch(e){}};
+  const fs=window.finishSave;
+  window.finishSave=function(){const before=paNearCap().near;const r=fs.apply(this,arguments);try{const s=paNearCap();if(s.near&&!before)setTimeout(()=>toast(`📦 Your Dex is almost full (${s.n} of ${s.cap}). Recycle some cards to make room.`),3200)}catch(e){}return r};
+});
+
+/* ---------- Season 0.1 · Winter (Dec 1): harder to climb, winter-only rewards, and a glass of milk ---------- */
+const PA_SWT={zwa:["Frosty Start","common",5,"❄️"],zwb:["Snowplow","uncommon",10,"🚜"],zwc:["Sleigh Rider","rare",20,"🛷"],zwd:["Ice Road Dasher","rare",25,"🧊"],
+  zwe:["Blizzard Runner","epic",30,"🌨️"],zwf:["Polar Express","epic",40,"🚂"],zwg:["Winter Royalty","legendary",50,"👑"],zwh:["Frost Giant","legendary",75,"🏔️"],zwi:["Santa's Favorite","mythic",100,"🎅"]};
+const PA_SWB={zwa:["Icicle","rare",15],zwb:["Ornament","epic",35,1],zwc:["Winter Aurora","legendary",60,1],zwd:["Santa's Sleigh","mythic",90,1]};
+paTry("s01",()=>{
+  window.seasonsList=function(){
+    const L=[{id:"z0",name:"Season 0 · Genesis",from:"2026-11-08",to:"2026-11-30"},{id:"z01",name:"Season 0.1 · Winter",from:"2026-12-01",to:"2027-02-28"}];
+    for(let i=0;i<12;i++){const st=new Date(2027,2+i*3,1),en=new Date(2027,2+i*3+3,0);L.push({id:"z"+(i+1),name:"Season "+(i+1),from:dayKey(st),to:dayKey(en)})}
+    return L};
+  for(const [k,[n,r,t,e]] of Object.entries(PA_SWT)){ETITLES[k]={n,r,how:`Season 0.1 (Winter) pass, tier ${t} (only this season)`};ITEMS["t_"+k]={n:"Title: "+n,r,i:"🏷️",hide:1,title:1,d:ETITLES[k].how};PA_TART[k]=[e,"#9fdcff","#06182a",RANK[r]>=RANK.legendary?1:0]}
+  for(const [k,[n,r,t,an]] of Object.entries(PA_SWB)){const v=[n,r,`Season 0.1 (Winter) pass, tier ${t} (only this season)`,an];PA_BORDERS[k]=v;ITEMS["b_"+k]={n:"Border: "+n,r,i:"🖼️",hide:1,d:v[2]}}
+  if(!ITEM_ORDER.includes("milk"))ITEM_ORDER.unshift("milk");
+  ITEMS.milk={n:"Glass of Milk",r:"mythic",i:"🥛",d:"Season 0.1 tier 100. Use it once… if you dare leave it out."};
+  const S=seasonNow();
+  if(S&&S.id==="z01"){
+    PASS.forEach(r=>{for(const k of Object.keys(r))if(/^t_z0|^b_z0|^chest_z0$/.test(k))delete r[k]});
+    for(const [k,[,,t]] of Object.entries(PA_SWT))PASS[t-1]["t_"+k]=1;
+    for(const [k,[,,t]] of Object.entries(PA_SWB))PASS[t-1]["b_"+k]=1;
+    for(const t of [15,45,70,85])PASS[t-1].chest_w=(PASS[t-1].chest_w||0)+1;
+    for(const t of [8,22,38,55,66,82,95])PASS[t-1].cocoa=(PASS[t-1].cocoa||0)+1;
+    PASS[99].milk=1;
+  }
+  /* tiers cost much more XP starting with Season 0.1 (Season 0 stays as it was, so nobody drops a tier) */
+  const pxp=()=>{const s=seasonNow();PASS_XP=s&&s.id!=="z0"&&s.id!=="s1"?750:300};pxp();
+  const ps=window.passState;
+  window.passState=function(){pxp();return ps.apply(this,arguments)};
+  const u=window.useItem;
+  window.useItem=function(k){if(k==="milk"&&invOf("milk")>0){gEv()["u:"+rid()]={milk:-1};save();try{renderProfile()}catch(e){}closeQR();setTimeout(paSanta,250);return true}return u.apply(this,arguments)};
+});
+function paSanta(){
+  const o=document.createElement("div");o.className="pasanta";
+  o.innerHTML=`<div class="ps-scene"><div class="ps-milk">🥛</div><div class="ps-cookie">🍪</div><div class="ps-santa">🎅<span class="ps-bag">💰</span></div><div class="ps-say">Ho ho ho!</div></div><div class="ps-snow"></div><b class="ps-msg">Santa grabbed your milk and ran! 🎅💨</b>`;
+  document.body.appendChild(o);
+  setTimeout(()=>o.classList.add("go"),400);
+  setTimeout(()=>o.classList.add("done"),4600);
+  setTimeout(()=>o.remove(),5200);
+}
+
+/* ---------- events start and end on their own: Thanksgiving through November, Winter in December, New Year after ---------- */
+paTry("events2",()=>{
+  const tg=EVENTS.find(e=>e.id==="thanksgiving");if(tg){tg.dates=y=>[new Date(y,10,15),new Date(y,10,30)];tg.blurb="Harvest packs and falling leaves all through late November."}
+  const ny=EVENTS.find(e=>e.id==="newyear");if(ny){ny.dates=y=>[new Date(y,11,30),new Date(y+1,0,3)];ny.blurb="Party packs and confetti to ring in the new year."}
+});
+function paFxKind(){const e=eventNow();if(e&&e.id==="christmas")return "winter";if(e&&e.id==="newyear")return "newyear";if(e&&e.id==="thanksgiving")return "fall";if(SET.devEvent==="christmas")return "winter";return ""}
+function paSeasonFX(){
+  const kind=paFxKind(),on=kind&&SET.eco!==1&&SET.motion!==false&&!matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let fx=$("paFx"),lt=$("paLights");document.documentElement.dataset.fx=kind||"";
+  if(!on){if(fx)fx.remove();if(lt)lt.remove();return}
+  if(!fx||fx.dataset.k!==kind){if(fx)fx.remove();fx=document.createElement("div");fx.id="paFx";fx.dataset.k=kind;fx.setAttribute("aria-hidden","true");
+    const G=kind==="winter"?["❄","❅","❆"]:kind==="fall"?["🍂","🍁","🍂"]:["●","■","▲","●"],C=kind==="newyear"?["#ffd84f","#ff5a46","#4fb5ff","#3ddc84","#c44fff"]:null,n=kind==="fall"?14:22;
+    fx.innerHTML=Array.from({length:n},(_,i)=>`<i style="left:${(i*37+11)%100}%;animation-delay:${-(i*1.9)%15}s;animation-duration:${10+(i*7)%9}s;font-size:${kind==="newyear"?5+(i*3)%5:kind==="fall"?12+(i*5)%8:8+(i*5)%9}px${C?";color:"+C[i%C.length]:""}">${G[i%G.length]}</i>`).join("");
+    document.body.appendChild(fx)}
+  if(kind==="winter"){if(!lt){lt=document.createElement("div");lt.id="paLights";lt.setAttribute("aria-hidden","true");const cols=["#ff3b30","#ffd84f","#3ddc84","#4fb5ff","#ff5ad6"];
+      lt.innerHTML=`<svg class="pl-wire" viewBox="0 0 400 20" preserveAspectRatio="none"><path d="M0 4 Q20 16 40 4 T80 4 T120 4 T160 4 T200 4 T240 4 T280 4 T320 4 T360 4 T400 4" fill="none" stroke="#2b3a2b" stroke-width="2"/></svg>`+Array.from({length:20},(_,i)=>`<b style="left:${2.5+i*5}%;--c:${cols[i%cols.length]};animation-delay:${(i%4)*.45}s"></b>`).join("");
+      document.body.appendChild(lt)}}
+  else if(lt)lt.remove();
+}
+paTry("seasonfx",()=>{paSeasonFX();setInterval(paSeasonFX,60000);const pe=window.paSetPreset;if(pe)window.paSetPreset=function(){const r=pe.apply(this,arguments);paSeasonFX();return r}});
+
+/* ---------- posting: a short comment instead of emojis ---------- */
+window.postSheet=function(c){
+  if(!Cloud.on)return;
+  if(!Cloud.user){qrSheet(`<div class="qrcard"><h2>Sign in to post</h2><p class="msg">Sign in with Google in Settings to share cards with friends or everyone.</p></div><button class="btn" id="qrGo">Go to Settings</button>`);$("qrGo").onclick=()=>{closeQR();show("vSettings");toTop()};return}
+  if(c.verified===false){qrSheet(`<div class="qrcard"><h2>Can't post this one</h2><p class="msg">Hand-edited cards can't be posted. Change its numbers back to what the screenshot shows and try again.</p></div>`);return}
+  let aud="friends",cap="";
+  const draw=()=>{
+    qrSheet(`<div class="qrcard post"><h2>Post this card</h2>
+      <div class="seg seg2" role="radiogroup" aria-label="Who sees it"><button data-aud="friends" aria-pressed="${aud==="friends"}">Friends</button><button data-aud="global" aria-pressed="${aud==="global"}">Global</button></div>
+      <p class="msg">${aud==="friends"?"Only your friends see it.":"Every signed-in DasherDex driver sees it, with your name and level."} The route map and address are never included.</p>
+      <div class="pcard">${cardHTML({...c,_friend:true,_art:""})}</div>
+      <label class="nlab" for="pCap"><span>Add a comment (optional)</span><span id="pCount">${cap.length}/50</span></label>
+      <input id="pCap" class="pcapin" type="text" maxlength="50" autocomplete="off" placeholder="Worth it? Lucky pull?" value="${esc(cap)}">
+      <p class="msg">Be cool: swearing is fine, slurs and hate get blocked.</p>
+      </div><button class="btn" id="pGo">Post to ${aud==="friends"?"Friends":"Global"}</button>`);
+    document.querySelectorAll("#qrSheet [data-aud]").forEach(b=>b.onclick=()=>{cap=$("pCap").value.slice(0,50);aud=b.dataset.aud;draw()});
+    $("pCap").oninput=e=>{cap=e.target.value.slice(0,50);$("pCount").textContent=cap.length+"/50"};
+    $("pGo").onclick=async()=>{const t=String($("pCap").value||"").replace(/\s+/g," ").trim().slice(0,50);
+      if(t){const m=modCheck(t);if(!m.ok){toast(m.why);return}}
+      $("pGo").disabled=true;
+      try{await Cloud.post(c,aud,t);closeQR();toast(aud==="friends"?"Posted to Friends":"Posted to Global");feedAud=aud}
+      catch(e){$("pGo").disabled=false;toast(e.message&&!e.code?e.message:friendly(e))}};
+  };
+  draw();
+};
+
+/* ---------- Settings: changes wait for Save ---------- */
+let paStaging=false,paDirty=false,paSnap=null;
+const PA_IMM=["consent","unameAt","paSeen","lastCm","pnew","introDone","nudgeOff","dsum","statsCfg","popen","phide","gchF","gchC","srange","filter","openPk","dcols","statWarn","pfp","name","pfpPub","inboxSeen","inboxTab","seenVer","sort","group","hmBy","exPick","cPhoto","scanMode","movedHide","hidePosts","gposts"];
+function paStageSave(){
+  if(!paStaging||view!=="vSettings")return false;
+  paDirty=true;paSaveBtn();
+  try{const keep={...paSnap};for(const k of PA_IMM)if(k in SET)keep[k]=SET[k];localStorage.setItem(SKEY,JSON.stringify(keep))}catch(e){}
+  return true;
+}
+function paRealSave(){try{localStorage.setItem(SKEY,JSON.stringify(SET))}catch(e){}}
+function paSaveBtn(){const b=$("paSaveSet");if(!b)return;b.disabled=!paDirty;b.classList.toggle("on",paDirty);b.textContent=paDirty?"Save changes":"Saved"}
+function paCommit(){paRealSave();paDirty=false;paSnap=JSON.parse(JSON.stringify(SET));paSaveBtn();try{if(Cloud.user)Cloud.pushProfile().catch(()=>{})}catch(e){}try{paAgedRecycle()}catch(e){}try{paSeasonFX()}catch(e){}}
+function paDiscard(){
+  const keep={};for(const k of PA_IMM)if(k in SET)keep[k]=SET[k];const langWas=SET.lang;
+  for(const k of Object.keys(SET))delete SET[k];Object.assign(SET,paSnap,keep);paRealSave();paDirty=false;paSaveBtn();
+  if(SET.lang!==langWas){try{applyLang()}catch(e){}}
+  try{applyTheme()}catch(e){}try{paGlass();paEco()}catch(e){}try{document.documentElement.classList.toggle("calm",SET.motion===false)}catch(e){}try{paCSize&&paCSize()}catch(e){}try{paSeasonFX()}catch(e){}
+}
+paTry("setsave",()=>{
+  const ph=document.querySelector("#vSettings .phr");
+  if(ph&&!$("paSaveSet")){ph.innerHTML=`<button class="pasave" id="paSaveSet" disabled>Saved</button>`;$("paSaveSet").onclick=()=>{if(!paDirty)return;paCommit();toast("Settings saved")}}
+  const sh=window.show;
+  window.show=function(v){
+    if(view==="vSettings"&&v!=="vSettings"&&paDirty){
+      qrSheet(`<div class="qrcard"><h2>Save your changes?</h2><p class="msg">You changed some settings but didn't save them.</p></div>
+        <button class="btn" id="psYes">Save changes</button><button class="btn ghost" id="psNo">Discard changes</button><button class="btn ghost" id="psStay">Keep editing</button>`);
+      $("psYes").onclick=()=>{paCommit();closeQR();toast("Settings saved");paStaging=false;window.show(v)};
+      $("psNo").onclick=()=>{paDiscard();closeQR();toast("Changes canceled");paStaging=false;window.show(v)};
+      $("psStay").onclick=closeQR;return}
+    const was=view,r=sh.apply(this,arguments);
+    if(v==="vSettings"){if(was==="vSettings"&&paStaging)return r;paStaging=true;paDirty=false;paSnap=JSON.parse(JSON.stringify(SET));paSaveBtn()}else paStaging=false;
+    return r};
+  const ar=window.paAgedRecycle;window.paAgedRecycle=function(){if(paStaging&&paDirty)return;return ar.apply(this,arguments)};
+});
+
+window.paAlphaNotice=function(){
+  if(SET.paSeen===APP_VER)return;const fresh=!store.cards.length;SET.paSeen=APP_VER;saveSet();if(fresh)return;
+  qrSheet(`<div class="qrcard alpha2"><div class="al-badge">ALPHA 2.3</div><h2>Holidays are coming</h2>
+    <ul class="al-list">
+      <li>🦃 Thanksgiving now, ❄️ the Winter Event on Dec 1 with snow and Christmas lights, and 🎆 New Year after</li>
+      <li>🎟️ <b>Season 0.1 · Winter</b> starts Dec 1, with winter-only titles, borders and a mysterious Glass of Milk at tier 100</li>
+      <li>📦 Room for 500 cards, and a heads-up before your Dex fills</li>
+      <li>💬 Posts get a short comment instead of emojis</li>
+      <li>⚙️ Settings now have a Save button</li>
     </ul></div><button class="btn" id="alGo">Let's go</button>`);
   $("alGo").onclick=closeQR;
 };
